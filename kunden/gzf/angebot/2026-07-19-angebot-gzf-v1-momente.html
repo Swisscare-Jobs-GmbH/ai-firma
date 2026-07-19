@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<!--
+  ANGEBOT Gut zu Fuss (GzF) V1 — gebaut aus Vorlage ai-firma/vorlagen/angebot/momente-angebot.html
+  (Herkunft Finelli v6, Judge-Panel 8/8.5/8). Quelle der Zahlen: kunden/gzf/2026-07-19-gzf-schmerz-landkarte.md.
+  Unterschied zu Finelli: App steht NOCH NICHT -> Beweis-Block ehrlich auf Risiko-Umkehr (0 vorab + Abnahme
+  in Kundenhand) statt "laeuft schon". Kein geratener Wochentag (Finelli-Falle "Mittwoch/Donnerstag").
+  Absender = Swiss Care Jobs GmbH (Entscheid E3). Anrede durchgehend "ihr/euch" (Familienbetrieb, Vater
+  entscheidet, Sohn liest). Inhaber = Farhad Akbarzada — NIE "Herr Kaufmann".
+  Aus dieser Datei wird das Kunden-PDF gedruckt (Edge/Chrome headless --print-to-pdf, A4, keine Raender).
+-->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Angebot Gut zu Fuss System V1</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root {
+    --bg: #f5f2ec; --ink: #1c1a16; --dim: #6f685c; --line: #ddd5c6; --acc: #a8271c; --card: #fbf8f2;
+  }
+  html, body { width: 210mm; height: 297mm; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 6mm 12mm 3.5mm;
+    display: flex; flex-direction: column;
+  }
+
+  .top { display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 7.8pt; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .top b { color: var(--acc); }
+  .rule { height: .5mm; background: var(--ink); margin-top: 2mm; }
+
+  h1 { font-family: Georgia, serif; font-size: 21pt; line-height: 1.04; margin-top: 2.2mm; letter-spacing: -.01em; }
+  h1 em { font-style: italic; color: var(--acc); }
+
+  .intro { margin-top: 1.9mm; font-family: Georgia, serif; font-size: 9.2pt; line-height: 1.32; color: #2e2a24; }
+  .intro b { color: var(--acc); }
+
+  .lbl { margin-top: 2mm; font-size: 7.2pt; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--acc); font-weight: 700; }
+
+  .szenen { margin-top: 1.2mm; background: var(--card); border: .3mm solid var(--line);
+    border-left: 1.1mm solid var(--acc); border-radius: 1.6mm; padding: 1.7mm 3.5mm; }
+  .szenen p { font-size: 7.9pt; line-height: 1.28; margin: .85mm 0; color: #2e2a24; }
+  .szenen p b.neu { color: var(--acc); }
+  .szenen p b { color: var(--ink); }
+
+  .dreamrest { margin-top: 1.5mm; font-size: 7.9pt; line-height: 1.32; color: #3a352d; }
+  .dreamrest b { color: var(--ink); }
+
+  .zwei { margin-top: 1.7mm; display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+  .zwei h4 { font-family: Georgia, serif; font-size: 9.2pt; border-bottom: .5mm solid var(--acc);
+    padding-bottom: .8mm; display: inline-block; }
+  .zwei p { margin-top: 1.1mm; font-size: 7.9pt; line-height: 1.32; color: #3a352d; }
+  .zwei b { color: var(--acc); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 1mm; }
+  td { padding: 1.05mm 0; border-bottom: .25mm solid var(--line); font-size: 7.9pt; line-height: 1.24; vertical-align: top; }
+  td.p { text-align: right; font-family: Georgia, serif; font-weight: 700; white-space: nowrap; padding-left: 5mm; font-size: 8.6pt; }
+  tr.sum td { border-bottom: none; border-top: .6mm solid var(--ink); padding-top: 1.7mm;
+    font-weight: 700; font-size: 8.8pt; text-transform: uppercase; letter-spacing: .04em; }
+  tr.sum td.p { font-size: 12.5pt; color: var(--acc); }
+  .agency { margin-top: .6mm; text-align: right; font-size: 7pt; font-style: italic; color: var(--dim); }
+
+  .rechnung { margin-top: 1.6mm; border: .35mm solid var(--acc); border-radius: 1.6mm;
+    padding: 1.5mm 3.5mm; background: var(--card); font-size: 8pt; line-height: 1.32; color: #2e2a24; }
+  .rechnung b { color: var(--acc); }
+
+  .deal { margin-top: 1.6mm; background: var(--ink); color: #f5f2ec; border-radius: 1.8mm;
+    padding: 2.6mm 5mm; display: flex; justify-content: space-between; align-items: center; gap: 8mm; }
+  .deal .k { font-size: 6.8pt; letter-spacing: .2em; text-transform: uppercase; color: #b8afa0; }
+  .deal .r1 { font-size: 8.4pt; margin-top: 1.3mm; line-height: 1.42; }
+  .deal .r1 b { color: #fff; }
+  .deal .big { text-align: right; }
+  .deal .big .n { font-family: Georgia, serif; font-size: 20pt; font-weight: 700; line-height: 1; color: #fff; white-space: nowrap; }
+  .deal .big .u { font-size: 6.8pt; letter-spacing: .08em; text-transform: uppercase; color: #b8afa0; margin-top: 1.1mm; }
+  .cmp { margin-top: 1mm; font-size: 7.3pt; font-style: italic; color: var(--dim); line-height: 1.32; }
+  .cmp b { font-style: normal; color: var(--ink); }
+
+  .bausteine { margin-top: 1.3mm; font-size: 7.8pt; line-height: 1.34; color: #3a352d; }
+  .bausteine b { font-family: Georgia, serif; color: var(--ink); }
+
+  .joker { margin-top: 1.3mm; border: .35mm solid var(--acc); border-radius: 1.6mm;
+    padding: 1.7mm 3.5mm; background: var(--card); font-size: 7.9pt; line-height: 1.32; }
+  .joker .tag { font-size: 6.8pt; letter-spacing: .16em; text-transform: uppercase; color: var(--acc); font-weight: 700; display: block; margin-bottom: .8mm; }
+  .joker b { color: var(--acc); }
+
+  .urgent { margin-top: 1.5mm; border-top: .3mm solid var(--ink); border-bottom: .3mm solid var(--ink);
+    padding: 1.2mm 0; text-align: center; font-family: Georgia, serif; font-style: italic; font-size: 8.6pt; line-height: 1.3; }
+  .urgent b { font-style: normal; color: var(--acc); }
+
+  .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; padding-top: 1.2mm; }
+  .foot .who { font-size: 7.6pt; color: var(--dim); }
+  .foot .who b { color: var(--ink); }
+  .foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.6pt; color: var(--acc); }
+</style>
+</head>
+<body>
+  <div class="top"><span>Swiss Care Jobs GmbH — <b>Software &amp; KI</b></span><span>Rorschach · 19. Juli 2026</span></div>
+  <div class="rule"></div>
+
+  <h1>Eure Kunden lieben eure Beratung.<br><em>Jetzt kommen sie</em> auch von selbst zurück.</h1>
+
+  <p class="intro">
+    Ich habe eure Bewertungen gelesen — <b>4,6 von 5 Sternen</b> bei Google, und von 22 Bewertungen sind
+    20 mit vier oder fünf Sternen. „Dank der Unterstützung hier bin ich wieder viel stabiler [...] selbst auf
+    der Baustelle", schreibt ein Kunde. <b>Rund 1000 Menschen</b> waren schon bei euch, die Analyse gibt es
+    gratis nur bei euch, und seit dem Neustart an der Hauptstrasse führt ihr das Traditionshaus in dritter
+    Runde weiter. Die <b>einzige</b> Bremse liegt nicht in eurer Arbeit. Sie liegt danach: Wer einmal da
+    war, wird an nichts erinnert — und kommt oft erst nach Jahren wieder. <b>Genau das lösen wir — und bauen
+    euch dabei eine Kunden-Kartei, die euch endlich gehört.</b>
+  </p>
+
+  <div class="lbl">Vier Momente, die ihr kennt — und wie sie ab dem Start laufen</div>
+  <div class="szenen">
+    <p>Ein Kunde kauft Masseinlagen für <b>379 Franken</b>. Nach sechs bis zwölf Monaten sind sie
+       durchgetreten und wirken nicht mehr — aber niemand sagt es ihm. Nicht eure Schuld: euer GP Manager ist
+       fürs Vermessen und Fertigen gebaut, nicht fürs Erinnern. <b class="neu">Ab sofort:</b> nach sechs
+       Monaten eine Kontroll-Erinnerung, nach zwölf die freundliche Einladung zurück — mit einem Klick zum
+       Termin über eure Online-Buchung.</p>
+    <p>Rund <b>1000 Menschen</b> sind in eurem System — aber fast ohne E-Mail-Adresse. Ohne Adresse erreicht
+       ihr keinen von ihnen. Nicht eure Schuld: Adressen sammeln war nie Teil des Verkaufs.
+       <b class="neu">Ab sofort:</b> beim Kauf keine zwei Minuten — Name, Mail, ein Häkchen fürs
+       Einverständnis. Nach einem Jahr sind es hunderte Kunden, die ihr wieder erreicht.</p>
+    <p>Wer orthopädische Schuhe oder Kompressionsstrümpfe ärztlich verordnet bekommt, hat oft Anspruch auf
+       zwei Paar pro Jahr über IV oder Krankenkasse — viele wissen das gar nicht. Nicht eure Schuld: im
+       Gespräch geht es um die Versorgung heute, nicht um nächstes Jahr. <b class="neu">Ab sofort:</b> das
+       System erinnert im richtigen Moment, und der Kunde kommt für etwas zurück, das ihn fast nichts kostet.</p>
+    <p>Eure Beratung ist euer grösstes Lob bei Google — in 22 Bewertungen. Neue kommen kaum dazu, weil im
+       Tagesgeschäft niemand danach fragt. Nicht eure Schuld. <b class="neu">Ab sofort:</b> nach dem Termin
+       eine freundliche Bitte per Mail — eure 4,6 Sterne wachsen von selbst, und neue Kunden finden euch
+       leichter.</p>
+  </div>
+
+  <p class="dreamrest">
+    <b>Dazu ab Woche eins:</b> eine einfache Kunden-Kartei, die zeigt, wer wann was gekauft hat · alle
+    Erinnerungen laufen von selbst, ihr müsst an nichts mehr denken · euer GP Manager und die Online-Buchung
+    bleiben genau wie heute — nichts wird umgestellt. <b>Eure Daten bleiben eure:</b> gespeichert wird nur
+    Name und E-Mail — keine Gesundheitsdaten. Geht ihr, nehmt ihr eure Kartei mit.
+  </p>
+
+  <div class="zwei">
+    <div>
+      <h4>Kein Risiko für euch</h4>
+      <p>Ihr zahlt keinen Franken im Voraus. Wir bauen euer System — dann setzen wir uns mit euch zusammen
+      und gehen <b>zehn Abnahme-Punkte</b> durch, die wir fertig mitbringen. <b>Ihr</b> streicht oder ergänzt,
+      dann gilt: Liste erfüllt = ihr startet und zahlt. Nicht erfüllt = <b>ihr zahlt nichts.</b> Und hakt
+      später etwas: ihr erreicht uns direkt, Flick innert <b>48 Stunden</b> — sonst kostet euch dieser Monat
+      <b>nichts.</b> Und ihr seid nie auf Jahre gefangen: <b>alle drei Monate</b> ist ein fairer Ausstieg möglich.</p>
+    </div>
+    <div>
+      <h4>Euer Aufwand: keine zwei Minuten pro Kauf</h4>
+      <p>Wir richten alles ein und zeigen eurem Team jeden Handgriff, bis es sitzt — als Kunde Nr. 1 nennen
+      wir Gut zu Fuss dafür als Referenz auf unserer Website. Danach lernt ihr genau eine Bewegung: beim Kauf
+      Name, Mail und ein Häkchen eintragen. Eingetragen wird wie heute — unter der Woche der eine, am Samstag
+      der andere. GP Manager und die Wix-Buchung bleiben.</p>
+    </div>
+  </div>
+
+  <div class="rechnung">Rechnet selbst: Kommt künftig auch nur <b>jeder vierte Kunde</b> nach einem Jahr für neue
+  Einlagen zurück — statt heute fast keiner — sind das bei 379 Franken je Paar <b>über 25'000 Franken mehr im Jahr.</b>
+  Das System kostet euch davon einen Bruchteil.</div>
+  <div class="lbl">Was das wert ist — und was ihr zahlt</div>
+  <table>
+    <tr><td>Kunden-Kartei + einfaches Eingabe-Fenster, für euer Team gebaut (keine zwei Minuten pro Kauf)</td><td class="p">3'500</td></tr>
+    <tr><td>Automatische Erinnerungs-Mails: Willkommen &amp; Pflege-Tipps · 6-Monats-Kontrolle · 12-Monats-Rückholung mit Buchungslink</td><td class="p">4'000</td></tr>
+    <tr><td>Einverständnis sauber nach Schweizer Recht + automatische Bewertungs-Bitte</td><td class="p">1'800</td></tr>
+    <tr><td>Einrichtung + Schulung eures Teams, bis es sitzt</td><td class="p">1'500</td></tr>
+    <tr class="sum"><td>Aufbau, Selbstkosten für Kunde Nr. 1</td><td class="p">CHF 10'800</td></tr>
+  </table>
+  <div class="agency">Eine Agentur baut so etwas nicht unter fünfstellig — und rechnet danach jeden Monat laufende Lizenzen obendrauf. Ihr zahlt als Kunde Nr. 1 nur die Selbstkosten, alles inbegriffen.</div>
+
+  <div class="deal">
+    <div>
+      <div class="k">Euer Startkunden-Deal — null Risiko</div>
+      <div class="r1"><b>CHF 0 im Voraus.</b> Ihr zahlt erst, wenn eure Abnahme-Liste erfüllt ist.<br>Danach CHF 450 Abzahlung (24 Monate) + CHF 200 Betrieb.</div>
+    </div>
+    <div class="big"><div class="n">CHF 650</div><div class="u">pro Monat komplett</div></div>
+  </div>
+  <div class="cmp"><b>Alles auf diesem Blatt ist in den 650 inbegriffen</b> — eine Komplett-Lösung, keine fünf
+  Software-Abos, keine versteckten Kosten. <b>Nach 24 Monaten ist der Aufbau abbezahlt — dann bleiben nur noch
+  CHF 200 im Monat.</b> Euer GP Manager und die Wix-Buchung laufen weiter wie heute.</div>
+
+  <div class="bausteine">
+    <b>Ein System, auf dem alles aufbaut</b> — als Nächstes die neue Website, die ihr euch wünscht (direkt
+    mitgebaut für +150 im Monat), und Quartals-Berichte für die Praxen, die euch Kunden schicken.
+  </div>
+
+  <div class="joker">
+    <span class="tag">Der Türöffner-Joker</span>
+    Ihr stellt uns einem anderen Betrieb vor, der Kunde wird: <b>50% von dessen Auftragswert</b> ziehen wir
+    euch von der Restschuld ab — bis eure Restschuld weg ist. Ist es eine grössere Praxis oder Kette:
+    Restschuld komplett weg <b>und</b> die nächste Version gratis.
+  </div>
+
+  <div class="urgent">Den Startkunden-Preis geben wir genau einmal — ohne Eile. Sagt Ja, wenn ihr so weit seid, dann legen wir los, und ihr nehmt euer System <b>Punkt für Punkt selbst ab.</b></div>
+
+  <div class="foot">
+    <span class="who"><b>Swiss Care Jobs GmbH</b> · Shehryaar Khawaja · alikhawaja@swisscarejobs.ch</span>
+    <span class="cta">Ihr habt es mit einem Menschen zu tun — ich komme persönlich vorbei.</span>
+  </div>
+</body>
+</html>
