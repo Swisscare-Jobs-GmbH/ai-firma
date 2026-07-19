@@ -29,8 +29,8 @@ moeglicher Zusatz-Baustein, noch nicht geschaetzt}.
 | 6 | {SCHMERZ_6 (oft ein "laeuft heute schon"-Demo-Moment)} | "{ANTWORT_6}" | {LOESUNG_6} | {STUFE_6} |
 | 7 | {SCHMERZ_7} | "{ANTWORT_7}" | {LOESUNG_7} | {STUFE_7} |
 | 8 | {SCHMERZ_8} | "{ANTWORT_8}" | {LOESUNG_8} | {STUFE_8} |
-| 9 | {SCHMERZ_9} | {unklar geblieben? offen lassen} | {offen} | — |
-| 10 | {SCHMERZ_10} | {uebersprungen? notieren} | — | — |
+| 9 | {SCHMERZ_9} | "{ANTWORT_9}" (unklar geblieben? offen lassen) | {LOESUNG_9} | — |
+| 10 | {SCHMERZ_10} | "{ANTWORT_10}" (uebersprungen? notieren) | — | — |
 
 ## Verkaufs-Story (fuers Angebot)
 

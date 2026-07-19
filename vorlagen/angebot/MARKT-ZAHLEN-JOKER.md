@@ -8,8 +8,8 @@
 
 | Zahl | Markt-Norm | Urteil |
 |---|---|---|
-| Referral-Provision 10-20% | Haeufigster Wert **10%**, Spanne 3-20%; 20% nur bei starker Mitwirkung | ✅ vertretbar (10-20% = obere Markt-Haelfte) |
-| Partner-Marge 20-30% | Reseller 20-30% (Sweet Spot 25%); reine Empfehler nur 10-15% | ✅ sauber marktueblich |
+| Empfehlungs-Provision ("Referral") 10-20% | Haeufigster Wert **10%**, Spanne 3-20%; 20% nur bei starker Mitwirkung | ✅ vertretbar (10-20% = obere Markt-Haelfte) |
+| Partner-Marge 20-30% | Wiederverkaeufer ("Reseller") 20-30% (haeufigster Wert 25%); reine Empfehler nur 10-15% | ✅ sauber marktueblich |
 | Unsere 50%-Anrechnung | 2,5-5x ueber Markt-Norm | ✅ als Frueh-Kunden-Sonderdeal ok — weil Anrechnung statt Bargeld |
 
 ## Warum die 50% trotzdem sicher sind
@@ -29,5 +29,5 @@
   referralrock.com/blog/finders-fees (10-20% vom Erstjahres-Wert) ·
   dasfinanzen.de (DE: 10-30% Auftrags-Vermittlung)
 - Partner-Marge: channels-as-a-strategy.com/saas-reseller-commission-structure
-  (Reseller 20-30%, Referral-only 10-15%) · chanimal.com/resources/pricing/reseller-margins
-  (Staffeln 10-40%) · getmonetizely.com (VAR 25-35%)
+  (Wiederverkaeufer 20-30%, nur-Empfehler 10-15%) · chanimal.com/resources/pricing/reseller-margins
+  (Staffeln 10-40%) · getmonetizely.com (Wiederverkaeufer mit Zusatzleistung "VAR": 25-35%)

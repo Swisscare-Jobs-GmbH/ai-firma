@@ -2,8 +2,9 @@
 
 > Arbeitsname **"ai-firma"**. Angelegt 2026-07-19 aus dem SwissCare-Pivot (Weg E, Sitzung 17.07)
 > + dem Finelli-Playbook (18.-19.07). Geschaeft: Software bauen UND per KI weiter betreuen —
-> fuer kleine Schweizer Betriebe. Erste 2 Kunden: **Finelli** (Streetwear Zuerich, Lager-App)
-> + **GzF / Kaufmann "Gut zu Fuss"** (Orthopaedie-Schuhe Rorschach, Kundendatenbank + Mail-Flows).
+> fuer kleine Schweizer Betriebe. 3 Kunden: **SwissCare** (Kunde 0 — Serum/CRM, das erste Produkt,
+> laeuft produktiv) + **Finelli** (Streetwear Zuerich, Lager-App) + **GzF / Kaufmann "Gut zu Fuss"**
+> (Orthopaedie-Schuhe Rorschach, Kundendatenbank + Mail-Flows). Team-Rollen: `TEAM.md`.
 >
 > Dies ist ein **anderes Geschaeft** als SwissCare. Keine SwissCare-Regeln hier uebernehmen
 > (RAV, Provision, Rot-System, JT/AB-Rollen gelten hier NICHT).
@@ -40,7 +41,8 @@
 
 ## >>> Die 3 Leitplanken (aus der Pivot-Sitzung 17.07) <<<
 
-> Quelle: `swisscare-brain/sitzungen/quartal/2026-07-pivot/05-WEG-E-UHREN-ODER-AI.md`.
+> Quelle: Pivot-Sitzung 07/2026 (Original im SwissCare-Brain — Zugriffsweg siehe
+> `brain/_cross-ref/SWISSCARE-BRAIN.md`).
 > Ohne diese 3 Regeln wird die AI-Firma die "42k-Falle" — Jahr 1 duenn, frisst das Kerngeschaeft.
 
 1. **Verkauf vor Bau.** Mindestens 1 Firma sagt per Absichtserklaerung/Vorbestellung Ja, BEVOR SA
@@ -57,8 +59,8 @@ Seiten = beide in Gefahr. Die Leitplanken halten den Neu-Weg klein + mit Beweis-
 
 ## >>> Die 6 harten Regeln (aus dem Finelli-Playbook, gelernt aus echten Fehlern) <<<
 
-> Quelle: `swisscare-brain/users/sa/inbox/2026-07-19-playbook-neukunde-software.md`.
-> Volle Herleitung im `playbook/` dieses Repos.
+> Quelle: `playbook/` dieses Repos (destilliert 19.07 aus dem Finelli-Prozess; Original-Notizen
+> im SwissCare-Brain — Zugriffsweg siehe `brain/_cross-ref/SWISSCARE-BRAIN.md`).
 
 | # | Regel | Warum (echter Vorfall) |
 |---|---|---|

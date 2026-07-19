@@ -31,6 +31,9 @@ Brain-Pfade: alles unter `C:/dev/ai-firma/brain/`.
 
 ## Schritt 3 — 1 Lesson ins Brain (PFLICHT: min. 1 pro Session)
 Auch ohne Code — zur Not ein Werkzeug-Kniff, eine Sackgasse, ein Prozess-Punkt.
+- **Mentor-Rueckblick zuerst** (Rolle "Mentor", Fabel 5 — siehe `TEAM.md`): 3 Zeilen auf die
+  ARBEITSWEISE schauen, nicht aufs Ergebnis — (a) was lief gut, (b) was lief schlecht/Umweg,
+  (c) Format-Drift (Kopfzeile, Fazit oben, Klartext) ja/nein. Aus (b) wird die Lesson.
 - Ablage: `C:/dev/ai-firma/brain/lessons/<disziplin>/<datum>-<kurz-tag>.md`
   (disziplin = verkauf / bau / kunde / system / feedback).
 - **Frontmatter-Konvention** (Pflicht-Kopf):
