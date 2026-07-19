@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<!--
+  ANGEBOTS-VORLAGE "Momente" — Herkunft: Finelli-Angebot v6 (2026-07-19), Judge-Panel-Noten 8/8.5/8.
+  Nur die HTML-Quelle. Aus dieser Datei wird das Kunden-PDF gedruckt (Browser -> Drucken -> A4, keine
+  Raender; alle Farben sind auf print-color-adjust: exact gestellt).
+
+  BAUART DES BLATTS (Reihenfolge NICHT umstellen — das ist die bewiesene Verkaufs-Dramaturgie):
+    1. Stolz-Einstieg mit BELEGTEN Zahlen (nie erfunden — live nachzaehlen, siehe review-mining-rezept.md)
+    2. Momente/Pain benennen + entschulden ("nicht deine Schuld") + je "Ab sofort:" die Loesung
+    3. Beweis statt Versprechen (laufende App, Kunde klickt selbst) + Aufwand ~0 fuer den Kunden
+    4. Preis-Tabelle mit Summenzeile "Selbstkosten" (Wert zeigen, dann Preis)
+    5. Startkunden-Deal-Kasten (0 vorab, Monatsbetrag gross)
+    6. Ein-System (alles baut darauf auf) + Joker (Tueroeffner) + "du entscheidest" (Termin/Knappheit)
+
+  REGELN:
+    - Zahlen im Einstieg MUESSEN belegt sein. Keine belegte Zahl -> Satz weglassen, nie schaetzen.
+    - Absender-Fusszeile {ABSENDER} = offener Firmen-Entscheid (vorerst Swiss Care Jobs GmbH).
+    - Preis-Grundsatz: Preis nie reduzieren, nur die Zeit strecken (Raten). Summe = "Selbstkosten".
+    - Platzhalter-Legende steht als Kommentar am Ende der Datei.
+-->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Angebot {KUNDE} System V1</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root {
+    --bg: #f5f2ec; --ink: #1c1a16; --dim: #6f685c; --line: #ddd5c6; --acc: #a8271c; --card: #fbf8f2;
+  }
+  html, body { width: 210mm; height: 297mm; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 9mm 13mm 7mm;
+    display: flex; flex-direction: column;
+  }
+
+  .top { display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 7.8pt; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .top b { color: var(--acc); }
+  .rule { height: .5mm; background: var(--ink); margin-top: 2mm; }
+
+  h1 { font-family: Georgia, serif; font-size: 22.5pt; line-height: 1.05; margin-top: 4mm; letter-spacing: -.01em; }
+  h1 em { font-style: italic; color: var(--acc); }
+
+  .intro { margin-top: 2.6mm; font-family: Georgia, serif; font-size: 9.7pt; line-height: 1.4; color: #2e2a24; }
+  .intro b { color: var(--acc); }
+
+  .lbl { margin-top: 3.4mm; font-size: 7.2pt; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--acc); font-weight: 700; }
+
+  .szenen { margin-top: 1.5mm; background: var(--card); border: .3mm solid var(--line);
+    border-left: 1.1mm solid var(--acc); border-radius: 1.6mm; padding: 2.4mm 3.8mm; }
+  .szenen p { font-size: 8.3pt; line-height: 1.38; margin: 1.2mm 0; color: #2e2a24; }
+  .szenen p b.neu { color: var(--acc); }
+  .szenen p b { color: var(--ink); }
+
+  .dreamrest { margin-top: 2.4mm; font-size: 8.3pt; line-height: 1.42; color: #3a352d; }
+  .dreamrest b { color: var(--ink); }
+
+  .zwei { margin-top: 3mm; display: grid; grid-template-columns: 1fr 1fr; gap: 6.5mm; }
+  .zwei h4 { font-family: Georgia, serif; font-size: 9.6pt; border-bottom: .5mm solid var(--acc);
+    padding-bottom: 1mm; display: inline-block; }
+  .zwei p { margin-top: 1.4mm; font-size: 8.1pt; line-height: 1.4; color: #3a352d; }
+  .zwei b { color: var(--acc); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 1.3mm; }
+  td { padding: 1.4mm 0; border-bottom: .25mm solid var(--line); font-size: 8.2pt; line-height: 1.28; vertical-align: top; }
+  td.p { text-align: right; font-family: Georgia, serif; font-weight: 700; white-space: nowrap; padding-left: 5mm; font-size: 8.6pt; }
+  tr.sum td { border-bottom: none; border-top: .6mm solid var(--ink); padding-top: 1.7mm;
+    font-weight: 700; font-size: 8.8pt; text-transform: uppercase; letter-spacing: .04em; }
+  tr.sum td.p { font-size: 12.5pt; color: var(--acc); }
+  .agency { margin-top: .8mm; text-align: right; font-size: 7.3pt; font-style: italic; color: var(--dim); }
+
+  .deal { margin-top: 2.8mm; background: var(--ink); color: #f5f2ec; border-radius: 1.8mm;
+    padding: 3.3mm 5mm; display: flex; justify-content: space-between; align-items: center; gap: 8mm; }
+  .deal .k { font-size: 6.8pt; letter-spacing: .2em; text-transform: uppercase; color: #b8afa0; }
+  .deal .r1 { font-size: 8.4pt; margin-top: 1.3mm; line-height: 1.42; }
+  .deal .r1 b { color: #fff; }
+  .deal .big { text-align: right; }
+  .deal .big .n { font-family: Georgia, serif; font-size: 20pt; font-weight: 700; line-height: 1; color: #fff; white-space: nowrap; }
+  .deal .big .u { font-size: 6.8pt; letter-spacing: .08em; text-transform: uppercase; color: #b8afa0; margin-top: 1.1mm; }
+  .cmp { margin-top: 1.3mm; font-size: 7.6pt; font-style: italic; color: var(--dim); }
+  .cmp b { font-style: normal; color: var(--ink); }
+
+  .bausteine { margin-top: 2.4mm; font-size: 8pt; line-height: 1.45; color: #3a352d; }
+  .bausteine b { font-family: Georgia, serif; color: var(--ink); }
+
+  .joker { margin-top: 2.4mm; border: .35mm solid var(--acc); border-radius: 1.6mm;
+    padding: 2.2mm 3.8mm; background: var(--card); font-size: 8.1pt; line-height: 1.4; }
+  .joker .tag { font-size: 6.8pt; letter-spacing: .16em; text-transform: uppercase; color: var(--acc); font-weight: 700; display: block; margin-bottom: .8mm; }
+  .joker b { color: var(--acc); }
+
+  .urgent { margin-top: 2.8mm; border-top: .3mm solid var(--ink); border-bottom: .3mm solid var(--ink);
+    padding: 1.8mm 0; text-align: center; font-family: Georgia, serif; font-style: italic; font-size: 9.2pt; }
+  .urgent b { font-style: normal; color: var(--acc); }
+
+  .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; padding-top: 2.2mm; }
+  .foot .who { font-size: 7.6pt; color: var(--dim); }
+  .foot .who b { color: var(--ink); }
+  .foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.6pt; color: var(--acc); }
+</style>
+</head>
+<body>
+  <!-- KOPF: Absender links (offener Firmen-Entscheid), Ort + Datum rechts. -->
+  <div class="top"><span>{ABSENDER} — <b>Software &amp; KI</b></span><span>{KUNDE_ORT} · {DATUM}</span></div>
+  <div class="rule"></div>
+
+  <!-- (1) STOLZ-EINSTIEG — Titel: was der Kunde schon KANN + was das System jetzt dazuholt.
+       Muster: "Deine {STAERKE} ist da. {WAS_FEHLT} holt sie sich jetzt auch." -->
+  <h1>{TITEL_ZEILE_1}<br><em>{TITEL_ZEILE_2_KURSIV}</em> {TITEL_ZEILE_2_REST}</h1>
+
+  <!-- (1) INTRO: mit BELEGTEN Zahlen anerkennen, was der Kunde aufgebaut hat (Reviews, Stueck,
+       Kunden — live nachgezaehlt!). Dann EINE Bremse benennen, die NICHT im Kern liegt, sondern
+       im Nebenprozess. Schluss-Satz fett: "Genau das loesen wir — und {ZUSATZ_NUTZEN}." -->
+  <p class="intro">
+    {INTRO_BELEGTE_ZAHLEN — z.B. "Ich habe deine Bewertungen gelesen — ueber {N} auf {QUELLE}."}
+    {INTRO_LOB_ZITAT}. {INTRO_AUFBAU_ZAHLEN — Stueck / Kunden / Reichweite, alle belegt}. Die
+    <b>einzige</b> Bremse steht nicht {WO_ES_GUT_LAEUFT}. Sie steht {WO_DER_SCHMERZ_IST}:
+    {WAS_DER_SCHMERZ_KOSTET}. <b>Genau das loesen wir — und {ZUSATZ_NUTZEN}.</b>
+  </p>
+
+  <!-- (2) MOMENTE: 3-4 konkrete Szenen, die der Kunde SELBST kennt. Je Szene: erst der Schmerz
+       (mit Zahl, wenn belegbar), dann "nicht deine Schuld" (Ursache benennen, entschulden), dann
+       "Ab sofort:" + die Loesung in EINEM Satz. Was heute schon laeuft, kennzeichnen ("laeuft heute
+       schon") — das ist der staerkste Demo-Moment. -->
+  <div class="lbl">{MOMENTE_UEBERSCHRIFT — z.B. "Vier Momente, die du kennst — und wie sie ab naechster Woche laufen"}</div>
+  <div class="szenen">
+    <p>{MOMENT_1_SCHMERZ}. <b class="neu">Ab sofort:</b> {MOMENT_1_LOESUNG}.</p>
+    <p>{MOMENT_2_SCHMERZ}. <b class="neu">Ab sofort:</b> {MOMENT_2_LOESUNG}. {MOMENT_2_LAEUFT_SCHON}</p>
+    <p>{MOMENT_3_SCHMERZ}. <b class="neu">Ab sofort:</b> {MOMENT_3_LOESUNG}.</p>
+    <p>{MOMENT_4_SCHMERZ}. <b class="neu">Ab sofort:</b> {MOMENT_4_LOESUNG}.</p>
+  </div>
+
+  <!-- (2b) DAZU-AB-WOCHE-EINS: die restlichen Nutzen in einem dichten Fliess-Satz, mit " · " getrennt.
+       Schluss: der Daten-/KI-Startvorteil ("Alte Daten? Fuettern wir ein — dein System startet schlau"). -->
+  <p class="dreamrest">
+    <b>Dazu ab Woche eins:</b> {ZUSATZ_NUTZEN_1} · {ZUSATZ_NUTZEN_2} · {ZUSATZ_NUTZEN_3}.
+    {DATEN_STARTVORTEIL}
+  </p>
+
+  <!-- (3) ZWEI-SPALTEN: links "Beweis statt Versprechen" (laufende App, Kunde klickt am {TERMIN}
+       selbst, Abnahme-Liste, "nicht erfuellt = zahlst nichts", 48h-Flick). Rechts "Dein Aufwand"
+       (Einrichtung durch uns im Wert von {WERT}, fuer den Kunden 0 gegen Referenz; Kunde macht
+       einmalig {EINMAL_AUFWAND}, danach nur {DAUER_BEWEGUNG}; bestehendes System bleibt). -->
+  <div class="zwei">
+    <div>
+      <h4>Beweis statt Versprechen</h4>
+      <p>Das System <b>steht schon</b> — am {TERMIN} klickst du selbst durch. Keine Folien, die
+      laufende App. Die 10 Abnahme-Punkte bringen wir fertig mit — <b>du</b> streichst oder
+      ergaenzt, dann gilt: Liste erfuellt = laeuft. Nicht erfuellt = <b>du zahlst nichts.</b> Und
+      hakt spaeter etwas: du erreichst uns direkt, Flick innert <b>48 Stunden</b> — sonst kostet dich
+      dieser Monat <b>nichts.</b></p>
+    </div>
+    <div>
+      <h4>Dein Aufwand: {AUFWAND_UEBERSCHRIFT}</h4>
+      <p>Wir kommen <b>{EINSATZ_DAUER}</b>, richten alles ein und zeigen deinem Team jeden Handgriff —
+      Begleitung im Wert von <b>{WERT_BEGLEITUNG}, fuer dich 0</b> (dafuer: {KUNDE} als Referenz auf
+      unserer Website). Dein Team uebernimmt <b>einmalig</b> {EINMAL_AUFWAND} nach unserer Anleitung —
+      danach lernt es genau eine Bewegung: <b>{DAUER_BEWEGUNG}.</b> {BESTAND_BLEIBT}</p>
+    </div>
+  </div>
+
+  <!-- (4) PREIS-TABELLE: 3-4 Wert-Posten mit Einzelpreisen, dann Summenzeile "Dein Preis —
+       Selbstkosten". Die Einzelpreise ergeben die Summe (Wert sichtbar machen). Darunter der
+       Agentur-Vergleich ("Agenturen verlangen {X}+ — als Kunde Nr. 1 zahlst du den Selbstkosten-Wert"). -->
+  <div class="lbl">Was das wert ist — und was du zahlst</div>
+  <table>
+    <tr><td>{POSTEN_1_NAME}</td><td class="p">{POSTEN_1_PREIS}</td></tr>
+    <tr><td>{POSTEN_2_NAME}</td><td class="p">{POSTEN_2_PREIS}</td></tr>
+    <tr><td>{POSTEN_3_NAME}</td><td class="p">{POSTEN_3_PREIS}</td></tr>
+    <tr><td>{POSTEN_4_NAME}</td><td class="p">{POSTEN_4_PREIS}</td></tr>
+    <tr class="sum"><td>Dein Preis — Selbstkosten</td><td class="p">CHF {WERK_PREIS}</td></tr>
+  </table>
+  <div class="agency">Agenturen verlangen fuer diesen Umfang {AGENTUR_VERGLEICH}+ — als Kunde Nr. 1 zahlst du den Selbstkosten-Wert.</div>
+
+  <!-- (5) DEAL-KASTEN (dunkel): links "null Risiko" (0 vorab, zahlt erst nach Abnahme, dann Rate +
+       Betrieb), rechts der Komplett-Monatsbetrag GROSS. Darunter: alles inbegriffen, keine 5 Abos,
+       ggf. Vergleich mit einer bestehenden Ausgabe des Kunden. -->
+  <div class="deal">
+    <div>
+      <div class="k">Dein Startkunden-Deal — null Risiko</div>
+      <div class="r1"><b>CHF 0 im Voraus.</b> Du zahlst erst, wenn deine Abnahme-Liste erfuellt ist.<br>Danach CHF {PREIS_RATE} Abzahlung ({LAUFZEIT} Monate) + CHF {BETRIEB_PREIS} Betrieb.</div>
+    </div>
+    <div class="big"><div class="n">CHF {MONATSBETRAG_KOMPLETT}</div><div class="u">pro Monat komplett</div></div>
+  </div>
+  <div class="cmp"><b>Alles auf diesem Blatt ist in den {MONATSBETRAG_KOMPLETT} inbegriffen</b> — eine Komplett-Loesung, keine
+  fuenf Software-Abos, keine versteckten Kosten. {VERGLEICH_BESTEHENDE_AUSGABE}</div>
+
+  <!-- (6a) EIN-SYSTEM: ein Satz, dass alles auf einem Fundament aufbaut + Ausblick auf naechste Schritte. -->
+  <div class="bausteine">
+    <b>Ein System, auf dem alles aufbaut</b> — als Naechstes: {AUSBLICK_NAECHSTE_SCHRITTE}.
+  </div>
+
+  <!-- (6b) JOKER (Tueroeffner): Kunde stellt uns einer Firma vor, die Kunde wird -> 50% von deren
+       Auftrag von der Restschuld; grosser Kunde -> Restschuld weg + naechste Version gratis. -->
+  <div class="joker">
+    <span class="tag">Der Tueroeffner-Joker</span>
+    Du stellst uns einer Firma vor, die Kunde wird: <b>50% von deren Auftrag</b> ziehen wir dir von
+    der Restschuld ab — bis <b>CHF {WERK_PREIS} geschenkt.</b> Ist es {GROSS_KUNDE_BEISPIEL}:
+    Restschuld komplett weg <b>und</b> die naechste Version gratis.
+  </div>
+
+  <!-- (6c) "DU ENTSCHEIDEST": Knappheit (Kunde Nr. 1 gibt es einmal) + konkreter Entscheid-Termin. -->
+  <div class="urgent">Kunde Nr. 1 gibt es genau einmal. Am <b>{ENTSCHEID_TERMIN}</b> entscheidest du, ob du es bist.</div>
+
+  <!-- FUSS: Absender + Kontakt links, kurze CTA rechts. -->
+  <div class="foot">
+    <span class="who"><b>{ABSENDER}</b> · {KONTAKT_NAME} · {KONTAKT_MAIL}</span>
+    <span class="cta">{FUSS_CTA — z.B. "Am {TERMIN} klickst du selbst in der laufenden App."}</span>
+  </div>
+</body>
+</html>
+
+<!--
+  ================= PLATZHALTER-LEGENDE =================
+  {ABSENDER}                  Firmenname, der verkauft (offener Entscheid, vorerst Swiss Care Jobs GmbH)
+  {KUNDE} / {KUNDE_ORT}       Kunden-Name / Ort (Titel, Dateiname, Referenz-Zeile)
+  {DATUM} / {TERMIN}          Angebots-Datum / Vor-Ort-Demo-Termin
+  {ENTSCHEID_TERMIN}          Tag, an dem der Kunde entscheidet (Knappheit)
+  {TITEL_ZEILE_1/2...}        Stolz-Titel (Staerke -> was fehlt, holt sie sich jetzt auch)
+  {INTRO_*}                   Einstieg mit BELEGTEN Zahlen (Reviews/Stueck/Kunden) — live nachzaehlen!
+  {WO_ES_GUT_LAEUFT} /        Kontrast: der Kern ist stark, der Nebenprozess bremst
+    {WO_DER_SCHMERZ_IST}
+  {MOMENT_1..4_SCHMERZ/LOESUNG}  je Szene: Schmerz (+Zahl) / "Ab sofort:" + Loesung
+  {MOMENT_2_LAEUFT_SCHON}     Hinweis auf ein Feature, das heute schon laeuft (Demo-Moment)
+  {ZUSATZ_NUTZEN_1..3}        weitere Nutzen als dichter Fliess-Satz (mit " · ")
+  {DATEN_STARTVORTEIL}        "Alte Daten fuettern wir ein — System startet schlau"
+  {TERMIN}                    Vor-Ort-Termin (Kunde klickt selbst)
+  {AUFWAND_UEBERSCHRIFT} /    z.B. "einmal zaehlen" / "1 Woche zu zweit"
+    {EINSATZ_DAUER}
+  {WERT_BEGLEITUNG}           Wert der Einrichtung, die der Kunde geschenkt bekommt (gegen Referenz)
+  {EINMAL_AUFWAND} /          was der Kunde EINMAL tut / welche eine Bewegung dauerhaft bleibt
+    {DAUER_BEWEGUNG}
+  {BESTAND_BLEIBT}            Zusicherung, dass das bestehende System bleibt (nichts umgestellt)
+  {POSTEN_1..4_NAME/PREIS}    Wert-Posten mit Einzelpreisen (Summe = Selbstkosten)
+  {WERK_PREIS}                Einmal-Preis (Summenzeile) — NIE reduzieren, nur Raten strecken
+  {AGENTUR_VERGLEICH}         was eine Agentur verlangen wuerde (Wert-Anker, belegt)
+  {PREIS_RATE} / {LAUFZEIT}   Monatsrate / Anzahl Raten
+  {BETRIEB_PREIS}             Betriebs-Gebuehr/Monat
+  {MONATSBETRAG_KOMPLETT}     Rate + Betrieb zusammen (die grosse Zahl im Deal-Kasten)
+  {VERGLEICH_BESTEHENDE_AUSGABE}  optionaler Vergleich mit einer heutigen Kunden-Ausgabe
+  {AUSBLICK_NAECHSTE_SCHRITTE}   Versions-Leiter-Ausblick
+  {GROSS_KUNDE_BEISPIEL}      was ein "grosser Kunde" beim Joker waere
+  {KONTAKT_NAME} / {KONTAKT_MAIL}  Ansprechpartner + Mail
+  {FUSS_CTA}                  kurzer Schluss-Satz
+-->

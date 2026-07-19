@@ -1,0 +1,33 @@
+{
+  "_kommentar": [
+    "VORLAGE — pro Rechner EINMAL kopieren nach .claude/settings.local.json (gitignored).",
+    "Der Agent editiert settings.local.json NIE selbst — Verdrahtung ist SA-/Menschen-Sache.",
+    "So bleibt die Hook-Logik im Repo (fuer alle gleich), die AKTIVIERUNG aber pro Maschine.",
+    "",
+    "Verdrahtet 4 Hooks:",
+    " SessionStart -> session-start-card.sh (git/PR/Kunden-Ampel/Format) + kunden-anker-inject.js (Registry-Anker)",
+    " PreToolUse Write|Edit|MultiEdit -> protected-change-guard.py (Schutz-Wall) + fakten-live-waechter.py (Beleg-Zahlen-Warnung)",
+    "",
+    "Abschalten einzeln: env AIF_GUARD_OFF=1 (Schutz-Wall) bzw. AIF_FAKTEN_OFF=1 (Fakten-Waechter),",
+    "oder den jeweiligen Block hier entfernen. Voraussetzung: python, node, bash auf PATH."
+  ],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash .claude/hooks/session-start-card.sh" },
+          { "type": "command", "command": "node .claude/hooks/kunden-anker-inject.js" }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "python .claude/hooks/protected-change-guard.py" },
+          { "type": "command", "command": "python .claude/hooks/fakten-live-waechter.py" }
+        ]
+      }
+    ]
+  }
+}

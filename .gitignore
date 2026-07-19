@@ -1,0 +1,16 @@
+# --- Privat-Wand (ab Tag 1) — persoenliche Denk-Dateien nie in die Historie ---
+brain/users/*/journal/
+brain/users/*/sessions/
+brain/users/*/avatar.md
+
+# --- Maschinen-lokale Verdrahtung (pro Rechner, nie geteilt) ---
+.claude/settings.local.json
+.claude/local-user.md
+*.local.json
+# Vorlage MUSS in die Historie (sonst kein Muster fuer neue Rechner) — vom Muster oben ausnehmen
+!.claude/VORLAGE-settings.local.json
+
+# --- Muell / Build-Artefakte ---
+node_modules/
+__pycache__/
+.env
