@@ -69,7 +69,8 @@ Kompressionsstruempfe-Zyklus, Zuweiser-Hebel — Frage 1 (Aufteilung) und Praxen
 | Betrieb | Hosting, Mail-Versand, Wartung, kleine Anpassungen | **200/Mt** |
 | **= Kern-Deal** | **0.- vorab · monatlich (wie der Vater es will)** | **650/Mt** ✅ unter 850 |
 | 2 · Option: Neue Website | sein Wunsch aus Antwort 10 — Design neu, Wix-Buchung bleibt | +3'600 → **+150/Mt** → 800/Mt gesamt ✅ |
-| Schutz-Regeln | 48h-Garantie (Stoerung nicht in 48h behoben → Monat kostet nichts) · Kunden-Joker 50%-Monat · Quartals-Tor (alle 3 Mt raus) · Abnahme-Liste 10 Punkte (wir bringen sie mit) | inklusive |
+| Schutz-Regeln | 48h-Garantie (Stoerung nicht in 48h behoben → Monat kostet nichts) · Kunden-Joker (Weiterempfehlung reduziert Restschuld) · Abnahme-Liste 10 Punkte (wir bringen sie mit) | inklusive |
+| **Ausstiegs-Modell (SA-Entscheid 19.07)** | KEIN voller Quartals-Ausstieg. Software-Aufbau = Kauf, MUSS bezahlt werden (abzahlen ODER via Weiterempfehlung tilgen). Nur der **Betrieb (200/Mt) ist jederzeit kuendbar**. Zahlung erst wenn Software steht. **Bei Betriebs-Kuendigung vor voller Abzahlung: Restschuld laeuft weiter, Software gehoert dem Kunden** (Variante A, SA 19.07) | Vertrag |
 
 Preis-Mathe-Falle beachten (Playbook Regel 4): 24×450 = 10'800 als **"Dein Preis — Selbstkosten"**
 ausweisen, nie "Marktwert" — Agentur-Vergleich separat und nur weich ("Agenturen rechnen fuer
