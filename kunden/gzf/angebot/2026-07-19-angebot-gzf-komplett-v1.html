@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<!--
+  ANGEBOT Gut zu Fuss (GzF) — KOMPLETT V1 (Fusion Blatt 1 + Blatt 2 + FAQ).
+  Quellen: 2026-07-19-angebot-gzf-v1-momente.html (Seite 1) + 2026-07-19-gzf-system-kosten-blatt-v1.html
+  (Seite 2-3). Neu: Seite 3 = Kosten/Abzahlung + FAQ ("da kann man Regeln reintun", SA 19.07) — das FAQ
+  fuellt zugleich die vorher luftige Seite. Styles pro Seite gescoped (.s1/.s2/.s3), damit sich die zwei
+  Blatt-CSS nicht in die Quere kommen. Zahlen-Fix Sektion 2 (~5% -> 25%) uebernommen.
+  Absender = Shehryaar Khawaja — Software & KI. Inhaber = Farhad Akbarzada, NIE "Herr Kaufmann".
+  Aus dieser Datei wird das Kunden-PDF gedruckt (Edge headless --print-to-pdf, A4, keine Raender).
+-->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Angebot Gut zu Fuss — Komplett</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root { --bg: #f5f2ec; --ink: #1c1a16; --dim: #6f685c; --line: #ddd5c6; --acc: #a8271c; --card: #fbf8f2; }
+  html { width: 210mm; }
+  body { background: var(--bg); color: var(--ink); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+  .sheet { width: 210mm; page-break-after: always; }
+  .sheet:last-child { page-break-after: auto; }
+
+  /* geteilt: Kopfzeile */
+  .top { display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 7.8pt; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .top b { color: var(--acc); }
+  .rule { height: .5mm; background: var(--ink); margin-top: 2mm; }
+
+  /* ============ SEITE 1 — DAS ANGEBOT ============ */
+  .s1 { height: 297mm; padding: 6mm 12mm 3.5mm; display: flex; flex-direction: column; }
+  .s1 h1 { font-family: Georgia, serif; font-size: 21pt; line-height: 1.04; margin-top: 2.2mm; letter-spacing: -.01em; }
+  .s1 h1 em { font-style: italic; color: var(--acc); }
+  .s1 .intro { margin-top: 1.9mm; font-family: Georgia, serif; font-size: 9.2pt; line-height: 1.32; color: #2e2a24; }
+  .s1 .intro b { color: var(--acc); }
+  .s1 .lbl { margin-top: 2mm; font-size: 7.2pt; letter-spacing: .18em; text-transform: uppercase; color: var(--acc); font-weight: 700; }
+  .s1 .szenen { margin-top: 1.2mm; background: var(--card); border: .3mm solid var(--line); border-left: 1.1mm solid var(--acc); border-radius: 1.6mm; padding: 1.7mm 3.5mm; }
+  .s1 .szenen p { font-size: 7.9pt; line-height: 1.28; margin: .85mm 0; color: #2e2a24; }
+  .s1 .szenen p b.neu { color: var(--acc); }
+  .s1 .szenen p b { color: var(--ink); }
+  .s1 .dreamrest { margin-top: 1.5mm; font-size: 7.9pt; line-height: 1.32; color: #3a352d; }
+  .s1 .dreamrest b { color: var(--ink); }
+  .s1 .zwei { margin-top: 1.7mm; display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+  .s1 .zwei h4 { font-family: Georgia, serif; font-size: 9.2pt; border-bottom: .5mm solid var(--acc); padding-bottom: .8mm; display: inline-block; }
+  .s1 .zwei p { margin-top: 1.1mm; font-size: 7.9pt; line-height: 1.32; color: #3a352d; }
+  .s1 .zwei b { color: var(--acc); }
+  .s1 table { width: 100%; border-collapse: collapse; margin-top: 1mm; }
+  .s1 td { padding: 1.05mm 0; border-bottom: .25mm solid var(--line); font-size: 7.9pt; line-height: 1.24; vertical-align: top; }
+  .s1 td.p { text-align: right; font-family: Georgia, serif; font-weight: 700; white-space: nowrap; padding-left: 5mm; font-size: 8.6pt; }
+  .s1 tr.sum td { border-bottom: none; border-top: .6mm solid var(--ink); padding-top: 1.7mm; font-weight: 700; font-size: 8.8pt; text-transform: uppercase; letter-spacing: .04em; }
+  .s1 tr.sum td.p { font-size: 12.5pt; color: var(--acc); }
+  .s1 .agency { margin-top: .6mm; text-align: right; font-size: 8pt; color: var(--dim); }
+  .s1 .agency s { color: var(--ink); font-weight: 700; }
+  .s1 .rechnung { margin-top: 1.6mm; border: .35mm solid var(--acc); border-radius: 1.6mm; padding: 1.5mm 3.5mm; background: var(--card); font-size: 8pt; line-height: 1.32; color: #2e2a24; }
+  .s1 .rechnung b { color: var(--acc); }
+  .s1 .deal { margin-top: 1.6mm; background: var(--ink); color: #f5f2ec; border-radius: 1.8mm; padding: 2.6mm 5mm; display: flex; justify-content: space-between; align-items: center; gap: 8mm; }
+  .s1 .deal .k { font-size: 6.8pt; letter-spacing: .2em; text-transform: uppercase; color: #b8afa0; }
+  .s1 .deal .r1 { font-size: 8.4pt; margin-top: 1.3mm; line-height: 1.42; }
+  .s1 .deal .r1 b { color: #fff; }
+  .s1 .deal .big { text-align: right; }
+  .s1 .deal .big .n { font-family: Georgia, serif; font-size: 20pt; font-weight: 700; line-height: 1; color: #fff; white-space: nowrap; }
+  .s1 .deal .big .u { font-size: 6.8pt; letter-spacing: .08em; text-transform: uppercase; color: #b8afa0; margin-top: 1.1mm; }
+  .s1 .cmp { margin-top: 1mm; font-size: 7.3pt; font-style: italic; color: var(--dim); line-height: 1.32; }
+  .s1 .cmp b { font-style: normal; color: var(--ink); }
+  .s1 .bausteine { margin-top: 1.3mm; font-size: 7.8pt; line-height: 1.34; color: #3a352d; }
+  .s1 .bausteine b { font-family: Georgia, serif; color: var(--ink); }
+  .s1 .joker { margin-top: 1.3mm; border: .35mm solid var(--acc); border-radius: 1.6mm; padding: 1.7mm 3.5mm; background: var(--card); font-size: 7.9pt; line-height: 1.32; }
+  .s1 .joker .tag { font-size: 6.8pt; letter-spacing: .16em; text-transform: uppercase; color: var(--acc); font-weight: 700; display: block; margin-bottom: .8mm; }
+  .s1 .joker b { color: var(--acc); }
+  .s1 .urgent { margin-top: 1.5mm; border-top: .3mm solid var(--ink); border-bottom: .3mm solid var(--ink); padding: 1.2mm 0; text-align: center; font-family: Georgia, serif; font-style: italic; font-size: 8.6pt; line-height: 1.3; }
+  .s1 .urgent b { font-style: normal; color: var(--acc); }
+  .s1 .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; padding-top: 1.2mm; }
+  .s1 .foot .who { font-size: 7.6pt; color: var(--dim); }
+  .s1 .foot .who b { color: var(--ink); }
+  .s1 .foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.6pt; color: var(--acc); }
+
+  /* ============ SEITE 2 + 3 — SYSTEM / KOSTEN / FAQ ============ */
+  .s2, .s3 { padding: 9mm 13mm 8mm; }
+  .s2 h1, .s3 h1 { font-family: Georgia, serif; font-size: 21pt; line-height: 1.07; margin-top: 3.8mm; letter-spacing: -.01em; }
+  .s2 h1 em, .s3 h1 em { font-style: italic; color: var(--acc); }
+  .s2 .intro { margin-top: 2.4mm; font-family: Georgia, serif; font-size: 9.4pt; line-height: 1.4; color: #2e2a24; }
+  .s2 .intro b { color: var(--acc); }
+  .s2 .lbl, .s3 .lbl { margin-top: 3.6mm; font-size: 7.3pt; letter-spacing: .18em; text-transform: uppercase; color: var(--acc); font-weight: 700; }
+  .sec { break-inside: avoid; }
+
+  .s2 .kann { margin-top: 1.5mm; background: var(--card); border: .3mm solid var(--line); border-left: 1.1mm solid var(--acc); border-radius: 1.6mm; padding: 2.6mm 4mm; column-count: 2; column-gap: 6mm; }
+  .s2 .kann p { font-size: 8pt; line-height: 1.4; margin: 0 0 1.8mm; color: #2e2a24; break-inside: avoid; }
+  .s2 .kann p:last-child { margin-bottom: 0; }
+  .s2 .kann b { color: var(--ink); }
+  .s2 .kann b.hl { color: var(--acc); }
+
+  .s2 .kosten { margin-top: 1.5mm; background: var(--ink); color: #efe9df; border-radius: 1.8mm; padding: 3mm 4.5mm; break-inside: avoid; }
+  .s2 .kosten .hook { font-family: Georgia, serif; font-size: 10.5pt; line-height: 1.3; color: #fff; }
+  .s2 .kosten .hook em { font-style: italic; color: #f0b8b0; }
+  .s2 .kosten .grid { margin-top: 2.4mm; display: grid; grid-template-columns: 1fr auto 1fr; gap: 5mm; align-items: center; }
+  .s2 .kosten .heute .z { display: flex; justify-content: space-between; font-size: 8.2pt; line-height: 1.5; color: #d8d2c6; border-bottom: .2mm solid #3a362e; padding: .5mm 0; }
+  .s2 .kosten .heute .z.sum { border-bottom: none; border-top: .4mm solid #6f685c; margin-top: .6mm; padding-top: 1mm; color: #fff; font-weight: 700; }
+  .s2 .kosten .heute .z b { font-family: Georgia, serif; }
+  .s2 .kosten .pfeil { font-size: 15pt; color: #f0b8b0; text-align: center; }
+  .s2 .kosten .morgen { text-align: center; }
+  .s2 .kosten .morgen .big { font-family: Georgia, serif; font-size: 21pt; font-weight: 700; color: #fff; line-height: 1; }
+  .s2 .kosten .morgen .u { font-size: 6.8pt; letter-spacing: .1em; text-transform: uppercase; color: #b8afa0; margin-top: 1.2mm; }
+  .s2 .kosten .morgen .s { font-size: 7.6pt; color: #d8d2c6; margin-top: 1.6mm; line-height: 1.35; }
+  .s2 .kosten .note { margin-top: 2.2mm; padding-top: 1.8mm; border-top: .2mm solid #3a362e; font-size: 7.6pt; font-style: italic; color: #c8c2b6; line-height: 1.4; }
+  .s2 .kosten .note b { font-style: normal; color: #fff; }
+
+  .s2 .keine { margin-top: 1.6mm; border: .35mm solid var(--acc); border-radius: 1.8mm; background: var(--card); padding: 2.6mm 4mm; break-inside: avoid; }
+  .s2 .keine .reihe { display: flex; flex-wrap: wrap; gap: .6mm 4.5mm; }
+  .s2 .keine .reihe span { font-family: Georgia, serif; font-size: 9.3pt; line-height: 1.5; white-space: nowrap; }
+  .s2 .keine .reihe b { color: var(--acc); }
+  .s2 .keine .statt { margin-top: 1.6mm; padding-top: 1.6mm; border-top: .25mm solid var(--line); font-size: 8.2pt; line-height: 1.4; color: #3a352d; }
+  .s2 .keine .statt b { color: var(--ink); }
+
+  .s2 .block { margin-top: 1.5mm; border: .3mm solid var(--line); border-radius: 1.6mm; background: var(--card); padding: 2.4mm 4mm; break-inside: avoid; }
+  .s2 .block p { font-size: 8pt; line-height: 1.44; color: #3a352d; margin-bottom: 1.6mm; }
+  .s2 .block p:last-child { margin-bottom: 0; }
+  .s2 .block b { color: var(--ink); }
+  .s2 .block .satz { font-style: italic; color: var(--dim); }
+  .s2 .block .satz b { color: var(--acc); font-style: normal; }
+
+  /* Seite 3 — Wert + Deal + Prozess */
+  .s3 table.wert { width: 100%; border-collapse: collapse; margin-top: 1.5mm; }
+  .s3 table.wert td { padding: 1.35mm 0; border-bottom: .25mm solid var(--line); font-size: 8pt; line-height: 1.28; vertical-align: top; }
+  .s3 table.wert td.p { text-align: right; font-family: Georgia, serif; font-weight: 700; white-space: nowrap; padding-left: 5mm; font-size: 8.4pt; }
+  .s3 table.wert tr.sum td { border-bottom: none; border-top: .6mm solid var(--ink); padding-top: 1.6mm; font-weight: 700; font-size: 8.6pt; text-transform: uppercase; letter-spacing: .04em; }
+  .s3 table.wert tr.sum td.p { font-size: 12pt; color: var(--acc); }
+  .s3 .agency { margin-top: .7mm; text-align: right; font-size: 7.6pt; color: var(--dim); }
+  .s3 .agency s { color: var(--ink); font-weight: 700; }
+  .s3 .deal { margin-top: 2.4mm; background: var(--ink); color: #f5f2ec; border-radius: 1.8mm; padding: 3mm 5mm; display: flex; justify-content: space-between; align-items: center; gap: 8mm; break-inside: avoid; }
+  .s3 .deal .k { font-size: 6.8pt; letter-spacing: .2em; text-transform: uppercase; color: #b8afa0; }
+  .s3 .deal .r1 { font-size: 8.2pt; margin-top: 1.1mm; line-height: 1.4; }
+  .s3 .deal .r1 b { color: #fff; }
+  .s3 .deal .big { text-align: right; }
+  .s3 .deal .big .n { font-family: Georgia, serif; font-size: 19pt; font-weight: 700; line-height: 1; color: #fff; white-space: nowrap; }
+  .s3 .deal .big .u { font-size: 6.8pt; letter-spacing: .08em; text-transform: uppercase; color: #b8afa0; margin-top: 1mm; }
+  .s3 .prozess { margin-top: 2.4mm; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.6mm; break-inside: avoid; }
+  .s3 .schritt { background: var(--card); border: .3mm solid var(--line); border-radius: 1.4mm; padding: 1.8mm 2.4mm; }
+  .s3 .schritt .nr { font-family: Georgia, serif; font-size: 10pt; font-weight: 700; color: var(--acc); }
+  .s3 .schritt p { font-size: 7.3pt; line-height: 1.35; margin-top: .7mm; color: #3a352d; }
+  .s3 .schritt p b { color: var(--ink); }
+  .s3 .betrieb { margin-top: 1.8mm; font-size: 7.6pt; font-style: italic; color: var(--dim); line-height: 1.38; }
+  .s3 .betrieb b { font-style: normal; color: var(--ink); }
+
+  /* FAQ */
+  .s3 .faq { margin-top: 1.6mm; column-count: 2; column-gap: 7mm; }
+  .s3 .faq .qa { break-inside: avoid; margin-bottom: 2mm; }
+  .s3 .faq .qa:last-child { margin-bottom: 0; }
+  .s3 .faq .q { font-family: Georgia, serif; font-size: 8.5pt; color: var(--acc); font-weight: 700; line-height: 1.24; }
+  .s3 .faq .a { font-size: 7.7pt; line-height: 1.36; color: #3a352d; margin-top: .5mm; }
+  .s3 .faq .a b { color: var(--ink); }
+
+  .s3 .foot { display: flex; justify-content: space-between; align-items: baseline; padding-top: 3mm; margin-top: 3mm; border-top: .3mm solid var(--line); }
+  .s3 .foot .who { font-size: 7.6pt; color: var(--dim); }
+  .s3 .foot .who b { color: var(--ink); }
+  .s3 .foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.6pt; color: var(--acc); }
+</style>
+</head>
+<body>
+
+  <!-- ==================== SEITE 1 — DAS ANGEBOT ==================== -->
+  <section class="sheet s1">
+    <div class="top"><span>Shehryaar Khawaja — <b>Software &amp; KI</b></span><span>Gut zu Fuss · Zürich · 19. Juli 2026</span></div>
+    <div class="rule"></div>
+
+    <h1>Eure Kunden lieben eure Beratung.<br><em>Jetzt kommen sie</em> auch von selbst zurück.</h1>
+
+    <p class="intro">
+      Ich habe eure Bewertungen gelesen — <b>4,6 von 5 Sternen</b> bei Google, und von 22 Bewertungen sind
+      20 mit vier oder fünf Sternen. „Dank der Unterstützung hier bin ich wieder viel stabiler [...] selbst auf
+      der Baustelle", schreibt ein Kunde. <b>Rund 1000 Menschen</b> waren schon bei euch, die Analyse gibt es
+      gratis nur bei euch, und seit dem Neustart an der Hauptstrasse führt ihr das Traditionshaus in dritter
+      Runde weiter. Die <b>einzige</b> Bremse liegt nicht in eurer Arbeit. Sie liegt danach: Wer einmal da
+      war, wird an nichts erinnert — und kommt oft erst nach Jahren wieder. <b>Genau das lösen wir — und bauen
+      euch dabei eine Kunden-Kartei, die euch endlich gehört.</b>
+    </p>
+
+    <div class="lbl">Vier Momente, die ihr kennt — und wie sie ab dem Start laufen</div>
+    <div class="szenen">
+      <p>Ein Kunde kauft Masseinlagen für <b>379 Franken</b>. Nach sechs bis zwölf Monaten sind sie
+         durchgetreten und wirken nicht mehr — aber niemand sagt es ihm. Nicht eure Schuld: euer GP Manager ist
+         fürs Vermessen und Fertigen gebaut, nicht fürs Erinnern. <b class="neu">Ab sofort:</b> nach sechs
+         Monaten eine Kontroll-Erinnerung, nach zwölf die freundliche Einladung zurück — mit einem Klick zum
+         Termin über eure Online-Buchung.</p>
+      <p>Rund <b>1000 Menschen</b> sind in eurem System — aber fast ohne E-Mail-Adresse. Ohne Adresse erreicht
+         ihr keinen von ihnen. Nicht eure Schuld: Adressen sammeln war nie Teil des Verkaufs.
+         <b class="neu">Ab sofort:</b> beim Kauf keine zwei Minuten — Name, Mail, ein Häkchen fürs
+         Einverständnis. Nach einem Jahr sind es hunderte Kunden, die ihr wieder erreicht.</p>
+      <p>Wer orthopädische Schuhe oder Kompressionsstrümpfe ärztlich verordnet bekommt, hat oft Anspruch auf
+         zwei Paar pro Jahr über IV oder Krankenkasse — viele wissen das gar nicht. Nicht eure Schuld: im
+         Gespräch geht es um die Versorgung heute, nicht um nächstes Jahr. <b class="neu">Ab sofort:</b> das
+         System erinnert im richtigen Moment, und der Kunde kommt für etwas zurück, das ihn fast nichts kostet.</p>
+      <p>Eure Beratung ist euer grösstes Lob bei Google — in 22 Bewertungen. Neue kommen kaum dazu, weil im
+         Tagesgeschäft niemand danach fragt. Nicht eure Schuld. <b class="neu">Ab sofort:</b> nach dem Termin
+         eine freundliche Bitte per Mail — eure 4,6 Sterne wachsen von selbst, und neue Kunden finden euch
+         leichter.</p>
+    </div>
+
+    <p class="dreamrest">
+      <b>Dazu ab Woche eins:</b> eine einfache Kunden-Kartei, die zeigt, wer wann was gekauft hat · alle
+      Erinnerungen laufen von selbst, ihr müsst an nichts mehr denken · euer GP Manager und die Online-Buchung
+      bleiben genau wie heute — nichts wird umgestellt. <b>Eure Daten bleiben eure:</b> gespeichert wird nur
+      Name und E-Mail — keine Gesundheitsdaten. Geht ihr, nehmt ihr eure Kartei mit.
+    </p>
+
+    <div class="zwei">
+      <div>
+        <h4>Kein Risiko für euch</h4>
+        <p>Ihr zahlt keinen Franken im Voraus. Wir bauen euer System — dann setzen wir uns mit euch zusammen
+        und gehen <b>zehn Abnahme-Punkte</b> durch, die wir fertig mitbringen. <b>Ihr</b> streicht oder ergänzt,
+        dann gilt: Liste erfüllt = ihr startet und zahlt. Nicht erfüllt = <b>ihr zahlt nichts.</b> Und hakt
+        später etwas: ihr erreicht uns direkt, Flick innert <b>48 Stunden</b> — sonst kostet euch dieser Monat
+        <b>nichts.</b> Die Software gehört dann euch und wird in Raten abbezahlt — den <b>laufenden Betrieb</b>
+        könnt ihr jederzeit beenden.</p>
+      </div>
+      <div>
+        <h4>Euer Aufwand: keine zwei Minuten pro Kauf</h4>
+        <p>Wir richten alles ein und zeigen eurem Team jeden Handgriff, bis es sitzt — als Kunde Nr. 1 nennen
+        wir Gut zu Fuss dafür als Referenz auf unserer Website. Danach lernt ihr genau eine Bewegung: beim Kauf
+        Name, Mail und ein Häkchen eintragen. Eingetragen wird wie heute — unter der Woche der eine, am Samstag
+        der andere. GP Manager und die Wix-Buchung bleiben.</p>
+      </div>
+    </div>
+
+    <div class="rechnung">Rechnet selbst: Kommt künftig auch nur <b>jeder vierte Kunde</b> nach einem Jahr für neue
+    Einlagen zurück — statt heute fast keiner — sind das bei 379 Franken je Paar <b>über 25'000 Franken mehr im Jahr.</b>
+    Das System kostet euch davon einen Bruchteil.</div>
+    <div class="lbl">Was das wert ist — und was ihr zahlt</div>
+    <table>
+      <tr><td>Kunden-Kartei + einfaches Eingabe-Fenster, für euer Team gebaut (keine zwei Minuten pro Kauf)</td><td class="p">3'500</td></tr>
+      <tr><td>Automatische Erinnerungs-Mails: Willkommen &amp; Pflege-Tipps · 6-Monats-Kontrolle · 12-Monats-Rückholung mit Buchungslink</td><td class="p">4'000</td></tr>
+      <tr><td>Einverständnis sauber nach Schweizer Recht + automatische Bewertungs-Bitte</td><td class="p">1'800</td></tr>
+      <tr><td>Einrichtung + Schulung eures Teams, bis es sitzt</td><td class="p">1'500</td></tr>
+      <tr class="sum"><td>Aufbau, Selbstkosten für Kunde Nr. 1</td><td class="p">CHF 10'800</td></tr>
+    </table>
+    <div class="agency">Agenturen verlangen für so ein System <s>CHF 20'000+</s> — als Kunde Nr. 1 zahlt ihr den Selbstkosten-Wert.</div>
+
+    <div class="deal">
+      <div>
+        <div class="k">Euer Startkunden-Deal — null Risiko</div>
+        <div class="r1"><b>CHF 0 im Voraus.</b> Ihr zahlt erst, wenn eure Abnahme-Liste erfüllt ist.<br>Danach CHF 450 Abzahlung (24 Monate) + CHF 200 Betrieb. <b>Nach 24 Monaten gehört die Software euch</b> — ab dann nur noch Betrieb, monatlich kündbar.</div>
+      </div>
+      <div class="big"><div class="n">CHF 650</div><div class="u">pro Monat komplett</div></div>
+    </div>
+    <div class="cmp"><b>Alles auf diesem Blatt ist in den 650 inbegriffen</b> — eine Komplett-Lösung, keine fünf
+    Software-Abos, keine versteckten Kosten. Euer GP Manager und die Wix-Buchung laufen weiter wie heute.</div>
+
+    <div class="bausteine">
+      <b>Ein System, auf dem alles aufbaut</b> — als Nächstes die neue Website, die ihr euch wünscht (direkt
+      mitgebaut für +150 im Monat), und Quartals-Berichte für die Praxen, die euch Kunden schicken.
+    </div>
+
+    <div class="joker">
+      <span class="tag">Der Türöffner-Joker</span>
+      Ihr stellt uns einem anderen Betrieb vor, der Kunde wird — ihr bekommt <b>10% von dessen erstem Auftrag,</b>
+      direkt auf eure Kosten angerechnet. Bringt zwei, drei — und <b>euer System trägt sich fast von selbst.</b>
+    </div>
+
+    <div class="urgent">Den Startkunden-Preis geben wir genau einmal — ohne Eile. Sagt Ja, wenn ihr so weit seid, dann legen wir los, und ihr nehmt euer System <b>Punkt für Punkt selbst ab.</b></div>
+
+    <div class="foot">
+      <span class="who"><b>Shehryaar Khawaja</b> · Software &amp; KI · alikhawaja@swisscarejobs.ch</span>
+      <span class="cta">Wie das System arbeitet und was es kostet — auf den nächsten Seiten.</span>
+    </div>
+  </section>
+
+  <!-- ==================== SEITE 2 — EUER SYSTEM IM DETAIL ==================== -->
+  <section class="sheet s2">
+    <div class="top"><span>Shehryaar Khawaja — <b>Software &amp; KI</b></span><span>Gut zu Fuss · Euer System im Detail</span></div>
+    <div class="rule"></div>
+
+    <h1>Ein System erinnert eure Kunden.<br>Ihr macht <em>die Beratung.</em></h1>
+    <p class="intro">
+      Alles in <b>einem</b> System — kein Zusatz-Programm, euer GP Manager und die Online-Buchung bleiben.
+      Und <b>ihr bleibt die Chefs:</b> das System erinnert und schlägt vor — entscheiden tut ihr. Hier im
+      Detail: was es jeden Tag für euch tut, was der verpasste Wiederkauf euch heute kostet, und wie ihr es
+      abzahlt — CHF 0 im Voraus.
+    </p>
+
+    <div class="sec">
+    <div class="lbl">1 · Was euer System jeden Tag für euch tut</div>
+    <div class="kann">
+      <p><b>Eine Kunden-Kartei, die euch gehört.</b> Wer war da, wann, für welche Versorgung — auf einen
+      Blick. Beim Kauf trägt euer Team in keine zwei Minuten Name, E-Mail und ein Häkchen fürs Einverständnis
+      ein. Nach einem Jahr sind es hunderte Kunden, die ihr wieder erreicht.</p>
+      <p><b>Die Erinnerungen laufen von selbst.</b> Nach sechs Monaten die Kontroll-Erinnerung, nach zwölf die
+      freundliche Einladung zurück — mit einem Klick zum Termin über eure Online-Buchung. Ihr müsst an nichts
+      denken, das System denkt für euch.</p>
+      <p><b class="hl">Es erinnert — ihr entscheidet.</b> Das System meldet sich: „Dieser Kunde war vor einem
+      Jahr da." Ob und wie ihr ihn ansprecht, bleibt eure Sache. Es nimmt euch nur das Nachhalten ab, den
+      Rest macht ihr, wie ihr es immer gemacht habt.</p>
+      <p><b class="hl">Eure 4,6 Sterne wachsen von selbst.</b> Nach dem Termin geht automatisch eine freundliche
+      Bitte um eine Bewertung raus. Eure Beratung ist euer grösstes Lob — jetzt hören es auch neue Kunden.</p>
+      <p><b class="hl">Kassen-Ansprüche im Blick.</b> Wer ärztlich verordnete Schuhe oder Kompressionsstrümpfe
+      trägt, hat oft Anspruch auf zwei Paar im Jahr. Das System erinnert im richtigen Moment — der Kunde kommt
+      für etwas zurück, das ihn fast nichts kostet.</p>
+      <p><b>Alles ist aufgeschrieben.</b> Jeder Kauf, jede Erinnerung, jeder Rückkehrer — sauber und nach
+      Schweizer Recht. Gespeichert wird nur Name und E-Mail, keine Gesundheitsdaten. Geht ihr, nehmt ihr eure
+      Kartei mit.</p>
+    </div>
+    </div>
+
+    <div class="sec">
+    <div class="lbl">2 · Was der verpasste Wiederkauf euch heute kostet</div>
+    <div class="kosten">
+      <div class="hook">Heute kommt fast keiner im richtigen Takt zurück — <em>jedes Jahr bleibt Umsatz liegen.</em></div>
+      <div class="grid">
+        <div class="heute">
+          <div class="z"><span>Neue Käufe im Jahr</span><b>~360</b></div>
+          <div class="z"><span>Preis je Paar Masseinlagen</span><b>379.–</b></div>
+          <div class="z"><span>Rückkehr heute → Ziel jeder 4.</span><b>~5% → 25%</b></div>
+          <div class="z sum"><span>Mehr-Umsatz im Jahr (Rechnung)</span><b>~25'000.–</b></div>
+        </div>
+        <div class="pfeil">→</div>
+        <div class="morgen">
+          <div class="big">CHF 650</div>
+          <div class="u">pro Monat · alles inbegriffen</div>
+          <div class="s">= 7'800 im Jahr. Das System kostet einen Bruchteil dessen, was heute liegen bleibt.</div>
+        </div>
+      </div>
+      <div class="note"><b>Am Termin rechnen wir das mit euren echten Zahlen aus</b> — dann seht ihr schwarz auf
+      weiss, wie viel der verpasste Wiederkauf euch kostet. Kein Zusatz-Abo: GP Manager und Wix laufen weiter.</div>
+    </div>
+    </div>
+
+    <div class="sec">
+    <div class="lbl">3 · Was es ab dann nicht mehr gibt</div>
+    <div class="keine">
+      <div class="reihe">
+        <span><b>Kein</b> Kunde, der vergessen wird.</span>
+        <span><b>Kein</b> Wiederkauf erst nach 3 Jahren.</span>
+        <span><b>Keine</b> 1000 Kunden ohne Adresse.</span>
+        <span><b>Kein</b> verpasster Kassen-Anspruch.</span>
+        <span><b>Kein</b> „wir müssten mal um Bewertungen bitten".</span>
+        <span><b>Kein</b> Zusatz-Abo.</span>
+      </div>
+      <div class="statt"><b>Stattdessen:</b> eine Kartei, die euch gehört, Erinnerungen, die von selbst laufen,
+      Kunden, die im richtigen Takt zurückkommen — und eine Beratung, die endlich die Sterne bekommt, die sie verdient.</div>
+    </div>
+    </div>
+
+    <div class="sec">
+    <div class="lbl">4 · Wir richten alles ein — und lassen euch nicht allein</div>
+    <div class="block">
+      <p><b>Ein einfaches Eingabe-Fenster für euer Team.</b> So schlicht, dass es der Vater unter der Woche und
+      ihr am Samstag ohne Nachdenken nutzt — keine zwei Minuten pro Kauf, genau wie heute der Verkauf läuft.</p>
+      <p><b>Einschulung für alle,</b> bis jeder Handgriff sitzt — nicht nur einmal gezeigt, sondern geübt.</p>
+      <p><b>Wir bleiben dran.</b> In den ersten Wochen sind wir für euch da: wir verbessern, was noch hakt, und
+      stellen sicher, dass die erste Erinnerungs-Welle sauber rausgeht.</p>
+    </div>
+    </div>
+
+    <div class="sec">
+    <div class="lbl">5 · Was später mitwächst — dasselbe System, kein neues Abo</div>
+    <div class="block">
+      <p><b>Eure neue Website</b> (euer Wunsch) — direkt mitgebaut für +150 im Monat, die Online-Buchung bleibt
+      erhalten. <b>Quartals-Berichte für die Praxen,</b> die euch Kunden schicken: schwarz auf weiss, wie viele
+      ihr gut versorgt habt — das bindet eure Zuweiser.</p>
+      <p class="satz">Ihr fangt nie wieder bei null an: <b>alles baut auf eurem System auf.</b> Und euer
+      Türöffner-Joker (Seite 1): stellt ihr uns einen Betrieb vor, der Kunde wird, bekommt ihr <b>10% von
+      dessen erstem Auftrag — direkt auf eure Kosten angerechnet.</b></p>
+    </div>
+    </div>
+  </section>
+
+  <!-- ==================== SEITE 3 — KOSTEN & FRAGEN ==================== -->
+  <section class="sheet s3">
+    <div class="top"><span>Shehryaar Khawaja — <b>Software &amp; KI</b></span><span>Gut zu Fuss · Kosten &amp; eure Fragen</span></div>
+    <div class="rule"></div>
+
+    <div class="sec">
+    <div class="lbl">6 · Was das wert ist — und wie ihr es abzahlt</div>
+    <table class="wert">
+      <tr><td>Kunden-Kartei + einfaches Eingabe-Fenster, für euer Team gebaut (keine zwei Minuten pro Kauf)</td><td class="p">3'500</td></tr>
+      <tr><td>Automatische Erinnerungs-Mails: Willkommen &amp; Pflege-Tipps · 6-Monats-Kontrolle · 12-Monats-Rückholung mit Buchungslink</td><td class="p">4'000</td></tr>
+      <tr><td>Einverständnis sauber nach Schweizer Recht + automatische Bewertungs-Bitte</td><td class="p">1'800</td></tr>
+      <tr><td>Einrichtung + Schulung eures Teams, bis es sitzt</td><td class="p">1'500</td></tr>
+      <tr class="sum"><td>Euer Preis — Selbstkosten</td><td class="p">CHF 10'800</td></tr>
+    </table>
+    <div class="agency">Agenturen verlangen für so ein System <s>CHF 20'000+</s> — als Kunde Nr. 1 zahlt ihr den Selbstkosten-Wert.</div>
+
+    <div class="deal">
+      <div>
+        <div class="k">So läuft die Abzahlung — null Risiko</div>
+        <div class="r1"><b>CHF 0 im Voraus.</b> CHF 450 Abzahlung (24 Monate) + CHF 200 Betrieb —<br>die erste Rate erst, wenn eure Abnahme-Liste erfüllt ist.</div>
+      </div>
+      <div class="big"><div class="n">CHF 650</div><div class="u">pro Monat komplett</div></div>
+    </div>
+
+    <div class="prozess">
+      <div class="schritt"><span class="nr">1</span><p><b>Wir bauen euer System</b> — im Übungs-Modus, ihr müsst dafür nichts vorbereiten.</p></div>
+      <div class="schritt"><span class="nr">2</span><p><b>Eure Abnahme-Liste:</b> 10 Punkte, ihr streicht oder ergänzt. Erfüllt = läuft.</p></div>
+      <div class="schritt"><span class="nr">3</span><p><b>Erst dann die erste Rate.</b> Nicht erfüllt = ihr zahlt nichts.</p></div>
+      <div class="schritt"><span class="nr">4</span><p><b>24 × 450 = 10'800</b> — danach gehört die Software <b>euch, für immer.</b> Es bleibt nur der Betrieb (200), monatlich kündbar.</p></div>
+    </div>
+    </div>
+
+    <div class="lbl">Eure Fragen — kurz und ehrlich beantwortet</div>
+    <div class="faq">
+      <div class="qa">
+        <div class="q">Was kostet es — und wann zahlen wir zum ersten Mal?</div>
+        <div class="a">CHF 650 im Monat, alles drin: <b>450 Aufbau-Rate + 200 Betrieb.</b> CHF 0 im Voraus — die erste Rate erst, wenn eure 10-Punkte-Abnahme erfüllt ist.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Was, wenn wir wieder aufhören wollen?</div>
+        <div class="a">Den <b>Betrieb (200/Monat) kündigt ihr jederzeit</b> auf Monatsende. Die Software ist ein Kauf: in 24 Raten abbezahlt, dann gehört sie euch. Kündigt ihr den Betrieb vorher, laufen die restlichen Raten weiter — die Software bleibt eure.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Wem gehört am Ende die Software?</div>
+        <div class="a">Nach 24 Monaten gehört sie <b>euch, für immer.</b> Eure Kunden-Kartei gehört euch schon ab dem ersten Tag — geht ihr, nehmt ihr sie mit.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Was ist mit unseren Daten?</div>
+        <div class="a">Gespeichert wird <b>nur Name und E-Mail</b> — keine Gesundheitsdaten. Alles nach Schweizer Datenschutz, mit Einverständnis beim Kauf.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Was, wenn etwas nicht funktioniert?</div>
+        <div class="a">Ihr erreicht uns direkt. Ist eine Störung <b>nicht in 48 Stunden behoben, kostet euch dieser Betriebs-Monat nichts.</b></div>
+      </div>
+      <div class="qa">
+        <div class="q">Müssen wir unser System umstellen?</div>
+        <div class="a">Nein. Euer <b>GP Manager und die Wix-Buchung laufen weiter</b> wie heute. Kein Zusatz-Abo, kein zweites Programm.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Wie viel Aufwand ist das für uns?</div>
+        <div class="a"><b>Keine zwei Minuten pro Kauf</b> — Name, Mail, ein Häkchen. Wir schulen euer Team, bis jeder Handgriff sitzt.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Und der Türöffner-Joker?</div>
+        <div class="a">Stellt ihr uns einen Betrieb vor, der Kunde wird, bekommt ihr <b>10% von dessen erstem Auftrag</b> — direkt auf eure Kosten angerechnet.</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <span class="who"><b>Shehryaar Khawaja</b> · Software &amp; KI · alikhawaja@swisscarejobs.ch</span>
+      <span class="cta">Ihr habt es mit einem Menschen zu tun — ich komme persönlich vorbei.</span>
+    </div>
+  </section>
+
+</body>
+</html>
