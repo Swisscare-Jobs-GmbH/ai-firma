@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# SessionStart-Karte fuer die AI-Firma — injiziert eine kompakte Orientierung
+# SessionStart-Karte fuer die AI-Firma -- injiziert eine kompakte Orientierung
 # ins Modell beim Chat-Start: git-Status + offene PRs + Kunden-Ampel + Format-Erinnerung.
 # So kennt jede Session den Stand, ohne dass Befehle/PRs/Kunden pro Chat neu erarbeitet werden.
 #
 # Ausgabe: JSON mit hookSpecificOutput.additionalContext (SessionStart-Vertrag).
-# Personal (via .claude/settings.local.json, gitignored) — kein Team-Zwang.
+# Personal (via .claude/settings.local.json, gitignored) -- kein Team-Zwang.
 set -euo pipefail
 
 ROOT="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || echo '.')}"
@@ -12,14 +12,14 @@ ROOT="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || echo 
 branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo '?')"
 dirty="$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
 
-# Offene PRs — damit die Session weiss was in Arbeit ist (nicht doppelt bauen,
+# Offene PRs -- damit die Session weiss was in Arbeit ist (nicht doppelt bauen,
 # Base pruefen). Fail-soft: wenn gh fehlt/nicht authed -> Platzhalter.
 prs="$(gh pr list --state open --limit 12 \
         --json number,title,headRefName \
         -q '.[] | "  #\(.number) \(.title)  [\(.headRefName)]"' 2>/dev/null | head -15 || true)"
 [ -z "$prs" ] && prs="  (keine offenen PRs / gh nicht verfuegbar)"
 
-# Kunden-Ampel — Registry-Tabelle aus kunden/UEBERSICHT.md (nur Tabellen-Zeilen).
+# Kunden-Ampel -- Registry-Tabelle aus kunden/UEBERSICHT.md (nur Tabellen-Zeilen).
 # Quelle der Wahrheit fuer Kunde -> Repo -> Ports -> Deal-Stand.
 ampel="  (kunden/UEBERSICHT.md noch nicht angelegt)"
 if [ -f "${ROOT}/kunden/UEBERSICHT.md" ]; then
@@ -28,13 +28,13 @@ if [ -f "${ROOT}/kunden/UEBERSICHT.md" ]; then
 fi
 
 read -r -d '' card <<EOF || true
-== ai-firma — Session-Start-Karte ==
+== ai-firma -- Session-Start-Karte ==
 Branch: ${branch}  |  uncommitted Dateien: ${dirty}
 
-Offene PRs (VOR neuem Bau pruefen — nicht doppeln, Base checken):
+Offene PRs (VOR neuem Bau pruefen -- nicht doppeln, Base checken):
 ${prs}
 
-Kunden-Ampel (Registry — Kunde / Repo / Ports / Deal-Stand):
+Kunden-Ampel (Registry -- Kunde / Repo / Ports / Deal-Stand):
 ${ampel}
 
 READ-BEFORE-ASK (Reihenfolge): Chat-Verlauf -> Repo/Git-History -> brain/ (ai-firma-Repo).
