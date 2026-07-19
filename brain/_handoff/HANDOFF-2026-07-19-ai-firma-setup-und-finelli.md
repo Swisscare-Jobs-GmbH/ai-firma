@@ -6,10 +6,32 @@ status: sauber abgeschlossen
 
 # Übergabe — AI-Firma-Aufbau + Finelli-Härtung (19.07.2026)
 
-> ⚠️ **ZUERST LESEN — Doppelarbeit vermeiden:** Ein PARALLELER Chat arbeitet gerade an
-> **GzF-Angebot** (`ai-firma/kunden/gzf/angebot/`, untracked) und an **Finelli Blatt 2**
-> (`finelli-cockpit/docs/angebot/2026-07-19-system-kosten-blatt-v1.html`, modifiziert). Diese
-> zwei NICHT anfassen — gehören dem anderen Chat.
+> ⚠️ **ZUERST LESEN — Doppelarbeit vermeiden:** Ein PARALLELER Chat arbeitet gerade am
+> **GzF-Angebot** (`ai-firma/kunden/gzf/angebot/`, untracked) — NICHT anfassen.
+> **Finelli Blatt 2 ist inzwischen FERTIG** (Nachtrag unten) — nicht neu bauen.
+
+## Stand-Nachtrag (19.07 abends, Finelli-Chat — NEUESTER Stand)
+
+- **Blatt 2 „Dein System im Detail" FERTIG:** `finelli-cockpit/docs/angebot/2026-07-19-system-kosten-blatt-v1.html`
+  + PDF, main @ d2019d6. 2 A4-Seiten, Aufbau nach SA-Diktat: ① Was das System täglich tut (Bestand >95%,
+  Packer-Tempo, Bestell-Melder mit einstellbarem Zeitraum, Montags-Bericht, Frag-FINELLI mit Jahres-Vergleich
+  für Kollektions-Planung) ② Software-Kosten heute ~1'500 → 1'250 (Schätz-Zahlen, Mittwoch live ausfüllen)
+  ③ „Keine …"-Liste ④ Einrichten + Einschulung + 1 Tag/Woche im 1. Monat ⑤ Zukunfts-Andock inkl.
+  Hersteller-Zugang ⑥ Wert-Stapel + Abzahl-Prozess. 3-Richter-Panel gelaufen (14 Fixes) + 4 SA-Feedback-Runden.
+  **Kern-Framing (SA-Ansage): das System assistiert — SA/Khawar bleibt der Boss, es entscheidet NICHT.**
+- **Absender-Entscheid SA 19.07 (gilt für BEIDE Kunden-Blätter):** „Shehryaar Khawaja — Software & KI" statt
+  Swiss Care Jobs — E3 (Vertrag rechtlich über SwissCare) bleibt unangetastet, betrifft nur die Blätter.
+- **PDF-Lage Downloads AUFGERÄUMT:** beide v6-Dateinamen (`…v6-momente.pdf` UND `Angebot-Finelli-v6-KORRIGIERT-22juli.pdf`)
+  sind jetzt derselbe frische main-Stand (22. Juli + Absender + alle Feinschliffe) — egal welches SA druckt.
+  Blatt 2 = `2026-07-19-system-kosten-blatt-v1.pdf`.
+- **Datums-Klassen-Fege:** „Mittwoch 23.07." auch in MITTWOCH-PLAN.md + ANGEBOT-SESSION-BRIEF.md + Memory
+  auf **22.07.** korrigiert (Archiv-Dateien bewusst gelassen).
+- **Ebenfalls schon erledigt (nicht neu bauen):** Anti-Fail-Schwarm ausgewertet → Fixes auf finelli-main
+  (Ampel nur noch Backend-Quelle, /readiness mit Startzeit+Code-Stand als Zombie-Wächter, getrennte
+  Übungs-DB `cockpit-uebung.db`, lokaler Marker-Hook); Kern im swisscare-brain (PR #1594 gemergt, T764 grün);
+  Marker-Gates in globalem chat-end-clean + /sync + CRM-Kopie (PR #397 gemergt).
+- **Offen:** Khawar-Vorbereitungs-Nachricht (Entwurf in MITTWOCH-PLAN) noch nicht verschickt · GzF beim
+  anderen Chat · Firmenname weiter offen (Absender-Tausch auf Blättern = 2 Zeilen je Blatt).
 
 ## Was dieser Chat FERTIG gemacht hat (nicht neu bauen)
 
