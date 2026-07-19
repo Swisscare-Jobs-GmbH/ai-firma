@@ -2,11 +2,11 @@
 
 > Arbeitsname **"ai-firma"**. Angelegt 2026-07-19 aus dem SwissCare-Pivot (Weg E, Sitzung 17.07)
 > + dem Finelli-Playbook (18.-19.07). Geschaeft: Software bauen UND per KI weiter betreuen —
-> fuer kleine Schweizer Betriebe. 3 Kunden: **SwissCare** (Kunde 0 — Serum/CRM, das erste Produkt,
-> laeuft produktiv) + **Finelli** (Streetwear Zuerich, Lager-App) + **GzF / Kaufmann "Gut zu Fuss"**
-> (Orthopaedie-Schuhe Rorschach, Kundendatenbank + Mail-Flows). Team-Rollen: `TEAM.md`.
+> fuer kleine Schweizer Betriebe. 3 Kunden: **SwissCare** (Kunde 0 — Serum/CRM, laeuft produktiv)
+> + **Finelli** (Streetwear Zuerich, Lager-App) + **GzF / Kaufmann "Gut zu Fuss"** (Orthopaedie-
+> Schuhe Rorschach, Kundendatenbank + Mail-Flows). Team-Rollen: `TEAM.md`.
 >
-> Dies ist ein **anderes Geschaeft** als SwissCare. Keine SwissCare-Regeln hier uebernehmen
+> Dies ist ein **anderes Geschaeft** als SwissCare. Keine SwissCare-Regeln uebernehmen
 > (RAV, Provision, Rot-System, JT/AB-Rollen gelten hier NICHT).
 
 ---
@@ -31,114 +31,87 @@
 
 **Standard-User = SA (Shehryaar Khawaja).** Er baut die Firma auf.
 
-- **Antwort-Format, Sprache, Ton:** gelten rechnerweit ueber `~/.claude/CLAUDE.md` (Person + Sprache
-  + Format). **Nicht hier duplizieren** — die globale Datei greift in diesem Ordner automatisch.
-  Kern in einem Satz: Deutsch, Fazit oben, scannbar, max 1 Frage, Klartext (10-Jaehrige-Test).
-- **Anderer Mensch am Rechner?** Pruefe `.claude/local-user.md` (gitignored, pro Rechner). Fehlt sie:
-  User ist SA.
+- **Format, Sprache, Ton** gelten rechnerweit ueber `~/.claude/CLAUDE.md` — **nicht hier duplizieren**.
+  Kern: Deutsch, Fazit oben, scannbar, max 1 Frage, Klartext (10-Jaehrige-Test).
+- **Anderer Mensch am Rechner?** Pruefe `.claude/local-user.md` (gitignored). Fehlt sie: User ist SA.
 
 ---
 
-## >>> Die 3 Leitplanken (aus der Pivot-Sitzung 17.07) <<<
+## >>> Die 3 Leitplanken (Pivot-Sitzung 17.07) <<<
 
-> Quelle: Pivot-Sitzung 07/2026 (Original im SwissCare-Brain — Zugriffsweg siehe
-> `brain/_cross-ref/SWISSCARE-BRAIN.md`).
-> Ohne diese 3 Regeln wird die AI-Firma die "42k-Falle" — Jahr 1 duenn, frisst das Kerngeschaeft.
+> Warum: `brain/lessons/system/2026-07-19-leitplanken-42k-falle.md` (die "42k-Falle" + warum hart).
 
-1. **Verkauf vor Bau.** Mindestens 1 Firma sagt per Absichtserklaerung/Vorbestellung Ja, BEVOR SA
-   weiterbaut. Kein Bau auf Verdacht.
-2. **SA-Zeit gedeckelt.** Das laufende SwissCare-Vermittlungsgeschaeft (400-600k/Jahr) darf **nicht
-   kannibalisiert** werden. Im Zweifel hat das Kerngeschaeft Vorrang.
-3. **AB-Closing-Schutz.** AB verkauft die AI-Software nur, wenn sein SwissCare-Case-Closing nicht
-   leidet — sonst Umsatzverlust an zwei Fronten.
-
-**Warum hart:** Dieselben 3 Leute bedienen die Cash-Maschine UND bauen Neues. Halbe Kraft auf beiden
-Seiten = beide in Gefahr. Die Leitplanken halten den Neu-Weg klein + mit Beweis-Zwang.
+1. **Verkauf vor Bau.** Min. 1 Firma sagt per Absichtserklaerung/Vorbestellung Ja, BEVOR weitergebaut wird. Kein Bau auf Verdacht.
+2. **SA-Zeit gedeckelt.** Das SwissCare-Geschaeft (400-600k/Jahr) darf nicht kannibalisiert werden — im Zweifel Vorrang.
+3. **AB-Closing-Schutz.** AB verkauft die AI-Software nur, wenn sein SwissCare-Case-Closing nicht leidet.
 
 ---
 
-## >>> Die 6 harten Regeln (aus dem Finelli-Playbook, gelernt aus echten Fehlern) <<<
+## >>> Die 6 harten Regeln (Finelli-Playbook) <<<
 
-> Quelle: `playbook/` dieses Repos (destilliert 19.07 aus dem Finelli-Prozess; Original-Notizen
-> im SwissCare-Brain — Zugriffsweg siehe `brain/_cross-ref/SWISSCARE-BRAIN.md`).
+> Warum (echte Vorfaelle je Regel): `brain/lessons/system/2026-07-19-finelli-echte-vorfaelle.md`.
+> Destillat auch in `playbook/`.
 
-| # | Regel | Warum (echter Vorfall) |
-|---|---|---|
-| 1 | **Bestehendes System des Kunden NIE ersetzen — aufsetzen.** "Alles inbegriffen, keine Extra-Abos." | Shopify ersetzen = Monate + Risiko, kein Hebel (Finelli 18.07). |
-| 2 | **Jede Zahl muss der Kunde selbst nachpruefen koennen.** Reviews/Referenzen LIVE verifizieren. | "41 Bewertungen" waere peinlich gewesen — Google hatte 130. Referenz "Jelmoli" existierte nicht mehr (18.07). |
-| 3 | **Kunden-Team macht die Handarbeit — wir leiten an.** Nie selbst zaehlen/einraeumen anbieten. | Sonst haftet die AI-Firma fuer fremde Handarbeit (Finelli-Etikettier-Tag). |
-| 4 | **Preis-Mathe-Falle: Summenzeile NIE "Marktwert" nennen.** "Dein Preis — Selbstkosten"; Agentur-Anker (30k+) separat. | Raten x Laufzeit = Summe → Kunde rechnet nach, fuehlt sich getaeuscht (Deal-Session 18.07). |
-| 5 | **Mock-Formeln am KALENDERTAG verankern** (toordinal), nie am Tages-Abstand. | Sonst Daten-Drift nach jedem Neustart der Uebungs-Welt (Finelli-Bau). |
-| 6 | **Jede Etappe speichern + hochladen, Draft-PRs, keine .github/workflows.** | Bau-Minuten-Budget (Lektion aus SwissCare 13.07: Budget leer = alles steht). |
+1. **Bestehendes System des Kunden NIE ersetzen — aufsetzen.** "Alles inbegriffen, keine Extra-Abos."
+2. **Jede Zahl muss der Kunde selbst nachpruefen koennen.** Reviews/Referenzen LIVE verifizieren.
+3. **Kunden-Team macht die Handarbeit — wir leiten an.** Nie selbst zaehlen/einraeumen anbieten.
+4. **Preis-Mathe-Falle: Summenzeile NIE "Marktwert" nennen.** "Dein Preis — Selbstkosten"; Agentur-Anker (30k+) separat.
+5. **Mock-Formeln am KALENDERTAG verankern** (toordinal), nie am Tages-Abstand.
+6. **Jede Etappe speichern + hochladen, Draft-PRs, keine .github/workflows.**
 
 ---
 
 ## >>> Plan-Mode ≠ Build-Mode (PFLICHT) <<<
 
-"User approved" beim Plan heisst: **der Plan-Inhalt ist akzeptiert** — NICHT "fuehr ihn jetzt aus".
-Vor dem ersten Bauen (Edit/Write/Commit) nach Plan-Freigabe explizit fragen:
-> "Plan steht. Soll ich jetzt anfangen zu bauen, oder erst noch was klaeren?"
+> Warum (Drift-Bau kostet 50-70k Tokens, Frage 200-500 → 100-300x billiger): `brain/lessons/system/2026-07-19-prozess-guards-warum.md`.
 
-**Ausnahme:** SAs Nachricht enthielt selbst ein Aktions-Verb ("ja bau das" / "los" / "go") → bauen erlaubt.
+"User approved" beim Plan = der Plan-**Inhalt** ist akzeptiert, NICHT "fuehr ihn jetzt aus". Vor dem
+ersten Bauen (Edit/Write/Commit) fragen: *"Plan steht. Jetzt bauen, oder erst noch klaeren?"*
 
-Drei Stufen (Sprung Lx→Ly, y>x, braucht ein Aktions-Verb):
-- **L1** = reden / erklaeren / vorschlagen (Output: Text)
-- **L2** = planen (Output: Plan)
-- **L3** = bauen / aendern (Output: Edit/Write/Commit)
-
-**Bei Discovery-Pivot** (neue Info macht den Plan hinfaellig): STOP, neuer Vorschlag mit A/B/C-Optionen,
-auf SA warten. **Grund:** Ein Drift-Bau kostet 50-70k Tokens bei 0 Output. Eine Frage kostet 200-500.
-**100-300x billiger zu fragen als zu reverten.**
+- **Ausnahme:** SAs Nachricht enthielt selbst ein Aktions-Verb ("ja bau das" / "los" / "go") → bauen erlaubt.
+- **Stufen** (Sprung Lx→Ly braucht Aktions-Verb): **L1** reden · **L2** planen · **L3** bauen/aendern.
+- **Bei Discovery-Pivot** (neue Info macht Plan hinfaellig): STOP, neuer Vorschlag mit A/B/C, auf SA warten.
 
 ---
 
 ## >>> GitHub-Minuten-Regel (Budget wie Tokens behandeln) <<<
 
-> Lektion aus SwissCare 13.07: Am Tag 13 war das Bau-Minuten-Budget leer → ALLE Pruefungen standen.
+> Warum (SwissCare 13.07: Budget leer = alles stand still): `brain/lessons/system/2026-07-19-prozess-guards-warum.md`.
 
-1. **KEINE `.github/workflows/`** — weder in DIESEM Repo noch in einem Kunden-Repo. Bewusst. Als
-   harte Regel: nie einen `.github/`-Ordner anlegen.
+1. **KEINE `.github/workflows/`** — weder in diesem noch in einem Kunden-Repo. Nie einen `.github/`-Ordner anlegen.
 2. **PRs als Entwurf (Draft) oeffnen**, Ready erst wenn fertig — Draft-PRs loesen keine teuren Laeufe aus.
-3. **Roter Check in ~4 Sek. ohne Schritte = KEIN Code-Fehler** — das ist Budget-Deckel oder Infra.
-   Nicht blind re-runnen (kostet), erst Ursache pruefen.
+3. **Roter Check in ~4 Sek. ohne Schritte = KEIN Code-Fehler**, sondern Budget-Deckel/Infra. Nicht blind re-runnen — erst Ursache pruefen.
 
 ---
 
 ## >>> Fakten-Live-Regel (nie eine Kunden-Zahl aus dem Bauch) <<<
 
-> Vorfall 18.07 (Finelli): 2x hat nur SA selbst den Fehler gefangen. Text-Checkliste reicht
-> nachweislich NICHT — darum ein Auto-Waechter (`.claude/hooks/fakten-live-waechter`).
+> Warum (Vorfaelle "41 statt 130 Bewertungen", tote Referenz "Jelmoli"): `brain/lessons/system/2026-07-19-finelli-echte-vorfaelle.md`.
 
-**Jede Zahl, die in ein Kunden-Dokument geht — Reviews, Bewertungs-Anzahl, Referenzen, Marktzahlen —
-wird VOR der Verwendung LIVE nachgeschlagen** (z.B. Google Maps selbst oeffnen, nicht nur Trustpilot).
-
-- "41 Bewertungen" → Google hatte real 130 (peinlich vermieden).
-- Referenz "Jelmoli" → Firma existierte nicht mehr (toedliche veraltete Referenz vermieden).
-
-**Merksatz:** Belegte Zahl mit Quelle ODER "weiss ich nicht" — nie eine geratene Zahl im Angebot.
+**Jede Zahl fuer ein Kunden-Dokument** (Reviews, Bewertungs-Anzahl, Referenzen, Marktzahlen) wird
+VOR der Verwendung LIVE nachgeschlagen (z.B. Google Maps selbst oeffnen, nicht nur Trustpilot).
+Auto-Waechter: `.claude/hooks/fakten-live-waechter`. **Merksatz:** Belegte Zahl mit Quelle ODER
+"weiss ich nicht" — nie eine geratene Zahl im Angebot.
 
 ---
 
 ## >>> Brain ist dein Zweit-Gedaechtnis (HIER, nicht swisscare-brain) <<<
 
+> Warum (swisscare-brain enthaelt Firmendaten + Privates + Alt-Leck): `brain/lessons/system/2026-07-19-prozess-guards-warum.md`.
+
 Das Zweit-Gedaechtnis dieser Firma liegt in **`C:/dev/ai-firma/brain/`** — ein Ordner IM Repo.
 
-- **NICHT** ins `swisscare-brain` schreiben. Grund: Wer swisscare-brain-Zugriff hat, sieht
-  SwissCare-Firmendaten + Founder-Privates + ein offenes Privat-Leck in alter Historie. AI-Firma-Daten
-  (Kunden-Deals, Finelli-Preise) gehoeren dort nicht hin — und umgekehrt.
+- **NICHT** ins `swisscare-brain` schreiben. AI-Firma-Daten (Kunden-Deals, Finelli-Preise) und SwissCare-Inhalt bleiben getrennt.
 - Bei WARUM-Fragen / wichtigen Entscheiden: ins `brain/` schreiben (`decisions/`, `lessons/`).
-- **"brain merk dir X"** → in `C:/dev/ai-firma/brain/` schreiben, speichern, hochladen —
-  1-Zeilen-Bestaetigung, dann weiter.
-- Verweise auf die Nachbar-Repos stehen in `brain/_cross-ref/` (SwissCare, Finelli) — **verweisen
-  statt kopieren.**
+- **"brain merk dir X"** → in `brain/` schreiben, speichern, hochladen — 1-Zeilen-Bestaetigung, weiter.
+- Nachbar-Repos ueber `brain/_cross-ref/` — **verweisen statt kopieren.**
 
 ---
 
 ## >>> Kunden-Registry <<<
 
-**Wer ist Kunde, welches Repo, welche Ports, welcher Deal-Stand** → **`kunden/UEBERSICHT.md`**.
-Das ist die Quelle der Wahrheit fuer alles Kunden-Konkrete. Neuer Kunde = dort eintragen (Registry),
-dann eigener Ordner unter `kunden/`.
+**Wer ist Kunde, welches Repo, welche Ports, welcher Deal-Stand** → **`kunden/UEBERSICHT.md`** (Quelle
+der Wahrheit). Neuer Kunde = dort eintragen, dann eigener Ordner unter `kunden/`.
 
 ---
 

@@ -18,6 +18,44 @@ const path = require('path');
 const PROJECT_ROOT = process.env.CLAUDE_PROJECT_DIR || path.resolve(__dirname, '..', '..');
 const SOURCE = path.join(PROJECT_ROOT, 'kunden', 'UEBERSICHT.md');
 
+// Alter-Stempel: alte Fakten luegen still. Die Registry traegt eine Zeile
+// "Stand YYYY-MM-DD" — wir rechnen ihr Alter aus und blenden es sichtbar ein,
+// damit keine Session auf einem veralteten Kunden-Stand argumentiert.
+// new Date() ist in einem Hook ERLAUBT (nur in Workflow-Scripts verboten).
+const STALE_TAGE = 7;
+
+function extractStand(text) {
+  const m = /Stand\s+(\d{4}-\d{2}-\d{2})/.exec(text);
+  return m ? m[1] : null;
+}
+
+// Ganze Tage zwischen dem Stand-Datum und heute (UTC-Mitternacht, DST-sicher).
+function tageAlt(isoDate) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(isoDate);
+  if (!m) return null;
+  const stand = Date.UTC(+m[1], +m[2] - 1, +m[3]);
+  const jetzt = new Date();
+  const heute = Date.UTC(jetzt.getFullYear(), jetzt.getMonth(), jetzt.getDate());
+  return Math.round((heute - stand) / 86400000);
+}
+
+// Baut die Alter-Stempel-Zeile(n), die an den injizierten Kontext angehaengt werden.
+function altersStempel(text) {
+  const stand = extractStand(text);
+  if (!stand) {
+    return '\n\n---\nRegistry-Stand: unbekannt (keine "Stand YYYY-MM-DD"-Zeile in UEBERSICHT.md)';
+  }
+  const n = tageAlt(stand);
+  if (n === null) {
+    return '\n\n---\nRegistry-Stand: ' + stand + ' (Datum unlesbar)';
+  }
+  let out = '\n\n---\nRegistry-Stand: ' + stand + ' = ' + n + ' Tage alt';
+  if (n > STALE_TAGE) {
+    out += '\nWARNUNG: Registry aelter als 7 Tage — vor Kunden-Aussagen pruefen/aktualisieren';
+  }
+  return out;
+}
+
 function emit() {
   let body = null;
   try {
@@ -28,7 +66,8 @@ function emit() {
   const ctx = '# Kunden-Anker (auto-injected — VOR jedem Urteil ueber Kunde/Repo/Ports/Deal-Stand)\n\n' +
     '> Kanonische Kunden-Registry der AI-Firma. Kunden-Fakten (Repo-Pfad, Ports, Deal-Stand) ' +
     'NIE raten — citen oder „weiss nicht". Live-Korrektur des Users im Chat schlaegt jedes Doc.\n\n' +
-    body;
+    body +
+    altersStempel(body);
 
   process.stdout.write(JSON.stringify({
     hookSpecificOutput: {

@@ -1,23 +1,28 @@
 // angebots-judge-panel.js — Qualitaets-Tor VOR jedem Kunden-Angebot (Playbook Phase 4).
-// Drei Richter lesen dasselbe Angebot durch je eine eigene Linse und geben Punktzahl + Funde
-// mit Zeilen-Bezug. Ein Verdichter sortiert alles zu EINER Fix-Liste. Harte Regel:
-// jeder Fakten-Fund ist ein Pflicht-Fix VOR dem Druck (der Kunde rechnet/prueft selbst nach).
-// Read-only: liest nur die Angebots-Datei, aendert sie nicht.
+// Vier Richter lesen dasselbe Angebot durch je eine eigene Linse und geben Punktzahl + Funde
+// mit Zeilen-Bezug. Jeder Richter urteilt UNABHAENGIG (sieht die anderen nicht, kein Konsens-Ziel)
+// — das verhindert Mitlaeufer-Bias. Ein Verdichter sortiert alles zu EINER Fix-Liste. Harte Regel:
+// jeder Fakten- UND jeder Geschaefts-Fund ist ein Pflicht-Fix VOR dem Druck (der Kunde rechnet/prueft
+// selbst nach). Read-only: liest nur die Angebots-Datei, aendert sie nicht.
 //
 // Herkunft der Linsen (Playbook + Deal-Doktrin):
 //  - Hormozi: Wert VOR Preis, Summenzeile NIE "Marktwert" (sonst rechnet der Kunde gegen).
 //  - Menschen-Natur: Stolz-Einstieg, Pain benennen + ENTSCHULDEN, "du entscheidest".
 //  - Fakten-Skeptiker: jede Zahl live pruefbar? Quelle? veraltete Referenz? (Jelmoli-Lektion).
+//    Eng gehalten: NUR Korrektheit der Zahlen/Behauptungen — ein Skeptiker, der auf Luecken-Suche
+//    getrimmt ist, findet sonst IMMER etwas (Stil/Design), das kein echter Fehler ist.
+//  - Geschaefts-Checks: 4 Pflicht-Fragen (Monats-Abo drin? aus Vorlage baubar? Preis ueber
+//    Selbstkosten-Anker und Summenzeile nicht als Marktwert? keine neuen Fremd-Abos fuer den Kunden?).
 
 export const meta = {
   name: 'angebots-judge-panel',
   description:
-    'Drei-Richter-Panel prueft ein Kunden-Angebot durch die Linsen Hormozi (Wert/Preis-Framing), Menschen-Natur (Stolz/Entschulden/du-entscheidest) und Fakten-Skeptiker (jede Zahl belegt?). Verdichter liefert eine sortierte Fix-Liste; Fakten-Funde = Pflicht vor Druck.',
+    'Vier-Richter-Panel prueft ein Kunden-Angebot durch die Linsen Hormozi (Wert/Preis-Framing), Menschen-Natur (Stolz/Entschulden/du-entscheidest), Fakten-Skeptiker (jede Zahl belegt? — eng auf Korrektheit) und Geschaefts-Checks (4 Pflicht-Fragen). Jeder Richter urteilt unabhaengig. Verdichter liefert eine sortierte Fix-Liste; Fakten- UND Geschaefts-Funde = Pflicht vor Druck.',
   whenToUse:
-    'BEVOR ein Angebots-PDF gedruckt/verschickt wird (Playbook Phase 4). Braucht args {angebotPfad, kunde}. Billigste Versicherung gegen die "Marktwert = Ratensumme"-Falle und veraltete/unbelegte Zahlen.',
+    'BEVOR ein Angebots-PDF gedruckt/verschickt wird (Playbook Phase 4). Braucht args {angebotPfad, kunde}. Billigste Versicherung gegen die "Marktwert = Ratensumme"-Falle, veraltete/unbelegte Zahlen und fehlende Geschaefts-Pflichten (Monats-Abo, Vorlagen-Baubarkeit, Selbstkosten-Anker, keine Fremd-Abos).',
   phases: [
-    { title: 'Richten', detail: '3 Richter parallel, je eigene Linse, Punktzahl + Funde' },
-    { title: 'Verdichten', detail: 'eine sortierte Fix-Liste, Fakten-Funde als Pflicht' },
+    { title: 'Richten', detail: '4 Richter parallel + unabhaengig, je eigene Linse, Punktzahl + Funde' },
+    { title: 'Verdichten', detail: 'eine sortierte Fix-Liste, Fakten- + Geschaefts-Funde als Pflicht' },
   ],
 }
 
@@ -81,12 +86,17 @@ const leseHinweis =
   `Lies die Angebots-Datei: ${angebotPfad || '(FEHLT — melde das als Fund)'} (Kunde: ${kunde || 'unbekannt'}). ` +
   `Nur LESEN, nichts aendern. Beziehe jeden Fund auf eine Zeilen-Nr. oder ein woertliches Text-Stueck.`
 
+// In JEDEN Richter-Prompt: strikte Unabhaengigkeit. Debatten/gegenseitiges Lesen verstaerken
+// Mitlaeufer-Bias — darum sieht kein Richter die anderen und es gibt kein Konsens-Ziel.
+const unabhaengigHinweis =
+  `Du urteilst UNABHAENGIG. Du siehst die anderen Richter nicht. Kein Konsens-Ziel — dein eigenes Urteil zaehlt.`
+
 // --- Die 3 Linsen ---
 const RICHTER = [
   {
     key: 'hormozi',
     prompt:
-      `${leseHinweis}\n\nDu bist der HORMOZI-Richter (Grand-Slam-Offer-Logik). Pruefe:\n` +
+      `${leseHinweis}\n\n${unabhaengigHinweis}\n\nDu bist der HORMOZI-Richter (Grand-Slam-Offer-Logik). Pruefe:\n` +
       '- Kommt der WERT vor dem Preis? Ist der Preis erst genannt, nachdem der Nutzen belegt steht?\n' +
       '- Summenzeile (Raten x Laufzeit): heisst sie "Marktwert"? Das ist ein PFLICHT-Fund — der Kunde rechnet nach. Sie muss "Dein Preis — Selbstkosten" o.ae. heissen; ein hoher Agentur-Anker (30k+) gehoert SEPARAT.\n' +
       '- Ist der Wert quantifiziert (CHF/Zeit pro Jahr) statt nur behauptet?\n' +
@@ -96,7 +106,7 @@ const RICHTER = [
   {
     key: 'menschen-natur',
     prompt:
-      `${leseHinweis}\n\nDu bist der MENSCHEN-NATUR-Richter (Verkaufs-Psychologie). Pruefe:\n` +
+      `${leseHinweis}\n\n${unabhaengigHinweis}\n\nDu bist der MENSCHEN-NATUR-Richter (Verkaufs-Psychologie). Pruefe:\n` +
       '- STOLZ-Einstieg: startet das Angebot positiv/mit Anerkennung — nie negativ?\n' +
       '- Pain-Deutung: wird der Schmerz benannt UND entschuldet ("nicht deine Schuld") und dann mit "Ab sofort:" gewendet?\n' +
       '- "DU ENTSCHEIDEST"-Frame am Ende statt Druck/Draengen?\n' +
@@ -107,7 +117,10 @@ const RICHTER = [
   {
     key: 'fakten-skeptiker',
     prompt:
-      `${leseHinweis}\n\nDu bist der FAKTEN-SKEPTIKER — der haerteste Richter. Nimm JEDE Zahl und JEDE Referenz einzeln:\n` +
+      `${leseHinweis}\n\n${unabhaengigHinweis}\n\nDu bist der FAKTEN-SKEPTIKER — der haerteste Richter. ` +
+      `DEIN AUFTRAG IST ENG: NUR Korrektheit der Zahlen/Behauptungen — KEINE Stil-, Design- oder Architektur-Vorschlaege. ` +
+      `(Ein auf Luecken-Suche getrimmter Skeptiker findet sonst IMMER etwas, das kein echter Fehler ist.)\n` +
+      `Nimm JEDE Zahl und JEDE Referenz einzeln:\n` +
       '- Steht eine pruefbare Quelle dabei? Kann der Kunde die Zahl SELBST live nachschauen (z.B. Bewertungs-Anzahl auf Google)?\n' +
       '- Ist eine genannte Referenz/ein Partner/Laden noch aktuell und existiert wirklich? (Lektion: Jelmoli existierte nicht mehr — toedlich.)\n' +
       '- Widerspricht sich eine Zahl an zwei Stellen im Dokument?\n' +
@@ -115,9 +128,21 @@ const RICHTER = [
       'Effort hoch: lieber einen Fund zu viel als eine falsche Zahl durchlassen. Gib punktzahl 1-10 + Funde mit Zeile/Problem/Schwere/Fix.',
     effort: 'high',
   },
+  {
+    key: 'geschaefts-checks',
+    prompt:
+      `${leseHinweis}\n\n${unabhaengigHinweis}\n\nDu bist der GESCHAEFTS-CHECK-Richter. ` +
+      `Pruefe GENAU diese 4 Pflicht-Fragen — jede einzeln, mit Ja/Nein-Antwort und Beleg-Zeile aus dem Angebot:\n` +
+      '1. MONATS-ABO ENTHALTEN? Ist das laufende Monats-Abo (Betrieb/Wartung) klar im Angebot benannt? Fehlt es -> Fund.\n' +
+      '2. AUS UNSERER VORLAGE BAUBAR? Laesst sich das versprochene Werk aus unserer bestehenden Vorlage/unserem Baukasten bauen — OHNE etwas neu zu erfinden? Verlangt es eine Neu-Erfindung -> Fund.\n' +
+      '3. PREIS UEBER SELBSTKOSTEN-ANKER UND SUMMENZEILE NICHT ALS MARKTWERT? Liegt der genannte Preis ueber unserem Selbstkosten-Anker UND ist die Summenzeile NICHT als "Marktwert" benannt (sonst rechnet der Kunde gegen)? Ist eine der beiden Bedingungen verletzt -> Fund.\n' +
+      '4. KEINE NEUEN FREMD-ABOS/WERKZEUGE FUER DEN KUNDEN? Kommen durch dieses Angebot KEINE neuen Fremd-Abos oder -Werkzeuge auf den Kunden zu (ein System, alles inbegriffen)? Kommt etwas dazu -> Fund.\n' +
+      'REGEL: Jede mit Nein/verletzt beantwortete Frage ist schwere "pflicht" — sie muss VOR dem Druck raus. ' +
+      'Bleib bei diesen 4 Fragen; keine Stil- oder Design-Vorschlaege. Gib punktzahl 1-10 + Funde mit Zeile/Problem/Schwere/Fix.',
+  },
 ]
 
-// --- 3 Richter parallel (Judge-Agenten => KEIN model, erben Fabel 5) ---
+// --- Richter parallel (Judge-Agenten => KEIN model, erben Fabel 5) ---
 const urteile = (
   await parallel(
     RICHTER.map((r) => () =>
@@ -127,14 +152,14 @@ const urteile = (
 ).filter(Boolean)
 
 const fundeGesamt = urteile.reduce((s, u) => s + (u.funde ? u.funde.length : 0), 0)
-log(`Richten fertig: ${urteile.length}/3 Linsen, ${fundeGesamt} Funde. Verdichte zu einer Fix-Liste.`)
+log(`Richten fertig: ${urteile.length}/${RICHTER.length} Linsen, ${fundeGesamt} Funde. Verdichte zu einer Fix-Liste.`)
 
 // --- Verdichter: sortiert alle Funde, erzwingt Fakten = Pflicht (Synthese/Judge => KEIN model) ---
 const verdichtung = await agent(
-  `Du bist der VERDICHTER. Aus drei Richter-Urteilen machst du EINE handlungsreife Fix-Liste fuer SA (Fazit oben, scannbar).\n\n` +
+  `Du bist der VERDICHTER. Aus den Richter-Urteilen machst du EINE handlungsreife Fix-Liste fuer SA (Fazit oben, scannbar).\n\n` +
     `URTEILE (JSON): ${JSON.stringify(urteile)}\n\n` +
     `HARTE REGELN:\n` +
-    `- Jeder Fund der Linse "fakten-skeptiker" ist pflicht=true — IMMER, egal was der Richter als schwere schrieb.\n` +
+    `- Jeder Fund der Linsen "fakten-skeptiker" UND "geschaefts-checks" ist pflicht=true — IMMER, egal was der Richter als schwere schrieb. Fakten- und Geschaefts-Funde sind Pflicht-Fix VOR dem Druck.\n` +
     `- Jeder Fund mit schwere "pflicht" ist pflicht=true.\n` +
     `- Sortiere: alle Pflicht-Fixes zuerst (rang 1..n), dann empfohlen, dann kosmetisch.\n` +
     `- pflicht_vor_druck = Anzahl pflicht=true. druckfreigabe = (pflicht_vor_druck == 0).\n` +

@@ -132,6 +132,8 @@ phase('Verifizieren')
 const macheStimme = (fund, n) =>
   agent(
     `Du bist Demo-Skeptiker #${n}. Pruefe ADVERSARIAL, ob dieser gemeldete Demo-Bruch ECHT ist oder Fehlalarm.\n` +
+      `Du urteilst UNABHAENGIG: du siehst die andere Skeptiker-Stimme nicht, es gibt kein Konsens-Ziel — dein eigenes Urteil zaehlt.\n` +
+      `DEIN AUFTRAG IST ENG: pruefe NUR die Korrektheit und Reproduzierbarkeit des Bruchs (tritt er echt und wiederholbar auf?) — KEINE Stil-, Design- oder Architektur-Vorschlaege. Ein auf Luecken-Suche getrimmter Skeptiker findet sonst IMMER etwas.\n` +
       `Repo: ${kundenRepo || '(fehlt)'} — lies die genannte Stelle selbst gegen (Read/Grep, read-only).\n` +
       `FUND: ${JSON.stringify({ titel: fund.titel, ort: fund.ort, problem: fund.problem, demo_risiko: fund.demo_risiko })}\n` +
       `Sag ist_echt true nur, wenn der Bruch in einer echten Kunden-Vorfuehrung wirklich auftreten wuerde. Bei Unsicherheit false. Kurze begruendung.`,

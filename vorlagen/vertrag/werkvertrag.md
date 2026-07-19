@@ -98,6 +98,10 @@ dahin besteht ein einfaches Nutzungsrecht auf Zeit, solange die Raten vertragsge
 werden. **Allgemeine Bausteine (Login, Schnittstellen-Anbindung, Berichts-Motor) bleiben beim
 Anbieter wiederverwendbar.**
 
+**{PRUEFEN_ANWALT}** — Eigentums-Klarstellung (CH-Werkvertragsrecht-ueblich): Vorlagen, Werkzeuge und
+wiederverwendbare Bausteine bleiben Eigentum der Auftragnehmerin; der Kunde erhaelt ein einfaches
+Nutzungsrecht am gelieferten Werk.
+
 > **Diese Ziffer 8 ist Pflicht in JEDEM Vertrag.** Sie trennt das kundenspezifische Werk (gehoert
 > nach Zahlung dem Kunden) von den wiederverwendbaren Grund-Bausteinen (bleiben unser Eigentum) —
 > nur so kann der naechste Kunden-Bau auf dem bestehenden Fundament aufsetzen.

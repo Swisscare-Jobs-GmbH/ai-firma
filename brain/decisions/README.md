@@ -19,19 +19,26 @@ Chat einen Entscheid zitieren (`E1`), statt ihn neu auszudiskutieren.
 ---
 type: decision
 id: E1
-status: aktiv | ersetzt | zurueckgezogen
+status: aktiv | ersetzt-durch-E{N} | zurueckgezogen
 datum: 2026-07-19
 entscheider: SA
 ---
 ```
 
+- **`status` ist Pflicht** (jede Entscheid-Datei traegt genau einen Wert):
+  - `aktiv` — gilt aktuell.
+  - `ersetzt-durch-E{N}` — ein neuerer Entscheid hat diesen abgeloest; `{N}` ist dessen E-Nummer.
+  - `zurueckgezogen` — fallengelassen, ohne Nachfolger.
+
 - **Inhalt pro Entscheid:** Was entschieden wurde · Warum (Gruende) · Verworfene Alternativen ·
   Revisit-Bedingung (wann der Entscheid neu geprueft wird).
-- **Aendert sich ein Entscheid:** alten auf `status: ersetzt` setzen, neuen mit neuer Nummer anlegen,
-  im alten einen Zeiger auf den neuen lassen. Nie ueberschreiben — die Historie ist der Wert.
+- **Aendert sich ein Entscheid:** Der ALTE Entscheid wird **nicht geloescht**. Nur sein Status wird auf
+  `ersetzt-durch-E{N}` geaendert und **1 Verweis-Zeile** auf den neuen Entscheid ergaenzt; der neue wird
+  mit neuer Nummer angelegt. Nie ueberschreiben — die Historie ist der Wert.
 
 ## Register
 
 | E-Nr | Titel | Status | Datum |
 |---|---|---|---|
 | [E1](E1-brain-im-firmen-repo.md) | brain/ liegt im ai-firma-Repo | aktiv | 2026-07-19 |
+| [E2](E2-webresearch-leitplanken.md) | Webrecherche-Leitplanken (kein RAG, Schwaerme nur Lesen, unabhaengige Richter) | aktiv | 2026-07-19 |
