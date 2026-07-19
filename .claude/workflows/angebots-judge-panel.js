@@ -79,7 +79,10 @@ const VERDICHTER_SCHEMA = {
   },
 }
 
-const { angebotPfad, kunde } = args
+// args kann als JSON-Text ankommen (Trockenflug-Fund 19.07) -- robust einlesen
+let _args = args || {}
+if (typeof _args === 'string') { try { _args = JSON.parse(_args) } catch (e) { log('WARNUNG: args ist Text und kein gueltiges JSON -- laufe ohne Parameter'); _args = {} } }
+const { angebotPfad, kunde } = _args
 if (!angebotPfad) log('WARNUNG: kein angebotPfad in args — die Richter haben keine Datei zum Lesen.')
 
 const leseHinweis =
@@ -91,7 +94,7 @@ const leseHinweis =
 const unabhaengigHinweis =
   `Du urteilst UNABHAENGIG. Du siehst die anderen Richter nicht. Kein Konsens-Ziel — dein eigenes Urteil zaehlt.`
 
-// --- Die 3 Linsen ---
+// --- Die Linsen ---
 const RICHTER = [
   {
     key: 'hormozi',

@@ -57,7 +57,10 @@ const SYNTHESE_SCHEMA = {
   },
 }
 
-const { kunde, ort, branche, webseite } = args
+// args kann als JSON-Text ankommen (Trockenflug-Fund 19.07) -- robust einlesen
+let _args = args || {}
+if (typeof _args === 'string') { try { _args = JSON.parse(_args) } catch (e) { log('WARNUNG: args ist Text und kein gueltiges JSON -- laufe ohne Parameter'); _args = {} } }
+const { kunde, ort, branche, webseite } = _args
 const kopf = `Kunde: ${kunde || '(unbekannt)'} · Ort: ${ort || '(unbekannt)'} · Branche: ${branche || '(unbekannt)'} · Webseite: ${webseite || '(keine)'}`
 
 if (!kunde) log('WARNUNG: kein kunde in args — Recherche laeuft, aber Ablage-Pfad kunden/{kunde}/ ist offen.')

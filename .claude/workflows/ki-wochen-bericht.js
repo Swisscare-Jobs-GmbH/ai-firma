@@ -39,7 +39,10 @@ const BERICHT_SCHEMA = {
   },
 }
 
-const { kunde, kundenRepo, seitDatum } = args
+// args kann als JSON-Text ankommen (Trockenflug-Fund 19.07) -- robust einlesen
+let _args = args || {}
+if (typeof _args === 'string') { try { _args = JSON.parse(_args) } catch (e) { log('WARNUNG: args ist Text und kein gueltiges JSON -- laufe ohne Parameter'); _args = {} } }
+const { kunde, kundenRepo, seitDatum } = _args
 if (!kundenRepo) log('WARNUNG: kein kundenRepo in args — der Sammler hat kein Repo zum Lesen.')
 if (!seitDatum) log('WARNUNG: kein seitDatum in args — git-Zeitfenster ist offen, Sammler nimmt "letzte Woche" als Text.')
 

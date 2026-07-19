@@ -70,7 +70,10 @@ const CHECK_SCHEMA = {
   },
 }
 
-const { kundenRepo, ports } = args
+// args kann als JSON-Text ankommen (Trockenflug-Fund 19.07) -- robust einlesen
+let _args = args || {}
+if (typeof _args === 'string') { try { _args = JSON.parse(_args) } catch (e) { log('WARNUNG: args ist Text und kein gueltiges JSON -- laufe ohne Parameter'); _args = {} } }
+const { kundenRepo, ports } = _args
 const portsText = ports && typeof ports === 'object' ? JSON.stringify(ports) : String(ports || '(keine angegeben)')
 if (!kundenRepo) log('WARNUNG: kein kundenRepo in args — die Finder haben kein Repo zum Lesen.')
 
