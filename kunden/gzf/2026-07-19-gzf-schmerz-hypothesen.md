@@ -1,3 +1,8 @@
+<!-- KORREKTUR-HINWEIS (HQ 19.07): Dieser Lauf kannte nur OEFFENTLICHE Quellen. Laut
+Kunden-Konzept nutzt gzf den GP Manager (siehe firma-profil) — Hypothese 3 (Papierkrieg) und 5
+(keine Kunden-Historie) relativieren sich evtl.; am echten System pruefen. Hypothese 1 (Recall-
+Luecke) + 4 (Bewertungen) + 6 (Impressum) bleiben voll gueltig. -->
+
 <!-- Erzeugt vom phase0-recherche-schwarm (Trockenflug 19.07, 6 Spaeher + Synthese). -->
 
 ## Schmerz-Hypothesen (nach Hormozi: groesster Geld-/Zeit-Hebel zuerst)
