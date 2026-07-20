@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FINELLI · Lager-Demo</title>
+<style>
+:root{
+  --paper:#f5f2ec; --ink:#1c1a16; --accent:#a8271c;
+  --green:#2f7d43; --green-bg:#e5f1e6; --green-line:#bcdcc0;
+  --yellow:#b9861a; --yellow-bg:#f6edd4; --yellow-line:#e6d29a;
+  --red:#a8271c; --red-bg:#f6e2df; --red-line:#e5b7b0;
+  --line:#d8d1c4; --muted:#6b6659; --card:#fbf9f4;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:Helvetica,Arial,sans-serif; font-size:17px; line-height:1.55;
+  -webkit-text-size-adjust:100%; overflow-x:hidden;
+}
+h1,h2,h3,.serif{font-family:Georgia,"Times New Roman",serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+section{padding:30px 0;border-top:1px solid var(--line)}
+section:first-of-type{border-top:none}
+h1{font-size:1.6rem;margin:0 0 6px;letter-spacing:.2px}
+h2{font-size:1.5rem;margin:0 0 6px;letter-spacing:.2px}
+.kicker{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-family:Helvetica,Arial,sans-serif;font-weight:700}
+p{margin:0 0 12px}
+.small{font-size:.86rem;color:var(--muted)}
+.center{text-align:center}
+b,strong{font-weight:700}
+
+/* Header */
+header.top{background:var(--ink);color:var(--paper);padding:12px 0}
+header.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:space-between}
+.brand{font-family:Georgia,serif;font-size:1.05rem;letter-spacing:.5px}
+.brand .dot{color:var(--accent);font-weight:700}
+.livedate{font-size:.82rem;opacity:.85;font-family:Helvetica,Arial,sans-serif}
+.badge{display:inline-block;background:var(--yellow-bg);color:#7a5a12;border:1px solid var(--yellow-line);
+  border-radius:999px;padding:4px 11px;font-size:.74rem;font-weight:700;letter-spacing:.3px}
+
+/* Stolz stamps */
+.stamps{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:1fr;gap:8px}
+@media(min-width:520px){.stamps{grid-template-columns:1fr 1fr}}
+.stamps li{border:1.5px solid var(--ink);border-radius:6px;padding:9px 12px;background:var(--card);
+  font-size:.9rem;position:relative;transform:rotate(-.4deg)}
+.stamps li:nth-child(2n){transform:rotate(.5deg)}
+.stamps li b{display:block;font-family:Georgia,serif;font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+
+/* Merksatz / callout */
+.merk{border:2px solid var(--ink);background:var(--card);border-radius:8px;padding:14px 16px;margin:14px 0;
+  font-family:Georgia,serif;font-size:1.02rem}
+.merk .accent{color:var(--accent)}
+
+/* Timeline gruen */
+.tl{list-style:none;margin:8px 0 0;padding:0}
+.tl li{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.tl li:last-child{border-bottom:none}
+.tick{flex:0 0 26px;height:26px;border-radius:50%;background:var(--green-bg);border:1.5px solid var(--green-line);
+  color:var(--green);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;margin-top:1px}
+html.js .tl .tick{opacity:0;transform:scale(.6);transition:opacity .35s ease,transform .35s ease}
+html.js .tl .tick.shown{opacity:1;transform:scale(1)}
+.tl .txt{flex:1}
+.tl .txt b{display:block}
+
+/* Momente cards */
+.moment{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:8px;
+  padding:15px 16px;margin:14px 0}
+.moment h3{margin:0 0 8px;font-size:1.12rem}
+.tag{display:inline-block;background:#efe9dd;border:1px solid var(--line);border-radius:4px;padding:1px 7px;
+  font-size:.72rem;color:var(--muted);font-weight:700;vertical-align:middle}
+.beleg{background:#fff;border:1px solid var(--line);border-radius:6px;padding:9px 11px;margin:9px 0;font-size:.86rem;color:#3a362d}
+.beleg .q{font-family:Georgia,serif;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:3px}
+.absofort{background:var(--green-bg);border:1px solid var(--green-line);color:#245c34;border-radius:6px;
+  padding:8px 11px;margin-top:9px;font-weight:600;font-size:.92rem}
+.absofort b{color:var(--green)}
+.gobtn{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:none;border:1.5px solid var(--accent);
+  color:var(--accent);font-family:inherit;font-size:.9rem;font-weight:700;padding:9px 14px;border-radius:8px;cursor:pointer;
+  transition:background .2s ease,color .2s ease}
+.gobtn:hover,.gobtn:focus{background:var(--accent);color:#fff}
+.gobtn .arw{font-size:1.1rem;line-height:1}
+
+.traum{border:1px dashed var(--accent);border-radius:8px;padding:12px 14px;margin-top:16px;background:#faf3f1;font-size:.92rem}
+
+/* Sticky CTA */
+#sticky{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(0);z-index:60;
+  background:var(--accent);color:#fff;border:none;font-family:inherit;font-weight:700;font-size:1rem;
+  padding:15px 26px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.28);cursor:pointer;
+  transition:opacity .3s ease,transform .3s ease;max-width:92vw}
+#sticky.hide{opacity:0;transform:translateX(-50%) translateY(20px);pointer-events:none}
+
+/* Workbench */
+.workbench{background:#efeadf}
+.toolbar{position:sticky;top:0;z-index:40;background:#efeadf;padding:10px 0;border-bottom:1px solid var(--line);
+  display:flex;gap:8px;margin:0 -16px 4px;padding-left:16px;padding-right:16px}
+.toolbar button{flex:1;background:var(--card);border:1.5px solid var(--ink);border-radius:8px;font-family:inherit;
+  font-weight:700;font-size:.92rem;padding:12px 6px;cursor:pointer;color:var(--ink);transition:background .2s,color .2s}
+.toolbar button.active{background:var(--ink);color:var(--paper)}
+.station{background:var(--card);border:2px solid var(--line);border-radius:10px;padding:16px;margin:16px 0;scroll-margin-top:72px;transition:box-shadow .25s ease,border-color .25s ease}
+.station.flash{border-color:var(--accent);box-shadow:0 0 0 4px rgba(168,39,28,.22)}
+.station h3{margin:0 0 4px;font-size:1.2rem}
+.station .lead{color:var(--muted);font-size:.9rem;margin-bottom:12px}
+
+/* chips + sizes */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+.chip{background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:10px 14px;font-family:inherit;
+  font-size:.9rem;font-weight:600;cursor:pointer;color:var(--ink);transition:border-color .15s,background .15s}
+.chip[aria-pressed="true"],.chip.active{border-color:var(--accent);background:#faf0ee;color:var(--accent)}
+.chip.dimmed{opacity:.32}
+.searchbox{width:100%;padding:12px 14px;font-family:inherit;font-size:1rem;border:1.5px solid var(--line);
+  border-radius:8px;margin:4px 0 6px;background:#fff;color:var(--ink)}
+.sizes{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.sizebtn{min-width:56px;background:#fff;border:1.5px solid var(--ink);border-radius:8px;padding:13px 10px;
+  font-family:inherit;font-weight:700;font-size:1rem;cursor:pointer;color:var(--ink);transition:background .15s,color .15s}
+.sizebtn.active{background:var(--ink);color:var(--paper)}
+
+/* result */
+.result{margin-top:12px}
+.locline{display:flex;justify-content:space-between;align-items:center;gap:10px;border-radius:7px;padding:11px 13px;margin:8px 0;font-weight:600}
+.locline .place{font-size:.78rem;font-weight:400;color:var(--muted);display:block}
+.loc-green{background:var(--green-bg);border:1px solid var(--green-line);color:#245c34}
+.loc-red{background:var(--red-bg);border:1px solid var(--red-line);color:var(--red)}
+.locline .qty{font-family:Georgia,serif;font-size:1.35rem;white-space:nowrap}
+.hint{background:var(--yellow-bg);border:1px solid var(--yellow-line);color:#7a5a12;border-radius:7px;padding:11px 13px;margin:8px 0;font-size:.92rem}
+.actbtn{background:var(--accent);color:#fff;border:none;font-family:inherit;font-weight:700;font-size:.95rem;
+  padding:13px 18px;border-radius:8px;cursor:pointer;margin-top:6px;transition:filter .15s}
+.actbtn:hover{filter:brightness(1.08)}
+.actbtn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}
+.okline{background:var(--green-bg);border:1px solid var(--green-line);color:#245c34;border-radius:7px;padding:11px 13px;margin:8px 0;font-size:.9rem}
+.okline b{color:var(--green)}
+
+/* scan */
+.barcode{margin:10px auto;display:block;max-width:260px}
+.pulse{animation:none}
+html.js .pulse.go{animation:pulseb .6s ease}
+@keyframes pulseb{0%{opacity:.4}50%{opacity:1}100%{opacity:.85}}
+.scancard{background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:13px;margin:12px 0}
+.scancard .art{font-family:Georgia,serif;font-size:1.1rem;margin-bottom:2px}
+.stamp{display:inline-block;border:2.5px solid var(--green);color:var(--green);font-family:Georgia,serif;font-weight:700;
+  padding:5px 12px;border-radius:6px;transform:rotate(-3deg);letter-spacing:.5px;margin-top:8px;background:var(--green-bg)}
+.counter{font-size:.85rem;color:var(--muted);margin-top:8px}
+.counter b{color:var(--ink);font-family:Georgia,serif;font-size:1.05rem}
+.toggle-row{display:flex;align-items:center;gap:12px;margin:14px 0 6px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:11px 13px}
+.toggle-row label{font-weight:600;font-size:.9rem;flex:1}
+.switch{position:relative;width:52px;height:30px;flex:0 0 52px}
+.switch input{opacity:0;width:100%;height:100%;margin:0;cursor:pointer;position:absolute;z-index:2}
+.slider{position:absolute;inset:0;background:#cfc9bc;border-radius:999px;transition:background .2s}
+.slider::before{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.switch input:checked + .slider{background:var(--yellow)}
+.switch input:checked + .slider::before{transform:translateX(22px)}
+.queue{list-style:none;margin:10px 0 0;padding:0}
+.queue li{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:7px;padding:9px 12px;margin:7px 0;background:#fff;font-size:.9rem}
+.qbadge{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.qbadge.pending{background:var(--yellow-bg);color:#7a5a12;border:1px solid var(--yellow-line)}
+.qbadge.synced{background:var(--green-bg);color:#245c34;border:1px solid var(--green-line)}
+
+/* overview */
+.bignum{font-family:Georgia,serif;font-size:2.6rem;line-height:1;color:var(--accent)}
+.ov-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px;margin:10px 0}
+.difflist{list-style:none;margin:6px 0 0;padding:0}
+.difflist li{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:8px 2px;font-size:.95rem}
+.difflist li:last-child{border-bottom:none}
+.diff-pos{color:var(--green);font-weight:700;font-family:Georgia,serif}
+.diff-neg{color:var(--red);font-weight:700;font-family:Georgia,serif}
+.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;margin:8px 0}
+.seg button{background:#fff;border:none;font-family:inherit;font-weight:700;padding:9px 18px;cursor:pointer;color:var(--ink)}
+.seg button.active{background:var(--ink);color:var(--paper)}
+
+/* Rollen table */
+.rollen{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+.rollen .row{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:13px 15px}
+.rollen .row b{font-family:Georgia,serif;color:var(--accent);display:block;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.boss{border:2px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:8px;padding:14px 16px;margin-top:14px;font-family:Georgia,serif;font-size:1.02rem}
+
+/* Ausbau */
+.banderole{display:inline-block;background:var(--yellow-bg);border:1px solid var(--yellow-line);color:#7a5a12;
+  font-weight:700;font-size:.8rem;padding:6px 12px;border-radius:6px;margin-bottom:12px}
+.mapgrid{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:560px){.mapgrid{grid-template-columns:1fr 1fr}}
+.mapcard{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:13px 14px}
+.mapcard h4{margin:0 0 5px;font-family:Georgia,serif;font-size:1rem}
+.ki-frame{display:inline-block;margin-top:7px;font-size:.74rem;font-weight:700;background:#efe9dd;border:1px dashed var(--muted);
+  color:var(--muted);border-radius:5px;padding:3px 8px}
+
+/* Fragen */
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:10px 0;overflow:hidden}
+.qhead{display:flex;align-items:flex-start;gap:12px;padding:14px;cursor:pointer;user-select:none}
+.qbox{flex:0 0 26px;width:26px;height:26px;border:2px solid var(--ink);border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-weight:800;color:#fff;background:#fff;transition:background .2s;margin-top:1px}
+.qcard.done .qbox{background:var(--green);border-color:var(--green)}
+.qhead .qt{flex:1}
+.qhead .qt b{display:block;font-family:Georgia,serif;font-size:1.02rem}
+.qhead .qt .sub{font-size:.85rem;color:var(--muted)}
+.qbody{padding:0 14px 14px 52px;display:none}
+.qcard.open .qbody{display:block}
+.qchips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:9px}
+.qchip{background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:11px 16px;font-family:inherit;font-size:.85rem;
+  min-height:44px;cursor:pointer;color:var(--ink)}
+.qchip.on{border-color:var(--accent);background:#faf0ee;color:var(--accent);font-weight:700}
+.qnote{width:100%;min-height:64px;border:1.5px solid var(--line);border-radius:8px;padding:10px;font-family:inherit;font-size:.95rem;background:#fff;color:var(--ink);resize:vertical}
+.progress{font-weight:700;margin:14px 0 6px;font-family:Georgia,serif}
+.copybtn{background:var(--ink);color:var(--paper);border:none;font-family:inherit;font-weight:700;font-size:.95rem;
+  padding:14px 20px;border-radius:8px;cursor:pointer}
+.copyok{display:none;background:var(--green-bg);border:1px solid var(--green-line);color:#245c34;border-radius:7px;padding:11px 13px;margin-top:10px;font-size:.9rem}
+.copyarea{display:none;width:100%;min-height:150px;margin-top:10px;border:1.5px solid var(--ink);border-radius:8px;padding:10px;font-family:monospace;font-size:.82rem;background:#fff;color:var(--ink)}
+
+/* Abschluss */
+.close-lines{list-style:none;margin:10px 0 0;padding:0}
+.close-lines li{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:13px 15px;margin:9px 0;font-family:Georgia,serif;font-size:1.05rem}
+.close-lines li span{color:var(--accent);font-weight:700}
+
+footer{background:var(--ink);color:#cfc9bc;padding:24px 0;font-size:.8rem;line-height:1.6}
+footer b{color:var(--paper)}
+.stationhint{display:inline-block;background:var(--yellow-bg);border:1px solid var(--yellow-line);color:#7a5a12;
+  font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:5px;margin-bottom:8px}
+.nojs{background:var(--yellow-bg);border:1px solid var(--yellow-line);color:#7a5a12;border-radius:7px;padding:10px 12px;font-size:.85rem;margin:8px 0}
+.nojs ul{margin:6px 0 0;padding-left:18px}
+.nojs li{margin:3px 0}
+html.js .nojs{display:none}
+</style>
+</head>
+<body>
+
+<!-- ===== 1. HEADER + STOLZ ===== -->
+<header class="top">
+  <div class="wrap">
+    <div class="brand">FINELLI <span class="dot">·</span> Lager-Demo<span class="livedate" id="headDate"></span></div>
+    <span class="badge">Übungs-Modus — Beispieldaten</span>
+  </div>
+</header>
+
+<main>
+<section id="stolz">
+  <div class="wrap">
+    <p class="kicker">Finelli Studios AG</p>
+    <h1 class="serif">Streetwear aus Zürich — mit Hand gemacht, mit System gedacht.</h1>
+    <p class="small">Fünf Dinge, die du dir aufgebaut hast.</p>
+    <ul class="stamps">
+      <li><b>Marke</b>Eigene Streetwear-Marke seit 2019.</li>
+      <li><b>Firma</b>Als AG geführt seit 2023.</li>
+      <li><b>Shop</b>Eigener Shopify-Onlineshop.</li>
+      <li><b>Standorte</b>Laden Zürich City &amp; Lager Embrach.</li>
+      <li><b>Versand</b>Der Versand läuft über die Post.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 2. LÄUFT HEUTE SCHON ===== -->
+<section id="laeuft">
+  <div class="wrap">
+    <p class="kicker" style="color:var(--green)">Läuft heute schon</p>
+    <h2 class="serif">Der Weg vom Klick zum Paket — der funktioniert.</h2>
+    <ul class="tl" id="timeline">
+      <li><span class="tick">&#10003;</span><span class="txt"><b>Bestellung im Shop</b>Kundin kauft im Onlineshop.</span></li>
+      <li><span class="tick">&#10003;</span><span class="txt"><b>Shopify nimmt auf</b>Die Bestellung landet sauber im System.</span></li>
+      <li><span class="tick">&#10003;</span><span class="txt"><b>Post-Etikette wird gedruckt</b>Der Versand-Kleber wird automatisch erstellt.</span></li>
+      <li><span class="tick">&#10003;</span><span class="txt"><b>Paket geht raus</b>Ab zur Post — fertig.</span></li>
+    </ul>
+    <div class="merk">Das bleibt <span class="accent">GENAU so.</span> Wir ersetzen nichts — wir setzen auf. Shopify bleibt der Chef über deinen Bestand.</div>
+  </div>
+</section>
+
+<!-- ===== 3. DREI MOMENTE ===== -->
+<section id="momente">
+  <div class="wrap">
+    <p class="kicker">Drei Momente aus deinem Alltag</p>
+    <h2 class="serif">Wo es heute hakt — und warum das nicht deine Schuld ist.</h2>
+
+    <article class="moment">
+      <h3>1. Der Verkauf, der platzt <span class="tag">deine Aussage vom 18.07</span></h3>
+      <p>Online kauft jemand ein Teil — und im Regal liegt es gar nicht. Der Verkauf platzt, der Ärger bleibt.</p>
+      <div class="beleg"><span class="q">Nicht deine Schuld — der Beleg</span>Im Handel sind <b>54–65&nbsp;% aller Bestandszahlen falsch</b> — belegt in zwei Studien: DeHoratius/Raman 2008 und ECR/Cardiff 2019 (im Mode-Handel: 54&nbsp;%).</div>
+      <div class="absofort"><b>Ab sofort:</b> Der Bestand stimmt — der Verkauf platzt nicht mehr.</div>
+      <button class="gobtn" data-go="statC" data-tab="uebersicht">Zur Übersicht <span class="arw">&#8595;</span></button>
+    </article>
+
+    <article class="moment">
+      <h3>2. „Grösse M in Zürich weg — hat Embrach noch eine?“</h3>
+      <p>Heute lässt sich das im Laden praktisch nicht nachschauen. Also geht der Kunde. Und kommt selten wieder.</p>
+      <div class="beleg"><span class="q">Nicht deine Schuld</span>Zwei Standorte ohne gemeinsame Sicht auf den Bestand — da rät man mehr, als man weiss.</div>
+      <div class="absofort"><b>Ab sofort:</b> Antwort in Sekunden — gleich unten selbst ausprobieren.</div>
+      <button class="gobtn" data-go="statA" data-tab="suche">Zur Suche <span class="arw">&#8595;</span></button>
+    </article>
+
+    <article class="moment">
+      <h3>3. Die Laden-Kasse, die von Hand nachkommt</h3>
+      <p>Was über die SumUp-Kasse im Laden verkauft wird, tippst du später von Hand in Shopify nach.</p>
+      <div class="beleg"><span class="q">Deine eigene Schätzung — keine Messung</span>Du selbst schätzt die Bestands-Genauigkeit auf rund <b>80&nbsp;%</b>. Das ist deine Angabe, keine gemessene Zahl.</div>
+      <div class="absofort"><b>Ab sofort:</b> Zahlen, denen du glauben kannst — und die Kasse bucht später selbst (als spätere Ausbau-Etappe gekennzeichnet).</div>
+      <button class="gobtn" data-go="statB" data-tab="scan">Zum Scan <span class="arw">&#8595;</span></button>
+    </article>
+
+    <div class="traum">Handelsketten, die ihre Bestände korrigierten, verkauften <b>+4 bis +8&nbsp;% mehr</b> (Feldexperiment ECR/Cardiff 2019). Das ist eine Bandbreite aus fremden Studien — <b>keine Zusage für Finelli</b>.</div>
+  </div>
+</section>
+
+<!-- ===== 4. WERKBANK ===== -->
+<section id="werkbank" class="workbench">
+  <div class="wrap">
+    <p class="kicker">Werkbank</p>
+    <h2 class="serif">Probier es selbst — du klickst, nicht wir.</h2>
+    <p class="small">Drei Stationen. Nimm das Handy in die Hand und leg los.</p>
+
+    <div class="toolbar" role="tablist" aria-label="Stationen">
+      <button id="tab-suche" class="active" role="tab" aria-selected="true" data-tab="suche">Suche</button>
+      <button id="tab-scan" role="tab" aria-selected="false" data-tab="scan">Scan</button>
+      <button id="tab-uebersicht" role="tab" aria-selected="false" data-tab="uebersicht">Übersicht</button>
+    </div>
+
+    <!-- Station A -->
+    <div class="station" id="statA">
+      <span class="stationhint">Übungs-Modus — Beispieldaten</span>
+      <h3>A · Suche: „Wo liegt das Teil?“</h3>
+      <p class="lead">Tipp ein Teil an, dann die Grösse. Das Ergebnis erscheint gleich darunter.</p>
+      <div class="nojs">Ohne aktives JavaScript: Beispiel Hoodie Classic, Grösse M — Zürich City (ZH-A-01): 0 Stück, Embrach (EMB-B-03): 4 Stück.</div>
+      <input class="searchbox" id="searchInput" type="text" placeholder="Suchen (z. B. „hoo“) — oder unten antippen" autocomplete="off">
+      <div class="chips" id="artChips"></div>
+      <div id="sizeWrap"></div>
+      <div class="result" id="searchResult" aria-live="polite"></div>
+    </div>
+
+    <!-- Station B -->
+    <div class="station" id="statB">
+      <span class="stationhint">Übungs-Modus — Beispieldaten</span>
+      <h3>B · Wareneingang scannen</h3>
+      <p class="lead">Ein neues Teil kommt an. Scannen, Platz vorschlagen lassen, einbuchen.</p>
+      <div class="nojs">Ohne aktives JavaScript: Beispiel — „Tee Box-Logo, Grösse L“, Lagerplatz EMB-A-03, wird 1x eingebucht.</div>
+      <button class="actbtn" id="scanBtn">Artikel scannen</button>
+      <div id="scanArea"></div>
+
+      <div class="toggle-row">
+        <label for="airplane">Test: Lager-WLAN ausgefallen</label>
+        <span class="switch"><input type="checkbox" id="airplane"><span class="slider"></span></span>
+      </div>
+      <p class="small" style="margin-top:0">Auch wenn das Lager-WLAN ausfällt, geht keine Buchung verloren. Leg den Schalter oben um und probier es aus.</p>
+      <ul class="queue" id="queue"></ul>
+    </div>
+
+    <!-- Station C -->
+    <div class="station" id="statC">
+      <span class="stationhint">Übungs-Modus — Beispieldaten</span>
+      <h3>C · Übersicht</h3>
+      <p class="lead">Bewusst einfach gehalten — erst Ordnung, dann Auswertungen.</p>
+      <div class="nojs">Ohne aktives JavaScript: Heute erfasst — Beispiel 12 Artikel. Offene Differenzen: Grösse S −1, M +1, L +2, XL −1. Letzte Inventur Zürich City und Embrach — jeweils an einem Montag der Vorwochen.</div>
+      <div class="ov-card center">
+        <div class="small">Heute erfasst</div>
+        <div class="bignum" id="erfasstNum">–</div>
+        <div class="small" id="erfasstHint">inkl. deiner Buchungen in dieser Sitzung</div>
+      </div>
+      <div class="ov-card">
+        <b>Offene Differenzen (nach Grösse)</b>
+        <p class="small" style="margin:2px 0 4px">Wo Zählung und System nicht übereinstimmen (+ = mehr im Regal, − = weniger).</p>
+        <ul class="difflist" id="diffList"></ul>
+      </div>
+      <div class="ov-card">
+        <b>Letzte Inventur</b>
+        <div class="seg" role="group" aria-label="Standort wählen">
+          <button id="invZH" class="active" data-loc="zh">Zürich</button>
+          <button id="invEMB" data-loc="emb">Embrach</button>
+        </div>
+        <p id="invText" style="margin:6px 0 0">–</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 5. ROLLEN ===== -->
+<section id="rollen">
+  <div class="wrap">
+    <p class="kicker">Wer macht was</p>
+    <h2 class="serif">Für dich als Chef: fast nichts.</h2>
+    <div class="rollen">
+      <div class="row"><b>Wir</b>Einrichten, schulen, betreuen. Wir bauen es auf und bleiben dran.</div>
+      <div class="row"><b>Dein Team</b>Einmalige Zähl- und Einräum-Arbeit nach klarer Anleitung. Wir zählen <b>nicht</b> selbst.</div>
+      <div class="row"><b>Du</b>Entscheiden. Sonst nichts.</div>
+    </div>
+    <div class="boss">Keine KI bucht deinen Bestand. Jede Buchung macht ein Mensch. Das System assistiert — du bleibst der Boss.</div>
+  </div>
+</section>
+
+<!-- ===== 6. AUSBAU ===== -->
+<section id="ausbau">
+  <div class="wrap">
+    <span class="banderole">Ausblick — spätere Etappen, NICHT Teil des ersten Schritts</span>
+    <h2 class="serif">Die Landkarte danach.</h2>
+    <div class="mapgrid">
+      <div class="mapcard"><h4>Kasse &#8594; Shop</h4><p class="small" style="margin:0">Laden-Kasse bucht selbst nach Shopify (Shopify POS Lite — ein Fertigteil, kein Eigenbau).</p></div>
+      <div class="mapcard"><h4>Scan + Etiketten</h4><p class="small" style="margin:0">Barcode-Scan und saubere Lagerplatz-Etiketten für den Alltag.</p></div>
+      <div class="mapcard"><h4>Auswertungen</h4><p class="small" style="margin:0">Ehrlich: erst <b>nach</b> der Kasse — sonst rechnen wir auf falschen Zahlen.</p></div>
+      <div class="mapcard"><h4>Drop-Helfer</h4><p class="small" style="margin:0">Unterstützung rund um neue Drops und Nachschub.<br><span class="ki-frame">KI assistiert, entscheidet nie</span></p></div>
+      <div class="mapcard"><h4>Video / Content-Setup</h4><p class="small" style="margin:0">Wir richten fremde Werkzeuge ein und schulen — kein Eigenbau.<br><span class="ki-frame">KI assistiert, entscheidet nie</span></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 7. KLÄRUNGSFRAGEN ===== -->
+<section id="fragen">
+  <div class="wrap">
+    <p class="kicker">Arbeits-Werkzeug für heute</p>
+    <h2 class="serif">Deine 7 Fragen.</h2>
+    <p class="small">Antippen hakt ab und öffnet ein Notizfeld. Auch ohne Text als „besprochen“ abhakbar. Notizen bleiben auf diesem Gerät gespeichert.</p>
+    <div class="nojs">Ohne aktives JavaScript sind die 7 Fragen hier zum Mitlesen:
+      <ul>
+        <li>F1 · Wie viele Artikel/Varianten — und wie viele davon mit Barcode/EAN?</li>
+        <li>F2 · Welche Standorte (Locations) kennt dein Shopify heute?</li>
+        <li>F3 · Liegt das Online-Lager in Embrach — oder getrennt?</li>
+        <li>F4 · Nutzt ihr Shopify POS (Pro) — das Kassen-System von Shopify — irgendwo?</li>
+        <li>F5 · Nutzt ihr die App „Stocky“? (Gemäss Shopify-Ankündigung wird Stocky per 31.08.2026 abgeschaltet — falls ja, planen wir den Export rechtzeitig ein.)</li>
+        <li>F6 · Welche Geräte (iPhone/Android)? Bluetooth-Scanner vorhanden?</li>
+        <li>F7 · Wunsch-Format der Lagerplätze (Beispiel EMB-A-03) und wie sind die Regale angeordnet?</li>
+      </ul>
+    </div>
+    <div id="qList"></div>
+    <div class="progress" id="progress">0 von 7 besprochen</div>
+    <button class="copybtn" id="copyBtn">Antworten kopieren</button>
+    <div class="copyok" id="copyOk">Kopiert — direkt in Mail oder Notizen einfügbar.</div>
+    <textarea class="copyarea" id="copyArea" readonly></textarea>
+  </div>
+</section>
+
+<!-- ===== 8. ABSCHLUSS ===== -->
+<section id="abschluss">
+  <div class="wrap">
+    <p class="kicker">Du entscheidest</p>
+    <h2 class="serif">Ohne Druck.</h2>
+    <ul class="close-lines">
+      <li><span>0.–</span> im Voraus.</li>
+      <li>Die <span>Abnahme-Liste</span> liegt in deiner Hand — du hakst ab, was fertig sein muss.</li>
+      <li>Alle Zahlen und Garantien stehen im Angebot, das du bereits hast.</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<!-- ===== 9. FUSSNOTEN ===== -->
+<footer>
+  <div class="wrap">
+    <p><b>Quellen:</b> DeHoratius/Raman 2008 (Bestandsgenauigkeit im Handel) · ECR/Cardiff 2019 (On-Shelf-Availability) · BMWK / digitalzentrumhandel.de (zu manueller Bestandspflege).</p>
+    <p>Alle Artikel und Zahlen in dieser Demo sind Beispieldaten (Übungs-Modus). Deine echten Zahlen kommen aus deinem Shopify.</p>
+  </div>
+</footer>
+
+<button id="sticky" class="hide">Selber ausprobieren</button>
+
+<script>
+"use strict";
+document.documentElement.classList.add('js');
+
+/* ---------- Datum live (zeitzonenfest) ---------- */
+function computeDOY(d){
+  return Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(d.getFullYear(),0,0))/86400000);
+}
+(function(){
+  var tage=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  var now=new Date();
+  function p(n){return (n<10?'0':'')+n;}
+  var str=tage[now.getDay()]+', '+p(now.getDate())+'.'+p(now.getMonth()+1)+'.'+now.getFullYear();
+  document.getElementById('headDate').textContent=' · '+str;
+  window.__doy=computeDOY(now);
+})();
+var DOY=window.__doy;
+
+/* Datumswechsel ueber Nacht abfangen: bei neuem Kalendertag neu laden */
+setInterval(function(){
+  if(computeDOY(new Date())!==DOY){ location.reload(); }
+}, 60000);
+
+/* ---------- Beispieldaten ---------- */
+var ARTICLES=[
+  {id:'hoodie', name:'Hoodie Classic', zhP:'ZH-A-01', embP:'EMB-B-03',
+    q:{S:{zh:3,emb:5}, M:{zh:0,emb:4}, L:{zh:2,emb:6}, XL:{zh:1,emb:2}}},
+  {id:'tee', name:'Tee Box-Logo', zhP:'ZH-A-02', embP:'EMB-A-03',
+    q:{S:{zh:4,emb:3}, M:{zh:6,emb:5}, L:{zh:2,emb:7}, XL:{zh:3,emb:1}}},
+  {id:'cap', name:'Cap Sport', zhP:'ZH-B-01', embP:'EMB-A-01',
+    q:{S:{zh:5,emb:5}, M:{zh:5,emb:5}, L:{zh:5,emb:5}, XL:{zh:5,emb:5}}},
+  {id:'jacke', name:'Jacke Coach', zhP:'ZH-C-02', embP:'EMB-B-01',
+    q:{S:{zh:1,emb:2}, M:{zh:2,emb:3}, L:{zh:0,emb:4}, XL:{zh:1,emb:1}}},
+  {id:'beanie', name:'Beanie Logo', zhP:'ZH-B-03', embP:'EMB-C-02',
+    q:{S:{zh:7,emb:6}, M:{zh:7,emb:6}, L:{zh:7,emb:6}, XL:{zh:7,emb:6}}},
+  {id:'cargo', name:'Cargo Pant', zhP:'ZH-A-04', embP:'EMB-B-05',
+    q:{S:{zh:2,emb:3}, M:{zh:3,emb:4}, L:{zh:2,emb:2}, XL:{zh:0,emb:3}}},
+  {id:'longsleeve', name:'Longsleeve Script', zhP:'ZH-C-01', embP:'EMB-A-02',
+    q:{S:{zh:3,emb:3}, M:{zh:4,emb:2}, L:{zh:1,emb:5}, XL:{zh:2,emb:2}}},
+  {id:'socken', name:'Socken 2er-Pack', zhP:'ZH-D-01', embP:'EMB-D-01',
+    q:{S:{zh:8,emb:9}, M:{zh:8,emb:9}, L:{zh:8,emb:9}, XL:{zh:8,emb:9}}}
+];
+var SIZES=['S','M','L','XL'];
+
+/* ---------- Timeline Reveal (mit Feature-Check) ---------- */
+(function(){
+  var ticks=document.querySelectorAll('#timeline .tick');
+  var tl=document.getElementById('timeline');
+  function showAll(){ ticks.forEach(function(t){ t.classList.add('shown'); }); }
+  if('IntersectionObserver' in window && tl){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(e){
+        if(e.isIntersecting){
+          ticks.forEach(function(t,i){ setTimeout(function(){t.classList.add('shown');}, i*450); });
+          io.disconnect();
+        }
+      });
+    },{threshold:.4});
+    io.observe(tl);
+  } else {
+    showAll();
+  }
+})();
+
+/* ---------- Tabs / Werkzeugleiste ---------- */
+var tabButtons=document.querySelectorAll('.toolbar button');
+var stationMap={suche:'statA', scan:'statB', uebersicht:'statC'};
+function activateTab(tab){
+  tabButtons.forEach(function(b){
+    var on=b.dataset.tab===tab;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on?'true':'false');
+  });
+}
+tabButtons.forEach(function(b){
+  b.addEventListener('click', function(){
+    activateTab(b.dataset.tab);
+    scrollToStation(stationMap[b.dataset.tab]);
+  });
+});
+function scrollToStation(id){
+  var el=document.getElementById(id);
+  if(!el) return;
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+  el.classList.remove('flash');
+  void el.offsetWidth;
+  el.classList.add('flash');
+  setTimeout(function(){ el.classList.remove('flash'); }, 560);
+}
+
+/* Momente-Pfeile */
+document.querySelectorAll('.gobtn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    activateTab(btn.dataset.tab);
+    scrollToStation(btn.dataset.go);
+  });
+});
+
+/* ---------- Station A: Suche ---------- */
+var chipsWrap=document.getElementById('artChips');
+var sizeWrap=document.getElementById('sizeWrap');
+var resultBox=document.getElementById('searchResult');
+var searchInput=document.getElementById('searchInput');
+var selectedArt=null, selectedSize=null;
+
+ARTICLES.forEach(function(a){
+  var c=document.createElement('button');
+  c.className='chip'; c.type='button'; c.textContent=a.name;
+  c.setAttribute('aria-pressed','false');
+  c.dataset.id=a.id;
+  c.addEventListener('click', function(){ chooseArticle(a.id); });
+  chipsWrap.appendChild(c);
+});
+
+function chooseArticle(id){
+  selectedArt=ARTICLES.filter(function(a){return a.id===id;})[0];
+  selectedSize=null;
+  resultBox.innerHTML='';
+  chipsWrap.querySelectorAll('.chip').forEach(function(c){
+    var on=c.dataset.id===id;
+    c.classList.toggle('active', on);
+    c.setAttribute('aria-pressed', on?'true':'false');
+  });
+  renderSizes();
+}
+function renderSizes(){
+  sizeWrap.innerHTML='';
+  if(!selectedArt) return;
+  var lbl=document.createElement('div');
+  lbl.className='small'; lbl.style.marginTop='6px';
+  lbl.textContent='Grösse für „'+selectedArt.name+'“ wählen:';
+  sizeWrap.appendChild(lbl);
+  var row=document.createElement('div'); row.className='sizes';
+  SIZES.forEach(function(s){
+    var b=document.createElement('button');
+    b.className='sizebtn'; b.type='button'; b.textContent=s;
+    b.addEventListener('click', function(){
+      selectedSize=s;
+      row.querySelectorAll('.sizebtn').forEach(function(x){ x.classList.toggle('active', x===b); });
+      showResult();
+    });
+    row.appendChild(b);
+  });
+  sizeWrap.appendChild(row);
+}
+function showResult(){
+  if(!selectedArt||!selectedSize) return;
+  var q=selectedArt.q[selectedSize];
+  var zh=q.zh, emb=q.emb;
+  var html='';
+  html+='<div class="locline '+(zh>0?'loc-green':'loc-red')+'">'
+      + '<span>Zürich City<span class="place">'+selectedArt.zhP+'</span></span>'
+      + '<span class="qty">'+zh+' Stück</span></div>';
+  html+='<div class="locline '+(emb>0?'loc-green':'loc-red')+'">'
+      + '<span>Embrach<span class="place">'+selectedArt.embP+'</span></span>'
+      + '<span class="qty">'+emb+' Stück</span></div>';
+  var suggest=null;
+  if(zh===0 && emb>0){ suggest={from:'Embrach', place:selectedArt.embP}; }
+  else if(emb===0 && zh>0){ suggest={from:'Zürich City', place:selectedArt.zhP}; }
+  if(suggest){
+    html+='<div class="hint" id="hintBox">In '+suggest.from+' verfügbar ('+suggest.place+') — Umlagerung vorschlagen?'
+        + '<br><button class="actbtn" id="umBtn" style="margin-top:9px">Umlagerung vorschlagen</button></div>';
+  }
+  resultBox.innerHTML=html;
+  var um=document.getElementById('umBtn');
+  if(um){
+    um.addEventListener('click', function(){
+      var hb=document.getElementById('hintBox');
+      hb.className='okline';
+      hb.innerHTML='<b>Vorschlag notiert.</b> Ein Mensch entscheidet und bucht — nichts wurde automatisch gebucht.';
+    });
+  }
+}
+
+/* Freitext-Suche ab 2. Buchstabe */
+searchInput.addEventListener('input', function(){
+  var v=searchInput.value.trim().toLowerCase();
+  if(v.length<2){
+    chipsWrap.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('dimmed'); });
+    return;
+  }
+  var first=null;
+  chipsWrap.querySelectorAll('.chip').forEach(function(c){
+    var match=c.textContent.toLowerCase().indexOf(v)!==-1;
+    c.classList.toggle('dimmed', !match);
+    if(match && !first) first=c;
+  });
+});
+searchInput.addEventListener('keydown', function(e){
+  if(e.key==='Enter'){
+    e.preventDefault();
+    var vis=Array.prototype.filter.call(chipsWrap.querySelectorAll('.chip'), function(c){return !c.classList.contains('dimmed');});
+    if(vis.length){ chooseArticle(vis[0].dataset.id); vis[0].scrollIntoView({block:'nearest'}); }
+  }
+});
+
+/* ---------- Station B: Scan ---------- */
+var scanBtn=document.getElementById('scanBtn');
+var scanArea=document.getElementById('scanArea');
+var airplane=document.getElementById('airplane');
+var queueEl=document.getElementById('queue');
+var sessionBookings=0;
+var bookedFlag=false;
+var queueItems=[];
+
+var SCAN_BARCODE='<svg class="barcode pulse" id="bcode" viewBox="0 0 260 70" role="img" aria-label="Barcode">'
+ +'<rect width="260" height="70" fill="#ffffff"/>'
+ +'<g fill="#1c1a16">'
+ +'<rect x="10" y="10" width="4" height="50"/><rect x="18" y="10" width="2" height="50"/>'
+ +'<rect x="24" y="10" width="6" height="50"/><rect x="34" y="10" width="2" height="50"/>'
+ +'<rect x="40" y="10" width="4" height="50"/><rect x="48" y="10" width="8" height="50"/>'
+ +'<rect x="60" y="10" width="2" height="50"/><rect x="66" y="10" width="5" height="50"/>'
+ +'<rect x="75" y="10" width="3" height="50"/><rect x="82" y="10" width="7" height="50"/>'
+ +'<rect x="93" y="10" width="2" height="50"/><rect x="99" y="10" width="4" height="50"/>'
+ +'<rect x="107" y="10" width="6" height="50"/><rect x="117" y="10" width="2" height="50"/>'
+ +'<rect x="123" y="10" width="5" height="50"/><rect x="132" y="10" width="3" height="50"/>'
+ +'<rect x="139" y="10" width="8" height="50"/><rect x="151" y="10" width="2" height="50"/>'
+ +'<rect x="157" y="10" width="4" height="50"/><rect x="165" y="10" width="6" height="50"/>'
+ +'<rect x="175" y="10" width="2" height="50"/><rect x="181" y="10" width="5" height="50"/>'
+ +'<rect x="190" y="10" width="3" height="50"/><rect x="197" y="10" width="7" height="50"/>'
+ +'<rect x="208" y="10" width="2" height="50"/><rect x="214" y="10" width="4" height="50"/>'
+ +'<rect x="222" y="10" width="6" height="50"/><rect x="232" y="10" width="2" height="50"/>'
+ +'<rect x="238" y="10" width="5" height="50"/><rect x="247" y="10" width="3" height="50"/>'
+ +'</g></svg>';
+
+scanBtn.addEventListener('click', function(){
+  bookedFlag=false;
+  scanArea.innerHTML=SCAN_BARCODE;
+  var bc=document.getElementById('bcode');
+  void bc.offsetWidth; bc.classList.add('go');
+  setTimeout(showScanCard, 620);
+});
+
+function showScanCard(){
+  scanArea.innerHTML=SCAN_BARCODE
+   +'<div class="scancard">'
+   +'<div class="art">Tee Box-Logo, Grösse L</div>'
+   +'<div class="small">Lagerplatz-Vorschlag: <b>EMB-A-03</b></div>'
+   +'<div id="bookResult"><button class="actbtn" id="bookBtn" style="margin-top:10px">Einbuchen</button>'
+   +'<p class="small" style="margin:9px 0 0">Drück ruhig zweimal schnell — trau dich.</p></div>'
+   +'<div class="counter">Gebucht in dieser Sitzung: <b id="bookCount">'+sessionBookings+'</b>x</div>'
+   +'</div>';
+  document.getElementById('bookBtn').addEventListener('click', doBooking);
+}
+
+function doBooking(){
+  var res=document.getElementById('bookResult');
+  if(bookedFlag){
+    var warn=document.getElementById('dblWarn');
+    if(!warn){
+      warn=document.createElement('div');
+      warn.className='hint'; warn.id='dblWarn';
+      warn.style.marginTop='10px';
+      warn.textContent='Doppelt gedrückt — trotzdem genau 1x gebucht.';
+      res.appendChild(warn);
+    }
+    return;
+  }
+  bookedFlag=true;
+  sessionBookings++;
+  updateErfasst();
+  var offline=airplane.checked;
+  res.innerHTML='<span class="stamp">Gebucht: 1x</span>';
+  var cnt=document.getElementById('bookCount');
+  if(cnt) cnt.textContent=sessionBookings;
+  addQueueItem('Tee Box-Logo · L · EMB-A-03', offline);
+  var again=document.createElement('button');
+  again.className='actbtn ghost'; again.style.marginTop='8px';
+  again.textContent='Nochmal drücken (Test)';
+  again.addEventListener('click', doBooking);
+  res.appendChild(again);
+}
+
+function addQueueItem(label, offline){
+  var item={label:label, offline:offline};
+  queueItems.push(item);
+  renderQueue();
+}
+function renderQueue(){
+  queueEl.innerHTML='';
+  queueItems.forEach(function(it){
+    var li=document.createElement('li');
+    var pending=it.offline;
+    li.innerHTML='<span>'+it.label+'</span>'
+      +'<span class="qbadge '+(pending?'pending':'synced')+'">'+(pending?'wird nachgereicht':'synchronisiert — angekommen')+'</span>';
+    queueEl.appendChild(li);
+  });
+}
+airplane.addEventListener('change', function(){
+  if(!airplane.checked){
+    queueItems.forEach(function(it){ it.offline=false; });
+    renderQueue();
+  }
+});
+
+/* ---------- Station C: Übersicht ---------- */
+var baseErfasst = 9 + (DOY % 8);
+function updateErfasst(){
+  document.getElementById('erfasstNum').textContent = baseErfasst + sessionBookings;
+}
+updateErfasst();
+
+(function(){
+  var list=document.getElementById('diffList');
+  var vals={
+    S: ((DOY % 5) - 2),
+    M: ((DOY % 3) - 1),
+    L: (1 + (DOY % 2)),
+    XL: (-1 - (DOY % 2))
+  };
+  SIZES.forEach(function(s){
+    var v=vals[s];
+    var li=document.createElement('li');
+    var cls=v>=0?'diff-pos':'diff-neg';
+    var sign=v>0?'+':(v===0?'±':'');
+    li.innerHTML='<span>Grösse '+s+'</span><span class="'+cls+'">'+sign+v+'</span>';
+    list.appendChild(li);
+  });
+})();
+
+(function(){
+  var tage=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  function fmt(d){function p(n){return(n<10?'0':'')+n;} return tage[d.getDay()]+', '+p(d.getDate())+'.'+p(d.getMonth()+1)+'.'+d.getFullYear();}
+  var now=new Date();
+  /* An festen Wochentag (Montag) verankert: tageweise konsistent, springt nur woechentlich */
+  var base=new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var daysSinceMon=(base.getDay()+6)%7;
+  var lastMon=new Date(base.getTime() - daysSinceMon*86400000);
+  var zhDate=new Date(lastMon.getTime() - 7*86400000);
+  var embDate=new Date(lastMon.getTime() - 14*86400000);
+  var invText=document.getElementById('invText');
+  function show(loc){
+    if(loc==='zh') invText.textContent='Zürich City — zuletzt gezählt am '+fmt(zhDate)+'.';
+    else invText.textContent='Embrach — zuletzt gezählt am '+fmt(embDate)+'.';
+  }
+  show('zh');
+  document.getElementById('invZH').addEventListener('click', function(){
+    this.classList.add('active'); document.getElementById('invEMB').classList.remove('active'); show('zh');
+  });
+  document.getElementById('invEMB').addEventListener('click', function(){
+    this.classList.add('active'); document.getElementById('invZH').classList.remove('active'); show('emb');
+  });
+})();
+
+/* ---------- 7 Fragen ---------- */
+var QUESTIONS=[
+  {id:'f1', t:'Artikel &amp; Varianten', sub:'Wie viele Artikel/Varianten — und wie viele davon mit Barcode/EAN?'},
+  {id:'f2', t:'Shopify-Standorte', sub:'Welche Standorte (Locations) kennt dein Shopify heute?'},
+  {id:'f3', t:'Online-Lager', sub:'Liegt das Online-Lager in Embrach — oder getrennt?', chips:['Embrach','getrennt']},
+  {id:'f4', t:'Shopify POS (Pro)', sub:'Nutzt ihr Shopify POS (Pro) — das Kassen-System von Shopify — irgendwo?', chips:['ja','nein']},
+  {id:'f5', t:'App „Stocky“', sub:'Nutzt ihr Stocky? Gemäss Shopify-Ankündigung wird Stocky per 31.08.2026 abgeschaltet — falls ja, planen wir den Export rechtzeitig ein.', chips:['ja, Stocky','nein']},
+  {id:'f6', t:'Geräte &amp; Scanner', sub:'Welche Geräte (iPhone/Android)? Bluetooth-Scanner vorhanden?', chips:['iPhone','Android','Scanner vorhanden']},
+  {id:'f7', t:'Lagerplätze &amp; Regale', sub:'Wunsch-Format der Lagerplätze (Beispiel EMB-A-03) und wie sind die Regale angeordnet?'}
+];
+var LS_KEY='finelli_fragen_v1';
+var qState={};
+try{ qState=JSON.parse(localStorage.getItem(LS_KEY)||'{}')||{}; }catch(e){ qState={}; }
+
+var qList=document.getElementById('qList');
+QUESTIONS.forEach(function(q, idx){
+  var st=qState[q.id]||{done:false, note:'', chips:[]};
+  qState[q.id]=st;
+  var card=document.createElement('div');
+  card.className='qcard'+(st.done?' done':'');
+  var chipHtml='';
+  if(q.chips){
+    chipHtml='<div class="qchips">'+q.chips.map(function(c){
+      var on=st.chips && st.chips.indexOf(c)!==-1;
+      return '<button type="button" class="qchip'+(on?' on':'')+'" data-chip="'+c+'">'+c+'</button>';
+    }).join('')+'</div>';
+  }
+  card.innerHTML=
+    '<div class="qhead" role="button" tabindex="0" aria-expanded="false">'
+    +'<span class="qbox">&#10003;</span>'
+    +'<span class="qt"><b>F'+(idx+1)+' · '+q.t+'</b><span class="sub">'+q.sub+'</span></span>'
+    +'</div>'
+    +'<div class="qbody">'+chipHtml
+    +'<textarea class="qnote" name="notiz-f'+(idx+1)+'" id="notiz-f'+(idx+1)+'" placeholder="Notiz (optional)"></textarea></div>';
+  qList.appendChild(card);
+
+  var head=card.querySelector('.qhead');
+  var note=card.querySelector('.qnote');
+  note.value=st.note||'';
+
+  function toggleDone(){
+    st.done=!st.done;
+    card.classList.toggle('done', st.done);
+    if(st.done){ card.classList.add('open'); }
+    head.setAttribute('aria-expanded', card.classList.contains('open')?'true':'false');
+    save();
+  }
+  head.addEventListener('click', function(e){ toggleDone(); });
+  head.addEventListener('keydown', function(e){
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleDone(); }
+  });
+  note.addEventListener('input', function(){ st.note=note.value; save(); });
+  card.querySelectorAll('.qchip').forEach(function(ch){
+    ch.addEventListener('click', function(e){
+      e.stopPropagation();
+      st.chips=st.chips||[];
+      var v=ch.dataset.chip;
+      var i=st.chips.indexOf(v);
+      if(i===-1){ st.chips.push(v); ch.classList.add('on'); }
+      else { st.chips.splice(i,1); ch.classList.remove('on'); }
+      save();
+    });
+  });
+});
+
+function save(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(qState)); }catch(e){}
+  updateProgress();
+}
+function updateProgress(){
+  var n=0;
+  QUESTIONS.forEach(function(q){ if(qState[q.id] && qState[q.id].done) n++; });
+  document.getElementById('progress').textContent=n+' von 7 besprochen';
+}
+updateProgress();
+
+document.getElementById('copyBtn').addEventListener('click', function(){
+  var tage=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  var now=new Date();
+  function p(n){return(n<10?'0':'')+n;}
+  var datum=tage[now.getDay()]+', '+p(now.getDate())+'.'+p(now.getMonth()+1)+'.'+now.getFullYear();
+  var lines=[];
+  lines.push('FINELLI — Klärungsfragen (Lager-Demo)');
+  lines.push('Datum: '+datum);
+  lines.push('');
+  QUESTIONS.forEach(function(q, idx){
+    var st=qState[q.id]||{};
+    var tmp=document.createElement('span'); tmp.innerHTML=q.t;
+    var titel=tmp.textContent;
+    lines.push('F'+(idx+1)+' · '+titel+(st.done?'  [besprochen]':'  [offen]'));
+    if(st.chips && st.chips.length) lines.push('   Antwort: '+st.chips.join(', '));
+    if(st.note && st.note.trim()) lines.push('   Notiz: '+st.note.trim());
+    lines.push('');
+  });
+  var text=lines.join('\n');
+  var ok=document.getElementById('copyOk');
+  var area=document.getElementById('copyArea');
+  function fallback(){
+    area.style.display='block';
+    area.value=text;
+    area.focus(); area.select();
+    try{ area.setSelectionRange(0, text.length); }catch(e){}
+    ok.style.display='block';
+    ok.textContent='Text ist markiert — drücke jetzt Kopieren, dann in Mail oder Notizen einfügen.';
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){
+      ok.style.display='block';
+      ok.textContent='Kopiert — direkt in Mail oder Notizen einfügbar.';
+      area.style.display='none';
+    }, fallback);
+  } else { fallback(); }
+});
+
+/* ---------- Sticky CTA ---------- */
+(function(){
+  var btn=document.getElementById('sticky');
+  var wb=document.getElementById('werkbank');
+  var target='suche';
+  btn.addEventListener('click', function(){
+    if(target==='fragen'){
+      document.getElementById('fragen').scrollIntoView({behavior:'smooth', block:'start'});
+    } else {
+      activateTab('suche');
+      scrollToStation('statA');
+    }
+  });
+  function update(){
+    var r=wb.getBoundingClientRect();
+    var vh=window.innerHeight;
+    var inView = r.top < vh*0.75 && r.bottom > vh*0.25;
+    if(inView){
+      btn.classList.add('hide');
+    } else {
+      btn.classList.remove('hide');
+      if(r.bottom <= vh*0.25){
+        target='fragen';
+        btn.textContent='Deine 7 Fragen';
+      } else {
+        target='suche';
+        btn.textContent='Selber ausprobieren';
+      }
+    }
+  }
+  var ticking=false;
+  function onScroll(){
+    if(!ticking){ ticking=true; requestAnimationFrame(function(){ update(); ticking=false; }); }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+</body>
+</html>
