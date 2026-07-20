@@ -10,3 +10,4 @@ Custom-AI-Software fuer kleine Schweizer Betriebe — bauen UND per KI weiter be
 - **GzF / Kaufmann "Gut zu Fuss"** — Orthopaedie-Schuhe Rorschach, Kundendatenbank + Mail-Flows (Repo folgt).
 
 Prozess, Vorlagen und Firmen-Verfassung: siehe `CLAUDE.md`, `playbook/`, `vorlagen/`, `kunden/UEBERSICHT.md`.
+Markt-, Konkurrenz- und SWOT-Recherche: `markt/` (Stand 20.07.2026).
