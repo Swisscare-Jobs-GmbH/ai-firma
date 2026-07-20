@@ -18,6 +18,9 @@ Tueroeffner: Khawar (SAs Cousin), Kunde Nr. 1 + Referenz. Code-Repo: `C:\dev\fin
   Kunden-Mappe = das, was SA am Mittwoch zeigt), Deckblatt, HTML-Quellen Blatt 1+2, System-Blatt-PDF.
   Alte Versionen (v1-v6) in `angebot/archiv/`. Wert-Anker-Regel v7: WERT gross + rot, Preis klein + schwarz.
 - **Naechster Schritt:** vor Mittwoch die Demo-Killer-Fixes + KI-Etappe in die Haupt-Spur, dann Klick-Probe.
+- **SA-Aktionen vor Mittwoch** (aus Todo T765, 19.07): Angebots-PDF abnehmen · Vorbereitungs-Nachricht
+  an Khawar (Entwurf im mittwoch-plan) · klaeren, wo SA die "1000+ Bewertungen" sah (Google live: 130 /
+  4.4) — dann Zahl im PDF tauschen.
 
 **Dateien hier:** firma-profil · schmerz-landkarte · deal-strategie · wert-ranking · ausbau-plan ·
 feinplan · logistik-research · offene-fragen · antworten-sa · antworten-runde2 · anti-fail-kern

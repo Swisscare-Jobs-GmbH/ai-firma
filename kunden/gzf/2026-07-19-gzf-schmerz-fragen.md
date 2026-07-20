@@ -3,6 +3,8 @@
 > Erstellt 2026-07-19, nachgezogen nach Recherche-Schwarm (siehe [Firmen-Profil](2026-07-19-gzf-firma-profil.md)).
 > Playbook Phase 0→1: `2026-07-19-playbook-neukunde-software.md`.
 > ⚠️ **Der Inhaber heisst Farhad Akbarzada — NICHT "Herr Kaufmann"!** (Kaufmann = Vorgaenger bis 2015, Name blieb.)
+> ⚠️ **SAs Kontakt ist Qais — das Geschaeft gehoert seinem VATER** (= Farhad Akbarzada; SA-Info 19.07).
+> Qais = Tueroeffner, Vater = Entscheider → Fragen gehen an Qais, das Angebot muss den Vater ueberzeugen.
 > Kunde: Einzelunternehmen, Hauptstrasse 40, 9400 Rorschach SG · +41 71 841 00 61 · laden@gut-zu-fuss.ch
 > Erreichbarkeit: Di–Fr 09–12 / 13:30–18:30, Sa vormittag (Website; Montag vermutlich ZU — Verzeichnisse widersprechen).
 > Budget-Deckel laut SA: **max CHF 850/Monat** (kleiner Betrieb).
