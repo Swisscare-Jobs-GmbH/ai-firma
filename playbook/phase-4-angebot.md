@@ -2,6 +2,9 @@
 
 > Ziel: 1 Seite A4, die {KUNDE} zum Ja bringt — nie negativ eroeffnen, Stolz zuerst, Preis zuletzt.
 > Dauer: ~0.5 Tag. Design-Vorlage: `vorlagen/angebot/`. Pflicht-Haltung: `sa-angebots-doktrin-verkauf`.
+> **V2 (20.07.2026): Voller End-zu-End-Prozess inkl. Blatt-2-Architektur, Richter-Workflows,
+> Beweis-Pipeline und Checkliste jetzt in `erst-offerte-prozess.md`** — dieses File ist der
+> Kompass, jenes die Strassenkarte.
 
 ## Fazit
 
@@ -16,10 +19,10 @@ einem Problem eroeffnet, hat verloren. Hormozi-Reihenfolge, dann ein 3-Richter-P
 | 2 | **Momente die du kennst** | Pain gedeutet: benennen → ENTSCHULDEN ("das ist nicht deine Schuld") → **"Ab sofort:"-Wende.** |
 | 3 | **Beweis** | Die laufende App / Demo — was V1 konkret loest. |
 | 4 | **Aufwand ~0** | Fuer den Kunden: wir richten ein, schulen, warten. Sein Aufwand minimal. |
-| 5 | **Preis** | Erst JETZT. Summenzeile = **"Dein Preis — Selbstkosten"** (NIE "Marktwert"). Agentur-Anker (30k+) separat. |
+| 5 | **Preis** | Erst JETZT. **V2-Korrektur (Richter-Fund Finelli 19.07):** Wert-Stack MIT geschenkten Posten → Marktwert-Summe sichtbar UEBER dem Preis (z.B. 24k → 18k). Summenzeile = **"Dein Preis als Kunde Nr. 1 / Startkunden-Preis"** — das Wort "Selbstkosten" ist VERBOTEN (redet den Wert klein, Wert=Preis ist Anti-Hormozi). Agentur-Anker (30k+) separat. |
 | 6 | **Ein-System-Botschaft** | "Alles inbegriffen, keine Extra-Abos." Bestehendes NICHT ersetzen — aufsetzen. |
-| 7 | **Joker** | Kunden-Joker (50% Anrechnung) + Versions-Leiter als Ausblick. |
-| 8 | **"Du entscheidest"-Frame** | Kunde hat die Wahl — kein Druck, keine Verknappungs-Masche. |
+| 7 | **Joker** | Kunden-Joker: **markt-ueblich 10% vom Erstauftrag des vermittelten Kunden, auf seine Kosten angerechnet** (SA-Entscheid 19.07 — ersetzt die alte 50%-Anrechnung; muss die Servietten-Rechnung ueberleben: "ganze Monats-Raten zahlen andere fuer dich"). + Versions-Leiter als Ausblick. |
+| 8 | **"Du entscheidest"-Frame** | Kunde hat die Wahl — kein Druck. **Ehrliche Verknappung ist PFLICHT, wenn wahr:** "Kunde Nr. 1 gibt es genau einmal. Am {Datum} klickst du selbst." Kein Blatt endet ohne Verknappung + Datum + naechsten Schritt (Richter-Fund 19.07). |
 
 ## Das "Momente"-Muster (Herzstueck)
 
