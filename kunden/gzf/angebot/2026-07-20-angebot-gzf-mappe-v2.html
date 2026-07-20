@@ -95,6 +95,35 @@
   .s1 .foot .who { font-size: 7.6pt; color: var(--dim); }
   .s1 .foot .who b { color: var(--ink); }
   .s1 .foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.6pt; color: var(--acc); }
+  /* Fluss-Bild (neueste Finelli-Mappe): Schritte mit Vorher-Kontrast + Entscheid-Gabel */
+  .s1 .step { position: relative; background: var(--card); border: .3mm solid var(--line); border-radius: 1.8mm;
+    padding: 2mm 9mm 1.8mm 4mm; width: 150mm; box-shadow: .8mm .8mm 0 0 rgba(28,26,22,.05); }
+  .s1 .step .gnum { position: absolute; right: 2mm; top: -1mm; font-family: Georgia, serif; font-weight: 700;
+    font-size: 21pt; color: rgba(168,39,28,.13); }
+  .s1 .step .kopf { font-size: 8.5pt; line-height: 1.32; color: #2e2a24; }
+  .s1 .step .kopf .dot { display: inline-flex; width: 4.4mm; height: 4.4mm; border-radius: 50%; background: var(--acc);
+    color: #fff; font-weight: 700; font-size: 7.2pt; align-items: center; justify-content: center; margin-right: 1.8mm; }
+  .s1 .step .kopf b { color: var(--ink); }
+  .s1 .step .vorher { margin-top: .7mm; margin-left: 6.2mm; font-size: 7.5pt; color: var(--dim); }
+  .s1 .step.dark { background: var(--ink); border-color: var(--ink); border-left: 1.1mm solid var(--acc); }
+  .s1 .step.dark .kopf { color: #efe9df; }
+  .s1 .step.dark .kopf b { color: #fff; }
+  .s1 .step.dark .vorher { color: #b8afa0; }
+  .s1 .ein2 { margin-left: 14mm; } .s1 .ein3 { margin-left: 5mm; } .s1 .ein4 { margin-left: 10mm; }
+  .s1 .pf { width: 0; height: 0; border-left: 2.4mm solid transparent; border-right: 2.4mm solid transparent;
+    border-top: 2.6mm solid var(--ink); margin: .9mm 0; }
+  .s1 .pf.rot { border-top-color: var(--acc); }
+  .s1 .gabelpf { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; width: 160mm; }
+  .s1 .gabelpf .pf { margin: .9mm auto; }
+  .s1 .gabel { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; width: 160mm; }
+  .s1 .zweig { background: var(--card); border: .3mm solid var(--line); border-radius: 1.8mm; padding: 1.8mm 3.4mm; }
+  .s1 .zweig .zt { font-size: 6.8pt; letter-spacing: .16em; text-transform: uppercase; color: var(--acc); font-weight: 700; display: block; margin-bottom: .7mm; }
+  .s1 .zweig p { font-size: 7.9pt; line-height: 1.36; color: #2e2a24; }
+  .s1 .zweig b { color: var(--ink); }
+  .s1 .zbox { margin-top: 1.5mm; background: var(--card); border: .3mm solid var(--line); border-radius: 1.8mm; padding: 2mm 3.8mm; }
+  .s1 .zbox p { font-size: 8.2pt; line-height: 1.38; margin: 1mm 0; color: #2e2a24; }
+  .s1 .zbox b { color: var(--ink); }
+  .s1 .zbox b.hl { color: var(--acc); }
 
   /* ============ SEITE 3 — WERT & PREIS ============ */
   .s2 { padding: 7mm 13mm 4mm; display: flex; flex-direction: column; }
@@ -121,8 +150,12 @@
   .s2 .deal .big .u { font-size: 6.8pt; letter-spacing: .08em; text-transform: uppercase; color: #b8afa0; margin-top: 1.1mm; }
   .s2 .cmp { margin-top: 1.4mm; font-size: 7.8pt; font-style: italic; color: var(--dim); line-height: 1.38; }
   .s2 .cmp b { font-style: normal; color: var(--ink); }
-  .s2 .betrieb { margin-top: 1.8mm; font-size: 8pt; line-height: 1.42; color: #3a352d; }
-  .s2 .betrieb b { font-family: Georgia, serif; color: var(--ink); }
+  .s2 .duo { margin-top: 1.8mm; display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+  .s2 .duo .card { background: var(--card); border: .3mm solid var(--line); border-left: 1mm solid var(--acc);
+    border-radius: 1.6mm; padding: 2.2mm 3.4mm; }
+  .s2 .duo .h { font-size: 6.9pt; letter-spacing: .14em; text-transform: uppercase; color: var(--acc); font-weight: 700; }
+  .s2 .duo p { font-size: 7.8pt; line-height: 1.42; color: #3a352d; margin-top: 1mm; }
+  .s2 .duo b { color: var(--ink); }
   .s2 .joker { margin-top: 2mm; border: .35mm solid var(--acc); border-radius: 1.6mm; padding: 2mm 3.8mm; background: var(--card); font-size: 8.2pt; line-height: 1.4; }
   .s2 .joker .tag { font-size: 6.8pt; letter-spacing: .16em; text-transform: uppercase; color: var(--acc); font-weight: 700; display: block; margin-bottom: .8mm; }
   .s2 .joker b { color: var(--acc); }
@@ -220,63 +253,72 @@
       Sternen, und das grösste Lob ist immer dasselbe: eure Beratung. Rund <b>1000 Menschen</b> waren schon bei
       euch, die Analyse gibt es — wie ihr selbst sagt — gratis nur bei euch, und seit dem Neustart an der Hauptstrasse führt ihr das
       Traditionshaus in dritter Runde weiter. Die einzige Bremse liegt nicht in eurer Arbeit — sie liegt danach:
-      wer einmal da war, wird an nichts erinnert und kommt erst nach zwei, drei Jahren wieder statt nach einem.
+      wer einmal da war, wird an nichts erinnert und kommt erst nach zwei, drei Jahren wieder statt nach einem —
+      nicht eure Schuld, dafür gab es nie ein Werkzeug.
       <b>Genau das lösen wir: eure Kunden kommen im Jahres-Takt zurück — und ihr bekommt eine Kunden-Kartei, die
       euch endlich gehört.</b>
     </p>
 
-    <div class="lbl">Vier Momente, die ihr kennt — und warum es sie bald nicht mehr gibt</div>
-    <div class="szenen">
-      <p>Ein Kunde kauft Masseinlagen für <b>379 Franken</b>. Nach sechs bis zwölf Monaten sind sie durchgetreten
-         und wirken nicht mehr — aber niemand sagt es ihm, und er kommt erst Jahre später wieder. Nicht eure
-         Schuld: euer GP Manager ist fürs Vermessen und Fertigen gebaut, nicht fürs Erinnern.
-         <b class="neu">Das gibt's nicht mehr</b> — weil euer System nach sechs Monaten zur Kontrolle einlädt und
-         nach zwölf zur neuen Analyse: <b>mit einem Klick zum Termin</b> über eure Online-Buchung.</p>
-      <p>Rund <b>1000 Menschen</b> stehen in eurem System — aber fast keiner mit E-Mail-Adresse. Ihr könnt heute
-         keinen von ihnen erreichen. Nicht eure Schuld: Adressen sammeln war nie Teil des Verkaufs.
-         <b class="neu">Das gibt's nicht mehr</b> — weil ab sofort jeder Kauf eine Adresse bringt: Name, Mail,
-         ein Häkchen fürs Einverständnis, <b>keine zwei Minuten.</b> Nach einem Jahr erreicht ihr hunderte Kunden.</p>
-      <p>Wer orthopädische Schuhe oder Kompressionsstrümpfe ärztlich verordnet bekommt, hat oft Anspruch auf
-         <b>zwei Paar pro Jahr</b> über IV oder Krankenkasse — viele wissen das gar nicht und lassen es verfallen.
-         Nicht eure Schuld: im Gespräch geht es um die Versorgung heute, nicht um nächstes Jahr.
-         <b class="neu">Das gibt's nicht mehr</b> — weil das System im richtigen Moment erinnert und der Kunde
-         für etwas zurückkommt, <b>das ihn fast nichts kostet.</b></p>
-      <p>Eure Beratung ist euer grösstes Lob — aber bei Google stehen erst 22 Bewertungen, und neue kommen
-         kaum dazu, weil im Tagesgeschäft niemand danach fragt. Nicht eure Schuld.
-         <b class="neu">Das gibt's nicht mehr</b> — weil nach jedem Kauf bei euch automatisch eine freundliche Bitte
-         rausgeht: <b>eure 4,6 Sterne wachsen von selbst,</b> und neue Kunden finden euch leichter.</p>
+    <div class="lbl">So läuft jeder Kunde durch euer System</div>
+    <div class="step">
+      <span class="gnum">1</span>
+      <div class="kopf"><span class="dot">1</span><b>Kauf</b> — beim Verkauf: Name, Mail, ein Häkchen fürs
+      Einverständnis. <b>Keine zwei Minuten,</b> eingetragen wie heute verkauft wird.</div>
+      <div class="vorher">Vorher: der Kunde geht ohne Spur — 1000 Namen im System, fast keine E-Mail-Adresse</div>
+    </div>
+    <div class="pf" style="margin-left: 30mm;"></div>
+    <div class="step ein2">
+      <span class="gnum">2</span>
+      <div class="kopf"><span class="dot">2</span><b>System merkt sich den Takt</b> — wer wann welche Versorgung
+      gekauft hat; die Willkommens-Mail mit Pflege-Tipps geht von selbst raus.</div>
+      <div class="vorher">Vorher: das merkt sich niemand — euer GP Manager ist fürs Vermessen gebaut, nicht fürs Erinnern</div>
+    </div>
+    <div class="pf" style="margin-left: 44mm;"></div>
+    <div class="step ein3">
+      <span class="gnum">3</span>
+      <div class="kopf"><span class="dot">3</span><b>Erinnerung im richtigen Moment</b> — nach sechs Monaten die
+      Kontrolle, nach zwölf die Einladung zur neuen Analyse — <b>mit einem Klick zum Termin</b> über eure Online-Buchung.</div>
+      <div class="vorher">Vorher: niemand sagt dem Kunden, dass Einlagen nach 6–12 Monaten durchgetreten sind</div>
+    </div>
+    <div class="pf rot" style="margin-left: 36mm;"></div>
+    <div class="step dark ein4">
+      <span class="gnum">4</span>
+      <div class="kopf"><span class="dot">4</span><b>Euer Kunde kommt zurück</b> — er bucht selbst, ihr macht,
+      was ihr am besten könnt: beraten.</div>
+      <div class="vorher">Vorher: nur ~5% kommen wieder — und erst nach 2–3 Jahren statt nach einem</div>
+    </div>
+    <div class="gabelpf"><div class="pf rot"></div><div class="pf rot"></div></div>
+    <div class="gabel">
+      <div class="zweig">
+        <span class="zt">Neue Einlagen</span>
+        <p>Der Kunde kommt <b>im Jahres-Takt</b> statt alle zwei, drei Jahre — für die Versorgung, die er
+        selbst zahlt.</p>
+      </div>
+      <div class="zweig">
+        <span class="zt">Kassen-Anspruch</span>
+        <p>Ärztlich verordnete Schuhe und Strümpfe: oft <b>zwei Paar pro Jahr</b> über IV oder Krankenkasse —
+        viele wissen das nicht, das System erinnert.</p>
+      </div>
     </div>
 
     <div class="lbl">Und ihr entscheidet auf echten Zahlen — nicht aus dem Gefühl</div>
-    <p class="dreamrest">
-      <b>Eure Kartei zeigt, wer wann was gekauft hat</b> — und wie viele Adressen schon gesammelt sind ·
-      alle Erinnerungen laufen von selbst, ihr müsst an nichts mehr denken · <b>euer GP Manager und die
-      Wix-Buchung bleiben genau wie heute</b> — nichts wird umgestellt. <b>Eure Daten bleiben eure:</b>
-      gespeichert wird nur Name und E-Mail, keine Gesundheitsdaten — und die Kartei gehört euch ab Tag eins.
-    </p>
-
-    <div class="zwei">
-      <div>
-        <h4>Kein Risiko für euch</h4>
-        <p>Ihr zahlt <b>keinen Franken im Voraus.</b> Wir bauen euer System, dann gehen wir gemeinsam
-        <b>zehn Abnahme-Punkte</b> durch, die wir fertig mitbringen — ihr streicht oder ergänzt. Liste erfüllt =
-        ihr startet und zahlt die erste Rate. Nicht erfüllt = <b>ihr zahlt nichts.</b> Und hakt später etwas:
-        Flick innert <b>48 Stunden</b> — sonst ist der Betriebs-Monat <b>geschenkt</b> und eure Rate verschiebt
-        sich nach hinten. <b>Das Risiko tragen wir, nicht ihr.</b></p>
-      </div>
-      <div>
-        <h4>Euer Aufwand: keine zwei Minuten pro Kauf</h4>
-        <p>Wir richten alles ein und schulen euer Team, bis jeder Handgriff sitzt. Danach lernt ihr genau eine
-        Bewegung: beim Kauf <b>Name, Mail, ein Häkchen.</b> Eingetragen wird wie heute verkauft wird — unter der
-        Woche der eine, am Samstag der andere. Das Eingabe-Fenster ist so einfach, dass es ohne Nachdenken geht.
-        <b>In den ersten Wochen bleiben wir dran,</b> bis die erste Erinnerungs-Welle sauber draussen ist.</p>
-      </div>
+    <div class="zbox">
+      <p><b>Eure Kartei zeigt,</b> wer wann was gekauft hat — und wie viele Adressen schon gesammelt sind.
+      Nach einem Jahr erreicht ihr hunderte Kunden.</p>
+      <p><b>Eure 4,6 Sterne wachsen von selbst:</b> nach jedem Kauf geht automatisch eine freundliche
+      Bewertungs-Bitte raus — eure Beratung ist euer grösstes Lob, <b class="hl">jetzt hören es auch neue Kunden.</b></p>
+      <p><b>Es erinnert — ihr entscheidet:</b> ob und wie ihr einen Kunden ansprecht, bleibt eure Sache.
+      Das System nimmt euch nur das Nachhalten ab.</p>
+      <p><b>Eure Daten bleiben eure:</b> gespeichert wird nur Name und E-Mail, keine Gesundheitsdaten — die
+      Kartei gehört euch ab Tag eins. <b>GP Manager und Wix-Buchung bleiben genau wie heute.</b></p>
     </div>
 
     <div class="los">
       <span class="t">So geht's los:</span> Wir zeigen euch das <b>fertige, laufende System</b> — keine Folien,
-      ihr klickt selbst. Sagt ihr Ja, richten wir alles ein und schulen euer Team. Die erste Rate zahlt ihr
-      erst, <b>wenn eure Abnahme-Liste erfüllt ist</b> und ihr den Nutzen seht.
+      ihr klickt selbst. Sagt ihr Ja, bauen wir, schulen euer Team und bringen <b>zehn Abnahme-Punkte</b> mit —
+      ihr streicht oder ergänzt. Liste erfüllt = ihr startet und zahlt die erste Rate. Nicht erfüllt =
+      <b>ihr zahlt nichts.</b> Und hakt später etwas: Flick innert <b>48 Stunden</b> — sonst ist der
+      Betriebs-Monat <b>geschenkt</b> und eure Rate verschiebt sich nach hinten. <b>Das Risiko tragen wir, nicht ihr.</b>
     </div>
 
     <div class="foot">
@@ -324,16 +366,20 @@
       </div>
       <div class="big"><div class="n">CHF 650</div><div class="u">pro Monat komplett</div></div>
     </div>
-    <div class="cmp"><b>Alles auf diesem Blatt ist in den 650 inbegriffen</b> — eine Komplett-Lösung, keine fünf
-    Software-Abos, keine versteckten Kosten. Euer GP Manager und eure Wix-Seite laufen weiter wie heute, direkt
-    bei euch — es kommt <b>kein fremdes Zusatz-Abo</b> dazu, alles läuft in den 650. Nachgerechnet: 24 × 450 =
-    10'800, genau der Aufbau-Preis oben. Und zum Vergleich: das komplette System kostet euch 7'800 im Jahr —
-    die Rechnung oben bringt ab Jahr zwei über 25'000. <b>Mehr als das Dreifache.</b></div>
-
-    <div class="betrieb">
-      <b>Was in den 200 Betrieb drin ist:</b> Server &amp; Betrieb eures Systems · der Mail-Versand · laufende
-      Updates &amp; Verbesserungen · der System-Wächter · die 48-Stunden-Leitung direkt zu uns · ein monatlicher
-      Check-in. <b>Euer erster Schritt in die KI-Automatisierung</b> — ein System, auf dem alles aufbaut.
+    <div class="duo">
+      <div class="card">
+        <div class="h">Alles inbegriffen</div>
+        <p><b>Keine fünf Software-Abos, keine versteckten Kosten</b> — alles läuft in den 650. Euer GP Manager
+        und eure Wix-Seite laufen weiter wie heute, direkt bei euch — es kommt <b>kein fremdes Zusatz-Abo</b>
+        dazu. Nachgerechnet: 24 × 450 = 10'800, genau der Aufbau-Preis oben. Und: das komplette System kostet
+        euch 7'800 im Jahr — die Rechnung oben bringt ab Jahr zwei über 25'000. <b>Mehr als das Dreifache.</b></p>
+      </div>
+      <div class="card">
+        <div class="h">Die 200 Betrieb — was drin ist</div>
+        <p>Server &amp; Betrieb eures Systems · der Mail-Versand · laufende Updates &amp; Verbesserungen ·
+        der System-Wächter · die 48-Stunden-Leitung direkt zu uns · ein monatlicher Check-in.
+        <b>Euer erster Schritt in die KI-Automatisierung</b> — ein System, auf dem alles aufbaut.</p>
+      </div>
     </div>
 
     <div class="joker">
