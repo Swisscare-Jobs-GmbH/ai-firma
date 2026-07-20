@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Angebot FINELLI System V1</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root {
+    --bg: #f5f2ec; --ink: #1c1a16; --dim: #6f685c; --line: #ddd5c6; --acc: #a8271c; --card: #fbf8f2;
+  }
+  html, body { width: 210mm; height: 297mm; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 11mm 14mm 8mm;
+    display: flex; flex-direction: column;
+  }
+  .serif { font-family: Georgia, "Times New Roman", serif; }
+
+  .top { display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 8.2pt; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .top b { color: var(--acc); }
+  .rule { height: .5mm; background: var(--ink); margin-top: 2.5mm; }
+
+  h1 { font-family: Georgia, serif; font-size: 27pt; line-height: 1.03; margin-top: 5mm; letter-spacing: -.01em; }
+  h1 em { font-style: italic; color: var(--acc); }
+  .sub { margin-top: 2.2mm; font-size: 7.8pt; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+
+  .quotes { margin-top: 4mm; display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+  .quotes blockquote { font-family: Georgia, serif; font-style: italic; font-size: 9.2pt;
+    line-height: 1.32; color: #3a352d; border-top: .6mm solid var(--line); padding-top: 2mm; }
+  .quotes cite { display: block; margin-top: 1.4mm; font-family: "Helvetica Neue", Arial, sans-serif;
+    font-style: normal; font-size: 6.8pt; letter-spacing: .09em; text-transform: uppercase; color: var(--dim); }
+  .turn { margin-top: 3.5mm; font-family: Georgia, serif; font-size: 11.5pt; line-height: 1.35; }
+  .turn em { font-style: italic; color: var(--acc); }
+
+  .lbl { margin-top: 4.5mm; font-size: 7.5pt; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--acc); font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; margin-top: 1.5mm; }
+  td { padding: 1.9mm 0; border-bottom: .25mm solid var(--line); font-size: 8.8pt; line-height: 1.3; vertical-align: top; }
+  td.p { text-align: right; font-family: Georgia, serif; font-weight: 700; white-space: nowrap; padding-left: 5mm; font-size: 9.2pt; }
+  tr.sum td { border-bottom: none; border-top: .6mm solid var(--ink); padding-top: 2.2mm;
+    font-weight: 700; font-size: 9.5pt; text-transform: uppercase; letter-spacing: .04em; }
+  tr.sum td.p { font-size: 14pt; color: var(--acc); }
+  .agency { margin-top: 1mm; text-align: right; font-size: 7.6pt; font-style: italic; color: var(--dim); }
+
+  .gratis { margin-top: 3.5mm; border: .35mm solid var(--acc); border-radius: 1.6mm;
+    padding: 2.8mm 4mm; background: var(--card); }
+  .gratis .tag { font-size: 7pt; letter-spacing: .16em; text-transform: uppercase; color: var(--acc); font-weight: 700; }
+  .gratis p { margin-top: 1.4mm; font-size: 8.6pt; line-height: 1.35; }
+  .gratis b { color: var(--acc); }
+
+  .deal { margin-top: 3.5mm; background: var(--ink); color: #f5f2ec; border-radius: 1.8mm;
+    padding: 4mm 5.5mm; display: flex; justify-content: space-between; align-items: center; gap: 8mm; }
+  .deal .k { font-size: 7pt; letter-spacing: .2em; text-transform: uppercase; color: #b8afa0; }
+  .deal .r1 { font-size: 8.8pt; margin-top: 1.6mm; line-height: 1.45; }
+  .deal .r1 b { color: #ffffff; }
+  .deal .big { text-align: right; }
+  .deal .big .n { font-family: Georgia, serif; font-size: 22pt; font-weight: 700; line-height: 1; color: #fff; white-space: nowrap; }
+  .deal .big .u { font-size: 7.2pt; letter-spacing: .08em; text-transform: uppercase; color: #b8afa0; margin-top: 1.2mm; }
+  .cmp { margin-top: 1.6mm; font-size: 7.8pt; font-style: italic; color: var(--dim); }
+
+  .cards { margin-top: 3.5mm; display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
+  .cards h4 { font-family: Georgia, serif; font-size: 10pt; border-bottom: .5mm solid var(--acc);
+    padding-bottom: 1.2mm; display: inline-block; }
+  .cards p { margin-top: 1.6mm; font-size: 8.4pt; line-height: 1.42; color: #3a352d; }
+  .cards b { color: var(--acc); }
+
+  .urgent { margin-top: 3.8mm; border-top: .3mm solid var(--ink); border-bottom: .3mm solid var(--ink);
+    padding: 2.2mm 0; text-align: center; font-family: Georgia, serif; font-style: italic; font-size: 9.5pt; }
+  .urgent b { font-style: normal; color: var(--acc); }
+
+  .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline;
+    padding-top: 3mm; }
+  .foot .who { font-size: 7.8pt; color: var(--dim); }
+  .foot .who b { color: var(--ink); }
+  .foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.8pt; color: var(--acc); }
+</style>
+</head>
+<body>
+  <div class="top"><span>Swiss Care Jobs GmbH — <b>Software &amp; KI</b></span><span>Zürich · 19. Juli 2026</span></div>
+  <div class="rule"></div>
+
+  <h1>Dein Lager, das <em>nie lügt.</em></h1>
+  <div class="sub">FINELLI System V1 · Custom-AI-Software · Startkunden-Deal für Kunde Nr. 1</div>
+
+  <div class="quotes">
+    <blockquote>„Bestellungen dauern Wochen, wenn sie auf Lagerbestand warten."<cite>Ein 5-Sterne-Fan · Trustpilot</cite></blockquote>
+    <blockquote>„Über einen Monat Verspätung, sechs verschiedene Ausreden."<cite>1 Stern · Trustpilot, März 2026</cite></blockquote>
+  </div>
+  <div class="turn">Dein Laden kriegt 5 Sterne. Dein Lager kostet dich online den Ruf. <em>Genau das drehen wir um.</em></div>
+
+  <div class="lbl">Was du bekommst — Marktwert belegt</div>
+  <table>
+    <tr><td>Logistik-Kern: Lagerplätze, Pickliste mit Fundort, Verkaufs-Journal — Massanfertigung</td><td class="p">9'000</td></tr>
+    <tr><td>Kassen-Fix: Shopify-Kasse im Laden — jeder Verkauf zählt automatisch, Umtausch sauber</td><td class="p">1'500</td></tr>
+    <tr><td>Etiketten-System: ~200 Codes wie bei Migros + begleiteter Zähl- und Etikettier-Tag</td><td class="p">2'500</td></tr>
+    <tr><td>KI-Wochen-Bericht: Montag früh — was raus, was rein, was bestellen</td><td class="p">2'500</td></tr>
+    <tr><td>Team-Schulung, Scan-Routinen + System-Wächter (meldet Störungen an uns, bevor du sie merkst)</td><td class="p">2'500</td></tr>
+    <tr class="sum"><td>Marktwert</td><td class="p">CHF 18'000</td></tr>
+  </table>
+  <div class="agency">Agenturen verlangen für diesen Umfang 30'000+</div>
+
+  <div class="gratis">
+    <div class="tag">Gratis obendrauf — weil du Kunde Nr. 1 bist</div>
+    <p>1 Woche Vor-Ort-Einsatz, 2 Personen: etikettieren, einräumen, schulen, Feinschliff — <b>Wert 6'000.</b> Du zahlst dafür <b>0.</b> Im Gegenzug: FINELLI als Referenz auf unserer Website — und deine Treue.</p>
+  </div>
+
+  <div class="deal">
+    <div class="l">
+      <div class="k">Dein Deal — null Risiko</div>
+      <div class="r1"><b>CHF 0 im Voraus</b> — du zahlst erst, wenn deine Abnahme-Liste erfüllt ist.<br>Danach 750 Abzahlung (24 Monate) + 500 Betrieb.</div>
+    </div>
+    <div class="big"><div class="n">CHF 1'250</div><div class="u">pro Monat komplett</div></div>
+  </div>
+  <div class="cmp">Zum Vergleich: für Shopify allein zahlst du heute ~500/Monat — ohne dass dein Lager stimmt.</div>
+
+  <div class="cards">
+    <div>
+      <h4>Läuft-oder-kostet-nichts</h4>
+      <p><b>Du</b> legst die 10 Abnahme-Punkte fest — schriftlich, <b>vor</b> Baustart. Liste erfüllt = läuft. Nicht erfüllt = <b>du zahlst nichts.</b> Geht später etwas kaputt: Flick in <b>48 Stunden</b> — sonst Rate verschoben + die 500 Betrieb diesen Monat <b>geschenkt.</b></p>
+    </div>
+    <div>
+      <h4>Der Türöffner-Joker</h4>
+      <p>Du stellst uns einer Firma vor, die Kunde wird: <b>50% von deren Auftrag</b> ziehen wir dir von der Restschuld ab — bis <b>18'000 geschenkt.</b> Ketten-Liga? Restschuld weg <b>und</b> die nächste Version gratis. Danach wächst es: Drop-Foto → Regal-Analyse → Trend-Agent.</p>
+    </div>
+  </div>
+
+  <div class="urgent">Startkunden-Konditionen gelten nur für Kunde Nr. 1 — und nur bis zum Besuch am <b>Mittwoch, 23. Juli.</b></div>
+
+  <div class="foot">
+    <span class="who"><b>Swiss Care Jobs GmbH</b> · Shehryaar Khawaja · info@swisscarejobs.ch</span>
+    <span class="cta">Mittwoch klickst du selbst in der laufenden App.</span>
+  </div>
+</body>
+</html>

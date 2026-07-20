@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>FINELLI — Deckblatt</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root { --bg: #f5f2ec; --ink: #1c1a16; --dim: #6f685c; --line: #ddd5c6; --acc: #a8271c; }
+  html, body { width: 210mm; height: 297mm; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 14mm 18mm 12mm;
+    display: flex; flex-direction: column; position: relative; overflow: hidden;
+  }
+
+  .top { display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 7.8pt; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .top b { color: var(--acc); }
+  .rule { height: .5mm; background: var(--ink); margin-top: 2mm; }
+
+  .mitte { margin: auto 0; position: relative; z-index: 2; }
+  .sterne { font-size: 11pt; letter-spacing: .35em; color: var(--acc); }
+  .sterne-sub { margin-top: 1.6mm; font-family: Georgia, serif; font-style: italic; font-size: 9.5pt; color: #2e2a24; }
+  .sterne-sub b { font-style: normal; color: var(--ink); }
+
+  h1 { font-family: Georgia, serif; font-size: 52pt; line-height: .98; margin-top: 9mm; letter-spacing: -.02em; }
+  h1 .fine { display: block; }
+  h1 em { font-style: italic; color: var(--acc); font-size: 30pt; letter-spacing: -.01em; }
+  .sub { margin-top: 7mm; font-family: Georgia, serif; font-size: 11.5pt; line-height: 1.5; color: #2e2a24; max-width: 145mm; }
+  .sub b { color: var(--acc); }
+
+  /* Etiketten-Anhaenger — das Produkt als Motiv */
+  .tag { margin-top: 11mm; display: inline-flex; align-items: center; gap: 5mm;
+    background: #fbf8f2; border: .35mm solid var(--ink); border-radius: 1.6mm;
+    padding: 4mm 6mm 3.4mm; box-shadow: 2.2mm 2.2mm 0 0 rgba(28,26,22,.12); }
+  .tag .loch { width: 3.4mm; height: 3.4mm; border: .45mm solid var(--ink); border-radius: 50%; }
+  .tag .code { display: flex; flex-direction: column; gap: 1.4mm; }
+  .tag .strichcode { width: 62mm; height: 11mm;
+    background: repeating-linear-gradient(90deg,
+      var(--ink) 0, var(--ink) .5mm, transparent .5mm, transparent 1.3mm,
+      var(--ink) 1.3mm, var(--ink) 2.4mm, transparent 2.4mm, transparent 3mm,
+      var(--ink) 3mm, var(--ink) 3.4mm, transparent 3.4mm, transparent 5mm,
+      var(--ink) 5mm, var(--ink) 5.6mm, transparent 5.6mm, transparent 6.2mm); }
+  .tag .codezeile { display: flex; justify-content: space-between; gap: 6mm; font-size: 7.5pt;
+    letter-spacing: .12em; color: var(--ink); font-weight: 700; white-space: nowrap; }
+  .tag .codezeile span:last-child { color: var(--acc); }
+  .tag-legende { margin-top: 2.6mm; font-size: 7.6pt; font-style: italic; color: var(--dim); }
+
+  .fuer { margin-top: 10mm; padding-top: 4.5mm; border-top: .3mm solid var(--line);
+    font-size: 9.5pt; line-height: 1.7; color: #3a352d; }
+  .fuer b { color: var(--ink); }
+  .inhalt { margin-top: 5mm; font-size: 8.5pt; line-height: 1.9; color: var(--dim); }
+  .inhalt b { color: var(--ink); font-family: Georgia, serif; font-size: 9.5pt; }
+
+  /* Riesiges Wasserzeichen-F unten rechts — leise, aber mit Haltung (geclippt) */
+  .wz-wrap { position: absolute; top: 0; left: 0; width: 210mm; height: 297mm; overflow: hidden; z-index: 1; pointer-events: none; }
+  .wz { position: absolute; right: -14mm; bottom: -32mm; font-family: Georgia, serif;
+    font-weight: 700; font-size: 240pt; line-height: 1; color: rgba(168,39,28,.07); }
+
+  .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline;
+    padding-top: 4mm; border-top: .3mm solid var(--line); position: relative; z-index: 2; }
+  .foot .who { font-size: 8pt; color: var(--dim); }
+  .foot .who b { color: var(--ink); }
+  .foot .datum { font-family: Georgia, serif; font-style: italic; font-size: 9.5pt; color: var(--acc); }
+</style>
+</head>
+<body>
+  <div class="top"><span>Shehryaar Khawaja — <b>Software &amp; KI</b></span><span>Angebot · Kunde Nr. 1 · Zürich, Juli 2026</span></div>
+  <div class="rule"></div>
+
+  <div class="mitte">
+    <div class="sterne">★★★★★</div>
+    <div class="sterne-sub">„Bester Kleiderladen in Zürich" — <b>über 170 Bewertungen, deine Kunden.</b></div>
+
+    <h1><span class="fine">FINELLI.</span><em>Dein System. Dein Wachstum.</em></h1>
+
+    <p class="sub">Ein Lager, das deine 5-Sterne-Marke trägt — mit <b>KI, die mitdenkt.</b>
+    Extra für dich gebaut: <b>dein erster Schritt in die KI-Automatisierung (AI-Automation).</b></p>
+
+    <div class="tag">
+      <div class="loch"></div>
+      <div class="code">
+        <div class="strichcode"></div>
+        <div class="codezeile"><span>FIN-HOD-001 · SCHWARZ · M</span><span>→ E-R2-F3</span></div>
+      </div>
+    </div>
+    <div class="tag-legende">Ein Scan — und dein System weiss, was es ist und wo es liegt.</div>
+
+    <div class="fuer">
+      Für <b>Khawar Awan</b> · Finelli Studios AG · Zürich&nbsp;&nbsp;·&nbsp;&nbsp;Von <b>Shehryaar Khawaja</b> · Software &amp; KI
+    </div>
+    <div class="inhalt">
+      Innen: <b>das Angebot &amp; dein Preis</b> &nbsp;·&nbsp; <b>deine Ausbau-Karte</b> — wohin die Reise geht.
+    </div>
+  </div>
+
+  <div class="wz-wrap"><div class="wz">F.</div></div>
+
+  <div class="foot">
+    <span class="who"><b>Shehryaar Khawaja</b> · Software &amp; KI · Zürich</span>
+    <span class="datum">Mittwoch, 22. Juli — du klickst selbst durch die laufende App.</span>
+  </div>
+</body>
+</html>

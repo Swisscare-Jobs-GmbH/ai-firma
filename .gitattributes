@@ -1,0 +1,9 @@
+# Binaer-Schutz: diese Datei-Typen nie als Text behandeln (keine Zeilenenden-Automatik)
+*.pdf binary
+*.docx binary
+*.xlsx binary
+*.pptx binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary

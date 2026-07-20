@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Angebot FINELLI System V1</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root {
+    --bg: #f5f2ec; --ink: #1c1a16; --dim: #6f685c; --line: #ddd5c6; --acc: #a8271c; --card: #fbf8f2;
+  }
+  html, body { width: 210mm; height: 297mm; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 10mm 14mm 8mm;
+    display: flex; flex-direction: column;
+  }
+
+  .top { display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 8pt; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .top b { color: var(--acc); }
+  .rule { height: .5mm; background: var(--ink); margin-top: 2.2mm; }
+
+  h1 { font-family: Georgia, serif; font-size: 24.5pt; line-height: 1.06; margin-top: 4.5mm; letter-spacing: -.01em; }
+  h1 em { font-style: italic; color: var(--acc); }
+
+  .intro { margin-top: 3mm; font-family: Georgia, serif; font-size: 10.3pt; line-height: 1.42; color: #2e2a24; }
+  .intro b { color: var(--acc); }
+
+  .lbl { margin-top: 4mm; font-size: 7.4pt; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--acc); font-weight: 700; }
+
+  .dream { margin-top: 1.6mm; background: var(--card); border: .3mm solid var(--line);
+    border-left: 1.1mm solid var(--acc); border-radius: 1.6mm; padding: 2.6mm 4mm; }
+  .dream ul { list-style: none; }
+  .dream li { font-size: 8.9pt; line-height: 1.42; padding-left: 4.5mm; position: relative; margin: 1mm 0; }
+  .dream li::before { content: "—"; position: absolute; left: 0; color: var(--acc); font-weight: 700; }
+  .dream b { color: var(--ink); }
+
+  .zwei { margin-top: 3.2mm; display: grid; grid-template-columns: 1fr 1fr; gap: 6.5mm; }
+  .zwei h4 { font-family: Georgia, serif; font-size: 9.8pt; border-bottom: .5mm solid var(--acc);
+    padding-bottom: 1mm; display: inline-block; }
+  .zwei p { margin-top: 1.5mm; font-size: 8.3pt; line-height: 1.42; color: #3a352d; }
+  .zwei b { color: var(--acc); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 1.4mm; }
+  td { padding: 1.5mm 0; border-bottom: .25mm solid var(--line); font-size: 8.4pt; line-height: 1.28; vertical-align: top; }
+  td.p { text-align: right; font-family: Georgia, serif; font-weight: 700; white-space: nowrap; padding-left: 5mm; font-size: 8.8pt; }
+  tr.sum td { border-bottom: none; border-top: .6mm solid var(--ink); padding-top: 1.8mm;
+    font-weight: 700; font-size: 9pt; text-transform: uppercase; letter-spacing: .04em; }
+  tr.sum td.p { font-size: 13pt; color: var(--acc); }
+  .agency { margin-top: .8mm; text-align: right; font-size: 7.4pt; font-style: italic; color: var(--dim); }
+
+  .deal { margin-top: 3mm; background: var(--ink); color: #f5f2ec; border-radius: 1.8mm;
+    padding: 3.6mm 5.5mm; display: flex; justify-content: space-between; align-items: center; gap: 8mm; }
+  .deal .k { font-size: 7pt; letter-spacing: .2em; text-transform: uppercase; color: #b8afa0; }
+  .deal .r1 { font-size: 8.6pt; margin-top: 1.4mm; line-height: 1.45; }
+  .deal .r1 b { color: #fff; }
+  .deal .big { text-align: right; }
+  .deal .big .n { font-family: Georgia, serif; font-size: 21pt; font-weight: 700; line-height: 1; color: #fff; white-space: nowrap; }
+  .deal .big .u { font-size: 7pt; letter-spacing: .08em; text-transform: uppercase; color: #b8afa0; margin-top: 1.2mm; }
+  .cmp { margin-top: 1.4mm; font-size: 7.7pt; font-style: italic; color: var(--dim); }
+
+  .bausteine { margin-top: 2.8mm; font-size: 8.2pt; line-height: 1.5; color: #3a352d; }
+  .bausteine b { font-family: Georgia, serif; color: var(--ink); }
+
+  .joker { margin-top: 2.8mm; border: .35mm solid var(--acc); border-radius: 1.6mm;
+    padding: 2.4mm 4mm; background: var(--card); font-size: 8.3pt; line-height: 1.42; }
+  .joker .tag { font-size: 7pt; letter-spacing: .16em; text-transform: uppercase; color: var(--acc); font-weight: 700; display: block; margin-bottom: 1mm; }
+  .joker b { color: var(--acc); }
+
+  .urgent { margin-top: 3.2mm; border-top: .3mm solid var(--ink); border-bottom: .3mm solid var(--ink);
+    padding: 2mm 0; text-align: center; font-family: Georgia, serif; font-style: italic; font-size: 9.3pt; }
+  .urgent b { font-style: normal; color: var(--acc); }
+
+  .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; padding-top: 2.5mm; }
+  .foot .who { font-size: 7.7pt; color: var(--dim); }
+  .foot .who b { color: var(--ink); }
+  .foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.7pt; color: var(--acc); }
+</style>
+</head>
+<body>
+  <div class="top"><span>Swiss Care Jobs GmbH — <b>Software &amp; KI</b></span><span>Zürich · 19. Juli 2026</span></div>
+  <div class="rule"></div>
+
+  <h1>Deine Marke hat die 5 Sterne.<br><em>Dein Versand</em> holt sie sich jetzt auch.</h1>
+
+  <p class="intro">
+    Ich habe deine Bewertungen gelesen — über 170 auf Google und Trustpilot. Dein Laden: Lob ohne Ende.
+    „Bester Kleiderladen in Zürich", schreiben deine Kunden. Du hast aus dem Nichts die stärkste
+    Streetwear-Marke der Stadt gebaut. Die <b>einzige</b> Bremse, die überhaupt auftaucht — sogar bei
+    deinen Fans: Online-Bestellungen warten aufs Lager. Das ist keine Schwäche deiner Marke — das ist
+    ein Lager ohne System. <b>Genau das lösen wir. Und bauen dir dabei gleich echte Zahlen zu jedem Teil.</b>
+  </p>
+
+  <div class="lbl">Eine Woche nach Start — so läuft dein Tag</div>
+  <div class="dream">
+    <ul>
+      <li>Du weisst <b>jeden Moment exakt</b>, was an Lager ist — und siehst jeden Morgen am Handy, was gestern lief: Laden, Online, pro Teil und Grösse.</li>
+      <li>Jede Bestellung geht <b>am selben Tag</b> raus — die Pickliste sagt deinem Team: „liegt auf Platz E-R2-F3."</li>
+      <li>Das System sagt dir, <b>was du nachbestellen musst</b> — „bestell 20 Stück: in 3 Wochen leer, Nachschub braucht 2" — Montag früh als Bericht.</li>
+      <li>Und du <b>fragst die KI einfach selbst</b>: „Warum dieser Vorschlag?" — sie antwortet mit deinen echten Zahlen. Hast du alte Verkaufsdaten, füttern wir sie ein: dein System startet schlau, nicht bei null.</li>
+    </ul>
+  </div>
+
+  <div class="zwei">
+    <div>
+      <h4>Beweis statt Versprechen</h4>
+      <p>Das System <b>steht schon</b> — am Mittwoch klickst du selbst durch. Keine Folien, die laufende App.
+      Die 10 Abnahme-Punkte bringen wir fertig mit — <b>du</b> streichst oder ergänzt, dann gilt: Liste erfüllt = läuft.
+      Nicht erfüllt = <b>du zahlst nichts.</b> Und hakt später etwas: du erreichst uns direkt, Flick innert
+      <b>48 Stunden</b> — sonst kostet dich dieser Monat <b>nichts.</b></p>
+    </div>
+    <div>
+      <h4>Dein Aufwand: einmal zählen</h4>
+      <p>Wir kommen <b>1 Woche zu zweit</b>, richten alles ein und zeigen deinem Team jeden Handgriff —
+      Begleitung im Wert von <b>6'000, für dich 0</b> (dafür: FINELLI als Referenz auf unserer Website).
+      Dein Team übernimmt <b>einmalig</b> Zählen, Etikettieren und Einräumen nach unserer Anleitung — danach
+      lernt es genau eine Bewegung: <b>scannen.</b> Shopify bleibt dein System, nichts wird umgestellt.</p>
+    </div>
+  </div>
+
+  <div class="lbl">Was das wert ist — und was du zahlst</div>
+  <table>
+    <tr><td>Logistik-Kern: Lagerplätze, Pickliste mit Fundort, Verkaufs-Journal — Massanfertigung</td><td class="p">9'000</td></tr>
+    <tr><td>Kassen-Fix + Etiketten-System: ein Code pro Teil und Grösse — Scan zeigt sofort „Hoodie Schwarz, M"</td><td class="p">4'000</td></tr>
+    <tr><td>KI-Paket: Wochen-Bericht, Bestell-Vorschlag mit Begründung, Frag-FINELLI (deine Fragen an deine Zahlen) + System-Wächter</td><td class="p">2'500</td></tr>
+    <tr><td>Team-Schulung + Scan-Routinen, bis es sitzt</td><td class="p">2'500</td></tr>
+    <tr class="sum"><td>Dein Preis — Selbstkosten</td><td class="p">CHF 18'000</td></tr>
+  </table>
+  <div class="agency">Agenturen verlangen für diesen Umfang 30'000+ — als Kunde Nr. 1 zahlst du den Selbstkosten-Wert.</div>
+
+  <div class="deal">
+    <div>
+      <div class="k">Dein Startkunden-Deal — null Risiko</div>
+      <div class="r1"><b>CHF 0 im Voraus.</b> Du zahlst erst, wenn deine Abnahme-Liste erfüllt ist.<br>Danach CHF 750 Abzahlung (24 Monate) + CHF 500 Betrieb.</div>
+    </div>
+    <div class="big"><div class="n">CHF 1'250</div><div class="u">pro Monat komplett</div></div>
+  </div>
+  <div class="cmp"><b>Alles auf diesem Blatt ist in den 1'250 inbegriffen</b> — eine Komplett-Lösung, keine fünf
+  Software-Abos, keine versteckten Kosten. Zum Vergleich: für Shopify allein zahlst du heute ~500 im Monat.</div>
+
+  <div class="bausteine">
+    <b>So bauen wir's:</b> feste Lagerplätze (Zone-Regal-Fach) · Pickliste mit Fundort und Scan-Kontrolle ·
+    Verkaufs-Journal, das Laden + Online automatisch zählt · ein Scan-Code pro Teil und Grösse ·
+    KI-Bericht, Bestell-Vorschlag und Frag-FINELLI-Chat. <b>Ein System, auf dem alles aufbaut</b> —
+    als Nächstes: deine Webseite, Kollektionen-Drops, und was immer du dir ausdenkst.
+  </div>
+
+  <div class="joker">
+    <span class="tag">Der Türöffner-Joker</span>
+    Du stellst uns einer Firma vor, die Kunde wird: <b>50% von deren Auftrag</b> ziehen wir dir von der Restschuld ab —
+    bis <b>CHF 18'000 geschenkt.</b> Ist es eine Laden-Kette: Restschuld komplett weg <b>und</b> die nächste Version gratis.
+  </div>
+
+  <div class="urgent">Kunde Nr. 1 gibt es genau einmal. Am <b>Mittwoch, 23. Juli</b> entscheidest du, ob du es bist.</div>
+
+  <div class="foot">
+    <span class="who"><b>Swiss Care Jobs GmbH</b> · Shehryaar Khawaja · info@swisscarejobs.ch</span>
+    <span class="cta">Mittwoch klickst du selbst in der laufenden App.</span>
+  </div>
+</body>
+</html>
