@@ -11,6 +11,13 @@ Kaufmann Gut zu Fuss ist ein **Einzelunternehmen in Rorschach SG** — Orthopaed
 **Der Inhaber heisst NICHT Kaufmann, sondern Farhad Akbarzada** (seit 2015, uebernahm das
 Traditionsgeschaeft von Matthias Kaufmann, HR-Spur bis 2006). ⚠️ Im Gespraech NIE "Herr Kaufmann" sagen.
 
+**⚠️ Entscheider-Struktur (SA-Info 19.07, muendlich):** SAs Kontakt ist **Qais** — das Geschaeft
+gehoert **seinem Vater** (= Farhad Akbarzada laut Handelsregister; "Qais = Sohn" ist Deutung,
+Schreibweise unbestaetigt). Verkaufs-Folge: **Qais ist der Tueroeffner/Champion, der Vater ist
+Eigentuemer und muss am Ende ja sagen.** Angebot + Stolz-Einstieg (Tradition, 30 Jahre Handwerk)
+zielen auf den VATER; Qais kriegt die Digital-Argumente (er hat das Konzept-Dokument vermutlich
+mitgeschrieben). Frage 11 (wer entscheidet) im Gespraech trotzdem sauber klaeren.
+
 **Wichtigster Risiko-Fund:** Der Baustein "CSV-Export 1x/Woche aus GP Manager" aus dem
 Kunden-Konzept ist in der oeffentlichen GP-Manager-Doku **NICHT belegt** — dokumentiert ist nur
 ein proprietaeres GPF-Format. Vor dem Bau am echten System zeigen lassen. Plan B: SQL-Zugriff
@@ -22,7 +29,7 @@ auf die GP-Datenbank (Microsoft SQL Server Express, machbar, braucht IT-Zugang).
 |---|---|---|
 | Was | Orthopaedie-Fachgeschaeft: Masseinlagen (auch Diabetiker/Kinder/Sport/sensomotorisch nach Jahrling), orthopaedische Serien-/Massschuhe, Bandagen, Kompressionsstruempfe, Schuhservice | gut-zu-fuss.ch |
 | Rechtsform | Einzelunternehmen, UID CHE-153.021.030, eingetragen 11.06.2015 | Zefix-API |
-| Chef | **Farhad Akbarzada** — Inhaber mit Einzelunterschrift, laut Website 30+ Jahre Orthopaedietechniker (Eigenangabe) | business-monitor.ch + Website |
+| Chef | **Farhad Akbarzada** — Inhaber mit Einzelunterschrift, laut Website 30+ Jahre Orthopaedietechniker (Eigenangabe). **SAs Kontakt: Qais (Sohn, Deutung) — Vater entscheidet** | business-monitor.ch + Website + SA-Info 19.07 |
 | Adresse | Hauptstrasse 40, 9400 Rorschach SG (einziger Standort) · Tel +41 71 841 00 61 · laden@gut-zu-fuss.ch | Website/search.ch |
 | Software | GP Manager (go-tec/GeBioM, Muenster DE; CH-Partner: H. Siegenthaler AG Herzogenbuchsee) — nur aus Konzept-Dokument bekannt, oeffentlich nicht verifizierbar | gpsupport.de + Konzept-Doc |
 | Online | Wix-Website MIT Online-Terminbuchung (kostenlose 1h-Erstberatung!), Instagram/Facebook/LinkedIn vorhanden, KEIN Newsletter | gut-zu-fuss.ch/online-buchen |
