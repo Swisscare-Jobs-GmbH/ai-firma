@@ -85,3 +85,26 @@ Was: Pfad-Verweis in CLAUDE.md auf die Pfad-Karte umstellen; Absender-Wechsel al
 Was tust du: Kurzer SA-Auftrag an einen Chat ("mach T2") — die Aenderungen sind vorbereitet beschrieben.
 Warum jetzt: Beides sind dokumentierte Drifts; ohne Formalisierung tauchen sie wieder auf. Zeit: ~15 Min.
 <!-- T:2 END -->
+
+<!--
+T: 3
+date: 2026-07-20
+auftraggeber: AB-Direktive 2026-07-20 (Praesentations-Session)
+wichtigkeit: 1
+sterne: 5
+leverage: compound
+thema: [strategie, verkauf]
+kunde: finelli
+skill_used: []
+knowledge_ref: kunden/finelli/praesentation/konfig-finelli.json
+status: active
+deadline: 2026-07-22
+context_summary: "AB will die Firmen-Strategie aendern: ai-firma soll Voll-Anbieter werden (eigene Website/Shop-Plattform statt Aufsatz auf Shopify), Kunden holen in hoeheren Modellen (Premium/Max) alle Dienstleistungen bei uns, Ziel maximale Kundenbindung. Das kollidiert mit harter Regel Nr. 1 der ai-firma/CLAUDE.md (Bestehendes NIE ersetzen, aufsetzen), mit der Architektur von finelli-lagerverwaltung (Shopify = alleinige Bestandswahrheit) und mit Angebot V6 + Demo + Deck, die Finelli woertlich das Aufsetzen versprechen. CLAUDE.md ist SA-Schutz-Zone, darum liegt der Entscheid hier. Optionen: (A) Strategie aendern und OFFEN verkaufen (eigener Shop als Ausbau-Stufe, Kunde weiss es und waehlt es; Angebot/Deck/Architektur werden angepasst), (B) beim Aufsetz-Modell bleiben, Bindung ueber Phase-6-Betrieb, (C) Hybrid: Phase 1 wie versprochen auf Shopify, eigener Shop ab Premium/Max als offen deklarierte spaetere Etappe. Wichtig fuer den Entscheid: heimliche Abhaengigkeit (kein Fallback, Kunde merkt es nicht) waere Taeuschung gegenueber Khawar und gefaehrdet Referenz Nr. 1."
+bucket: now
+bucket_reason: "Finelli-Termin ist am 22.07; Deck und Angebot muessen zur beschlossenen Strategie passen"
+-->
+## 🔴 2026-07-20 — T3: Strategie-Entscheid: Voll-Anbieter mit eigener Website vs. Aufsetz-Regel
+Was: AB schlaegt vor, die harte Regel "Bestehendes NIE ersetzen" zu kippen: eigene Website/Shop-Plattform als Kern-Dienstleistung, alle Services aus einer Hand, hoehere Modelle = mehr bei uns.
+Was tust du: Entscheid A (offener Voll-Anbieter, CLAUDE.md + Angebot + Architektur anpassen), B (beim Aufsetzen bleiben) oder C (Hybrid: Shopify jetzt, eigener Shop als offene Ausbau-Stufe ab Premium). 1 Antwort genuegt, Umsetzung ist vorbereitet.
+Warum jetzt: Termin 22.07 — Deck, Angebot V6 und Phase-1-Architektur haengen alle an diesem Entscheid. Zeit: 10 Min Entscheid.
+<!-- T:3 END -->
