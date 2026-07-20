@@ -14,7 +14,7 @@
       { "kopf": "Die Standort-Frage",
         "text": "Grösse M in Zürich ausverkauft. Ob Embrach noch eine hat, **sieht heute niemand.**" },
       { "kopf": "Die Kasse",
-        "text": "Ladenverkäufe werden von Hand in Shopify nachgetragen. **Das kostet Zeit und stimmt oft nicht.**" }
+        "text": "Ladenverkäufe werden von Hand im Onlineshop nachgetragen. **Das kostet Zeit und stimmt oft nicht.**" }
     ],
     "band": {
       "titel": "AB SOFORT",
@@ -30,8 +30,8 @@
     "titel": "Drei Zusagen",
     "untertitel": "Bevor wir über Modelle reden.",
     "punkte": [
-      { "kopf": "Shopify bleibt führend.",
-        "text": "Wir ersetzen nichts. Das Cockpit setzt auf deine bestehenden Systeme auf." },
+      { "kopf": "Kein Unterbruch.",
+        "text": "Die Einführung läuft im Hintergrund. Laden und Onlineshop verkaufen jeden Tag normal weiter." },
       { "kopf": "Jede Buchung macht ein Mensch.",
         "text": "Die KI schlägt vor und rechnet. Entscheiden tust du." },
       { "kopf": "Ein Preis. Alles drin.",
@@ -53,7 +53,7 @@
     "titel": "So arbeitet es zusammen",
     "untertitel": "Ein Operating System verbindet deine Systeme mit deinen Menschen.",
     "links_titel": "DEINE SYSTEME",
-    "systeme": ["Shopify", "Ladenkasse", "Website", "Post / Versand"],
+    "systeme": ["Onlineshop", "Ladenkasse", "Website", "Post / Versand"],
     "os_name": "OPERATING SYSTEM",
     "os_sub": "das Finelli Cockpit",
     "rechts_titel": "DEINE MENSCHEN",
@@ -90,7 +90,7 @@
     "untertitel": "Vier Schritte. Der Laden läuft normal weiter.",
     "punkte": [
       { "kopf": "Zählen", "text": "Dein Team zählt einmal sauber durch. Mit Anleitung und Lagerplatz-Etiketten von uns." },
-      { "kopf": "Verbinden", "text": "Wir verbinden das Cockpit mit deinem Shopify. Shopify bleibt führend." },
+      { "kopf": "Verbinden", "text": "Wir verbinden das Cockpit mit Onlineshop, Kasse und Versand. Alles läuft in einem System zusammen." },
       { "kopf": "Schulen", "text": "30 Minuten pro Person. Jeder bekommt eine eigene PIN." },
       { "kopf": "Betrieb", "text": "Wochen-Bericht jeden Montag. Wir betreuen und bauen aus, wenn du es willst." }
     ],

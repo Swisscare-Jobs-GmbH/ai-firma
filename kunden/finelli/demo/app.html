@@ -313,7 +313,7 @@ function buildNav(){
  let h='<div class="nv">';
  NAV.forEach(n=>{h+=`<button class="${S.view===n[0]?'act':''}" onclick="go('${n[0]}')">${IC[n[2]]}<span>${n[1]}</span>${n[0]=='locked'?'<span class="lockbadge">kommt später</span>':''}</button>`;});
  h+=`<button onclick="logout()" style="color:#e0a59d">${IC.out}<span>Abmelden</span></button>`;
- h+='</div><div class="fz">Vorschau mit Beispieldaten (Übungs-Modus). Deine echte App holt die Zahlen live aus deinem Shopify — Shopify bleibt der Chef über den Bestand.</div>';
+ h+='</div><div class="fz">Vorschau mit Beispieldaten (Übungs-Modus). Deine echte App holt die Zahlen live aus deinem Onlineshop.</div>';
  $('sidebar').innerHTML=h;
 }
 function openSheet(){
@@ -322,7 +322,7 @@ function openSheet(){
   <button class="sh" onclick="go('report')">${IC.report} Wochen-Bericht</button>
   <button class="sh" onclick="go('locked')">${IC.lock} Auswertungen <span class="lockbadge">kommt später</span></button>
   <button class="sh rd" onclick="logout()">${IC.out} Abmelden</button>
-  <div class="info">Vorschau mit Beispieldaten (Übungs-Modus). Deine echte App holt die Zahlen live aus deinem Shopify — Shopify bleibt der Chef über den Bestand.</div>`;
+  <div class="info">Vorschau mit Beispieldaten (Übungs-Modus). Deine echte App holt die Zahlen live aus deinem Onlineshop.</div>`;
  $('sheet').classList.add('on');
  const b=[...$('bnav').children].find(x=>x.textContent.includes('Mehr'));if(b)b.setAttribute('aria-expanded','true');
 }
@@ -513,7 +513,7 @@ function rOrders(){
     <div class="pzbody ${o.open?'open':''}">${pz}<div class="ct mut" style="margin-top:6px">Laufweg statt Suchweg.</div></div></div>
    ${act2}</div>`;
  }).join('');
- $('v-orders').innerHTML=hd('Bestellungen','Heute aus deinem Shopify — anonymisierte Vorschau')+cards;
+ $('v-orders').innerHTML=hd('Bestellungen','Heute aus deinem Onlineshop — anonymisierte Vorschau')+cards;
 }
 function togPz(i){S.orders[i].open=!S.orders[i].open;renderAll();}
 function packOrder(i){const o=S.orders[i];act(`Bestellung #${o.nr} als verpackt markiert`,()=>{o.status=3;});toast(`#${o.nr} als verpackt markiert.`);}
@@ -640,7 +640,7 @@ function chatAnswer(q){
   ART.forEach(a=>{const x=ampOf(a);if(x==='y'){const zi=a.q.zh.reduce((m,v,i)=>v<a.q.zh[m]?i:m,0);y.push(`${a.name} (${a.q.zh[zi]}x Zürich City)`);}else if(x==='r'){a.sizes.forEach((s,i)=>{if(a.q.zh[i]===0)r.push(`${a.name} ${s} (Zürich City 0)`);});}});
   return `Knapp: ${y.join(', ')}. Leer an einem Standort: ${r.join(', ')}.`;
  }
- if(q.includes('woche')||q.includes('lief'))return `Diese Woche: ${K.wochenSumme} Verkäufe über deinen Shopify-Shop. Stärkster Artikel: Tee Box-Logo. Details stehen im Wochen-Bericht.`;
+ if(q.includes('woche')||q.includes('lief'))return `Diese Woche: ${K.wochenSumme} Verkäufe über deinen Onlineshop. Stärkster Artikel: Tee Box-Logo. Details stehen im Wochen-Bericht.`;
  if(q.includes('hoodie')||(q.includes('wo')&&q.includes('liegt'))){const qz=liveMenge('a1','M','zh'),qe=liveMenge('a1','M','emb');return `Hoodie Classic M: Zürich City ${qz}x${qz===0?' (leer)':''}, Embrach ${qe}x — Lagerplatz EMB-B-03 · Regal B, Fach 3.`;}
  if(q.includes('nachbestell')||q.includes('bestellen'))return KI.text()+' Übernehmen kannst du das auf der Übersicht — entscheiden tust DU.';
  return 'Das kann die Vorschau noch nicht — die echte App lernt deine Fragen.';
@@ -655,7 +655,7 @@ function rReport(){
  const reich=Math.max(1,Math.round(totalA(getA('a5'))/4));
  $('v-report').innerHTML=hd('Wochen-Bericht','Montag, in Laiensprache — kein Excel nötig.')+`
   <div class="c"><h2>Was diese Woche lief</h2><div class="ct">Dein Shop hat diese Woche ${K.wochenSumme} Stück verkauft. Am besten lief Tee Box-Logo. Hoodie Classic M ist in Zürich City ausgegangen — in Embrach liegt Nachschub.</div></div>
-  <div class="c" style="text-align:center"><h2>Eine Zahl der Woche</h2><div class="zw serif">${K.wochenSumme}</div><div class="ct mut" style="margin-top:6px">verkaufte Stücke über Shopify — Beispieldaten</div></div>
+  <div class="c" style="text-align:center"><h2>Eine Zahl der Woche</h2><div class="zw serif">${K.wochenSumme}</div><div class="ct mut" style="margin-top:6px">verkaufte Stücke über deinen Onlineshop — Beispieldaten</div></div>
   <div class="c"><h2>Was als Nächstes kommt</h2><div class="ct">&bull; Vorschlag: Hoodie Classic M nachbestellen (siehe Übersicht — du entscheidest).</div><div class="ct">&bull; Beanie Logo im Auge behalten: reicht noch ~${reich} Wochen (Schätzung).</div></div>
   <div class="ct mut">Dieser Bericht kommt jeden Montag automatisch per Mail — ohne dass du etwas tun musst.</div>`;
 }
