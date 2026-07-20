@@ -14,6 +14,12 @@
 | **3 — MVP bauen** | Uebungs-Modus zuerst (Mock), Klick-Beweis, Review-Schwarm + Fixes | Demo-faehige App | 1-3 Tage |
 | **4 — Angebot** | Hormozi-Reihenfolge, Stolz-Einstieg, Judge-Panel drueber | 1 Seite A4 (PDF) | 0.5 Tag |
 | **5 — Termin** | Demo aus laufender App, Kunde klickt selbst, Abnahme-Liste, Vertrag | Unterschrift + Zugaenge | 1 Besuch |
+| **6 — Betrieb** | 30/60/90-Ritual, Monats-Wert-Bericht, Quick-Win, Baustein-Fahrplan, SLA, Aenderungs-Regel | Abo haelt ueber die ersten 90 Tage | laufend |
+
+> **Phase 6 ist die Lebensversicherung des Abos** (`phase-6-betrieb.md`). Markt-Richtwert: 60-70% der
+> Kunden-Abwanderung passiert in den ersten 6 Monaten — Grund ist fast nie schlechte Arbeit, sondern
+> unsichtbarer Wert. Zugehoerige Vorlagen: `vorlagen/vertrag/sla-blatt.md` (Service-Zeiten) +
+> `vorlagen/vertrag/aenderungs-klausel.md` (2-Topf-Regel gegen Scope Creep).
 
 ## Reihenfolge-Regel (wichtig)
 
