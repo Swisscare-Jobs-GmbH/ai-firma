@@ -37,7 +37,7 @@ Notizen zu den Klaerungsfragen bleiben lokal im Browser gespeichert (localStorag
 | Datei | Zweck |
 |---|---|
 | `index.html` | Pitch-Seite (Momente + Werkbank + 7 Fragen) — verlinkt am Ende auf die App-Vorschau |
-| `app.html` | **App-Simulation "Cockpit — Vorschau"**: PIN-Login (Demo-PIN 2019), Dashboard mit Ampeln, Bestand mit Umlagern/Korrektur, Bestellungen mit Post-Etiketten-Status + Pickzettel, Scannen, Frag Finelli, Wochen-Bericht, gesperrte Auswertungen. Khawar probiert die "fast fertige App" selbst aus. |
+| `app.html` | **App-Simulation "Cockpit — Vorschau"**: PIN-Login (Demo-PIN 2019), Dashboard mit Ampeln, Bestand mit Umlagern/Korrektur, Bestellungen mit Post-Etiketten-Status + Pickzettel, Scannen, Frag Finelli, Wochen-Bericht, gesperrte Auswertungen. Khawar probiert die "fast fertige App" selbst aus. NEU 20.07: Design wie das Praesentations-Deck (flach, Serifen-Titel), Lagerraum-Karte nach jedem Scan (Embrach 3 x 5 m von oben, leuchtender Punkt am Lagerplatz) + Groessen-Farben (S gruen, M rot, L gold, XL blau) in Karte, Fach-Ansicht und Bestand-Matrix. |
 | `klick-beweis-demo-2026-07-20.md` | Klick-Beweis Pitch-Seite + Vorfuehr-Drehbuch |
 | `klick-beweis-app-2026-07-20.md` | Klick-Beweis App-Simulation + Vorfuehr-Drehbuch |
 | `klick-beweis-*.png` | Bildschirm-Beweise aus dem echten Browser |

@@ -50,6 +50,19 @@ Beispieldaten sind am KALENDERTAG verankert (DOY-Formel, kein random): 20.07. er
 6. Auswertungen antippen lassen → die ehrliche Sperre wirkt staerker als jedes Versprechen.
 7. Zurueck zur Pitch-Seite → die 7 Fragen ausfuellen.
 
+## Nachtrag gleicher Tag: Design-Angleichung + Lagerraum-Karte (AB-Auftrag)
+
+Aenderungen: Deck-Design uebernommen (Serifen-Titel, flache Karten ohne Schatten) ·
+NEU nach jedem Scan eine **Lagerraum-Karte** (Embrach, 3 x 5 m, Ansicht von oben, Regale A/B/C
+an den Waenden, Faecher beschriftet, leuchtender Punkt am Lagerplatz in der Groessen-Farbe) ·
+**Groessen-Farben** (S gruen, M rot, L gold, XL blau) in Karte, Fach-Ansicht ("Im Schrank:
+Farbe = Groesse"), Chips und Bestand-Matrix.
+
+Beweis (echter Browser, gleiche Methode): Login 2019 → Scannen → Karte erscheint, Punkt bei
+Regal B / Fach 1 (EMB-B-01, korrekt fuer Tee Box-Logo), Punkt-Farbe = M-Rot, Fach-Ansicht hebt
+M hervor, 4 Groessen-Chips → Einbuchen gruen, Karte bleibt → **Konsole: 0 Fehler**.
+Screenshot: `klick-beweis-app-9-lagerkarte.png`.
+
 ## Bildschirm-Beweise
 
-`klick-beweis-app-1-login.png` … `klick-beweis-app-8-frag-finelli.png` (in diesem Ordner).
+`klick-beweis-app-1-login.png` … `klick-beweis-app-9-lagerkarte.png` (in diesem Ordner).

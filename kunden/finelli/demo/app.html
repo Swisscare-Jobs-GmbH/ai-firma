@@ -33,13 +33,13 @@ main{flex:1;padding:16px 16px 96px;max-width:820px;margin:0 auto;width:100%}
 .view{display:none;animation:fade .18s ease}
 .view.on{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
-h1{font-size:22px;margin-bottom:2px}
+h1{font-size:23px;margin-bottom:2px;font-family:Georgia,"Times New Roman",serif}
 .hd{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .hd .badge{border-color:var(--red);background:#fff;color:var(--red)}
 .hd .dt{font-size:12px;color:#77747c;margin-left:auto}
 .subttl{color:#77747c;font-size:13px;margin:-8px 0 12px}
 /* cards */
-.c{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.c{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px;margin-bottom:12px}
 .c h2{font-size:15px;margin-bottom:10px}
 .ct{font-size:13px;color:#55535a;line-height:1.5}
 .mut{color:#8a8891;font-size:12px}
@@ -55,7 +55,7 @@ h1{font-size:22px;margin-bottom:2px}
 .chip.r{background:var(--rb);color:var(--red)}
 /* ampel row */
 .amp3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}
-.amp3 .ac{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.amp3 .ac{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 10px;text-align:center}
 .amp3 .ac .n{font-size:26px;font-weight:800;line-height:1}
 .amp3 .ac .l{font-size:11px;color:#66646c;margin-top:4px}
 .ac.g{border-top:4px solid var(--g)}.ac.y{border-top:4px solid var(--y)}.ac.r{border-top:4px solid var(--red)}
@@ -110,6 +110,18 @@ table.mx{border-collapse:collapse;width:100%;min-width:280px}
 @keyframes pl{0%{transform:scale(1)}50%{transform:scale(.96)}100%{transform:scale(1)}}
 .ok{color:var(--g);font-weight:700}
 .qcard{border:1px solid var(--y);background:var(--yb);border-radius:12px;padding:12px;margin-top:12px}
+/* Lagerraum-Karte + Groessen-Farben */
+.kartew{display:flex;justify-content:center;margin-top:10px}
+.kartew svg{width:225px;max-width:100%;height:auto}
+.puls{animation:puls 1.6s ease-out infinite;transform-origin:center;transform-box:fill-box}
+@keyframes puls{0%{opacity:.65;transform:scale(.5)}70%{opacity:0;transform:scale(2)}100%{opacity:0}}
+.szd{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
+.szchip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 9px;border:1px solid var(--line);border-radius:20px;background:#fff;margin:2px 3px 2px 0}
+.szchip i{display:inline-block;width:10px;height:10px;border-radius:50%}
+.szchip.akt{border-color:var(--ink)}
+.fachfront{display:flex;gap:5px;margin-top:8px}
+.ff{flex:1;color:#fff;text-align:center;font-size:12px;font-weight:700;padding:11px 0;border-radius:7px;opacity:.3}
+.ff.akt{opacity:1;outline:3px solid var(--ink)}
 /* chat */
 .bubw{display:flex;flex-direction:column;gap:9px;margin:10px 0;min-height:60px}
 .bub{max-width:85%;padding:10px 13px;border-radius:14px;font-size:13.5px;line-height:1.5;animation:fade .3s}
@@ -138,7 +150,7 @@ table.mx{border-collapse:collapse;width:100%;min-width:280px}
 .hint{background:var(--yb);color:#7a5c12;font-size:13px;padding:8px;border-radius:9px;margin:14px 0 6px}
 .err{color:var(--red);font-size:13px;font-weight:600;min-height:18px}
 /* toast */
-#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:84px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-size:13px;max-width:90%;text-align:center;opacity:0;pointer-events:none;transition:.2s;z-index:80;box-shadow:0 4px 18px rgba(0,0,0,.3)}
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:84px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-size:13px;max-width:90%;text-align:center;opacity:0;pointer-events:none;transition:.2s;z-index:80;border:1px solid #2b2930}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(min-width:900px){#toast{bottom:24px}}
 /* modal */
@@ -254,6 +266,9 @@ const ORD_TPL=[
  {items:[['a3','One Size',1],['a2','S',2]], ziel:'Bern'}
 ];
 const SCAN=[{art:'a2',size:'M',loc:'emb'},{art:'a1',size:'M',loc:'emb'},{art:'a5',size:'One Size',loc:'emb'}];
+/* Groessen-Farben: im Schrank zeigt die Farbe, wo die Groesse liegt */
+const SZFARBE={'S':'#2F7D43','M':'#A8271C','L':'#B9861A','XL':'#1F3A5F','One Size':'#77747C','39-42':'#2F7D43','43-46':'#1F3A5F'};
+const szf=s=>SZFARBE[s]||'#77747C';
 const KI={art:'a1',size:'M',menge:12,text:()=>`Hoodie Classic M ist in Zürich City leer (0) und in Embrach nur ${liveMenge('a1','M','emb')}x — Vorschlag: 12 nachbestellen.`};
 const S={view:'login',detail:null,scanCount:0,scanBusy:false,offline:false,queue:[],orders:[],ki:'offen',journal:[],eingebucht:0,filter:null,chatlog:[]};
 ORD_TPL.slice(0,K.bestellAnz).forEach((t,i)=>S.orders.push({tpl:i,nr:K.ordNr(i),status:2,open:false}));
@@ -425,7 +440,7 @@ function rStockDetail(){
  const mIdx=si(a,'M');
  let banner='';
  if(a.id==='a1'&&a.q.zh[mIdx]===0){banner=`<div class="banner rr">Hoodie Classic M: in Zürich City leer — in Embrach verfügbar (${a.q.emb[mIdx]}x). Umlagerung vorschlagen? <button class="b" style="padding:8px 12px;min-height:36px" onclick="umlagernModal('${a.id}','M')">Umlagern</button></div>`;}
- let rows=a.sizes.map((sz,i)=>{const qz=a.q.zh[i],qe=a.q.emb[i];return `<tr><th>${sz}</th><td class="${cellAmp(qz)}"><span class="q">${qz}</span></td><td class="${cellAmp(qe)}"><span class="q">${qe}</span></td></tr>`;}).join('');
+ let rows=a.sizes.map((sz,i)=>{const qz=a.q.zh[i],qe=a.q.emb[i];return `<tr><th><span class="szd" style="background:${szf(sz)}"></span>${sz}</th><td class="${cellAmp(qz)}"><span class="q">${qz}</span></td><td class="${cellAmp(qe)}"><span class="q">${qe}</span></td></tr>`;}).join('');
  $('v-stock').innerHTML=hd('Bestand')+`
   <button class="back" onclick="S.detail=null;renderAll()">&lsaquo; Zurück</button>
   <div class="c"><div class="row" style="align-items:center"><h2 style="margin:0">${a.name}</h2><span class="chip ${x}">${ampLbl(x)}</span></div>
@@ -503,18 +518,64 @@ function rOrders(){
 function togPz(i){S.orders[i].open=!S.orders[i].open;renderAll();}
 function packOrder(i){const o=S.orders[i];act(`Bestellung #${o.nr} als verpackt markiert`,()=>{o.status=3;});toast(`#${o.nr} als verpackt markiert.`);}
 
+/* ---- Lagerraum-Karte (Embrach, 3 x 5 m, Ansicht von oben) ---- */
+function lagerkarte(code,dotFarbe){
+ const teile=code.split('-'),regal=teile[1],nr=parseInt(teile[2]);
+ const R={A:{x:8,y:48,b:44,h:404,dir:'v'},B:{x:248,y:48,b:44,h:404,dir:'v'},C:{x:60,y:8,b:180,h:44,dir:'h'}};
+ let s='<svg viewBox="0 0 300 500" role="img" aria-label="Lagerraum Embrach von oben, 3 mal 5 Meter">';
+ s+='<rect x="3" y="3" width="294" height="494" rx="8" fill="#fff" stroke="#17161A" stroke-width="5"/>';
+ s+='<rect x="115" y="491" width="70" height="9" fill="#F4F4F2"/>';
+ s+='<text x="150" y="481" text-anchor="middle" font-size="13" fill="#77747C">Tür</text>';
+ let dot=null;
+ for(const rg of Object.keys(R)){
+  const r=R[rg];
+  s+=`<rect x="${r.x}" y="${r.y}" width="${r.b}" height="${r.h}" fill="#E4E0D9"/>`;
+  for(let i=1;i<=5;i++){
+   let fx,fy,fb,fh;
+   if(r.dir==='v'){fh=r.h/5;fb=r.b;fx=r.x;fy=r.y+(i-1)*fh;}
+   else{fb=r.b/5;fh=r.h;fx=r.x+(i-1)*fb;fy=r.y;}
+   const akt=(rg===regal&&i===nr);
+   s+=`<rect x="${fx}" y="${fy}" width="${fb}" height="${fh}" fill="${akt?'#F7E5E2':'none'}" stroke="#fff" stroke-width="3"/>`;
+   const lx=fx+fb/2,ly=fy+fh/2;
+   if(akt)dot={x:lx,y:ly};
+   else s+=`<text x="${lx}" y="${ly+4}" text-anchor="middle" font-size="11" fill="#77747C">${rg}-0${i}</text>`;
+  }
+ }
+ s+='<text x="30" y="474" text-anchor="middle" font-size="12" font-weight="700" fill="#17161A">Regal A</text>';
+ s+='<text x="270" y="474" text-anchor="middle" font-size="12" font-weight="700" fill="#17161A">Regal B</text>';
+ s+='<text x="150" y="72" text-anchor="middle" font-size="12" font-weight="700" fill="#17161A">Regal C</text>';
+ if(dot){
+  s+=`<circle class="puls" cx="${dot.x}" cy="${dot.y}" r="14" fill="${dotFarbe}"/>`;
+  s+=`<circle cx="${dot.x}" cy="${dot.y}" r="9" fill="${dotFarbe}" stroke="#fff" stroke-width="2.5"/>`;
+ }
+ return s+'</svg>';
+}
+function fachAnsicht(a,akt){
+ return `<div class="fachfront">${a.sizes.map(sz=>`<div class="ff ${sz===akt?'akt':''}" style="background:${szf(sz)}">${sz}</div>`).join('')}</div>`;
+}
+function szChips(a,akt){
+ return a.sizes.map(sz=>`<span class="szchip ${sz===akt?'akt':''}"><i style="background:${szf(sz)}"></i>${sz}</span>`).join('');
+}
+
 /* ---- Scannen ---- */
 function rScan(){
  let res='';
  if(S.scanShown){
   /* nach dem Einbuchen den GEBUCHTEN Artikel zeigen, nicht schon den naechsten */
   const sc=SCAN[(S.scanDone?S.scanCount+2:S.scanCount)%3];const a=getA(sc.art);
+  const code=a.pl[sc.loc];
   if(S.scanDone){
-   res=`<div class="c"><div class="ok">&#x2713; Eingebucht: 1x ${a.name} ${sc.size} -> ${a.pl[sc.loc]} · ${plText(a.pl[sc.loc])}</div></div>`;
+   res=`<div class="c"><div class="ok">&#x2713; Eingebucht: 1x ${a.name} ${sc.size} -> ${code} · ${plText(code)}</div></div>`;
   }else{
-   res=`<div class="c"><h2>${a.name} · ${sc.size}</h2><div class="ct">Lagerplatz-Vorschlag: ${a.pl[sc.loc]} · ${plText(a.pl[sc.loc])}</div>
+   res=`<div class="c"><h2>${a.name} · <span class="szd" style="background:${szf(sc.size)}"></span>${sc.size}</h2><div class="ct">Lagerplatz-Vorschlag: <b>${code}</b> · ${plText(code)}</div>
     <button class="b full" id="ebtn" style="margin-top:10px" onclick="einbuchen()">Einbuchen</button></div>`;
   }
+  res+=`<div class="c"><h2>Wo liegt das?</h2>
+   <div class="ct"><b>${code}</b> · ${plText(code)} · Lager Embrach, 3 × 5 m, von oben</div>
+   <div class="kartew">${lagerkarte(code,szf(sc.size))}</div>
+   <div class="ct" style="margin-top:10px"><b>Im Schrank: Farbe = Grösse.</b></div>
+   ${fachAnsicht(a,sc.size)}
+   <div style="margin-top:8px">${szChips(a,sc.size)}</div></div>`;
  }
  let queue='';
  if(S.queue.length){
