@@ -16,11 +16,13 @@
       { "kopf": "Die Kasse",
         "text": "Ladenverkäufe werden von Hand in Shopify nachgetragen. **Das kostet Zeit und stimmt oft nicht.**" }
     ],
-    "stat": {
-      "wert": "54 bis 65 %",
-      "anteil": 0.6,
-      "text": "aller Bestandszahlen im Handel sind falsch.",
-      "quelle": "DeHoratius/Raman 2008 · ECR/Cardiff 2019"
+    "band": {
+      "titel": "AB SOFORT",
+      "punkte": [
+        "Der Bestand stimmt. Jeder Verkauf hält.",
+        "Beide Standorte auf einen Blick.",
+        "Die Kasse rechnet sich selbst ab."
+      ]
     }
   },
 

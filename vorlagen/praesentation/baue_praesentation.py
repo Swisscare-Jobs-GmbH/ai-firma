@@ -229,17 +229,29 @@ def slide_momente(prs, k):
                 zeilen=[(eintrag["kopf"], 15, k["_f"]["akzent"], True, SANS),
                         (eintrag["text"], 13, k["_f"]["tinte"], False, SANS)])
         x += b + Inches(0.31)
-    s = m["stat"]
-    kachel(f, Inches(0.6), Inches(4.7), Inches(12.13), Inches(2.1), k["_f"]["tinte"])
-    textbox(f, Inches(1.0), Inches(5.15), Inches(3.9), Inches(1.2),
-            s["wert"], 38, WEISS, fett=True, font=SERIF)
-    textbox(f, Inches(4.8), Inches(5.1), Inches(7.6), Inches(0.6),
-            s["text"], 16, WEISS, fett=True)
-    bx, by, bb = Inches(4.8), Inches(5.85), Inches(6.6)
-    kachel(f, bx, by, bb, Inches(0.3), farbe("3A3841"), radius=0.5)
-    kachel(f, bx, by, int(bb * s["anteil"]), Inches(0.3), k["_f"]["akzent"], radius=0.5)
-    textbox(f, Inches(4.8), Inches(6.3), Inches(7.6), Inches(0.4),
-            "Quelle: " + s["quelle"], 10.5, farbe("9A97A0"))
+    s = m.get("stat")
+    if s:
+        kachel(f, Inches(0.6), Inches(4.7), Inches(12.13), Inches(2.1), k["_f"]["tinte"])
+        textbox(f, Inches(1.0), Inches(5.15), Inches(3.9), Inches(1.2),
+                s["wert"], 38, WEISS, fett=True, font=SERIF)
+        textbox(f, Inches(4.8), Inches(5.1), Inches(7.6), Inches(0.6),
+                s["text"], 16, WEISS, fett=True)
+        bx, by, bb = Inches(4.8), Inches(5.85), Inches(6.6)
+        kachel(f, bx, by, bb, Inches(0.3), farbe("3A3841"), radius=0.5)
+        kachel(f, bx, by, int(bb * s["anteil"]), Inches(0.3), k["_f"]["akzent"], radius=0.5)
+        textbox(f, Inches(4.8), Inches(6.3), Inches(7.6), Inches(0.4),
+                "Quelle: " + s["quelle"], 10.5, farbe("9A97A0"))
+    elif m.get("band"):
+        band = m["band"]
+        kachel(f, Inches(0.6), Inches(4.7), Inches(12.13), Inches(2.1), k["_f"]["tinte"])
+        textbox(f, Inches(1.0), Inches(4.95), Inches(3.0), Inches(0.5),
+                band.get("titel", ""), 13, farbe("F0C9C3"), fett=True)
+        bb = Inches(3.75); x = Inches(1.0)
+        for punkt in band["punkte"]:
+            kachel(f, x, Inches(5.5), Inches(0.12), Inches(0.75), k["_f"]["akzent"], radius=0.5)
+            textbox(f, x + Inches(0.3), Inches(5.5), bb - Inches(0.3), Inches(1.1),
+                    punkt, 16, WEISS, fett=True)
+            x += bb + Inches(0.15)
 
 
 def slide_prinzipien(prs, k):

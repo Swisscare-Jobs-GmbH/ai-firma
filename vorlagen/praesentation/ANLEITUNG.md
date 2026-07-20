@@ -30,6 +30,10 @@ Handy-Mockups** (Typen: uebersicht / scan / chat; KEINE Screenshots) → 9. **Ei
 - **Keine Schatten**, flache Flaechen, viel Weissraum, wenig Text, mehr Diagramme.
 - **Mockups zeichnen statt Screenshots** kleben (Funktion `phone()` im Generator; neue
   Screen-Typen dort ergaenzen, nicht pro Kunde hacken).
+- **Den Kunden nie schlecht dastehen lassen** (AB 20.07): keine Negativ-Statistik ueber sein
+  Geschaeft oder seine Branche auf den Folien. Auf Folie 2 statt `stat` das positive
+  `band` (AB-SOFORT-Aussagen: was ab jetzt besser ist) verwenden. `stat` bleibt im Generator
+  moeglich, aber nur auf ausdruecklichen Wunsch einsetzen.
 
 ## Harte Regeln beim Ausfuellen einer Kunden-Konfig
 

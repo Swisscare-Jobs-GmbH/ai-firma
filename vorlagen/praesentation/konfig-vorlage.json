@@ -13,11 +13,13 @@
       { "kopf": "{SCHMERZ_2_KOPF}", "text": "{SZENE. **Kern fett.**}" },
       { "kopf": "{SCHMERZ_3_KOPF}", "text": "{SZENE. **Kern fett.**}" }
     ],
-    "stat": {
-      "wert": "{ZAHL}",
-      "anteil": 0.6,
-      "text": "{Aussage zur Zahl. Nur LIVE belegte Zahlen verwenden.}",
-      "quelle": "{QUELLE JAHR}"
+    "band": {
+      "titel": "AB SOFORT",
+      "punkte": [
+        "{LOESUNG_1. Positiv, kurz.}",
+        "{LOESUNG_2}",
+        "{LOESUNG_3}"
+      ]
     }
   },
 
