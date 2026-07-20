@@ -1,6 +1,8 @@
-# Erst-Offerte — der komplette Prozess (Playbook V1)
+# Erst-Offerte — der komplette Prozess (Playbook V2)
 
 > Destilliert aus der Finelli-Offerte (19.-20.07.2026, ~2 Tage ueber 3 Sessions).
+> V2 (20.07. abend): SAs Verkaufs-Formeln aus der Final-Runde ergaenzt (Schritt 2b),
+> Kunden-Blatt zeigt WERT statt Markt-Preisen (Schritt 3), Extraktor-Fehlalarm-Lektion (Schritt 5).
 > Ziel mit diesem Playbook: **naechster Kunde in 0.5-1 Tag.**
 > Ergaenzt Phase 4 (`phase-4-angebot.md`) um den vollen Ablauf inkl. Richter, Recherche, Beweis-Pipeline.
 > Referenz-Beispiel (Gold-Standard): `C:\dev\finelli-cockpit\docs\angebot\` — Blatt 1 v6 + Blatt 2 (3 Seiten).
@@ -54,6 +56,19 @@ ALTEN Begriff ueber alle Blaetter + Vertrag.
 | Kein Vorgriff aufs Termin-Ergebnis | "erfahrungsgemaess zahlst du mehr" bei Kunde Nr. 1 = angreifbar |
 | Verworfene Ideen offen sagen | Eigenbau-Kasse ehrlich verworfen = Vertrauen |
 
+## Schritt 2b — SAs Verkaufs-Formeln (Pflicht, aus der Finelli-Final-Runde)
+
+| Formel | So geht sie |
+|---|---|
+| **Stress → "gibt's nicht mehr, weil"** | Jeder Pain als fuehlbare Szene (Samstagabend, Griff ins leere Fach, Kunde schaut auf die Uhr) → dann die Wende woertlich: **"Das gibt's nicht mehr — weil …"** + Begruendung. NIE als Vorwurf an den Kunden — Schuldiger ist immer das alte System. |
+| **Reviews-Hook** | Bewertungen zuerst loben (fast alles Bestnoten) → DEN einen wiederkehrenden Kritikpunkt als das Problem nehmen, das wir loesen. Wir loesen SEIN Review-Problem. |
+| **Geschenk sichtbar** | Geschenke NIE ins Kleingedruckte: rotes GESCHENKT-Badge direkt in der Tabelle, geschenkte Betraege durchgestrichen. Bezug nennen: "Dir geschenkt VOM AGENTUR-PREIS" — sonst geht die Rechnung fuer den Leser nicht auf (30k − 12k = 18k). |
+| **Mehr-Umsatz-Schaetzung** | "Pro 100'000 Umsatz grob X–Y mehr" + Pruef-Versprechen: "nach 90 Tagen rechnen wir mit deinem Bericht nach." Ehrlich, greifbar, ueberpruefbar — nie absolute CHF ohne Umsatz-Basis. |
+| **Joker = Hebel fuer Hebel** | Referral mit WAHL: "10% vom Erstauftrag angerechnet ODER 20% runter auf deine Raten — wie gross der Fisch ist, schauen wir gemeinsam an." Motto woertlich aufs Blatt: "Bringst du uns Hebel, geben wir dir Hebel." |
+| **Betriebs-Gebuehr aufschluesseln** | Die monatliche Gebuehr IMMER mit Inhalt: Server · KI-Kosten · Updates · Waechter · 48h-Leitung · Check-in. Niemand zahlt dauerhaft fuer ein Wort. |
+| **Deal-Zeile ohne Betraege** | Auf der Story-Seite den Ablauf nennen (Demo-Termin + Uhrzeit · in ~7 Tagen eingerichtet · erste Rate erst wenn's laeuft · 48h-Garantie · 1. Monat woechentlich vor Ort) — aber KEINE Franken-Zahl. Preis erst auf der Preis-Seite. |
+| **Exit ohne Angst, aber ehrlich** | "Aussteigen geht jederzeit: offene Raten zahlst du fertig ab (die Software gehoert dir), die Betriebs-Gebuehr faellt weg — damit enden Updates und KI-Pflege. Spaeter mehr? Zusatz-Produkte, wann du willst." |
+
 ## Schritt 3 — Ausbau-Karte (S.3): Ideen + Markt-Recherche
 
 Pro Ausbau-Hebel eine Karte mit 3 Zeilen: **Idee in Kunden-Sprache** (10-Jaehrige-Test) ·
@@ -62,6 +77,10 @@ Pro Ausbau-Hebel eine Karte mit 3 Zeilen: **Idee in Kunden-Sprache** (10-Jaehrig
 
 - Markt-Recherche als **Workflow** (parallel, 1 Agent pro Hebel, WebSearch, nur belegbare Spannen
   mit Quellen-URLs — ehrliche Spanne schlaegt erfundene Praezision).
+- **V2-Korrektur (SA 20.07.): Markt-PREISE bleiben INTERN** (fuer unsere Preis-Bildung) — aufs
+  Kunden-Blatt kommt stattdessen **"Dein Plus (Schaetzung)"** pro Hebel: die Verbesserung in
+  Prozent/Wirkung (z.B. "12–20% weniger totes Geld im Lager"). Grund: Markt-Preise auf der
+  Zukunfts-Seite lassen den Kunden denken, wir wollen an jedem Ausbau verdienen.
 - Kunden-Wuensche als eigene Karten aufnehmen ("das hat er sich selbst gewuenscht" = staerkste Karte).
 - **Exit-Block** ans Ende: "Und wenn du nicht mehr mit uns willst?" — gehoert dir / nichts geht aus
   (Auslauf-Frist) / geordnete Uebergabe. Nimmt die groesste stille Angst. Quelle: Vertrag, nie erfinden.
@@ -91,8 +110,11 @@ HTML (einzige Quelle) → Chrome headless --print-to-pdf (EXPLIZIT pro Datei, ni
 ```
 
 Finelli-Lehren: Schleifen-Escaping-Bug erzeugte still falsche PDFs (nur der Text-Check fing es) ·
-2× Seiten-Ueberlauf nach Inhalts-Zuwachs (nur der Seitenzahl-Guard fing es) · Zeilen-Abstaende
-kompaktieren schlaegt Inhalt kuerzen.
+4× Seiten-Ueberlauf nach Inhalts-Zuwachs (nur der Seitenzahl-Guard fing es) · Zeilen-Abstaende
+kompaktieren schlaegt Inhalt kuerzen · **Der PDF-Text-Extraktor zerhackt lange Saetze an
+Zeilenumbruechen → Wort-Checks auf Whitespace-normalisiertem Text laufen lassen, und bei einem
+"fehlt!"-Befund ERST die HTML-Quelle grep'en, bevor man einen Fehlalarm meldet** (2× passiert,
+2× war die Quelle korrekt).
 
 ## Schritt 6 — Kunden-Iterationen fahren
 
@@ -102,6 +124,9 @@ Nie sammeln. Nach jedem Begriffs-/Zahlen-Wechsel: Klassen-Fege (Schritt 0). Vert
 
 ## Checkliste vor Versand
 
+- [ ] **Vertrag deckt JEDES Blatt-Versprechen** (Joker-Optionen, Garantie-Wortlaut, Exit-Regeln,
+      Leistungs-Umfang) — bei Finelli lief der Vertrag den Blaettern 2× hinterher
+- [ ] Geschenke sichtbar (Badge + Durchstreichung) und die Rechnung geht fuer den Leser auf
 - [ ] Zahlen-Kanon-Liste stimmt mit BEIDEN Blaettern + Vertrag ueberein (grep-Beweis)
 - [ ] Blatt 1 = 1 Seite · Blatt 2 = 3 Seiten (pypdf)
 - [ ] Blatt 2 Seite 1 preisfrei (pypdf)
