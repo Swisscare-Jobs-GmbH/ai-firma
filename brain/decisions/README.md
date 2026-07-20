@@ -42,3 +42,5 @@ entscheider: SA
 |---|---|---|---|
 | [E1](E1-brain-im-firmen-repo.md) | brain/ liegt im ai-firma-Repo | aktiv | 2026-07-19 |
 | [E2](E2-webresearch-leitplanken.md) | Webrecherche-Leitplanken (kein RAG, Schwaerme nur Lesen, unabhaengige Richter) | aktiv | 2026-07-19 |
+| [E3](E3-setup-entscheide-19-07.md) | Setup-Entscheide 19.07 (Absender vorerst Swiss Care Jobs GmbH · Repo-Zugriff nur SA · avatar.md lokal) | aktiv | 2026-07-19 |
+| [E4](E4-workspace-meta-layer.md) | Workspace-Meta-Layer am AIWorks-Root (Sync-Gesetz, Branchen-Schablonen, kanonische Kopie in vorlagen/workspace/) | aktiv | 2026-07-20 |

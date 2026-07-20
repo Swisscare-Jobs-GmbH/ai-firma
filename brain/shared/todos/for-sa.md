@@ -38,4 +38,50 @@ verschieben (T-Nummer bleibt).
 
 ---
 
-<!-- Ab hier die Aufgaben. Noch keine. -->
+<!-- Ab hier die Aufgaben. -->
+
+<!--
+T: 1
+date: 2026-07-20
+auftraggeber: Session-2026-07-20 (Workspace-Setup AB)
+wichtigkeit: 1
+sterne: 4
+leverage: high
+thema: [governance, brain]
+kunde: -
+skill_used: []
+knowledge_ref: brain/decisions/E3-setup-entscheide-19-07.md
+status: active
+deadline: -
+bucket: now
+bucket_reason: "E3 Punkt 2 ist faktisch verletzt, solange AB Repo-Zugriff hat und brain/ im Repo liegt"
+context_summary: "E3 sagt: VOR jedem Helfer-Invite (z.B. Abdul) brain/ in ein eigenes Repo ausgliedern. AB arbeitet seit 20.07 mit vollem Workspace-Zugriff auf ai-firma (C:\\Projects\\AIWorks). SA entscheidet: (A) brain/-Split jetzt durchziehen (1-Tages-Umzug laut E1/E3), (B) AB-Zugriff bewusst freigeben und E3 per neuem Entscheid ersetzen. Zusatz laut user-brain-v2-bauplan: JT-Mitzugriff auf ai-firma pruefen/entfernen."
+-->
+## 🔴 2026-07-20 — T1: Brain-Split vs. AB-Zugriff — E3 Punkt 2 aufloesen
+Was: E3 verlangt brain/-Ausgliederung vor Helfer-Zugriff; AB hat seit 20.07 Zugriff.
+Was tust du: Entscheid A (Split jetzt) oder B (E3 ersetzen) — 1 Antwort genuegt.
+Warum jetzt: Gedaechtnis + Kunden-Deals liegen sonst offen fuer jeden Repo-Zugriff. Zeit: 5 Min Entscheid, Umzug ~1 Tag.
+<!-- T:1 END -->
+
+<!--
+T: 2
+date: 2026-07-20
+auftraggeber: Session-2026-07-20 (Workspace-Setup AB)
+wichtigkeit: 2
+sterne: 3
+leverage: mid
+thema: [doku, entscheide]
+kunde: -
+skill_used: []
+knowledge_ref: brain/_cross-ref/WORKSPACE-AIWORKS.md
+status: active
+deadline: -
+bucket: soon
+bucket_reason: "Schutz-Zonen (CLAUDE.md) darf nur SA aendern; Drift bleibt bis dahin dokumentiert"
+context_summary: "Zwei Nachzieh-Punkte, beide in SA-Schutz-Zonen: (1) ai-firma/CLAUDE.md verweist hart auf C:/dev/ai-firma/brain/ — auf Pfad-Karte (brain/_cross-ref/WORKSPACE-AIWORKS.md) umstellen. (2) Absender-Entscheid vom 19.07 abends ('Shehryaar Khawaja — Software & KI' fuer Kunden-Blaetter, Handoff 19.07) als E-Entscheid formalisieren und E3 Punkt 1 entsprechend als ersetzt markieren."
+-->
+## 🟡 2026-07-20 — T2: CLAUDE.md-Pfade + Absender-Entscheid formalisieren
+Was: Pfad-Verweis in CLAUDE.md auf die Pfad-Karte umstellen; Absender-Wechsel als E5 festschreiben.
+Was tust du: Kurzer SA-Auftrag an einen Chat ("mach T2") — die Aenderungen sind vorbereitet beschrieben.
+Warum jetzt: Beides sind dokumentierte Drifts; ohne Formalisierung tauchen sie wieder auf. Zeit: ~15 Min.
+<!-- T:2 END -->

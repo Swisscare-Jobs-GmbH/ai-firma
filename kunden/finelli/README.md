@@ -1,8 +1,10 @@
 # Finelli — Kunden-Kontext
 
 **Kunde:** Finelli Studios AG (Streetwear, ~60 Artikel, 2 Lager: Embrach + Laden Zuerich City).
-Tueroeffner: Khawar (SAs Cousin), Kunde Nr. 1 + Referenz. Code-Repo: `C:\dev\finelli-cockpit`
-(Ports 8012/5173).
+Tueroeffner: Khawar (SAs Cousin), Kunde Nr. 1 + Referenz. **Zwei Code-Repos:**
+Verkaufs-MVP `C:\dev\finelli-cockpit` (SA-Rechner, Ports 8012/5173) · Produktions-Projekt
+`C:\Projects\AIWorks\finelli-lagerverwaltung` (AB-Rechner, Phase 1, noch kein Code —
+`brain/_cross-ref/FINELLI-LAGERVERWALTUNG.md`).
 
 **Termin:** SA geht **Mittwoch, 22.07.2026** vor Ort (SA-Ansage 19.07). Angebots-Blatt trug faelschlich
 "Mittwoch, 23. Juli" (23. = Donnerstag) — korrigiert auf Zweig `fix/angebot-datum-mittwoch-22`.
@@ -17,5 +19,8 @@ Tueroeffner: Khawar (SAs Cousin), Kunde Nr. 1 + Referenz. Code-Repo: `C:\dev\fin
 - **Naechster Schritt:** vor Mittwoch die Demo-Killer-Fixes + KI-Etappe in die Haupt-Spur, dann Klick-Probe.
 
 **Dateien hier:** firma-profil · schmerz-landkarte · deal-strategie · wert-ranking · ausbau-plan ·
-feinplan · logistik-research · offene-fragen · antworten-sa · antworten-runde2.
+feinplan · logistik-research · offene-fragen · antworten-sa · antworten-runde2 ·
+branchen-recherche-markt-schmerzen (19.07) · angebots-panel-2026-07-19 · klick-beweis-2026-07-19 ·
+wochen-bericht-2026-07-19 (Entwurf, SA muss gegenlesen) · **demo/** (Verkaufs-Demo fuer den
+Termin, 20.07 — selbsttragende HTML-Seite + Klick-Beweis).
 (Umgezogen aus swisscare-brain/users/sa/inbox — dort das Original noch vorhanden.)

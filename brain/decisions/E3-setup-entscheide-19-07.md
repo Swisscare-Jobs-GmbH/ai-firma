@@ -1,4 +1,6 @@
 ---
+type: decision
+id: E3
 datum: 2026-07-19
 status: aktiv
 entscheider: SA (Chat-Freigabe "ich gib die erlaubnis mach sie fuer mich")
