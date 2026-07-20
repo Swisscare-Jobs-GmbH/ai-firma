@@ -11,6 +11,14 @@
 | `baue_praesentation.py` | Generator: `python vorlagen/praesentation/baue_praesentation.py <konfig.json> <ziel.pptx>` — IMMER aus der Repo-Wurzel (`ai-firma/`) aufrufen, Bild-Pfade in Konfigs sind repo-relativ. Braucht `pip install python-pptx`. |
 | `konfig-vorlage.json` | Generalisierte Konfig mit `{PLATZHALTERN}` — kopieren nach `kunden/<kunde>/praesentation/konfig-<kunde>.json` und ausfuellen. |
 | `vorlage-kunden-praesentation.pptx` | Gebautes Muster-Deck aus der Vorlage-Konfig (zum Anschauen, nicht von Hand editieren — Quelle ist immer die Konfig). |
+| `bewegung_setzen.ps1` | Setzt NACH dem Generieren die Bewegung: `powershell -File bewegung_setzen.ps1 <statisch.pptx> <mit-bewegung.pptx>` — Folien-Uebergaenge (Fade Smoothly) + Float-Up-Eingang auf Titel + Modell-Treppe. Braucht PowerPoint. Immer als LETZTER Schritt vor dem Ablegen der pptx. |
+
+## Bau-Ablauf (Dark-Theme + Bewegung)
+
+1. `python baue_praesentation.py <konfig> <tmp-statisch.pptx>` (statisches Deck).
+2. `powershell -File bewegung_setzen.ps1 <tmp-statisch.pptx> <ziel.pptx>` (Bewegung drauf).
+3. Kontroll-Export einiger Folien als PNG + Sicht-Pruefung (kein Rot, Kontrast ok).
+Ist die Ziel-pptx in PowerPoint offen (Sperre), im Scratchpad bauen und per Wachter kopieren.
 
 ## Folien-Dramaturgie V2 (fest im Generator, Reihenfolge nicht wuerfeln)
 
@@ -34,6 +42,11 @@ Handy-Mockups** (Typen: uebersicht / scan / chat; KEINE Screenshots) → 9. **Ei
   Geschaeft oder seine Branche auf den Folien. Auf Folie 2 statt `stat` das positive
   `band` (AB-SOFORT-Aussagen: was ab jetzt besser ist) verwenden. `stat` bleibt im Generator
   moeglich, aber nur auf ausdruecklichen Wunsch einsetzen.
+- **DARK-THEME ist Standard (AB 20.07): Schwarz + kraeftiges Violett, KEIN ROT** — nirgends, auch
+  nicht in Ampeln. Ampel-Ersatz: gut=Teal (#2DD4BF), knapp=Amber (#F5B33D), leer=Magenta (#D946EF).
+  Begleittexte duerfen das Wort "rot" nicht mehr nennen. Flaechen dunkel, Akzente ueber
+  Violett-Verlaeufe, Titel duenn (Segoe UI Light), Labels Bahnschrift. Der Fremd-Provider-Name
+  (z.B. Shopify) bleibt draussen (Onlineshop/Ladenkasse/Website nennen).
 
 ## Harte Regeln beim Ausfuellen einer Kunden-Konfig
 
@@ -63,6 +76,11 @@ Handy-Mockups** (Typen: uebersicht / scan / chat; KEINE Screenshots) → 9. **Ei
 - 2026-07-20 · V1: Generator + Vorlage-Konfig + Finelli-Erstanwendung (3 Modelle Basic/Premium/Max
   ab User-Screenshot, UI-Screens aus der Cockpit-Vorschau-Demo). Warum: Finelli-Termin 22.07,
   Decks sollen nie wieder von Null entstehen.
+- 2026-07-20 · V3 Dark-Violet-Edition nach AB-Feedback: komplettes Redesign schwarz + kraeftiges
+  Violett (KEIN Rot), Verlaeufe (gradient fill) auf Titel/OS-Kern/Modell-Treppe/Baendern, dunkle
+  UI-Mockups, leuchtender OS-Kern mit Ring, duenne Titel-Typo (Segoe UI Light) + Bahnschrift-Labels,
+  Ampeln ohne Rot (Teal/Amber/Magenta). Bewegung neu via `bewegung_setzen.ps1` (Fade-Smoothly-
+  Uebergaenge + Float-Up-Eingang auf Titel + Modell-Treppe). Warum: Deck soll herausstechen.
 - 2026-07-20 · V2 nach AB-Feedback: gezeichnete Handy-Mockups statt Screenshots, Business-Folie
   (Abteilungen vs. ein System, ohne fremde $-Zahlen), OS-Flow-Diagramm, Statistik-Band mit Balken,
   Modell-Treppe klein/mittel/gross (hell/akzent/dunkel+gold), Chevron-Einfuehrung, `**fett**`-Marker,

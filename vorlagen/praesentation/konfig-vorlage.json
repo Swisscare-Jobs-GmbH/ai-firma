@@ -3,7 +3,12 @@
   "claim": "{CLAIM. Kurze Saetze. Ohne Gedankenstriche.}",
   "untertitel_titelfolie": "{KUNDE_FIRMA} · {ANLASS}",
   "datum": "{TT. Monat JJJJ}",
-  "farben": { "tinte": "#17161A", "papier": "#F4F4F2", "akzent": "#1F3A5F", "grau": "#77747C" },
+  "farben": {
+    "grund": "#0A0710", "grund2": "#180A24", "flaeche": "#1A1027", "flaeche2": "#251636",
+    "violett": "#7C3AED", "violett_tief": "#4C1D95", "violett_hell": "#BB92FF",
+    "text": "#F4F0FB", "text_dim": "#9E93B5", "linie": "#2E2440",
+    "gut": "#2DD4BF", "knapp": "#F5B33D", "leer": "#D946EF"
+  },
 
   "momente": {
     "titel": "Wo du heute stehst",
