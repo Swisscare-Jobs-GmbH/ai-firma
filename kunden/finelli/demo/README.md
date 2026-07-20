@@ -36,6 +36,11 @@ Notizen zu den Klaerungsfragen bleiben lokal im Browser gespeichert (localStorag
 
 | Datei | Zweck |
 |---|---|
-| `index.html` | Die Demo (eine Datei, alles inline) |
-| `klick-beweis-demo-2026-07-20.md` | Klick-Beweis + Vorfuehr-Drehbuch (nummerierte Klicks) |
+| `index.html` | Pitch-Seite (Momente + Werkbank + 7 Fragen) — verlinkt am Ende auf die App-Vorschau |
+| `app.html` | **App-Simulation "Cockpit — Vorschau"**: PIN-Login (Demo-PIN 2019), Dashboard mit Ampeln, Bestand mit Umlagern/Korrektur, Bestellungen mit Post-Etiketten-Status + Pickzettel, Scannen, Frag Finelli, Wochen-Bericht, gesperrte Auswertungen. Khawar probiert die "fast fertige App" selbst aus. |
+| `klick-beweis-demo-2026-07-20.md` | Klick-Beweis Pitch-Seite + Vorfuehr-Drehbuch |
+| `klick-beweis-app-2026-07-20.md` | Klick-Beweis App-Simulation + Vorfuehr-Drehbuch |
 | `klick-beweis-*.png` | Bildschirm-Beweise aus dem echten Browser |
+
+Empfohlene Reihenfolge am Termin: Pitch-Seite (Momente) -> Werkbank -> **App-Vorschau**
+(er klickt selbst durch "seine" App) -> 7 Fragen ausfuellen.
