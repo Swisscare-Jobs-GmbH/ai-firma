@@ -3,88 +3,118 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Offer Ein-Seiter — KI-System fuer Personalvermittler</title>
+<title>Offer Ein-Seiter — KI fuer Personalvermittler</title>
 <style>
-  :root { --ink:#1a1a1a; --muted:#5a5a5a; --line:#d9d9d9; --accent:#534AB7; --soft:#f4f3fb; --good:#0E9B94; }
+  :root { --ink:#1a1a1a; --muted:#5a5a5a; --line:#dcdcdc; --accent:#534AB7; --soft:#f4f3fb; --good:#0E9B94; }
   * { box-sizing:border-box; margin:0; }
   html,body { background:#fff; color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
   .page { max-width:800px; margin:0 auto; padding:34px 40px; }
-  @media print { .page { padding:10mm 14mm; } .no-print { display:none; } }
+  @media print { .page { padding:9mm 13mm; } }
 
   .kicker { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:700; }
-  h1 { font-size:30px; line-height:1.15; margin:6px 0 4px; }
-  .sub { font-size:15px; color:var(--muted); margin-bottom:18px; }
+  h1 { font-size:29px; line-height:1.14; margin:6px 0 4px; }
+  .sub { font-size:15px; color:var(--muted); margin-bottom:16px; }
 
-  .band { background:var(--soft); border-left:4px solid var(--accent); padding:12px 16px; border-radius:6px; margin:14px 0 20px; font-size:15px; }
+  .band { background:var(--soft); border-left:4px solid var(--accent); padding:12px 16px; border-radius:6px; margin:14px 0 18px; font-size:14.5px; }
   .band b { color:var(--accent); }
 
-  h2 { font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin:22px 0 8px; }
-  .cols { display:flex; gap:14px; flex-wrap:wrap; }
-  .card { flex:1 1 220px; border:1px solid var(--line); border-radius:8px; padding:12px 14px; }
-  .card b { display:block; font-size:14px; margin-bottom:4px; }
-  .card p { font-size:13px; color:var(--muted); line-height:1.45; }
+  h2 { font-size:14px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin:20px 0 8px; }
 
-  table { width:100%; border-collapse:collapse; font-size:14px; margin:8px 0 4px; }
-  td { padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
-  td:first-child { font-weight:600; white-space:nowrap; }
+  .split { display:flex; gap:16px; flex-wrap:wrap; }
+  .box { flex:1 1 260px; border:1px solid var(--line); border-radius:9px; padding:13px 15px; }
+  .box.human { border-color:var(--good); background:#f2fbf9; }
+  .box h3 { font-size:13px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; }
+  .box.ki h3 { color:var(--accent); }
+  .box.human h3 { color:var(--good); }
+  .box ul { list-style:none; }
+  .box li { position:relative; padding:5px 0 5px 18px; font-size:13.5px; line-height:1.45; }
+  .box li::before { content:""; position:absolute; left:2px; top:11px; width:7px; height:7px; border-radius:2px; }
+  .box.ki li::before { background:var(--accent); }
+  .box.human li::before { background:var(--good); }
 
-  .rechnung { border:1px solid var(--accent); border-radius:8px; padding:14px 16px; margin-top:8px; background:#fff; }
-  .rechnung .zeile { display:flex; justify-content:space-between; font-size:14px; padding:4px 0; }
+  .hero { border:1.5px solid var(--accent); border-radius:10px; padding:15px 18px; margin-top:6px; background:linear-gradient(0deg,var(--soft),#fff); }
+  .hero .t { font-size:16px; font-weight:700; margin-bottom:6px; }
+  .hero ol { margin:6px 0 6px 18px; font-size:14px; line-height:1.55; }
+  .hero .punch { margin-top:8px; font-size:15px; font-weight:600; color:var(--accent); }
+
+  .rechnung { border:1px solid var(--accent); border-radius:8px; padding:13px 16px; margin-top:6px; }
+  .rechnung .zeile { display:flex; justify-content:space-between; gap:10px; font-size:14px; padding:4px 0; }
   .rechnung .fett { font-weight:700; border-top:1px solid var(--line); margin-top:6px; padding-top:8px; }
   .hinweis { font-size:11.5px; color:var(--muted); margin-top:6px; }
 
-  .schluss { margin-top:20px; border-top:2px solid var(--accent); padding-top:14px; font-size:15px; }
+  .cards { display:flex; gap:14px; flex-wrap:wrap; }
+  .card { flex:1 1 200px; border:1px solid var(--line); border-radius:8px; padding:11px 13px; }
+  .card b { display:block; font-size:13.5px; margin-bottom:3px; }
+  .card p { font-size:12.5px; color:var(--muted); line-height:1.45; }
+
+  .schluss { margin-top:18px; border-top:2px solid var(--accent); padding-top:13px; font-size:15px; }
   .schluss b { color:var(--accent); }
-  .foot { margin-top:16px; font-size:12px; color:var(--muted); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .foot { margin-top:15px; font-size:12px; color:var(--muted); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <div class="kicker">Fuer etablierte Personalvermittler (5–20 Koepfe, Schweiz)</div>
-  <h1>Mehr Vermittlungen. Weniger Admin.</h1>
-  <div class="sub">Ein KI-System, das Ihre Kandidaten, Kunden und Rueckrufe im Griff hat — damit Ihre Berater vermitteln statt verwalten.</div>
+  <div class="kicker">Fuer etablierte Personalvermittler · Schweiz</div>
+  <h1>Euer ganzes Team vermittelt wie euer Bester.</h1>
+  <div class="sub">Ein KI-System, das alles uebernimmt — ausser dem Anruf. Eure Berater telefonieren, die KI erledigt den Rest.</div>
 
   <div class="band">
-    Recruiter verbrauchen <b>70–80% ihrer Zeit mit Verwaltung</b> statt mit dem, womit Sie Geld verdienen:
-    Menschen vermitteln. Wir drehen das um.
+    Ihr habt Software. Aber sie ist <b>nicht auf EUCH gebaut</b> — und die Fleissarbeit bleibt trotzdem an euch haengen.
+    Genau da setzen wir an: wir ersetzen nichts, wir setzen drauf.
   </div>
 
-  <h2>Kennen Sie das?</h2>
-  <div class="cols">
-    <div class="card"><b>Excel-Chaos</b><p>Kandidaten und Kunden in zig Dateien — jeder hat seine Version, gute Leute fallen durchs Raster.</p></div>
-    <div class="card"><b>Vergessene Rueckrufe</b><p>Im Tagesgeschaeft bleibt das Follow-up liegen — der Kandidat ist weg oder fuehlt sich abgelehnt.</p></div>
-    <div class="card"><b>Admin frisst den Tag</b><p>Tippen, kopieren, nachtragen — waehrend der Wettbewerb schneller zurueckruft.</p></div>
+  <h2>Wer macht was — die klare Trennung</h2>
+  <div class="split">
+    <div class="box ki">
+      <h3>Die KI uebernimmt</h3>
+      <ul>
+        <li>Mails lesen &amp; Entwuerfe schreiben — in eurem Ton</li>
+        <li>Bewerbungen sichten, bewerten, vorsortieren</li>
+        <li>Nachfassen &amp; Rueckrufe erinnern — nichts faellt durchs Raster</li>
+        <li>Kandidaten- &amp; Kundendaten sauber an einem Ort</li>
+        <li>Zahlen-Cockpit fuer den Chef — offene Mandate, Pipeline, wo es klemmt</li>
+      </ul>
+    </div>
+    <div class="box human">
+      <h3>Der Mensch macht</h3>
+      <ul>
+        <li><b>Den Anruf.</b> Das Gespraech mit Kandidat und Kunde.</li>
+        <li>Darauf koennen sich eure Berater <b>8 Stunden am Tag</b> konzentrieren — statt auf Tippen und Verwalten.</li>
+        <li>Mehr Telefonzeit = mehr Vermittlungen = mehr Honorar.</li>
+      </ul>
+    </div>
   </div>
 
-  <h2>Was Sie bekommen — alles drin, kein Extra-Abo</h2>
-  <table>
-    <tr><td>Eine Datenbank</td><td>Kandidaten UND Auftraggeber an einem Ort — statt Excel-Dateien. Nichts faellt mehr durchs Raster.</td></tr>
-    <tr><td>Automatische Follow-ups</td><td>Das System erinnert, schreibt vor und fasst nach — kein Rueckruf wird mehr vergessen.</td></tr>
-    <tr><td>Mail-Flows</td><td>Bewerber-Antworten, Nachfassen, Terminbestaetigungen — laufen automatisch, in Ihrem Ton.</td></tr>
-    <tr><td>Zahlen-Cockpit</td><td>Der Chef sieht auf einen Blick: offene Mandate, Pipeline, wo es klemmt — statt Bauchgefuehl.</td></tr>
-    <tr><td>Wir bringen es Ihrem Team bei</td><td>Wir gehen bei Ihnen vorbei und schulen, bis es sitzt — Software allein bleibt sonst im Regal.</td></tr>
-    <tr><td>Laufende Betreuung</td><td>Monatliche Anpassung + Weiterentwicklung — das System waechst mit Ihnen mit.</td></tr>
-  </table>
+  <h2>Der Hebel, den keine Standard-Software hat</h2>
+  <div class="hero">
+    <div class="t">Wir klonen euren besten Berater.</div>
+    <ol>
+      <li>Wir nehmen euren <b>Top-Berater</b> — seine Fragen, sein Vorgehen, sein Gespuer.</li>
+      <li>Wir giessen sein <b>Konzept + Training</b> ins System.</li>
+      <li>Ab sofort arbeitet <b>jeder im Team</b> nach dem Muster eures Besten.</li>
+    </ol>
+    <div class="punch">Aus einem Top-Berater wird ein ganzes Team auf Top-Niveau.</div>
+  </div>
 
   <h2>Die Rechnung, die zaehlt</h2>
   <div class="rechnung">
-    <div class="zeile"><span>Ihr Honorar pro Feststellen-Vermittlung (20–30% vom Jahresgehalt)</span><span><b>15'000–25'000 CHF</b></span></div>
-    <div class="zeile"><span>Ein einziges gerettetes Follow-up = eine zusaetzliche Vermittlung</span><span>zahlt das System <b>fuers ganze Jahr</b></span></div>
-    <div class="zeile fett"><span>Ihr Monats-Abo</span><span>3–5% eines einzigen Deals</span></div>
+    <div class="zeile"><span>Euer Honorar pro Feststellen-Vermittlung (20–30% vom Jahresgehalt)</span><span><b>15'000–25'000 CHF</b></span></div>
+    <div class="zeile"><span>Eine einzige zusaetzliche Vermittlung pro Jahr</span><span>zahlt das System <b>vielfach</b></span></div>
+    <div class="zeile fett"><span>Euer Monats-Abo</span><span>3–5% eines einzigen Deals</span></div>
   </div>
-  <div class="hinweis">Genauer Preis nach einem kurzen Gespraech — abhaengig davon, was bei Ihnen am meisten Zeit frisst. Keine Einrichtungs-Kosten vorab.</div>
+  <div class="hinweis">Genauer Preis nach einem kurzen Gespraech — abhaengig davon, was bei euch am meisten Zeit frisst. Keine Kosten vorab. Und: 2025 brach die Feststellen-Vermittlung um 23% ein — jetzt zaehlt jede Stunde eurer Berater am Telefon.</div>
 
   <h2>Unser Versprechen</h2>
-  <div class="cols">
-    <div class="card"><b>Aufsetzen, nicht ersetzen</b><p>Ihr heutiges Vorgehen bleibt — wir bauen darauf auf. Kein Systemwechsel-Schock.</p></div>
+  <div class="cards">
+    <div class="card"><b>Aufsetzen, nicht ersetzen</b><p>Eure heutige Software bleibt — wir bauen darauf auf. Kein Systemwechsel-Schock.</p></div>
     <div class="card"><b>48h-Reaktion</b><p>Etwas klemmt? Innert 48 Stunden angeschaut — garantiert.</p></div>
-    <div class="card"><b>Ihr Team macht mit</b><p>Wir leiten an, Ihr Team behaelt die Kontrolle — kein Blackbox-Gefuehl.</p></div>
+    <div class="card"><b>Euer Team behaelt die Kontrolle</b><p>Wir leiten an und schulen vor Ort, bis es sitzt — kein Blackbox-Gefuehl.</p></div>
   </div>
 
   <div class="schluss">
-    <b>Und der eigentliche Gewinn:</b> Sie fuehren die Firma wieder, statt ihr hinterherzurennen —
-    mit Zahlen fuer die richtigen Entscheidungen und Abenden, die wieder Ihnen gehoeren.
+    <b>Und der eigentliche Gewinn:</b> Ihr fuehrt die Firma wieder, statt ihr hinterherzurennen —
+    mit Zahlen fuer die richtigen Entscheidungen und Abenden, die wieder euch gehoeren.
   </div>
 
   <div class="foot">

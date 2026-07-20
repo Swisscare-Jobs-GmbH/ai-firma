@@ -12,6 +12,33 @@
 | Pflege/Care | **REIN** — SA-Entscheid. Leitplanke: strikte Daten-Wand, NIE SwissCare-Interna fuer diese Kunden verwenden |
 | Botschaft | **Geld zuerst** ("mehr Vermittlungen, weniger Admin"), Familie/Freiheit als emotionaler Schluss |
 
+## Positionierung (geschaerft 20.07 — SA)
+
+- **NICHT "ihr habt Excel"**, sondern: **"ihr habt Software, aber sie ist alt / nicht auf EUCH gebaut"** —
+  und laesst die Fleissarbeit trotzdem am Team. (These "haben Software, aber alt" haelt: fast alle haben
+  Software; DACH-Marktfuehrer ist Alt-System in Zwang-Migration; nur 28% finden ihren Digital-Stand gut.)
+- **Kern-Mechanik: "Alles ausser dem Callen."** KI = Mails lesen/entwerfen, Bewerbungen sichten+bewerten,
+  Nachfassen, Daten, Zahlen-Cockpit. Mensch = der Anruf. Berater koennen sich 8h/Tag aufs Telefon
+  konzentrieren und darin besser werden.
+- **Staerkster Value-Hebel: den Top-Berater klonen.** Sein Konzept + Training ins System giessen →
+  das ganze Team arbeitet nach dem Muster des Besten. "Aus 1 Top-Berater wird ein Team auf Top-Niveau."
+  (= Value rein statt Preis runter.)
+
+## Markt-Groesse (Funnel, Live-Recherche 20.07 — SECO selbst abgefragt)
+
+| Schicht | Anzahl | Basis |
+|---|---|---|
+| Alle bewilligten Personaldienstleister CH | 6'986 (live) / 7'308 (amtlich Dez 2024) | belegt |
+| duerfen vermitteln (Feststellen-Bewilligung) | 4'888 | belegt |
+| machen Feststellen aktiv | ~4'300 | abgeleitet |
+| Team 5-20 Koepfe | ~1'500-2'150 | abgeleitet (weichster Schritt) |
+| etabliert 3+ Jahre | ~1'200-1'900 | abgeleitet |
+| **= Avatar (Software alt)** | **~850-1'350** | abgeleitet |
+
+**Kernzahl:** ~850-1'350 qualifizierte Firmen, davon **~600-1'000 per Email erreichbar** → Klasse statt
+Masse (jede Mail personalisiert). **Timing:** Feststellen-Umsatz 2025 −23% → jetzt zaehlt jede Telefon-Stunde
+= Aufhaenger fuer die Erstmail. Kanal: SECO-Verzeichnis (amtlich, alle mit Adresse).
+
 ## 4-Variablen-Ampel (belegt, Live-Recherche 20.07)
 
 | Variable | Ampel | Beleg |
