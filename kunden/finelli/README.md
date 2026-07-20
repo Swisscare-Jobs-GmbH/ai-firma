@@ -14,8 +14,11 @@ Tueroeffner: Khawar (SAs Cousin), Kunde Nr. 1 + Referenz. Code-Repo: `C:\dev\fin
     "keine versteckten Kosten" vs. Vertrag schliesst Scanner-Hardware aus).
 - 🟡 **KI-Etappe** auf Sicherungs-Spur `sicherung/ki-etappe-2026-07-19`. Darauf aufgesetzt: 4 Demo-Killer
   gefixt (Draft-PR #1: Mock-Tages-Cache, KI-Timeouts 30s, CORS 127.0.0.1) — nur SA merged.
+- 🟡 Angebot **V7** (Blatt 1 + 2) am 20.07 gedruckt — liegt hier unter `angebot/` (HTML-Quelle + PDF).
+  Wert-Anker-Regel v7: der WERT ist die grosse rote Zahl, der Preis klein + schwarz.
 - **Naechster Schritt:** vor Mittwoch die Demo-Killer-Fixes + KI-Etappe in die Haupt-Spur, dann Klick-Probe.
 
 **Dateien hier:** firma-profil · schmerz-landkarte · deal-strategie · wert-ranking · ausbau-plan ·
-feinplan · logistik-research · offene-fragen · antworten-sa · antworten-runde2.
+feinplan · logistik-research · offene-fragen · antworten-sa · antworten-runde2 · anti-fail-kern
+(14 Fehlerklassen, gerettet 20.07) · `angebot/` (V7 Blatt 1+2).
 (Umgezogen aus swisscare-brain/users/sa/inbox — dort das Original noch vorhanden.)
