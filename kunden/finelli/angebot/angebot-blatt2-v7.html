@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>FINELLI — Dein System im Detail (Blatt 2)</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root {
+    --bg: #f5f2ec; --ink: #1c1a16; --dim: #6f685c; --line: #ddd5c6; --acc: #a8271c; --card: #fbf8f2;
+  }
+  html { width: 210mm; }
+  body {
+    width: 210mm; background: var(--bg); color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+  .sheet { width: 210mm; padding: 8mm 13mm 6mm; }
+  .sheet.two { break-before: page; page-break-before: always; }
+
+  .top { display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 7.8pt; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .top b { color: var(--acc); }
+  .rule { height: .5mm; background: var(--ink); margin-top: 2mm; }
+
+  h1 { font-family: Georgia, serif; font-size: 21pt; line-height: 1.06; margin-top: 2.8mm; letter-spacing: -.01em; }
+  h1 em { font-style: italic; color: var(--acc); }
+  .intro { margin-top: 1.8mm; font-family: Georgia, serif; font-size: 9.4pt; line-height: 1.36; color: #2e2a24; }
+  .intro b { color: var(--acc); }
+
+  .lbl { margin-top: 2.6mm; font-size: 7.3pt; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--acc); font-weight: 700; }
+  .sec { break-inside: avoid; }
+
+  /* 1: Was das System kann */
+  .kann { margin-top: 1.5mm; background: var(--card); border: .3mm solid var(--line); border-left: 1.1mm solid var(--acc);
+    border-radius: 1.6mm; padding: 2.6mm 4mm; column-count: 2; column-gap: 6mm; }
+  .kann p { font-size: 8pt; line-height: 1.34; margin: 0 0 1.3mm; color: #2e2a24; break-inside: avoid; }
+  .kann p:last-child { margin-bottom: 0; }
+  .kann b { color: var(--ink); }
+  .kann b.hl { color: var(--acc); }
+
+  /* Keine ... */
+  .keine { margin-top: 1.6mm; border: .35mm solid var(--acc); border-radius: 1.8mm; background: var(--card); padding: 2.6mm 4mm; break-inside: avoid; }
+  .keine .reihe { display: flex; flex-wrap: wrap; gap: .6mm 4.5mm; }
+  .keine .reihe span { font-family: Georgia, serif; font-size: 9.3pt; line-height: 1.5; white-space: nowrap; }
+  .keine .reihe b { color: var(--acc); }
+  .keine .statt { margin-top: 1.6mm; padding-top: 1.6mm; border-top: .25mm solid var(--line);
+    font-size: 8.2pt; line-height: 1.4; color: #3a352d; }
+  .keine .statt b { color: var(--ink); }
+
+  /* Baustein-Bloecke (Einrichten + Zukunft) */
+  .block { margin-top: 1.5mm; border: .3mm solid var(--line); border-radius: 1.6mm; background: var(--card); padding: 2.4mm 4mm; break-inside: avoid; }
+  .block p { font-size: 8pt; line-height: 1.44; color: #3a352d; margin-bottom: 1.6mm; }
+  .block p:last-child { margin-bottom: 0; }
+  .block b { color: var(--ink); }
+  .block b.hl { color: var(--acc); }
+  .block .satz { font-style: italic; color: var(--dim); }
+  .block .satz b { color: var(--acc); font-style: normal; }
+
+  /* Wachstums-Hebel (Ausbau, NICHT in V1) */
+  .hebel { margin-top: 1.5mm; border: .3mm solid var(--line); border-radius: 1.6mm; background: var(--card); padding: 2.6mm 4mm; break-inside: avoid; }
+  .hebel .lead { font-size: 8pt; line-height: 1.4; color: #3a352d; margin-bottom: 1.6mm; }
+  .hebel .lead b { color: var(--ink); }
+  .hebel .row { display: flex; gap: 3mm; padding: 1.1mm 0; border-top: .25mm solid var(--line); font-size: 8pt; line-height: 1.32; align-items: baseline; }
+  .hebel .row.first { border-top: none; padding-top: .4mm; }
+  .hebel .nm { color: var(--acc); font-weight: 700; flex: 0 0 33mm; }
+  .hebel .bn { color: #3a352d; }
+  .hebel .bn b { color: var(--ink); }
+  .hebel .schluss { margin-top: 1.8mm; padding-top: 1.6mm; border-top: .35mm solid var(--acc); font-size: 8pt; line-height: 1.42; color: #3a352d; }
+  .hebel .schluss b { color: var(--acc); }
+  .hebel .joker { margin-top: 1.4mm; font-style: italic; color: var(--dim); font-size: 7.8pt; line-height: 1.4; }
+  .hebel .joker b { color: var(--acc); font-style: normal; }
+
+  .p1foot { display: flex; justify-content: space-between; align-items: baseline; padding-top: 3mm; margin-top: 3.4mm; border-top: .3mm solid var(--line); }
+  .p1foot .who { font-size: 7.6pt; color: var(--dim); }
+  .p1foot .who b { color: var(--ink); }
+  .p1foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.8pt; color: var(--acc); }
+
+  /* Seite 2 — Heute-Kosten (Anker, kein eigener Preis) */
+  .kosten { margin-top: 1.5mm; background: var(--ink); color: #efe9df; border-radius: 1.8mm; padding: 3mm 4.5mm; break-inside: avoid; }
+  .kosten .hook { font-family: Georgia, serif; font-size: 10.5pt; line-height: 1.3; color: #fff; }
+  .kosten .hook em { font-style: italic; color: #f0b8b0; }
+  .kosten .grid { margin-top: 2.4mm; display: grid; grid-template-columns: 1fr auto 1fr; gap: 5mm; align-items: center; }
+  .kosten .heute .z { display: flex; justify-content: space-between; font-size: 8.2pt; line-height: 1.5; color: #d8d2c6; border-bottom: .2mm solid #3a362e; padding: .5mm 0; }
+  .kosten .heute .z.sum { border-bottom: none; border-top: .4mm solid #6f685c; margin-top: .6mm; padding-top: 1mm; color: #fff; font-weight: 700; }
+  .kosten .heute .z b { font-family: Georgia, serif; }
+  .kosten .pfeil { font-size: 15pt; color: #f0b8b0; text-align: center; }
+  .kosten .morgen { text-align: center; }
+  .kosten .morgen .big { font-family: Georgia, serif; font-size: 15pt; font-weight: 700; color: #fff; line-height: 1.1; }
+  .kosten .morgen .u { font-size: 6.8pt; letter-spacing: .1em; text-transform: uppercase; color: #b8afa0; margin-top: 1.4mm; }
+  .kosten .morgen .s { font-size: 7.6pt; color: #d8d2c6; margin-top: 1.6mm; line-height: 1.35; }
+  .kosten .note { margin-top: 2.2mm; padding-top: 1.8mm; border-top: .2mm solid #3a362e; font-size: 7.6pt; font-style: italic; color: #c8c2b6; line-height: 1.4; }
+  .kosten .note b { font-style: normal; color: #fff; }
+
+  /* Marktwert-Tabelle */
+  .wert-intro { margin-top: 1.6mm; font-size: 8.5pt; line-height: 1.4; color: #2e2a24; }
+  .wert-intro b { color: var(--acc); }
+  table.wert { width: 100%; border-collapse: collapse; margin-top: 1.2mm; }
+  table.wert th { text-align: left; font-size: 7pt; letter-spacing: .1em; text-transform: uppercase; color: var(--dim);
+    font-weight: 700; padding: 0 0 1mm; border-bottom: .3mm solid var(--line); }
+  table.wert th.p { text-align: right; }
+  table.wert td { padding: 1.5mm 0; border-bottom: .25mm solid var(--line); font-size: 8pt; line-height: 1.3; vertical-align: top; }
+  table.wert td.p { text-align: right; font-family: Georgia, serif; font-weight: 700; white-space: nowrap; padding-left: 5mm; font-size: 8.4pt; }
+  table.wert td .gratis { color: var(--acc); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 7.4pt; }
+  /* Anker-Regel (v7): der WERT ist die groesste + rote Zahl, der PREIS klein + schwarz. */
+  table.wert tr.mkt td { border-bottom: none; border-top: .6mm solid var(--ink); padding-top: 1.6mm;
+    font-weight: 700; font-size: 9pt; text-transform: uppercase; letter-spacing: .04em; }
+  table.wert tr.mkt td.p { font-size: 13.5pt; color: var(--acc); }
+  table.wert tr.preis td { border-bottom: none; border-top: .4mm solid var(--dim); padding-top: 1.4mm;
+    font-weight: 700; font-size: 8.6pt; }
+  table.wert tr.preis td.p { font-size: 10pt; color: var(--ink); }
+  .agency { margin-top: 1mm; padding: 1.6mm 3.4mm; background: var(--card); border: .3mm solid var(--acc);
+    border-radius: 1.4mm; font-size: 8.4pt; line-height: 1.4; color: #2e2a24; }
+  .agency b { color: var(--acc); font-weight: 700; }
+  .agency .big { font-family: Georgia, serif; font-size: 11pt; font-weight: 700; color: var(--acc); }
+
+  /* Abzahlung + Prozess */
+  .deal { margin-top: 2.4mm; background: var(--card); border: .35mm solid var(--acc); border-radius: 1.8mm;
+    padding: 2.8mm 4.5mm; break-inside: avoid; }
+  .deal .k { font-size: 7pt; letter-spacing: .18em; text-transform: uppercase; color: var(--acc); font-weight: 700; }
+  .deal .r1 { font-size: 8.4pt; margin-top: 1.4mm; line-height: 1.45; color: #2e2a24; }
+  .deal .r1 b { color: var(--ink); }
+
+  .prozess { margin-top: 2.4mm; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.6mm; break-inside: avoid; }
+  .schritt { background: var(--card); border: .3mm solid var(--line); border-radius: 1.4mm; padding: 1.8mm 2.4mm; }
+  .schritt .nr { font-family: Georgia, serif; font-size: 10pt; font-weight: 700; color: var(--acc); }
+  .schritt p { font-size: 7.3pt; line-height: 1.35; margin-top: .7mm; color: #3a352d; }
+  .schritt p b { color: var(--ink); }
+  .betrieb { margin-top: 1.8mm; font-size: 7.6pt; font-style: italic; color: var(--dim); line-height: 1.4; break-inside: avoid; }
+  .betrieb b { font-style: normal; color: var(--ink); }
+  .infogrid { margin-top: 2.4mm; display: grid; grid-template-columns: 1fr 1fr; gap: 2.8mm; break-inside: avoid; }
+  .infocard { background: var(--card); border: .3mm solid var(--line); border-left: 1mm solid var(--acc); border-radius: 1.6mm; padding: 2.4mm 3.4mm; }
+  .infocard .h { font-size: 7pt; letter-spacing: .14em; text-transform: uppercase; color: var(--acc); font-weight: 700; }
+  .infocard p { font-size: 7.7pt; line-height: 1.42; color: #3a352d; margin-top: 1.2mm; }
+  .infocard p b { color: var(--ink); }
+
+  /* Monats-Zahl ganz unten */
+  .monat { margin-top: 2.6mm; background: var(--ink); color: #f5f2ec; border-radius: 1.8mm;
+    padding: 3.2mm 5mm; display: flex; justify-content: space-between; align-items: center; gap: 8mm; break-inside: avoid; }
+  .monat .l .k { font-size: 6.8pt; letter-spacing: .2em; text-transform: uppercase; color: #b8afa0; }
+  .monat .l .r { font-size: 8.4pt; margin-top: 1.2mm; line-height: 1.4; }
+  .monat .l .r b { color: #fff; }
+  .monat .big { text-align: right; }
+  .monat .big .n { font-family: Georgia, serif; font-size: 22pt; font-weight: 700; line-height: 1; color: #fff; white-space: nowrap; }
+  .monat .big .u { font-size: 6.8pt; letter-spacing: .08em; text-transform: uppercase; color: #b8afa0; margin-top: 1.2mm; }
+
+  .foot { display: flex; justify-content: space-between; align-items: baseline; padding-top: 3mm; margin-top: 3mm; border-top: .3mm solid var(--line); }
+  .foot .who { font-size: 7.6pt; color: var(--dim); }
+  .foot .who b { color: var(--ink); }
+  .foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.6pt; color: var(--acc); }
+
+  /* Seite 3 — Ausbau-Karte (luftig) */
+  .s3-intro { margin-top: 2.6mm; font-family: Georgia, serif; font-size: 9.4pt; line-height: 1.45; color: #2e2a24; max-width: 165mm; }
+  .s3-intro b { color: var(--acc); }
+  .s3-grid { margin-top: 5mm; display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .karte { background: var(--card); border: .3mm solid var(--line); border-radius: 2mm; padding: 3.4mm 4.2mm; display: flex; flex-direction: column; gap: 1.8mm; break-inside: avoid; }
+  .karte .kopf { display: flex; align-items: baseline; gap: 2.2mm; }
+  .karte .nr { font-family: Georgia, serif; font-size: 8.6pt; font-weight: 700; color: var(--acc); }
+  .karte h3 { font-family: Georgia, serif; font-size: 10.2pt; line-height: 1.15; }
+  .karte .was { font-size: 7.9pt; line-height: 1.42; color: #3a352d; }
+  .karte .was b { color: var(--ink); }
+  .karte .zahl { font-size: 7.9pt; line-height: 1.42; color: #3a352d; }
+  .karte .zahl b { color: var(--acc); }
+  .karte .markt { margin-top: auto; padding-top: 1.8mm; border-top: .25mm solid var(--line);
+    font-size: 7.2pt; line-height: 1.4; color: var(--dim); }
+  .karte .markt b { color: var(--ink); }
+  .exit { margin-top: 5mm; border: .35mm solid var(--acc); border-radius: 2mm; background: var(--card); padding: 3.2mm 4.5mm; break-inside: avoid; }
+  .exit .h { font-family: Georgia, serif; font-size: 10.5pt; margin-bottom: 2.2mm; }
+  .exit .h em { font-style: italic; color: var(--acc); }
+  .exit .drei { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4.5mm; }
+  .exit .drei p { font-size: 7.9pt; line-height: 1.42; color: #3a352d; }
+  .exit .drei b { color: var(--ink); }
+  .exit .quelle { margin-top: 2.2mm; font-size: 7.2pt; font-style: italic; color: var(--dim); }
+  .close { margin-top: 2.2mm; border-top: .3mm solid var(--ink); border-bottom: .3mm solid var(--ink); padding: 1.5mm 0; text-align: center; font-family: Georgia, serif; font-style: italic; font-size: 9pt; }
+  .close b { font-style: normal; color: var(--acc); }
+</style>
+</head>
+<body>
+
+<!-- ===================== SEITE 1 — REINER WERT, KEIN PREIS ===================== -->
+<div class="sheet one">
+  <div class="top"><span>Shehryaar Khawaja — <b>Software &amp; KI</b></span><span>FINELLI · Blatt 2 · Seite 1: dein System</span></div>
+  <div class="rule"></div>
+
+  <h1>Ein System macht deine Logistik.<br>Du machst <em>das Wachstum.</em></h1>
+  <p class="intro">
+    Alles in <b>einem</b> System — keine externen Zusatz-Programme mehr. Und <b>du bleibst der Boss:</b> das
+    System schickt dir die Zahlen und schlägt vor — entscheiden tust du. Hier zuerst, was es jeden Tag für
+    dich tut, was ab dann wegfällt, und wie wir es bei dir aufbauen. <b>Was es kostet — und wie du es ohne
+    Risiko abzahlst — steht auf der Rückseite.</b>
+  </p>
+
+  <div class="sec">
+  <div class="lbl">1 · Was dein System jeden Tag für dich tut</div>
+  <div class="kann">
+    <p><b>Dein Bestand: über 95% genau.</b> Jedes Teil, beide Lager, ein Bildschirm. Grün = genug da,
+    rot = fast leer. Du suchst ein Teil? Antwort in 5 Sekunden — mit Platz:
+    „liegt auf <span style="white-space:nowrap">E-R2-F3</span>".</p>
+    <p><b>Deine Leute packen schneller.</b> Die App zeigt genau, zu welchem Regal sie gehen müssen.
+    Falsches Teil? Der Scan warnt sofort. Schnell gepackt, richtig gepackt.</p>
+    <p><b>Kasse und Shop zählen selbst mit.</b> Auf jedem Teil klebt ein Code. Verkauf im Laden oder
+    online — der Bestand bucht sich von allein. Alle Etiketten fertig zum Drucken.</p>
+    <p><b class="hl">Es schickt dir die Zahlen — du entscheidest.</b> Das System meldet sich: „Dieses Teil:
+    noch 6 Stück, in 30 Tagen 24-mal verkauft." Dazu sein Vorschlag: jetzt nachbestellen — oder langsam aus
+    dem Shop nehmen. Du bleibst der Boss, es nimmt dir nur das Rechnen ab. (Den Zeitraum stellst du selbst ein.)</p>
+    <p><b class="hl">Der Montags-Bericht zeigt dir, was sich lohnt.</b> Welches Teil wie schnell ging —
+    online oder im Laden — als Grundlage für deine Entscheidung: nochmal nachproduzieren, oder besser
+    ausräumen und den Platz für einen Renner frei machen.</p>
+    <p><b class="hl">Frag-FINELLI — frag alles, in deiner Sprache.</b> „Wie viele schwarze Hoodies in L?" —
+    Antwort sofort. Und deine alten Verkaufszahlen füttern wir ein: dann siehst du, wie ein Teil dieses,
+    letztes und vorletztes Jahr lief — und planst deine nächste Kollektion auf echten Daten statt Bauchgefühl.
+    Alles ist aufgeschrieben: jeder Verkauf, jede Bewegung, jeder Tag.</p>
+  </div>
+  </div>
+
+  <div class="sec">
+  <div class="lbl">2 · Was es ab dann nicht mehr gibt</div>
+  <div class="keine">
+    <div class="reihe">
+      <span><b>Keine</b> Phantom-Verkäufe.</span>
+      <span><b>Keine</b> Kunden, die 14–35 Tage warten.</span>
+      <span><b>Kein</b> „liegt das in Embrach?"</span>
+      <span><b>Kein</b> Bestell-Rechnen im Kopf.</span>
+      <span><b>Kein</b> Renner, der unbemerkt leerläuft.</span>
+      <span><b>Keine</b> Zusatz-Abos.</span>
+    </div>
+    <div class="statt"><b>Stattdessen:</b> ein Schirm mit echten Zahlen, eine Bewegung pro Handgriff (scannen),
+    ein System, das dir jeden Montag die Zahlen für deine Entscheidung bringt — und ein Lager, das deine 5-Sterne-Marke trägt.</div>
+  </div>
+  </div>
+
+  <div class="sec">
+  <div class="lbl">3 · Wir richten alles ein — und lassen dich nicht allein</div>
+  <div class="block">
+    <p><b>Dein Lager: jeder findet alles.</b> Wir bauen die Regale nach Grösse und Art auf — Hosen zu
+    Hosen, Shirts zu Shirts, jede Grösse ihr Fach. Jedes Teil hat seinen festen Platz — sogar eine neue
+    Kraft findet es am ersten Tag in Sekunden.</p>
+    <p><b>Einschulung für deine zuständige Person und das ganze Team,</b> bis jeder Handgriff sitzt — nicht
+    nur einmal gezeigt, sondern geübt.</p>
+    <p><b class="hl">Die ersten 30 Tage: wir bleiben dran — gratis.</b> Im ersten Monat kommen wir jede
+    Woche einen Tag zu dir. In dieser Zeit flicken wir kostenlos, was noch hakt, und bauen deine
+    Layout-Wünsche ein — bis dein System sitzt. <span class="satz">(Ganz neue Funktionen sind ein eigener
+    Auftrag; hier geht es um <b>die Feinarbeit am bestehenden System</b>, damit alles rund läuft.)</span></p>
+  </div>
+  </div>
+
+  <div class="sec">
+  <div class="lbl">4 · Deine nächsten Umsatz-Hebel — noch nicht im Start-System (V1)</div>
+  <div class="hebel">
+    <div class="lead">Dein Start-System (V1) ist der Logistik-Kern — und <b>dein erster Schritt in
+    KI-Arbeitsabläufe (AI-Workflows) für FINELLI:</b> je länger es läuft, desto mehr Arbeit nimmt dir die KI ab.
+    Jeder weitere Baustein ist <b>eine neue Einnahme-Quelle, die du dazunimmst, wann du willst:</b></div>
+    <div class="row first"><span class="nm">Hersteller-Zugang</span><span class="bn">Deine Hersteller tragen selbst ein, was sie schicken — in welchen Grössen. <b>Neue Kollektion ohne Chaos.</b></span></div>
+    <div class="row"><span class="nm">Ladenhüter-Finder</span><span class="bn">Zeigt, was liegt, und wohin damit — <b>Platz frei für den nächsten Renner.</b></span></div>
+    <div class="row"><span class="nm">Drop-Helfer</span><span class="bn">Foto machen → fertiger Shop-Eintrag, die KI schreibt den Text — <b>schneller online, schneller Umsatz.</b></span></div>
+    <div class="row"><span class="nm">Deine Webseite</span><span class="bn">Eigener Auftritt, <b>gespeist aus demselben System</b> — dein Bestand immer aktuell.</span></div>
+    <div class="row"><span class="nm">Händler-Portal</span><span class="bn">Deine Wiederverkäufer in ganz Europa bestellen selbst — <b>mehr Grossbestellungen, null Mehraufwand.</b></span></div>
+    <div class="schluss">Jeder Hebel ist eine eigene Einnahme-Quelle, die auf deinem Start-System aufsetzt — <b>du fängst nie wieder bei null an.</b></div>
+    <div class="joker">Dein Türöffner-Joker (Blatt 1): bringst du uns einen Kunden, bekommst du <b>die Hälfte von deren Einmal-Preis für die Software — direkt auf deine Kosten angerechnet.</b></div>
+  </div>
+  </div>
+
+  <div class="p1foot">
+    <span class="who"><b>Shehryaar Khawaja</b> · Software &amp; KI · Zürich</span>
+    <span class="cta">Bitte umdrehen → Preis &amp; Abzahlung.</span>
+  </div>
+</div>
+
+<!-- ===================== SEITE 2 — WERT IM MARKT, DANN PREIS ===================== -->
+<div class="sheet two">
+  <div class="top"><span>FINELLI · Blatt 2 · Seite 2: was es wert ist &amp; wie du es abzahlst</span><span><b>CHF 0</b> im Voraus</span></div>
+  <div class="rule"></div>
+
+  <h1>Was das wert ist —<br>und wie du es <em>ohne Risiko</em> abzahlst.</h1>
+  <p class="intro">
+    Auf Seite 1 hast du gesehen, <b>was das System jeden Tag für dich tut.</b> Jetzt die Zahlen: was jeder
+    Baustein im Markt wert wäre, dein Preis als Kunde Nr. 1 — und was du heute schon an verstreuter Software zahlst.
+  </p>
+
+  <div class="sec">
+  <div class="lbl">5 · Was es wert ist — und was du zahlst</div>
+  <p class="wert-intro"><b>Das ist keine Miet-App von der Stange, sondern Custom-Software — extra für dich
+  gebaut und mit KI verbunden.</b> Lässt du so etwas im Markt bei einem Software-Entwickler bauen, kostet das:</p>
+  <table class="wert">
+    <tr><th>Baustein</th><th class="p">Marktwert</th></tr>
+    <tr><td>Logistik-Kern: Lagerplätze, Packzettel mit Fundort, Verkaufs-Journal — extra für dich gebaut</td><td class="p">9'000</td></tr>
+    <tr><td>Kassen-Fix + Etiketten-System: ein Code pro Teil und Grösse</td><td class="p">4'000</td></tr>
+    <tr><td>KI-Paket: Bestell-Wecker, Montags-Bericht, Frag-FINELLI + System-Wächter</td><td class="p">2'500</td></tr>
+    <tr><td>Team-Schulung + Scan-Routinen, bis es sitzt</td><td class="p">2'500</td></tr>
+    <tr><td>Einricht-Woche: 1 Woche zu zweit vor Ort, Lager einräumen <span class="gratis">— für dich geschenkt</span></td><td class="p">6'000</td></tr>
+    <tr class="mkt"><td>Zusammengerechnet im Markt</td><td class="p">CHF 24'000</td></tr>
+    <tr class="preis"><td>Dein Preis als Kunde Nr. 1</td><td class="p">CHF 18'000</td></tr>
+  </table>
+  <div class="agency">Eine Agentur baut diesen Umfang für <span class="big">CHF 30'000+</span> — einzelne Bausteine am Markt bis 150'000. Du als <b>Kunde Nr. 1: CHF 18'000</b> — für Software, die dir am Ende <b>gehört,</b> und die Einricht-Woche (6'000) schenken wir dir.</div>
+  </div>
+
+  <div class="sec">
+  <div class="lbl">6 · Was du heute schon für Software zahlst</div>
+  <div class="kosten">
+    <div class="hook">Heute läuft dein Laden auf vielen Programmen — <em>jedes ein eigenes Abo, jedes eine eigene Rechnung.</em></div>
+    <div class="grid">
+      <div class="heute">
+        <div class="z"><span>Lager- &amp; Pack-Apps</span><b>~600 /Mt</b></div>
+        <div class="z"><span>Weitere Tools (Kasse, Listen …)</span><b>~400 /Mt</b></div>
+        <div class="z sum"><span>Wegwerf-Abos, die dein System ersetzt</span><b>~1'000 /Mt</b></div>
+      </div>
+      <div class="pfeil">→</div>
+      <div class="morgen">
+        <div class="big">EIN System</div>
+        <div class="u">aus einer Hand · statt fünf Abos</div>
+        <div class="s"><b>Und nach 24 Monaten gehört es dir — statt für immer gemietet.</b></div>
+      </div>
+    </div>
+    <div class="note">Deine <b>Shopify-Grundgebühr (~500)</b> läuft wie bisher direkt bei Shopify weiter — die
+    ist nicht bei uns. Was <b>wegfällt,</b> sind die Extra-Abos, die unser System ersetzt. <b>Am Mittwoch rechnen
+    wir aus deiner Liste,</b> was das bei dir genau ist — schwarz auf weiss.</div>
+  </div>
+  </div>
+
+  <div class="sec">
+  <div class="deal">
+    <div class="k">So läuft die Abzahlung — null Risiko</div>
+    <div class="r1"><b>CHF 0 im Voraus.</b> Du zahlst die erste Rate erst, <b>wenn die Software bei dir steht und läuft.</b>
+    Dann <b>24 × CHF 750 = CHF 18'000</b> — und danach gehört die Software <b>dir, für immer.</b></div>
+  </div>
+
+  <div class="infogrid">
+    <div class="infocard">
+      <div class="h">Am Ende gehört sie dir</div>
+      <p><b>Kein Miet-Abo für die Ewigkeit:</b> andere Software mietest du, solange du sie nutzt — deine ist
+      nach 24 Monaten abbezahlt und gehört dir. Der <b>Betrieb (CHF 500/Mt)</b> hält sie danach am Laufen:
+      Server-Miete, Updates, KI, System-Wächter — monatlich kündbar.</p>
+    </div>
+    <div class="infocard">
+      <div class="h">48-Stunden-Garantie</div>
+      <p>Hakt etwas, <b>flicken wir es innert 48 Stunden.</b> Schaffen wir das nicht, pausiert deine Rate und
+      der Betriebs-Monat (CHF 500) ist <b>geschenkt.</b></p>
+    </div>
+  </div>
+  </div>
+
+  <div class="monat">
+    <div class="l">
+      <div class="k">Dein Monatsbetrag — alles zusammen</div>
+      <div class="r"><b>CHF 750 Rate</b> (24 Monate, dann weg) <b>+ CHF 500 Betrieb.</b><br>CHF 0 im Voraus — die erste Rate erst, wenn's steht und läuft.</div>
+    </div>
+    <div class="big"><div class="n">CHF 1'250</div><div class="u">pro Monat komplett</div></div>
+  </div>
+
+  <div class="close">Kunde Nr. 1 gibt es genau einmal. Am <b>Mittwoch, 22. Juli</b> klickst du selbst — und entscheidest, ob du es bist.</div>
+
+  <div class="foot">
+    <span class="who"><b>Shehryaar Khawaja</b> · Software &amp; KI · Zürich</span>
+    <span class="cta">Mittwoch klickst du selbst in der laufenden App.</span>
+  </div>
+</div>
+
+<!-- ===================== SEITE 3 — DEINE AUSBAU-KARTE ===================== -->
+<div class="sheet two">
+  <div class="top"><span>Shehryaar Khawaja — <b>Software &amp; KI</b></span><span>FINELLI · Blatt 2 · Seite 3: Deine Ausbau-Karte</span></div>
+  <div class="rule"></div>
+
+  <h1>Dein System ist gebaut,<br>um <em>mitzuwachsen.</em></h1>
+  <p class="s3-intro">
+    <b>Sobald dein Start-System läuft und sich bezahlt macht,</b> öffnet jede weitere Stufe eine
+    <b>neue Einnahme-Quelle</b> — jede baut auf der davor auf, du fängst nie wieder bei null an. Jeder
+    Baustein bekommt sein eigenes Angebot, <b>erst wenn du ihn willst.</b> Daneben steht ehrlich, was so etwas im Markt kostet.
+  </p>
+
+  <div class="s3-grid">
+    <div class="karte">
+      <div class="kopf"><span class="nr">1</span><h3>Hersteller-Zugang</h3></div>
+      <p class="was">Heute schreibst du jedem Hersteller einzeln. Künftig trägt <b>er selbst ein,</b> was er
+      in welchen Grössen schickt — die neue Kollektion kommt <b>angekündigt statt als Überraschung.</b></p>
+      <p class="zahl">Dazu der Fabrik-Trick: Barcode-Anhänger ab Werk für <b>~7 Rappen pro Stück</b> —
+      das Selber-Etikettieren fällt weg.</p>
+      <p class="markt">Im Markt: Bau beim Profi <b>CHF 25'000–80'000</b> · Miet-Portale ab CHF 500/Mt, für immer.</p>
+    </div>
+
+    <div class="karte">
+      <div class="kopf"><span class="nr">2</span><h3>Kunden- &amp; Lager-Radar</h3></div>
+      <p class="was">Wir messen, <b>von wo bestellt wird, welche Altersgruppe kauft, welcher Ort, welches
+      Teil</b> — und dein Mitarbeiter sieht direkt am Schirm, <b>was er nachfüllen muss.</b> Ladenhüter
+      erkennst du, bevor sie liegen bleiben.</p>
+      <p class="zahl">Mode-Branchenzahl: <b>12–20% des Lagers</b> ist totes Geld — früh erkannt heisst
+      früher und flacher rabattieren.</p>
+      <p class="markt">Im Markt: Bau <b>CHF 5'000–20'000</b> · Miet-Tools CHF 50–200/Mt, jedes Jahr neu.</p>
+    </div>
+
+    <div class="karte">
+      <div class="kopf"><span class="nr">3</span><h3>Drop-Helfer</h3></div>
+      <p class="was">Foto machen — <b>die KI stellt das Bild frei und schreibt den Verkaufs-Text.</b>
+      Der ganze Drop ist in Stunden online statt in Tagen.</p>
+      <p class="zahl">50-Teile-Drop: von Hand <b>12–20 Stunden</b> — mit Helfer <b>1–4 Stunden,</b>
+      Bildkosten ~5 Franken. Jede gesparte Stunde verkauft schon.</p>
+      <p class="markt">Im Markt: Bau <b>CHF 8'000–25'000+</b> · Miet-Tools schreiben nur Text, kein Foto-zu-Eintrag.</p>
+    </div>
+
+    <div class="karte">
+      <div class="kopf"><span class="nr">4</span><h3>KI-Webseite, die jeden Klick misst</h3></div>
+      <p class="was">Dein eigener Marken-Auftritt, <b>der jeden Klick misst:</b> du siehst, was Besucher
+      anschauen, wo sie abspringen, was sie kaufen. Der Bestand kommt direkt aus deinem System —
+      <b>nie mehr „verfügbar", was ausverkauft ist.</b></p>
+      <p class="zahl">Eigener Kanal statt Marktplatz: bei Mode gehen dort <b>20–25% jedes Verkaufs</b> als
+      Abgabe weg — deiner behält sie.</p>
+      <p class="markt">Im Markt: CH-Agentur <b>CHF 5'000–20'000</b> + Wartung CHF 150–600/Mt.</p>
+    </div>
+
+    <div class="karte">
+      <div class="kopf"><span class="nr">5</span><h3>Händler-Portal</h3></div>
+      <p class="was">Deine <b>~40 Läden in ganz Europa</b> bestellen heute per Mail — Handarbeit, die am
+      Bestand vorbeiläuft. Im Portal loggt sich der Händler ein, sieht <b>seine Preise</b> und bestellt
+      selbst, rund um die Uhr.</p>
+      <p class="zahl">Dein Beispiel: Händler kauft für <b>37</b>, verkauft für <b>100</b> — er bestellt gern
+      gross. Über Bestell-Marktplätze wären <b>15% Abgabe</b> fällig; dein Portal gehört dir.</p>
+      <p class="markt">Im Markt: Aufsatz <b>CHF 5'000–20'000</b>, Neubau bis 150'000 · grosse Shopify-Lösung ~CHF 2'300/Mt.</p>
+    </div>
+
+    <div class="karte">
+      <div class="kopf"><span class="nr">6</span><h3>Content-Radar</h3></div>
+      <p class="was">Dein eigener Wunsch: das System erkennt, <b>wenn ein Teil in einer Altersgruppe oder
+      Stadt gerade läuft</b> — und schlägt vor: <b>jetzt Content dazu machen.</b> Aus Alter, Ort und
+      Verkaufszahlen wird dein Drehplan.</p>
+      <p class="zahl">Beispiel: „Dieses Shirt läuft gerade bei <b>18–24 in Zürich</b> — dreh heute ein
+      Reel dazu." Trend nutzen, solange er läuft.</p>
+      <p class="markt">Im Markt: KI-Marketing-Agenturen nehmen <b>CHF 500–5'000 Setup + CHF 2'000+/Mt.</b></p>
+    </div>
+  </div>
+
+  <div class="exit">
+    <div class="h">Und wenn du eines Tages <em>nicht mehr mit uns</em> arbeiten willst?</div>
+    <div class="drei">
+      <p><b>Die Software gehört dir.</b> Nach den 24 Raten ist sie deins — ob du bleibst oder gehst.</p>
+      <p><b>Nichts geht von heute auf morgen aus.</b> Der Betrieb ist monatlich kündbar — danach läuft
+      dein System noch 3 Monate als Auslauf-Frist weiter.</p>
+      <p><b>Geordnete Übergabe.</b> Auf Wunsch übergeben wir System und Daten an dich oder deinen
+      neuen Betreuer — sauber und vollständig.</p>
+    </div>
+    <div class="quelle">So steht es auch im Vertrag — kein Kleingedrucktes, das dich festhält.</div>
+  </div>
+
+  <div class="foot">
+    <span class="who"><b>Shehryaar Khawaja</b> · Software &amp; KI · Zürich</span>
+    <span class="cta">Blatt 1 = das Angebot · dieses Blatt = dein System + die Reise.</span>
+  </div>
+</div>
+
+</body>
+</html>

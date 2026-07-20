@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Angebot FINELLI System V1 (v7)</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root {
+    --bg: #f5f2ec; --ink: #1c1a16; --dim: #6f685c; --line: #ddd5c6; --acc: #a8271c; --card: #fbf8f2;
+  }
+  html, body { width: 210mm; height: 297mm; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 6.5mm 13mm 3.5mm;
+    display: flex; flex-direction: column;
+  }
+
+  .top { display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 7.8pt; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .top b { color: var(--acc); }
+  .rule { height: .5mm; background: var(--ink); margin-top: 2mm; }
+
+  h1 { font-family: Georgia, serif; font-size: 22.5pt; line-height: 1.05; margin-top: 4mm; letter-spacing: -.01em; }
+  h1 em { font-style: italic; color: var(--acc); }
+
+  .intro { margin-top: 2.6mm; font-family: Georgia, serif; font-size: 9.7pt; line-height: 1.4; color: #2e2a24; }
+  .intro b { color: var(--acc); }
+
+  .lbl { margin-top: 2.4mm; font-size: 7.2pt; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--acc); font-weight: 700; }
+
+  .szenen { margin-top: 1.5mm; background: var(--card); border: .3mm solid var(--line);
+    border-left: 1.1mm solid var(--acc); border-radius: 1.6mm; padding: 2.4mm 3.8mm; }
+  .szenen p { font-size: 8.3pt; line-height: 1.33; margin: 0.8mm 0; color: #2e2a24; }
+  .szenen p b.neu { color: var(--acc); }
+  .szenen p b { color: var(--ink); }
+
+  .dreamrest { margin-top: 1.7mm; font-size: 8.3pt; line-height: 1.38; color: #3a352d; }
+  .dreamrest b { color: var(--ink); }
+
+  .zwei { margin-top: 2.2mm; display: grid; grid-template-columns: 1fr 1fr; gap: 6.5mm; }
+  .zwei h4 { font-family: Georgia, serif; font-size: 9.6pt; border-bottom: .5mm solid var(--acc);
+    padding-bottom: 1mm; display: inline-block; }
+  .zwei p { margin-top: 1.4mm; font-size: 8.1pt; line-height: 1.4; color: #3a352d; }
+  .zwei b { color: var(--acc); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 1.3mm; }
+  td { padding: 1.0mm 0; border-bottom: .25mm solid var(--line); font-size: 8.2pt; line-height: 1.26; vertical-align: top; }
+  td.p { text-align: right; font-family: Georgia, serif; font-weight: 700; white-space: nowrap; padding-left: 5mm; font-size: 8.6pt; }
+  /* Anker-Regel (v7): der WERT ist die groesste + rote Zahl, der PREIS klein + schwarz. */
+  tr.mkt td { border-bottom: none; border-top: .6mm solid var(--ink); padding-top: 1.7mm;
+    font-weight: 700; font-size: 9pt; text-transform: uppercase; letter-spacing: .04em; }
+  tr.mkt td.p { font-size: 13.5pt; color: var(--acc); }
+  tr.sum td { border-bottom: none; border-top: .4mm solid var(--dim); padding-top: 1.4mm; font-weight: 700; font-size: 8.6pt; }
+  tr.sum td.p { font-size: 10pt; color: var(--ink); }
+  .agency { margin-top: 1.2mm; font-size: 8.3pt; line-height: 1.36; color: #3a352d; }
+  .agency b { color: var(--acc); font-weight: 700; }
+  .agency .big { font-family: Georgia, serif; font-size: 10.5pt; font-weight: 700; color: var(--acc); }
+
+  .bruecke { margin-top: 1.6mm; font-size: 8.2pt; font-style: italic; line-height: 1.4; color: #3a352d; }
+  .bruecke b { font-style: normal; color: var(--ink); }
+
+  .deal { margin-top: 2mm; background: var(--ink); color: #f5f2ec; border-radius: 1.8mm;
+    padding: 2.6mm 5mm; display: flex; justify-content: space-between; align-items: center; gap: 8mm; }
+  .deal .k { font-size: 6.8pt; letter-spacing: .2em; text-transform: uppercase; color: #b8afa0; }
+  .deal .r1 { font-size: 8.4pt; margin-top: 1.3mm; line-height: 1.42; }
+  .deal .r1 b { color: #fff; }
+  .deal .big { text-align: right; }
+  .deal .big .n { font-family: Georgia, serif; font-size: 20pt; font-weight: 700; line-height: 1; color: #fff; white-space: nowrap; }
+  .deal .big .u { font-size: 6.8pt; letter-spacing: .08em; text-transform: uppercase; color: #b8afa0; margin-top: 1.1mm; }
+  .cmp { margin-top: 1.3mm; font-size: 7.6pt; font-style: italic; color: var(--dim); }
+  .cmp b { font-style: normal; color: var(--ink); }
+
+  .bausteine { margin-top: 1.8mm; font-size: 8pt; line-height: 1.4; color: #3a352d; }
+  .bausteine b { font-family: Georgia, serif; color: var(--ink); }
+
+  .joker { margin-top: 1.8mm; border: .35mm solid var(--acc); border-radius: 1.6mm;
+    padding: 1.9mm 3.8mm; background: var(--card); font-size: 8.1pt; line-height: 1.38; }
+  .joker .tag { font-size: 6.8pt; letter-spacing: .16em; text-transform: uppercase; color: var(--acc); font-weight: 700; display: block; margin-bottom: .8mm; }
+  .joker b { color: var(--acc); }
+
+  .urgent { margin-top: 2mm; border-top: .3mm solid var(--ink); border-bottom: .3mm solid var(--ink);
+    padding: 1.5mm 0; text-align: center; font-family: Georgia, serif; font-style: italic; font-size: 9.2pt; }
+  .urgent b { font-style: normal; color: var(--acc); }
+
+  .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; padding-top: 2.2mm; }
+  .foot .who { font-size: 7.6pt; color: var(--dim); }
+  .foot .who b { color: var(--ink); }
+  .foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.6pt; color: var(--acc); }
+</style>
+</head>
+<body>
+  <div class="top"><span>Shehryaar Khawaja — <b>Software &amp; KI</b></span><span>Zürich · 22. Juli 2026</span></div>
+  <div class="rule"></div>
+
+  <h1>Dein Laden hat die 5 Sterne.<br>Jetzt zieht <em>dein Versand</em> nach.</h1>
+
+  <p class="intro">
+    Ich habe deine Bewertungen gelesen — über 170 auf Google und Trustpilot. „Bester Kleiderladen in Zürich",
+    schreiben deine Kunden. Über 20'000 verkaufte Teile, rund 10'000 Kunden, Händler in ganz Europa —
+    aus dem Nichts gebaut. Die <b>einzige</b> Bremse steht nicht im Laden. Sie steht im Lager: es weiss nicht,
+    was dein Shop verkauft. <b>Genau das lösen wir — und bauen dir dabei echte Zahlen zu jedem Teil.</b>
+  </p>
+
+  <div class="lbl">Vier Momente, die du kennst — und wie sie ab nächster Woche laufen</div>
+  <div class="szenen">
+    <p>Dein Shop verkauft ein Teil, das gar nicht mehr da ist. Beim Packen fällt es auf — und der Kunde
+       wartet <b>14–35 Tage</b> auf die Nachproduktion. Kein Wunder — dein Lager weiss nicht, was der Shop verkauft. <b class="neu">Ab sofort:</b> jeder Verkauf bucht sich
+       selbst — dein Shop zeigt nur, was wirklich da ist.</p>
+    <p>Ein Kunde will seine Grösse, im Laden fehlt sie — liegt sie in Embrach? Bis das jemand weiss, ist der
+       Kunde weg. <b class="neu">Ab sofort:</b> Antwort in <b>5 Sekunden</b> am Handy. Das läuft heute schon.</p>
+    <p>Du schätzt selbst: dein Bestand stimmt zu <b>~80%</b> — jede fünfte Zahl kann lügen. Nicht
+       deine Schuld: Kasse und Shopify reden nicht miteinander. <b class="neu">Ab sofort:</b> eine Kasse,
+       eine Wahrheit — und roter Alarm, bevor dein Renner leer ist.</p>
+    <p>Bestell-Mengen rechnest du heute im Kopf. <b class="neu">Ab sofort:</b> „Bestell 20 Stück — in 3 Wochen
+       leer, Nachschub braucht 2 Wochen." Und wenn du wissen willst warum: <b>Frag-FINELLI</b> antwortet dir mit
+       deinen eigenen Zahlen.</p>
+  </div>
+
+  <p class="dreamrest">
+    <b>Dazu ab Woche eins:</b> jede Bestellung am selben Tag raus (der Scan stoppt jeden Fehl-Griff) · jeden
+    Morgen am Handy, was gestern lief · Montag früh der KI-Bericht. Alte Verkaufsdaten? Füttern wir ein — dein System startet schlau.
+  </p>
+
+  <div class="zwei">
+    <div>
+      <h4>Beweis statt Versprechen</h4>
+      <p>Das System <b>steht schon</b> — am Mittwoch klickst du selbst durch. Keine Folien, die laufende App.
+      Danach richten wir es in der Woche bei dir ein — und <b>erst wenn es steht und läuft, zahlst du die erste
+      Rate; vorher nichts.</b> Hakt später etwas: du erreichst uns direkt, Flick innert <b>48 Stunden</b> —
+      sonst pausiert deine Rate und der Betriebs-Monat (500) ist <b>geschenkt. Das Risiko trage ich, nicht du.</b></p>
+    </div>
+    <div>
+      <h4>Dein Aufwand: einmal zählen</h4>
+      <p>Wir kommen <b>1 Woche zu zweit</b>, richten alles ein und zeigen deinem Team jeden Handgriff —
+      die Einricht-Woche im Wert von <b>6'000, für dich 0</b> (dafür: FINELLI als Referenz auf unserer Website).
+      Dein Team übernimmt <b>einmalig</b> Zählen, Etikettieren und Einräumen — danach lernt es genau eine
+      Bewegung: <b>scannen.</b> Und im ersten Monat kommen wir <b>jede Woche einen Tag gratis vorbei,</b> bis
+      alles sitzt. Shopify bleibt, nichts wird umgestellt.</p>
+    </div>
+  </div>
+
+  <div class="lbl">Was das im Markt wert ist — und was du als Kunde Nr. 1 zahlst</div>
+  <table>
+    <tr><td>Logistik-Kern: Lagerplätze, Packzettel mit Fundort, Verkaufs-Journal — Massanfertigung</td><td class="p">9'000</td></tr>
+    <tr><td>Kassen-Fix + Etiketten-System: ein Code pro Teil und Grösse — Scan zeigt sofort „Hoodie Schwarz, M"</td><td class="p">4'000</td></tr>
+    <tr><td>KI-Paket: Wochen-Bericht, Bestell-Wecker, Frag-FINELLI + System-Wächter</td><td class="p">2'500</td></tr>
+    <tr><td>Team-Schulung + Scan-Routinen, bis es sitzt</td><td class="p">2'500</td></tr>
+    <tr><td>Einricht-Woche: 1 Woche zu zweit vor Ort, Lager einräumen — für dich geschenkt</td><td class="p">6'000</td></tr>
+    <tr class="mkt"><td>Zusammengerechnet im Markt</td><td class="p">CHF 24'000</td></tr>
+    <tr class="sum"><td>Dein Preis als Kunde Nr. 1</td><td class="p">CHF 18'000</td></tr>
+  </table>
+  <div class="agency">Eine Agentur baut diesen Umfang für <span class="big">CHF 30'000+</span> — einzelne Bausteine am Markt bis 150'000. Du als <b>Kunde Nr. 1: CHF 18'000,</b> für Software, die dir am Ende <b>gehört.</b> Und: <b>0 im Voraus,</b> die erste Rate erst, wenn das System läuft — ich gehe in Vorleistung, nicht du.</div>
+
+  <div class="deal">
+    <div>
+      <div class="k">Dein Startkunden-Deal — null Risiko</div>
+      <div class="r1"><b>CHF 0 im Voraus.</b> Du zahlst die erste Rate erst, wenn die Software bei dir <b>steht und läuft.</b><br>Danach CHF 750 Abzahlung (24 Monate) + CHF 500 Betrieb. <b>Nach 24 Monaten gehört die Software dir</b> — ab dann nur noch Betrieb, monatlich kündbar.</div>
+    </div>
+    <div class="big"><div class="n">CHF 1'250</div><div class="u">pro Monat komplett</div></div>
+  </div>
+  <div class="cmp">Die <b>ganze Software aus einer Hand</b> — statt fünf Abos, fünf Rechnungen. Deine Lager- und Pack-Apps fallen weg; Shopify läuft wie bisher direkt bei dir. Separat nur einmalig ein Handscanner + Etiketten-Drucker (Standard-Geräte, gehören dir, ein paar Hundert Franken). <b>Am Mittwoch legen wir jede Zahl offen auf den Tisch.</b></div>
+
+  <div class="bausteine">
+    <b>Dein erster Schritt in KI-Arbeitsabläufe (AI-Workflows)</b> — ein System, auf dem alles aufbaut:
+    als Nächstes deine Webseite, Kollektionen-Drops, und was immer du dir ausdenkst.
+  </div>
+
+  <div class="joker">
+    <span class="tag">Der Türöffner-Joker</span>
+    Stell uns <b>eine Firma vor, die Kunde wird</b> — und die <b>Hälfte von deren Einmal-Preis für die Software</b>
+    landet direkt auf deiner Rechnung. Bei einem normalen Auftrag sind das rund <b>9'000 — zwölf deiner Monatsraten,</b>
+    von jemand anderem bezahlt. Zwei, drei Vorstellungen, und deine Software zahlt sich praktisch von selbst.
+  </div>
+
+  <div class="urgent">Kunde Nr. 1 gibt es genau einmal. Am <b>Mittwoch, 22. Juli</b> klickst du selbst — und entscheidest, ob du es bist.</div>
+
+  <div class="foot">
+    <span class="who"><b>Shehryaar Khawaja</b> · Software &amp; KI · Zürich</span>
+    <span class="cta">Mittwoch klickst du selbst in der laufenden App.</span>
+  </div>
+</body>
+</html>
