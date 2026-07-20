@@ -22,5 +22,5 @@ Verkaufs-MVP `C:\dev\finelli-cockpit` (SA-Rechner, Ports 8012/5173) · Produktio
 feinplan · logistik-research · offene-fragen · antworten-sa · antworten-runde2 ·
 branchen-recherche-markt-schmerzen (19.07) · angebots-panel-2026-07-19 · klick-beweis-2026-07-19 ·
 wochen-bericht-2026-07-19 (Entwurf, SA muss gegenlesen) · **demo/** (Verkaufs-Demo fuer den
-Termin, 20.07 — selbsttragende HTML-Seite + Klick-Beweis).
+Termin, 20.07 — Pitch-Seite `index.html` + App-Simulation "Cockpit-Vorschau" `app.html` (PIN 2019), je mit eigenem Klick-Beweis).
 (Umgezogen aus swisscare-brain/users/sa/inbox — dort das Original noch vorhanden.)
