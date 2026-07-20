@@ -7,95 +7,129 @@
 
   "momente": {
     "titel": "Wo du heute stehst",
-    "untertitel": "Drei Momente aus deinem Alltag — und keiner davon ist deine Schuld.",
+    "untertitel": "Drei Situationen aus deinem Alltag. Keine davon ist deine Schuld.",
     "punkte": [
       { "kopf": "Der Verkauf, der platzt",
-        "text": "Online kauft jemand ein Teil — und im Regal liegt es gar nicht. Der Verkauf platzt, der Ärger bleibt.",
-        "danach": "Ab sofort: Der Bestand stimmt — der Verkauf platzt nicht mehr." },
-      { "kopf": "«Grösse M in Zürich weg — hat Embrach noch eine?»",
-        "text": "Heute lässt sich das im Laden praktisch nicht nachschauen. Also geht der Kunde — und kommt selten wieder.",
-        "danach": "Ab sofort: Antwort in Sekunden, beide Standorte auf einen Blick." },
-      { "kopf": "Die Kasse, die von Hand nachkommt",
-        "text": "Was im Laden verkauft wird, tippst du später von Hand in Shopify nach — Fehler inklusive.",
-        "danach": "Ab sofort: Zahlen, denen du glauben kannst." }
+        "text": "Online verkauft, im Regal leer. Du musst absagen und **verlierst den Kunden.**" },
+      { "kopf": "Die Standort-Frage",
+        "text": "Grösse M in Zürich ausverkauft. Ob Embrach noch eine hat, **sieht heute niemand.**" },
+      { "kopf": "Die Kasse",
+        "text": "Ladenverkäufe werden von Hand in Shopify nachgetragen. **Das kostet Zeit und stimmt oft nicht.**" }
     ],
-    "fusszeile": "Belegt: Im Handel sind 54–65 % aller Bestandszahlen falsch (DeHoratius/Raman 2008 · ECR/Cardiff 2019)."
+    "stat": {
+      "wert": "54 bis 65 %",
+      "anteil": 0.6,
+      "text": "aller Bestandszahlen im Handel sind falsch.",
+      "quelle": "DeHoratius/Raman 2008 · ECR/Cardiff 2019"
+    }
   },
 
   "prinzipien": {
-    "titel": "Was wir bauen — und was sicher NICHT passiert",
-    "untertitel": "Drei Versprechen, bevor wir über Modelle reden.",
+    "titel": "Drei Zusagen",
+    "untertitel": "Bevor wir über Modelle reden.",
     "punkte": [
-      { "kopf": "Shopify bleibt der Chef.",
-        "text": "Wir ersetzen nichts, wir setzen auf. Dein Shop, deine Kasse, dein Versand laufen weiter wie heute — das Cockpit macht sie nur sichtbar und bedienbar." },
-      { "kopf": "KI assistiert — entscheidet nie.",
-        "text": "Jede Buchung, jede Bestellung, jede Freigabe macht ein Mensch. Die KI schlägt vor, erinnert und rechnet — du bleibst der Boss." },
-      { "kopf": "Alles inbegriffen.",
-        "text": "Ein Monatspreis, keine Extra-Abos, keine versteckten Werkzeuge. Wir richten ein, schulen dein Team und bleiben dran." }
+      { "kopf": "Shopify bleibt führend.",
+        "text": "Wir ersetzen nichts. Das Cockpit setzt auf deine bestehenden Systeme auf." },
+      { "kopf": "Jede Buchung macht ein Mensch.",
+        "text": "Die KI schlägt vor und rechnet. Entscheiden tust du." },
+      { "kopf": "Ein Preis. Alles drin.",
+        "text": "Keine Extra-Abos. Einrichtung, Schulung und Betreuung sind inklusive." }
     ]
   },
 
-  "ui_screens": [
-    { "pfad": "kunden/finelli/demo/klick-beweis-app-2-uebersicht.png",
-      "titel": "So sieht deine Übersicht aus",
-      "text": "Ampeln statt Tabellen: grün = alles gut, gelb = knapp, rot = leer. Dazu der KI-Vorschlag — übernehmen oder ablehnen, du entscheidest." },
-    { "pfad": "kunden/finelli/demo/klick-beweis-app-7-offline-warteschlange.png",
-      "titel": "Scannen — auch wenn das WLAN zickt",
-      "text": "Karton auf, Handy dran, fertig. Fällt das Lager-WLAN aus, wartet die Buchung in der Warteschlange und kommt automatisch nach — nichts geht verloren." },
-    { "pfad": "kunden/finelli/demo/klick-beweis-app-8-frag-finelli.png",
-      "titel": "Frag Finelli — deine Zahlen auf Zuruf",
-      "text": "Du fragst in normalen Worten («Wo liegt der Hoodie?»), die App antwortet aus deinen echten Zahlen. Sie antwortet nur — buchen tust du." }
+  "abteilungen": {
+    "titel": "Acht Abteilungen. Oder ein System.",
+    "untertitel": "So läuft dieselbe Arbeit in einer klassischen Firma.",
+    "links_titel": "Klassisch braucht das eigene Abteilungen und viele Leute:",
+    "liste": ["Produkt", "Marketing", "Verkauf", "Kundendienst", "IT", "Personal", "Finanzen", "Einkauf"],
+    "rechts_titel": "Bei dir: ein System.",
+    "rechts_text": "Das Cockpit übernimmt die Verwaltungsarbeit dieser Abteilungen. **Du führst die Marke. Dein Team verkauft.**",
+    "fusszeile": "Kein Stellenabbau bei dir: Es geht um Arbeit, die heute liegen bleibt oder dich Abende kostet."
+  },
+
+  "os_flow": {
+    "titel": "So arbeitet es zusammen",
+    "untertitel": "Ein Operating System verbindet deine Systeme mit deinen Menschen.",
+    "links_titel": "DEINE SYSTEME",
+    "systeme": ["Shopify", "Ladenkasse", "Website", "Post / Versand"],
+    "os_name": "OPERATING SYSTEM",
+    "os_sub": "das Finelli Cockpit",
+    "rechts_titel": "DEINE MENSCHEN",
+    "menschen": [
+      { "wer": "Du", "was": "entscheidest und gibst frei." },
+      { "wer": "Dein Team", "was": "scannt und verkauft." }
+    ],
+    "fusszeile": "Wir richten dieses System bei dir ein und betreuen es. Monat für Monat."
+  },
+
+  "mockups": [
+    { "typ": "uebersicht", "titel": "Die Übersicht",
+      "untertitel": "Ein Blick genügt.",
+      "punkte": [
+        "**Ampeln zeigen den Bestand.** Grün gut, gelb knapp, rot leer.",
+        "**Heute-Zahlen live** aus deinem Shop.",
+        "**KI-Vorschlag:** übernehmen oder ablehnen. Du entscheidest." ] },
+    { "typ": "scan", "titel": "Der Wareneingang",
+      "untertitel": "Karton auf, Handy dran, fertig.",
+      "punkte": [
+        "**Scannen und einbuchen** in 10 Sekunden pro Artikel.",
+        "**Ohne WLAN** wartet die Buchung in der Warteschlange.",
+        "**Nichts geht verloren.** Jede Buchung landet genau einmal im System." ] },
+    { "typ": "chat", "titel": "Frag Finelli",
+      "untertitel": "Deine Zahlen in normaler Sprache.",
+      "punkte": [
+        "**Fragen statt suchen.** Keine Tabellen, keine Excel-Listen.",
+        "**Antworten aus deinen echten Zahlen,** in Sekunden.",
+        "**Nur Antworten.** Gebucht wird nichts." ] }
   ],
-  "ui_fussnote": "Echte Bildschirm-Fotos aus der lauffähigen Vorschau (Übungs-Modus, Beispieldaten) — am Termin klickst du selbst.",
 
   "schritte": {
-    "titel": "So führen wir es ein — Schritt für Schritt",
-    "untertitel": "Kein Umbau, kein Stillstand im Laden.",
+    "titel": "So führen wir es ein",
+    "untertitel": "Vier Schritte. Der Laden läuft normal weiter.",
     "punkte": [
-      { "kopf": "Zählen & Ordnen",
-        "text": "Dein Team zählt einmal sauber durch — nach unserer klaren Anleitung, mit Lagerplatz-Etiketten. Wir zählen nicht selbst, wir leiten an." },
-      { "kopf": "Einrichten & Verbinden",
-        "text": "Wir verbinden das Cockpit mit deinem Shopify. Shopify bleibt führend — es gibt kein zweites Bestandssystem." },
-      { "kopf": "Team schulen",
-        "text": "30 Minuten pro Person. Jeder bekommt seine eigene PIN — jeder Klick ist zuordenbar." },
-      { "kopf": "Betrieb & Betreuung",
-        "text": "Jeden Montag der Wochen-Bericht in Klartext. Wir schauen regelmässig rein und bauen aus, wenn DU es willst." }
+      { "kopf": "Zählen", "text": "Dein Team zählt einmal sauber durch. Mit Anleitung und Lagerplatz-Etiketten von uns." },
+      { "kopf": "Verbinden", "text": "Wir verbinden das Cockpit mit deinem Shopify. Shopify bleibt führend." },
+      { "kopf": "Schulen", "text": "30 Minuten pro Person. Jeder bekommt eine eigene PIN." },
+      { "kopf": "Betrieb", "text": "Wochen-Bericht jeden Montag. Wir betreuen und bauen aus, wenn du es willst." }
     ],
-    "fusszeile": "Du merkst vom Umbau nichts: Der Laden läuft an jedem einzelnen Tag normal weiter."
+    "fusszeile": "Kein Umbau. Kein Stillstand. Kein Risiko für das Tagesgeschäft."
   },
 
   "modelle": {
-    "titel": "Drei Modelle — du wählst das Tempo",
-    "untertitel": "Jedes Modell enthält alles aus dem kleineren. Wechseln geht jederzeit nach oben.",
+    "titel": "Drei Modelle",
+    "untertitel": "Klein, mittel, gross. Jedes enthält das kleinere. Wechsel jederzeit möglich.",
     "preis_einheit": "pro Monat",
     "empfehlung_etikett": "Unser Vorschlag",
-    "fusszeile": "Preise gemäss Absprache · Details, Laufzeit und Garantien regelt der Vertrag — kein Kleingedrucktes am Termin.",
+    "fusszeile": "Preise gemäss Absprache. Details, Laufzeit und Garantien regelt der Vertrag.",
     "liste": [
-      { "name": "Basic", "preis": "CHF 1'250.–",
+      { "name": "Basic", "preis": "CHF 1'250", "stufe": "KLEIN", "stil": "hell",
+        "kurz": "Lager und Alltag im Griff.",
         "features": [
-          { "name": "Wochen-Report", "klartext": "Jeden Montag eine Seite in Klartext: was lief, was ist knapp, was kommt — kein Excel nötig." },
-          { "name": "Bestell-Alarm", "klartext": "Die App meldet sich, BEVOR ein Artikel ausgeht — mit Vorschlag, wie viel du nachbestellen könntest." },
-          { "name": "Lager-Automatik", "klartext": "Beide Standorte immer aktuell. Umlagern in zwei Klicks — das System führt Buch, dein Team trägt nur rüber." },
-          { "name": "Verpackungs-Software", "klartext": "Pickzettel mit Laufweg statt Suchweg: Regal und Fach stehen drauf, die Post-Etikette kommt automatisch." },
-          { "name": "Kassenabrechnung", "klartext": "Der Tagesabschluss der Ladenkasse wird automatisch zusammengeführt — kein Nachtippen von Hand." }
+          { "name": "Wochen-Report", "klartext": "**Jeden Montag eine Seite:** was lief, was knapp ist, was kommt." },
+          { "name": "Bestell-Alarm", "klartext": "**Meldet sich, bevor ein Artikel ausgeht.** Mit Mengen-Vorschlag." },
+          { "name": "Lager-Automatik", "klartext": "**Beide Standorte immer aktuell.** Umlagern in zwei Klicks." },
+          { "name": "Verpackungs-Software", "klartext": "**Pickzettel mit Laufweg.** Post-Etikette automatisch." },
+          { "name": "Kassenabrechnung", "klartext": "**Tagesabschluss automatisch.** Kein Nachtragen von Hand." }
         ] },
-      { "name": "Premium", "preis": "CHF 2'200.–", "empfohlen": true, "zusatz": "alles aus Basic, plus:",
-        "basis_hinweis": "Enthält alles aus Basic.",
+      { "name": "Premium", "preis": "CHF 2'200", "stufe": "MITTEL", "stil": "akzent",
+        "empfohlen": true, "zusatz": "alles aus Basic, plus:",
+        "kurz": "Dazu: dein Shop verkauft aktiv mit.",
         "features": [
-          { "name": "Shop-Regal-Zahlen", "klartext": "Welche Produkte und Regale verkaufen — und welche liegen bleiben. Du siehst es, statt es zu raten." },
-          { "name": "Alter/Region-Zahlen", "klartext": "Wer kauft bei dir: Alter und Region deiner Kundschaft auf einen Blick — für bessere Entscheide bei Drops." },
-          { "name": "Website-Auto-Verwaltung", "klartext": "Produkte, Bestände und Texte auf deiner Website pflegen sich weitgehend selbst — du gibst frei." },
-          { "name": "Shop passt sich dem Kunden an", "klartext": "Deine Website zeigt Besuchern zuerst, was sie am ehesten interessiert — wie ein guter Verkäufer im Laden." },
-          { "name": "Website-Avatar", "klartext": "Ein digitaler Berater beantwortet Kundenfragen auf der Website — rund um die Uhr, in deinem Ton." }
+          { "name": "Shop-Regal-Zahlen", "klartext": "**Was verkauft und was liegen bleibt.** Pro Produkt, pro Regal." },
+          { "name": "Alter/Region-Zahlen", "klartext": "**Wer bei dir kauft:** Alter und Region auf einen Blick." },
+          { "name": "Website-Auto-Verwaltung", "klartext": "**Produkte und Texte pflegen sich selbst.** Du gibst frei." },
+          { "name": "Persönlicher Shop", "klartext": "**Jeder Besucher sieht zuerst,** was ihn am ehesten interessiert." },
+          { "name": "Website-Avatar", "klartext": "**Digitaler Berater** beantwortet Kundenfragen. Rund um die Uhr." }
         ] },
-      { "name": "Max", "preis": "CHF 5'000.–", "zusatz": "alles aus Premium, plus:",
-        "basis_hinweis": "Enthält alles aus Basic und Premium.",
+      { "name": "Max", "preis": "CHF 5'000", "stufe": "GROSS", "stil": "dunkel",
+        "zusatz": "alles aus Premium, plus:",
+        "kurz": "Dazu: Marketing und Zahlen automatisch.",
         "features": [
-          { "name": "Trends", "klartext": "Was in Streetwear gerade zieht — Woche für Woche aufbereitet, bevor es alle wissen." },
-          { "name": "Custom Planer", "klartext": "Planung für Drops, Nachschub und Saison — auf deine Marke zugeschnitten, nicht von der Stange." },
-          { "name": "Ads-Schalter", "klartext": "Werbung ein- und ausschalten wie einen Lichtschalter — mit klarem Blick auf Kosten und Wirkung." },
-          { "name": "Marketing automatisiert", "klartext": "Newsletter und Posts entstehen automatisch als Entwurf — du gibst nur noch frei." },
-          { "name": "Treuhand", "klartext": "Die Zahlen liegen fix fertig für den Treuhänder bereit — weniger Honorar-Stunden am Jahresende." }
+          { "name": "Trends", "klartext": "**Was in Streetwear zieht.** Woche für Woche aufbereitet." },
+          { "name": "Custom Planer", "klartext": "**Planung für Drops und Saison.** Auf deine Marke zugeschnitten." },
+          { "name": "Ads-Schalter", "klartext": "**Werbung mit klarem Kostenblick.** Ein und aus per Klick." },
+          { "name": "Marketing automatisiert", "klartext": "**Newsletter und Posts als Entwurf.** Du gibst frei." },
+          { "name": "Treuhand", "klartext": "**Zahlen fertig für den Treuhänder.** Weniger Honorarstunden." }
         ] }
     ]
   },
@@ -104,20 +138,20 @@
     "titel": "Wer macht was",
     "untertitel": "Für dich als Chef: fast nichts.",
     "punkte": [
-      { "wer": "WIR", "text": "Einrichten, verbinden, schulen, betreuen. Wir bauen es auf und bleiben dran — Monat für Monat." },
-      { "wer": "DEIN TEAM", "text": "Einmalige Zähl- und Einräum-Arbeit nach klarer Anleitung. Danach: scannen statt suchen." },
-      { "wer": "DU", "text": "Entscheiden. Sonst nichts. Jeder Vorschlag der KI wartet auf dein Ja." }
+      { "wer": "WIR", "text": "Einrichten, verbinden, schulen, betreuen. **Monat für Monat.**" },
+      { "wer": "DEIN TEAM", "text": "Einmal sauber zählen. **Danach: scannen statt suchen.**" },
+      { "wer": "DU", "text": "**Entscheiden. Sonst nichts.** Jeder KI-Vorschlag wartet auf dein Ja." }
     ],
     "fusszeile": "Keine KI bucht deinen Bestand. Jede Buchung macht ein Mensch."
   },
 
   "abschluss": {
-    "titel": "Ohne Druck.",
+    "titel": "Du entscheidest.",
     "punkte": [
-      "Du hast die Vorschau selbst geklickt — das ist keine Folie, das läuft.",
-      "Du wählst das Modell. Hochwechseln geht jederzeit, wenn es sich beweist.",
-      "Nächster Schritt: deine offenen Fragen — heute, hier, in Ruhe."
+      "Die Vorschau läuft. **Du hast sie selbst geklickt.**",
+      "Modell wählen, starten, **jederzeit hochwechseln.**",
+      "Jetzt: **deine Fragen.**"
     ],
-    "fusszeile": "Finelli Studios AG · Vor-Ort-Termin 22. Juli 2026"
+    "fusszeile": "Finelli Studios AG · Vor-Ort-Termin · 22. Juli 2026"
   }
 }

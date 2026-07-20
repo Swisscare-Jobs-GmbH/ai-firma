@@ -12,13 +12,24 @@
 | `konfig-vorlage.json` | Generalisierte Konfig mit `{PLATZHALTERN}` — kopieren nach `kunden/<kunde>/praesentation/konfig-<kunde>.json` und ausfuellen. |
 | `vorlage-kunden-praesentation.pptx` | Gebautes Muster-Deck aus der Vorlage-Konfig (zum Anschauen, nicht von Hand editieren — Quelle ist immer die Konfig). |
 
-## Folien-Dramaturgie (fest im Generator, Reihenfolge nicht wuerfeln)
+## Folien-Dramaturgie V2 (fest im Generator, Reihenfolge nicht wuerfeln)
 
-1. **Titel** (dunkel, Wortmarke + Akzent-Punkt) → 2. **Momente** (3 Schmerz-Szenen "nicht deine
-Schuld" + "Ab sofort") → 3. **Prinzipien** (Bestehendes bleibt Chef · KI assistiert, entscheidet
-nie · alles inbegriffen) → 4.-n. **UI-Screens** (echte Bildschirm-Fotos!) → **Einfuehrungs-Schritte**
-→ **3 Modelle** (Preis-Spalten, mittlere = "Unser Vorschlag") → **je Modell 1 Klartext-Folie**
-(Feature links, Laiensprache rechts) → **Wer macht was** → **Abschluss "Ohne Druck"** (dunkel).
+1. **Titel** (dunkel) → 2. **Momente** (3 Schmerz-Karten + Statistik-Band mit Balken, nur belegte
+Zahl) → 3. **Drei Zusagen** → 4. **Business-Folie** (8 Abteilungs-Kacheln vs. "ein System") →
+5. **OS-Flow** (Deine Systeme → OPERATING SYSTEM → Deine Menschen) → 6.-8. **gezeichnete
+Handy-Mockups** (Typen: uebersicht / scan / chat; KEINE Screenshots) → 9. **Einfuehrung**
+(Chevron-Pfeile) → 10. **Modell-Treppe** (klein/mittel/gross, Stile hell/akzent/dunkel+gold) →
+11.-13. **je Modell 1 Klartext-Folie** → 14. **Wer macht was** → 15. **Abschluss** (dunkel).
+
+## Stil-Regeln V2 (AB-Feedback 20.07, verbindlich)
+
+- **KEINE Gedankenstriche** in Folien-Texten. Kurze Saetze, Punkt statt Einschub. Trenner "·".
+- **Direkte Sprache, kein Kitsch** (nicht "wenn das WLAN zickt", sondern "Ohne WLAN wartet die
+  Buchung").
+- **`**fett**`-Marker** in jedem Konfig-Text moeglich; den Kern jedes Satzes fetten.
+- **Keine Schatten**, flache Flaechen, viel Weissraum, wenig Text, mehr Diagramme.
+- **Mockups zeichnen statt Screenshots** kleben (Funktion `phone()` im Generator; neue
+  Screen-Typen dort ergaenzen, nicht pro Kunde hacken).
 
 ## Harte Regeln beim Ausfuellen einer Kunden-Konfig
 
@@ -48,3 +59,8 @@ nie · alles inbegriffen) → 4.-n. **UI-Screens** (echte Bildschirm-Fotos!) →
 - 2026-07-20 · V1: Generator + Vorlage-Konfig + Finelli-Erstanwendung (3 Modelle Basic/Premium/Max
   ab User-Screenshot, UI-Screens aus der Cockpit-Vorschau-Demo). Warum: Finelli-Termin 22.07,
   Decks sollen nie wieder von Null entstehen.
+- 2026-07-20 · V2 nach AB-Feedback: gezeichnete Handy-Mockups statt Screenshots, Business-Folie
+  (Abteilungen vs. ein System, ohne fremde $-Zahlen), OS-Flow-Diagramm, Statistik-Band mit Balken,
+  Modell-Treppe klein/mittel/gross (hell/akzent/dunkel+gold), Chevron-Einfuehrung, `**fett**`-Marker,
+  keine Gedankenstriche, keine Schatten, direkte Sprache. Konfig-Schema: `ui_screens` ersetzt durch
+  `mockups`, neu `momente.stat`, `abteilungen`, `os_flow`, Modell-Felder `stufe/stil/kurz`.

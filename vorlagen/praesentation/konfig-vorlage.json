@@ -1,64 +1,100 @@
 {
   "kunde": "{KUNDE}",
-  "claim": "{CLAIM — ein Satz, der das Versprechen traegt}",
+  "claim": "{CLAIM. Kurze Saetze. Ohne Gedankenstriche.}",
   "untertitel_titelfolie": "{KUNDE_FIRMA} · {ANLASS}",
   "datum": "{TT. Monat JJJJ}",
   "farben": { "tinte": "#17161A", "papier": "#F4F4F2", "akzent": "#1F3A5F", "grau": "#77747C" },
 
   "momente": {
     "titel": "Wo du heute stehst",
-    "untertitel": "Drei Momente aus deinem Alltag — und keiner davon ist deine Schuld.",
+    "untertitel": "Drei Situationen aus deinem Alltag. Keine davon ist deine Schuld.",
     "punkte": [
-      { "kopf": "{SCHMERZ_1_KOPF}", "text": "{SCHMERZ_1_SZENE}", "danach": "Ab sofort: {SCHMERZ_1_LOESUNG}" },
-      { "kopf": "{SCHMERZ_2_KOPF}", "text": "{SCHMERZ_2_SZENE}", "danach": "Ab sofort: {SCHMERZ_2_LOESUNG}" },
-      { "kopf": "{SCHMERZ_3_KOPF}", "text": "{SCHMERZ_3_SZENE}", "danach": "Ab sofort: {SCHMERZ_3_LOESUNG}" }
+      { "kopf": "{SCHMERZ_1_KOPF}", "text": "{SZENE. Direkt, kurz. **Kern fett.**}" },
+      { "kopf": "{SCHMERZ_2_KOPF}", "text": "{SZENE. **Kern fett.**}" },
+      { "kopf": "{SCHMERZ_3_KOPF}", "text": "{SZENE. **Kern fett.**}" }
     ],
-    "fusszeile": "{BELEG mit Quelle+Jahr — nur LIVE geprüfte Zahlen, sonst Zeile leer lassen}"
+    "stat": {
+      "wert": "{ZAHL}",
+      "anteil": 0.6,
+      "text": "{Aussage zur Zahl. Nur LIVE belegte Zahlen verwenden.}",
+      "quelle": "{QUELLE JAHR}"
+    }
   },
 
   "prinzipien": {
-    "titel": "Was wir bauen — und was sicher NICHT passiert",
-    "untertitel": "Drei Versprechen, bevor wir über Modelle reden.",
+    "titel": "Drei Zusagen",
+    "untertitel": "Bevor wir über Modelle reden.",
     "punkte": [
-      { "kopf": "{BESTEHENDES_SYSTEM} bleibt der Chef.", "text": "Wir ersetzen nichts, wir setzen auf. {WAS_WEITERLAEUFT} läuft weiter wie heute." },
-      { "kopf": "KI assistiert — entscheidet nie.", "text": "Jede Buchung und jede Freigabe macht ein Mensch. Die KI schlägt vor — du bleibst der Boss." },
-      { "kopf": "Alles inbegriffen.", "text": "Ein Monatspreis, keine Extra-Abos. Wir richten ein, schulen dein Team und bleiben dran." }
+      { "kopf": "{BESTEHENDES_SYSTEM} bleibt führend.", "text": "Wir ersetzen nichts. Wir setzen auf deine bestehenden Systeme auf." },
+      { "kopf": "Jede Buchung macht ein Mensch.", "text": "Die KI schlägt vor und rechnet. Entscheiden tust du." },
+      { "kopf": "Ein Preis. Alles drin.", "text": "Keine Extra-Abos. Einrichtung, Schulung und Betreuung sind inklusive." }
     ]
   },
 
-  "ui_screens": [
-    { "pfad": null, "titel": "{SCREEN_1_TITEL}", "text": "{SCREEN_1_KLARTEXT}" },
-    { "pfad": null, "titel": "{SCREEN_2_TITEL}", "text": "{SCREEN_2_KLARTEXT}" }
+  "abteilungen": {
+    "titel": "Acht Abteilungen. Oder ein System.",
+    "untertitel": "So läuft dieselbe Arbeit in einer klassischen Firma.",
+    "links_titel": "Klassisch braucht das eigene Abteilungen und viele Leute:",
+    "liste": ["Produkt", "Marketing", "Verkauf", "Kundendienst", "IT", "Personal", "Finanzen", "Einkauf"],
+    "rechts_titel": "Bei dir: ein System.",
+    "rechts_text": "{Was das System uebernimmt. **Was der Kunde behaelt, fett.**}",
+    "fusszeile": "Kein Stellenabbau: Es geht um Arbeit, die heute liegen bleibt."
+  },
+
+  "os_flow": {
+    "titel": "So arbeitet es zusammen",
+    "untertitel": "Ein Operating System verbindet deine Systeme mit deinen Menschen.",
+    "links_titel": "DEINE SYSTEME",
+    "systeme": ["{SYSTEM_1}", "{SYSTEM_2}", "{SYSTEM_3}", "{SYSTEM_4}"],
+    "os_name": "OPERATING SYSTEM",
+    "os_sub": "{PRODUKTNAME}",
+    "rechts_titel": "DEINE MENSCHEN",
+    "menschen": [
+      { "wer": "Du", "was": "entscheidest und gibst frei." },
+      { "wer": "Dein Team", "was": "{WAS_DAS_TEAM_TUT}" }
+    ],
+    "fusszeile": "Wir richten dieses System bei dir ein und betreuen es. Monat für Monat."
+  },
+
+  "mockups": [
+    { "typ": "uebersicht", "titel": "{SCREEN_TITEL}", "untertitel": "{EIN_SATZ}",
+      "punkte": ["**{KERN}** {Rest kurz.}", "**{KERN}** {Rest.}", "**{KERN}** {Rest.}"] },
+    { "typ": "scan", "titel": "{SCREEN_TITEL}", "untertitel": "{EIN_SATZ}",
+      "punkte": ["**{KERN}** {Rest.}", "**{KERN}** {Rest.}", "**{KERN}** {Rest.}"] },
+    { "typ": "chat", "titel": "{SCREEN_TITEL}", "untertitel": "{EIN_SATZ}",
+      "punkte": ["**{KERN}** {Rest.}", "**{KERN}** {Rest.}", "**{KERN}** {Rest.}"] }
   ],
-  "ui_fussnote": "Echte Bildschirm-Fotos aus der lauffähigen Vorschau (Übungs-Modus, Beispieldaten).",
 
   "schritte": {
-    "titel": "So führen wir es ein — Schritt für Schritt",
-    "untertitel": "Kein Umbau, kein Stillstand im Betrieb.",
+    "titel": "So führen wir es ein",
+    "untertitel": "Vier Schritte. Der Betrieb läuft normal weiter.",
     "punkte": [
-      { "kopf": "{SCHRITT_1}", "text": "{SCHRITT_1_TEXT — was das Kunden-Team macht, nach klarer Anleitung}" },
-      { "kopf": "{SCHRITT_2}", "text": "{SCHRITT_2_TEXT — was wir einrichten/verbinden}" },
-      { "kopf": "Team schulen", "text": "30 Minuten pro Person. Jeder bekommt seine eigene PIN — jeder Klick ist zuordenbar." },
-      { "kopf": "Betrieb & Betreuung", "text": "Regelmässiger Bericht in Klartext. Wir bleiben dran und bauen aus, wenn DU es willst." }
+      { "kopf": "{SCHRITT_1}", "text": "{Was das Kunden-Team macht. Mit Anleitung von uns.}" },
+      { "kopf": "{SCHRITT_2}", "text": "{Was wir verbinden. Bestehendes bleibt führend.}" },
+      { "kopf": "Schulen", "text": "30 Minuten pro Person. Jeder bekommt eine eigene PIN." },
+      { "kopf": "Betrieb", "text": "Regelmässiger Bericht in Klartext. Wir betreuen und bauen aus." }
     ],
-    "fusszeile": "Der Betrieb läuft an jedem einzelnen Tag normal weiter."
+    "fusszeile": "Kein Umbau. Kein Stillstand. Kein Risiko für das Tagesgeschäft."
   },
 
   "modelle": {
-    "titel": "Drei Modelle — du wählst das Tempo",
-    "untertitel": "Jedes Modell enthält alles aus dem kleineren. Wechseln geht jederzeit nach oben.",
+    "titel": "Drei Modelle",
+    "untertitel": "Klein, mittel, gross. Jedes enthält das kleinere. Wechsel jederzeit möglich.",
     "preis_einheit": "pro Monat",
     "empfehlung_etikett": "Unser Vorschlag",
-    "fusszeile": "Preise gemäss Absprache · Details, Laufzeit und Garantien regelt der Vertrag.",
+    "fusszeile": "Preise gemäss Absprache. Details, Laufzeit und Garantien regelt der Vertrag.",
     "liste": [
-      { "name": "{MODELL_1_NAME}", "preis": "CHF {PREIS_1}",
-        "features": [ { "name": "{FEATURE}", "klartext": "{Erklärung in Laiensprache — was hat der Kunde davon?}" } ] },
-      { "name": "{MODELL_2_NAME}", "preis": "CHF {PREIS_2}", "empfohlen": true, "zusatz": "alles aus {MODELL_1_NAME}, plus:",
-        "basis_hinweis": "Enthält alles aus {MODELL_1_NAME}.",
-        "features": [ { "name": "{FEATURE}", "klartext": "{Erklärung in Laiensprache}" } ] },
-      { "name": "{MODELL_3_NAME}", "preis": "CHF {PREIS_3}", "zusatz": "alles aus {MODELL_2_NAME}, plus:",
-        "basis_hinweis": "Enthält alles aus {MODELL_1_NAME} und {MODELL_2_NAME}.",
-        "features": [ { "name": "{FEATURE}", "klartext": "{Erklärung in Laiensprache}" } ] }
+      { "name": "{MODELL_1}", "preis": "CHF {PREIS_1}", "stufe": "KLEIN", "stil": "hell",
+        "kurz": "{EIN_SATZ_NUTZEN}",
+        "features": [ { "name": "{FEATURE}", "klartext": "**{KERN}** {Laiensprache, kurz.}" } ] },
+      { "name": "{MODELL_2}", "preis": "CHF {PREIS_2}", "stufe": "MITTEL", "stil": "akzent",
+        "empfohlen": true, "zusatz": "alles aus {MODELL_1}, plus:",
+        "kurz": "{EIN_SATZ_NUTZEN}",
+        "features": [ { "name": "{FEATURE}", "klartext": "**{KERN}** {Laiensprache.}" } ] },
+      { "name": "{MODELL_3}", "preis": "CHF {PREIS_3}", "stufe": "GROSS", "stil": "dunkel",
+        "zusatz": "alles aus {MODELL_2}, plus:",
+        "kurz": "{EIN_SATZ_NUTZEN}",
+        "features": [ { "name": "{FEATURE}", "klartext": "**{KERN}** {Laiensprache.}" } ] }
     ]
   },
 
@@ -66,20 +102,20 @@
     "titel": "Wer macht was",
     "untertitel": "Für dich als Chef: fast nichts.",
     "punkte": [
-      { "wer": "WIR", "text": "Einrichten, verbinden, schulen, betreuen. Wir bauen es auf und bleiben dran." },
-      { "wer": "DEIN TEAM", "text": "{EINMALIGE_HANDARBEIT des Kunden-Teams nach klarer Anleitung}" },
-      { "wer": "DU", "text": "Entscheiden. Sonst nichts. Jeder Vorschlag der KI wartet auf dein Ja." }
+      { "wer": "WIR", "text": "Einrichten, verbinden, schulen, betreuen. **Monat für Monat.**" },
+      { "wer": "DEIN TEAM", "text": "{EINMALIGE_HANDARBEIT} **Danach: {NEUER_ALLTAG}**" },
+      { "wer": "DU", "text": "**Entscheiden. Sonst nichts.** Jeder KI-Vorschlag wartet auf dein Ja." }
     ],
     "fusszeile": "Keine KI bucht in deine Systeme. Jede Buchung macht ein Mensch."
   },
 
   "abschluss": {
-    "titel": "Ohne Druck.",
+    "titel": "Du entscheidest.",
     "punkte": [
-      "Du hast die Vorschau selbst gesehen — das ist keine Folie, das läuft.",
-      "Du wählst das Modell. Hochwechseln geht jederzeit, wenn es sich beweist.",
-      "Nächster Schritt: deine offenen Fragen — heute, hier, in Ruhe."
+      "Die Vorschau läuft. **Du hast sie selbst gesehen.**",
+      "Modell wählen, starten, **jederzeit hochwechseln.**",
+      "Jetzt: **deine Fragen.**"
     ],
-    "fusszeile": "{KUNDE_FIRMA} · {ANLASS} {DATUM}"
+    "fusszeile": "{KUNDE_FIRMA} · {ANLASS} · {DATUM}"
   }
 }
