@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<!--
+  ANGEBOT Gut zu Fuss (GzF) — MAPPE V2 (2026-07-20).
+  Struktur = neueste Finelli-Mappe (Downloads-Stand 20.07): Deckblatt + Momente-Blatt + Preis-Blatt
+  + Ausbau-Karte. Ersetzt 2026-07-19-angebot-gzf-komplett-v1.html.
+  Quellen: gzf-schmerz-landkarte (Kunden-Antworten woertlich) + gzf-firma-profil (Zahlen LIVE
+  verifiziert 19.07 + erneut 20.07: Google 4,6/22) + Finelli-Richter-Panel 19.07 (Lehren:
+  48h-Garantie = Betrieb erlassen + Rate verschoben, keine Geschenk/Preis-Widersprueche,
+  Schaetzungen als Schaetzung kennzeichnen, weiche Agentur-Anker ohne Beleg).
+  Inhaber = Farhad Akbarzada, NIE "Herr Kaufmann". Anrede "ihr" (Familienbetrieb, Vater entscheidet).
+  Kein fixer Termin — GzF-Close bleibt "ohne Eile" (anders als Finelli-Mittwoch).
+  Aus dieser Datei wird das Kunden-PDF gedruckt (Edge headless print-to-pdf, A4, keine Raender).
+-->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Angebot Gut zu Fuss — Mappe v2</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root { --bg: #f5f2ec; --ink: #1c1a16; --dim: #6f685c; --line: #ddd5c6; --acc: #a8271c; --card: #fbf8f2; }
+  html { width: 210mm; }
+  body { background: var(--bg); color: var(--ink); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+  .sheet { width: 210mm; height: 297mm; page-break-after: always; position: relative; overflow: hidden; }
+  .sheet:last-child { page-break-after: auto; }
+
+  .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8mm;
+    font-size: 7.8pt; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .top span { white-space: nowrap; }
+  .top b { color: var(--acc); }
+  .rule { height: .5mm; background: var(--ink); margin-top: 2mm; }
+
+  /* ============ SEITE 1 — DECKBLATT ============ */
+  .s0 { padding: 14mm 18mm 12mm; display: flex; flex-direction: column; }
+  .s0 .mitte { margin: auto 0; position: relative; z-index: 2; }
+  .s0 .sterne { font-family: Georgia, serif; font-size: 13pt; color: var(--acc); letter-spacing: .06em; }
+  .s0 .sterne b { font-size: 15pt; }
+  .s0 .sterne-sub { margin-top: 1.6mm; font-family: Georgia, serif; font-style: italic; font-size: 9.5pt; color: #2e2a24; }
+  .s0 .sterne-sub b { font-style: normal; color: var(--ink); }
+  .s0 h1 { font-family: Georgia, serif; font-size: 44pt; line-height: .98; margin-top: 9mm; letter-spacing: -.02em; }
+  .s0 h1 .fine { display: block; }
+  .s0 h1 em { font-style: italic; color: var(--acc); font-size: 26pt; letter-spacing: -.01em; }
+  .s0 .sub { margin-top: 7mm; font-family: Georgia, serif; font-size: 11.5pt; line-height: 1.5; color: #2e2a24; max-width: 150mm; }
+  .s0 .sub b { color: var(--acc); }
+  /* Kartei-Karte — das Produkt als Motiv */
+  .s0 .tag { margin-top: 11mm; display: inline-flex; align-items: center; gap: 5mm;
+    background: #fbf8f2; border: .35mm solid var(--ink); border-radius: 1.6mm;
+    padding: 4mm 6mm 3.4mm; box-shadow: 2.2mm 2.2mm 0 0 rgba(28,26,22,.12); }
+  .s0 .tag .haken { width: 5.2mm; height: 5.2mm; border: .45mm solid var(--ink); border-radius: 1mm;
+    position: relative; }
+  .s0 .tag .haken::after { content: ""; position: absolute; left: 1.1mm; top: .4mm; width: 2.2mm; height: 3.2mm;
+    border: solid var(--acc); border-width: 0 .6mm .6mm 0; transform: rotate(40deg); }
+  .s0 .tag .code { display: flex; flex-direction: column; gap: 1.4mm; }
+  .s0 .tag .codezeile { display: flex; justify-content: space-between; gap: 6mm; font-size: 7.5pt;
+    letter-spacing: .12em; color: var(--ink); font-weight: 700; white-space: nowrap; }
+  .s0 .tag .codezeile span:last-child { color: var(--acc); }
+  .s0 .tag .codezeile.dim { color: var(--dim); font-weight: 400; }
+  .s0 .tag-legende { margin-top: 2.6mm; font-size: 7.6pt; font-style: italic; color: var(--dim); }
+  .s0 .fuer { margin-top: 10mm; padding-top: 4.5mm; border-top: .3mm solid var(--line);
+    font-size: 9.5pt; line-height: 1.7; color: #3a352d; }
+  .s0 .fuer b { color: var(--ink); }
+  .s0 .inhalt { margin-top: 5mm; font-size: 8.5pt; line-height: 1.9; color: var(--dim); }
+  .s0 .inhalt b { color: var(--ink); font-family: Georgia, serif; font-size: 9.5pt; }
+  .s0 .wz-wrap { position: absolute; top: 0; left: 0; width: 210mm; height: 297mm; overflow: hidden; z-index: 1; pointer-events: none; }
+  .s0 .wz { position: absolute; right: -14mm; bottom: -32mm; font-family: Georgia, serif;
+    font-weight: 700; font-size: 240pt; line-height: 1; color: rgba(168,39,28,.07); }
+  .s0 .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline;
+    padding-top: 4mm; border-top: .3mm solid var(--line); position: relative; z-index: 2; }
+  .s0 .foot .who { font-size: 8pt; color: var(--dim); }
+  .s0 .foot .who b { color: var(--ink); }
+  .s0 .foot .datum { font-family: Georgia, serif; font-style: italic; font-size: 9.5pt; color: var(--acc); }
+
+  /* ============ SEITE 2 — DAS ANGEBOT (MOMENTE) ============ */
+  .s1 { padding: 7mm 13mm 4mm; display: flex; flex-direction: column; }
+  .s1 h1 { font-family: Georgia, serif; font-size: 22pt; line-height: 1.05; margin-top: 4mm; letter-spacing: -.01em; }
+  .s1 h1 em { font-style: italic; color: var(--acc); }
+  .s1 .intro { margin-top: 2.6mm; font-family: Georgia, serif; font-size: 9.6pt; line-height: 1.4; color: #2e2a24; }
+  .s1 .intro b { color: var(--acc); }
+  .s1 .lbl { margin-top: 2.6mm; font-size: 7.2pt; letter-spacing: .18em; text-transform: uppercase; color: var(--acc); font-weight: 700; }
+  .s1 .szenen { margin-top: 1.5mm; background: var(--card); border: .3mm solid var(--line); border-left: 1.1mm solid var(--acc); border-radius: 1.6mm; padding: 2.4mm 3.8mm; }
+  .s1 .szenen p { font-size: 8.4pt; line-height: 1.36; margin: 1mm 0; color: #2e2a24; }
+  .s1 .szenen p b.neu { color: var(--acc); }
+  .s1 .szenen p b { color: var(--ink); }
+  .s1 .dreamrest { margin-top: 2mm; font-size: 8.4pt; line-height: 1.4; color: #3a352d; }
+  .s1 .dreamrest b { color: var(--ink); }
+  .s1 .zwei { margin-top: 2.4mm; display: grid; grid-template-columns: 1fr 1fr; gap: 6.5mm; }
+  .s1 .zwei h4 { font-family: Georgia, serif; font-size: 9.6pt; border-bottom: .5mm solid var(--acc); padding-bottom: 1mm; display: inline-block; }
+  .s1 .zwei p { margin-top: 1.4mm; font-size: 8.2pt; line-height: 1.4; color: #3a352d; }
+  .s1 .zwei b { color: var(--acc); }
+  .s1 .los { margin-top: 2.4mm; border: .35mm solid var(--acc); border-radius: 1.6mm; background: var(--card); padding: 2.2mm 3.8mm; font-size: 8.3pt; line-height: 1.42; color: #2e2a24; }
+  .s1 .los b { color: var(--acc); }
+  .s1 .los .t { color: var(--ink); font-weight: 700; }
+  .s1 .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; padding-top: 2.4mm; border-top: .3mm solid var(--line); }
+  .s1 .foot .who { font-size: 7.6pt; color: var(--dim); }
+  .s1 .foot .who b { color: var(--ink); }
+  .s1 .foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.6pt; color: var(--acc); }
+  /* Fluss-Bild (neueste Finelli-Mappe): Schritte mit Vorher-Kontrast + Entscheid-Gabel */
+  .s1 .step { position: relative; background: var(--card); border: .3mm solid var(--line); border-radius: 1.8mm;
+    padding: 2mm 9mm 1.8mm 4mm; width: 150mm; box-shadow: .8mm .8mm 0 0 rgba(28,26,22,.05); }
+  .s1 .step .gnum { position: absolute; right: 2mm; top: -1mm; font-family: Georgia, serif; font-weight: 700;
+    font-size: 21pt; color: rgba(168,39,28,.13); }
+  .s1 .step .kopf { font-size: 8.5pt; line-height: 1.32; color: #2e2a24; }
+  .s1 .step .kopf .dot { display: inline-flex; width: 4.4mm; height: 4.4mm; border-radius: 50%; background: var(--acc);
+    color: #fff; font-weight: 700; font-size: 7.2pt; align-items: center; justify-content: center; margin-right: 1.8mm; }
+  .s1 .step .kopf b { color: var(--ink); }
+  .s1 .step .vorher { margin-top: .7mm; margin-left: 6.2mm; font-size: 7.5pt; color: var(--dim); }
+  .s1 .step.dark { background: var(--ink); border-color: var(--ink); border-left: 1.1mm solid var(--acc); }
+  .s1 .step.dark .kopf { color: #efe9df; }
+  .s1 .step.dark .kopf b { color: #fff; }
+  .s1 .step.dark .vorher { color: #b8afa0; }
+  .s1 .ein2 { margin-left: 14mm; } .s1 .ein3 { margin-left: 5mm; } .s1 .ein4 { margin-left: 10mm; }
+  .s1 .pf { width: 0; height: 0; border-left: 2.4mm solid transparent; border-right: 2.4mm solid transparent;
+    border-top: 2.6mm solid var(--ink); margin: .9mm 0; }
+  .s1 .pf.rot { border-top-color: var(--acc); }
+  .s1 .gabelpf { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; width: 160mm; }
+  .s1 .gabelpf .pf { margin: .9mm auto; }
+  .s1 .gabel { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; width: 160mm; }
+  .s1 .zweig { background: var(--card); border: .3mm solid var(--line); border-radius: 1.8mm; padding: 1.8mm 3.4mm; }
+  .s1 .zweig .zt { font-size: 6.8pt; letter-spacing: .16em; text-transform: uppercase; color: var(--acc); font-weight: 700; display: block; margin-bottom: .7mm; }
+  .s1 .zweig p { font-size: 7.9pt; line-height: 1.36; color: #2e2a24; }
+  .s1 .zweig b { color: var(--ink); }
+  .s1 .zbox { margin-top: 1.5mm; background: var(--card); border: .3mm solid var(--line); border-radius: 1.8mm; padding: 2mm 3.8mm; }
+  .s1 .zbox p { font-size: 8.2pt; line-height: 1.38; margin: 1mm 0; color: #2e2a24; }
+  .s1 .zbox b { color: var(--ink); }
+  .s1 .zbox b.hl { color: var(--acc); }
+
+  /* ============ SEITE 3 — WERT & PREIS ============ */
+  .s2 { padding: 7mm 13mm 4mm; display: flex; flex-direction: column; }
+  .s2 h1 { font-family: Georgia, serif; font-size: 22pt; line-height: 1.05; margin-top: 3.6mm; letter-spacing: -.01em; }
+  .s2 h1 em { font-style: italic; color: var(--acc); }
+  .s2 .lbl { margin-top: 2.8mm; font-size: 7.2pt; letter-spacing: .18em; text-transform: uppercase; color: var(--acc); font-weight: 700; }
+  .s2 table { width: 100%; border-collapse: collapse; margin-top: 1.3mm; }
+  .s2 td { padding: 1.15mm 0; border-bottom: .25mm solid var(--line); font-size: 8.3pt; line-height: 1.28; vertical-align: top; }
+  .s2 td.p { text-align: right; font-family: Georgia, serif; font-weight: 700; white-space: nowrap; padding-left: 5mm; font-size: 8.7pt; }
+  /* Anker-Regel: der Startkunden-Preis ist die grosse rote Zahl; "Marktwert"/"Selbstkosten" kommen nicht vor (Playbook V2). */
+  .s2 tr.sum td { border-bottom: none; border-top: .6mm solid var(--ink); padding-top: 1.7mm; font-weight: 700; font-size: 9pt; text-transform: uppercase; letter-spacing: .04em; }
+  .s2 tr.sum td.p { font-size: 13pt; color: var(--acc); }
+  .s2 .agency { margin-top: 1.4mm; font-size: 8.4pt; line-height: 1.4; color: #3a352d; }
+  .s2 .agency b { color: var(--acc); font-weight: 700; }
+  .s2 .bringt { margin-top: 2mm; border: .3mm solid var(--line); border-left: 1.1mm solid var(--acc); border-radius: 1.6mm; background: var(--card); padding: 2.2mm 3.8mm; font-size: 8.3pt; line-height: 1.42; color: #2e2a24; }
+  .s2 .bringt b { color: var(--ink); }
+  .s2 .bringt b.hl { color: var(--acc); }
+  .s2 .deal { margin-top: 2.4mm; background: var(--ink); color: #f5f2ec; border-radius: 1.8mm; padding: 2.8mm 5mm; display: flex; justify-content: space-between; align-items: center; gap: 8mm; }
+  .s2 .deal .k { font-size: 6.8pt; letter-spacing: .2em; text-transform: uppercase; color: #b8afa0; }
+  .s2 .deal .r1 { font-size: 8.4pt; margin-top: 1.3mm; line-height: 1.44; }
+  .s2 .deal .r1 b { color: #fff; }
+  .s2 .deal .big { text-align: right; }
+  .s2 .deal .big .n { font-family: Georgia, serif; font-size: 21pt; font-weight: 700; line-height: 1; color: #fff; white-space: nowrap; }
+  .s2 .deal .big .u { font-size: 6.8pt; letter-spacing: .08em; text-transform: uppercase; color: #b8afa0; margin-top: 1.1mm; }
+  .s2 .cmp { margin-top: 1.4mm; font-size: 7.8pt; font-style: italic; color: var(--dim); line-height: 1.38; }
+  .s2 .cmp b { font-style: normal; color: var(--ink); }
+  .s2 .duo { margin-top: 1.8mm; display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+  .s2 .duo .card { background: var(--card); border: .3mm solid var(--line); border-left: 1mm solid var(--acc);
+    border-radius: 1.6mm; padding: 2.2mm 3.4mm; }
+  .s2 .duo .h { font-size: 6.9pt; letter-spacing: .14em; text-transform: uppercase; color: var(--acc); font-weight: 700; }
+  .s2 .duo p { font-size: 7.8pt; line-height: 1.42; color: #3a352d; margin-top: 1mm; }
+  .s2 .duo b { color: var(--ink); }
+  .s2 .joker { margin-top: 2mm; border: .35mm solid var(--acc); border-radius: 1.6mm; padding: 2mm 3.8mm; background: var(--card); font-size: 8.2pt; line-height: 1.4; }
+  .s2 .joker .tag { font-size: 6.8pt; letter-spacing: .16em; text-transform: uppercase; color: var(--acc); font-weight: 700; display: block; margin-bottom: .8mm; }
+  .s2 .joker b { color: var(--acc); }
+  .s2 .urgent { margin-top: 2.2mm; border-top: .3mm solid var(--ink); border-bottom: .3mm solid var(--ink); padding: 1.5mm 0; text-align: center; font-family: Georgia, serif; font-style: italic; font-size: 9pt; line-height: 1.35; }
+  .s2 .urgent b { font-style: normal; color: var(--acc); }
+  .s2 .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; padding-top: 2.4mm; border-top: .3mm solid var(--line); }
+  .s2 .foot .who { font-size: 7.6pt; color: var(--dim); }
+  .s2 .foot .who b { color: var(--ink); }
+  .s2 .foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.6pt; color: var(--acc); }
+
+  /* ============ SEITE 4 — AUSBAU-KARTE ============ */
+  .s3 { padding: 7mm 13mm 4mm; display: flex; flex-direction: column; }
+  .s3 h1 { font-family: Georgia, serif; font-size: 21pt; line-height: 1.06; margin-top: 3.4mm; letter-spacing: -.01em; }
+  .s3 h1 em { font-style: italic; color: var(--acc); }
+  .s3 .s3-intro { margin-top: 2.4mm; font-family: Georgia, serif; font-size: 9.2pt; line-height: 1.45; color: #2e2a24; max-width: 170mm; }
+  .s3 .s3-intro b { color: var(--acc); }
+  .s3 .s3-grid { margin-top: 3.4mm; display: grid; grid-template-columns: 1fr 1fr; gap: 3.4mm; }
+  .s3 .karte { background: var(--card); border: .3mm solid var(--line); border-radius: 2mm; padding: 3mm 4mm; display: flex; flex-direction: column; gap: 1.6mm; }
+  .s3 .karte .kopf { display: flex; align-items: baseline; gap: 2.2mm; }
+  .s3 .karte .nr { font-family: Georgia, serif; font-size: 8.6pt; font-weight: 700; color: var(--acc); }
+  .s3 .karte h3 { font-family: Georgia, serif; font-size: 10pt; line-height: 1.15; }
+  .s3 .karte .was { font-size: 7.9pt; line-height: 1.42; color: #3a352d; }
+  .s3 .karte .was b { color: var(--ink); }
+  .s3 .karte .plus { margin-top: auto; padding-top: 1.6mm; border-top: .25mm solid var(--line); font-size: 7.3pt; line-height: 1.4; color: var(--dim); }
+  .s3 .karte .plus b { color: var(--acc); }
+  .s3 .faq { margin-top: 3mm; column-count: 2; column-gap: 7mm; }
+  .s3 .faq .qa { break-inside: avoid; margin-bottom: 1.8mm; }
+  .s3 .faq .q { font-family: Georgia, serif; font-size: 8.3pt; color: var(--acc); font-weight: 700; line-height: 1.24; }
+  .s3 .faq .a { font-size: 7.6pt; line-height: 1.36; color: #3a352d; margin-top: .5mm; }
+  .s3 .faq .a b { color: var(--ink); }
+  .s3 .lbl { margin-top: 3mm; font-size: 7.2pt; letter-spacing: .18em; text-transform: uppercase; color: var(--acc); font-weight: 700; }
+  .s3 .exit { margin-top: 3mm; border: .35mm solid var(--acc); border-radius: 2mm; background: var(--card); padding: 2.8mm 4.2mm; }
+  .s3 .exit .h { font-family: Georgia, serif; font-size: 10pt; margin-bottom: 1.8mm; }
+  .s3 .exit .h em { font-style: italic; color: var(--acc); }
+  .s3 .exit .drei { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; }
+  .s3 .exit .drei p { font-size: 7.8pt; line-height: 1.4; color: #3a352d; }
+  .s3 .exit .drei b { color: var(--ink); }
+  .s3 .exit .quelle { margin-top: 1.8mm; font-size: 7.2pt; font-style: italic; color: var(--dim); }
+  .s3 .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; padding-top: 2.4mm; border-top: .3mm solid var(--line); }
+  .s3 .foot .who { font-size: 7.6pt; color: var(--dim); }
+  .s3 .foot .who b { color: var(--ink); }
+  .s3 .foot .cta { font-family: Georgia, serif; font-style: italic; font-size: 8.6pt; color: var(--acc); }
+</style>
+</head>
+<body>
+
+  <!-- ==================== SEITE 1 — DECKBLATT ==================== -->
+  <section class="sheet s0">
+    <div class="top"><span>Shehryaar Khawaja — <b>Software &amp; KI</b></span><span>Angebot · Rorschach, Juli 2026</span></div>
+    <div class="rule"></div>
+
+    <div class="mitte">
+      <div class="sterne"><b>4,6</b> von 5 Sternen bei Google</div>
+      <div class="sterne-sub">„Dank der Unterstützung hier bin ich wieder viel stabiler" — <b>ein Kunde bei Google; 20 von 22 Bewertungen mit 4–5 Sternen.</b></div>
+
+      <h1><span class="fine">GUT ZU FUSS.</span><em>Eure Kunden kommen wieder — von selbst.</em></h1>
+
+      <p class="sub">Eine Kunden-Kartei, die eure 4,6-Sterne-Beratung trägt — mit <b>Erinnerungen, die von
+      selbst laufen.</b> Extra für euch gebaut: <b>euer erster Schritt in die KI-Automatisierung.</b></p>
+
+      <div class="tag">
+        <div class="haken"></div>
+        <div class="code">
+          <div class="codezeile"><span>KUNDE · MASSEINLAGEN · 379.–</span><span>KAUF: HEUTE</span></div>
+          <div class="codezeile dim"><span>KONTROLLE: NACH 6 MONATEN</span><span>→ EINLADUNG: NACH 12</span></div>
+        </div>
+      </div>
+      <div class="tag-legende">Ein Häkchen beim Kauf — und euer System erinnert eure Kunden von selbst.</div>
+
+      <div class="fuer">
+        Für <b>Farhad Akbarzada</b> &amp; Team · Kaufmann Gut zu Fuss · Rorschach&nbsp;&nbsp;·&nbsp;&nbsp;Von <b>Shehryaar Khawaja</b> · Software &amp; KI
+      </div>
+      <div class="inhalt">
+        Innen: <b>das Angebot &amp; euer Preis</b> &nbsp;·&nbsp; <b>eure Ausbau-Karte</b> — wohin die Reise geht.
+      </div>
+    </div>
+
+    <div class="wz-wrap"><div class="wz">G.</div></div>
+
+    <div class="foot">
+      <span class="who"><b>Shehryaar Khawaja</b> · Software &amp; KI · Zürich</span>
+      <span class="datum">Wir zeigen euch das System live — ihr entscheidet in eurem Takt.</span>
+    </div>
+  </section>
+
+  <!-- ==================== SEITE 2 — DAS ANGEBOT (MOMENTE) ==================== -->
+  <section class="sheet s1">
+    <div class="top"><span>Shehryaar Khawaja — <b>Software &amp; KI</b></span><span>Gut zu Fuss · Das Angebot · Juli 2026</span></div>
+    <div class="rule"></div>
+
+    <h1>Eure Kunden lieben eure Beratung.<br>Jetzt kommen sie auch <em>von selbst zurück.</em></h1>
+
+    <p class="intro">
+      Ich habe eure Bewertungen gelesen — <b>4,6 von 5 Sternen</b> bei Google, 20 von 22 mit vier oder fünf
+      Sternen, und das grösste Lob ist immer dasselbe: eure Beratung. Rund <b>1000 Menschen</b> waren schon bei
+      euch, die Analyse gibt es — wie ihr selbst sagt — gratis nur bei euch, und seit dem Neustart an der Hauptstrasse führt ihr das
+      Traditionshaus in dritter Runde weiter. Die einzige Bremse liegt nicht in eurer Arbeit — sie liegt danach:
+      wer einmal da war, wird an nichts erinnert und kommt erst nach zwei, drei Jahren wieder statt nach einem —
+      nicht eure Schuld, dafür gab es nie ein Werkzeug.
+      <b>Genau das lösen wir: eure Kunden kommen im Jahres-Takt zurück — und ihr bekommt eine Kunden-Kartei, die
+      euch endlich gehört.</b>
+    </p>
+
+    <div class="lbl">So läuft jeder Kunde durch euer System</div>
+    <div class="step">
+      <span class="gnum">1</span>
+      <div class="kopf"><span class="dot">1</span><b>Kauf</b> — beim Verkauf: Name, Mail, ein Häkchen fürs
+      Einverständnis. <b>Keine zwei Minuten,</b> eingetragen wie heute verkauft wird.</div>
+      <div class="vorher">Vorher: der Kunde geht ohne Spur — 1000 Namen im System, fast keine E-Mail-Adresse</div>
+    </div>
+    <div class="pf" style="margin-left: 30mm;"></div>
+    <div class="step ein2">
+      <span class="gnum">2</span>
+      <div class="kopf"><span class="dot">2</span><b>System merkt sich den Takt</b> — wer wann welche Versorgung
+      gekauft hat; die Willkommens-Mail mit Pflege-Tipps geht von selbst raus.</div>
+      <div class="vorher">Vorher: das merkt sich niemand — euer GP Manager ist fürs Vermessen gebaut, nicht fürs Erinnern</div>
+    </div>
+    <div class="pf" style="margin-left: 44mm;"></div>
+    <div class="step ein3">
+      <span class="gnum">3</span>
+      <div class="kopf"><span class="dot">3</span><b>Erinnerung im richtigen Moment</b> — nach sechs Monaten die
+      Kontrolle, nach zwölf die Einladung zur neuen Analyse — <b>mit einem Klick zum Termin</b> über eure Online-Buchung.</div>
+      <div class="vorher">Vorher: niemand sagt dem Kunden, dass Einlagen nach 6–12 Monaten durchgetreten sind</div>
+    </div>
+    <div class="pf rot" style="margin-left: 36mm;"></div>
+    <div class="step dark ein4">
+      <span class="gnum">4</span>
+      <div class="kopf"><span class="dot">4</span><b>Euer Kunde kommt zurück</b> — er bucht selbst, ihr macht,
+      was ihr am besten könnt: beraten.</div>
+      <div class="vorher">Vorher: nur ~5% kommen wieder — und erst nach 2–3 Jahren statt nach einem</div>
+    </div>
+    <div class="gabelpf"><div class="pf rot"></div><div class="pf rot"></div></div>
+    <div class="gabel">
+      <div class="zweig">
+        <span class="zt">Neue Einlagen</span>
+        <p>Der Kunde kommt <b>im Jahres-Takt</b> statt alle zwei, drei Jahre — für die Versorgung, die er
+        selbst zahlt.</p>
+      </div>
+      <div class="zweig">
+        <span class="zt">Kassen-Anspruch</span>
+        <p>Ärztlich verordnete Schuhe und Strümpfe: oft <b>zwei Paar pro Jahr</b> über IV oder Krankenkasse —
+        viele wissen das nicht, das System erinnert.</p>
+      </div>
+    </div>
+
+    <div class="lbl">Und ihr entscheidet auf echten Zahlen — nicht aus dem Gefühl</div>
+    <div class="zbox">
+      <p><b>Eure Kartei zeigt,</b> wer wann was gekauft hat — und wie viele Adressen schon gesammelt sind.
+      Nach einem Jahr erreicht ihr hunderte Kunden.</p>
+      <p><b>Eure 4,6 Sterne wachsen von selbst:</b> nach jedem Kauf geht automatisch eine freundliche
+      Bewertungs-Bitte raus — eure Beratung ist euer grösstes Lob, <b class="hl">jetzt hören es auch neue Kunden.</b></p>
+      <p><b>Es erinnert — ihr entscheidet:</b> ob und wie ihr einen Kunden ansprecht, bleibt eure Sache.
+      Das System nimmt euch nur das Nachhalten ab.</p>
+      <p><b>Eure Daten bleiben eure:</b> gespeichert wird nur Name und E-Mail, keine Gesundheitsdaten — die
+      Kartei gehört euch ab Tag eins. <b>GP Manager und Wix-Buchung bleiben genau wie heute.</b></p>
+    </div>
+
+    <div class="los">
+      <span class="t">So geht's los:</span> Wir zeigen euch das <b>fertige, laufende System</b> — keine Folien,
+      ihr klickt selbst. Sagt ihr Ja, bauen wir, schulen euer Team und bringen <b>zehn Abnahme-Punkte</b> mit —
+      ihr streicht oder ergänzt. Liste erfüllt = ihr startet und zahlt die erste Rate. Nicht erfüllt =
+      <b>ihr zahlt nichts.</b> Und hakt später etwas: Flick innert <b>48 Stunden</b> — sonst ist der
+      Betriebs-Monat <b>geschenkt</b> und eure Rate verschiebt sich nach hinten. <b>Das Risiko tragen wir, nicht ihr.</b>
+    </div>
+
+    <div class="foot">
+      <span class="who"><b>Shehryaar Khawaja</b> · Software &amp; KI · Zürich</span>
+      <span class="cta">Bitte umblättern → was das wert ist, und was ihr zahlt.</span>
+    </div>
+  </section>
+
+  <!-- ==================== SEITE 3 — WERT & PREIS ==================== -->
+  <section class="sheet s2">
+    <div class="top"><span>Gut zu Fuss · Was es wert ist — und was ihr zahlt</span><span><b>CHF 0</b> im Voraus</span></div>
+    <div class="rule"></div>
+
+    <h1>Was das wert ist —<br>und wie ihr es <em>ohne Risiko</em> zahlt.</h1>
+
+    <div class="lbl">Was bringt euch das? — gerechnet mit euren Zahlen</div>
+    <div class="bringt">
+      Rund 360 neue Käufe im Jahr, 379 Franken je Paar — gerechnet, wenn eure 30 Käufe im Monat
+      Einlagen sind; die genaue Aufteilung rechnen wir im Termin mit euch nach. Kommt künftig
+      <b>jeder vierte</b> Kunde nach einem Jahr zurück statt heute fast keiner, wären das gut 34'000
+      Franken — wir rechnen bewusst vorsichtig mit <b class="hl">über 25'000 Franken mehr im Jahr.</b>
+      Ehrlich dazu: das erste Jahr baut die Adress-Liste auf, das Geld kommt ab dem zweiten.
+      <b>Nach 90 Tagen schauen wir gemeinsam nach,</b> wie viele Adressen und Buchungen es wirklich
+      waren — schwarz auf weiss.
+    </div>
+
+    <div class="lbl">Jeder Baustein, ehrlich gerechnet</div>
+    <table>
+      <tr><td>Kunden-Kartei + einfaches Eingabe-Fenster, für euer Team gebaut (keine zwei Minuten pro Kauf)</td><td class="p">3'500</td></tr>
+      <tr><td>Automatische Erinnerungs-Strecke: Willkommen &amp; Pflege-Tipps · 6-Monats-Kontrolle · 12-Monats-Einladung mit Buchungslink</td><td class="p">4'000</td></tr>
+      <tr><td>Einverständnis sauber nach Schweizer Recht + automatische Bewertungs-Bitte</td><td class="p">1'800</td></tr>
+      <tr><td>Einrichtung + Schulung eures Teams, bis es sitzt</td><td class="p">1'500</td></tr>
+      <tr class="sum"><td>Euer Startkunden-Preis</td><td class="p">CHF 10'800</td></tr>
+    </table>
+    <div class="agency">Individuell gebaut kostet so ein System bei einer Schweizer Agentur typisch
+    <s>CHF 20'000 und mehr</s> — <b>die Differenz von über 9'000 Franken erlassen wir euch,</b> weil
+    ihr unser Startkunde in der Orthopädie seid. Dafür dürfen wir Gut zu Fuss als Referenz nennen.</div>
+
+    <div class="deal">
+      <div>
+        <div class="k">Euer Startkunden-Deal — null Risiko</div>
+        <div class="r1"><b>CHF 0 im Voraus.</b> Ihr zahlt die erste Rate erst, wenn eure Abnahme-Liste erfüllt ist.<br>
+        Danach CHF 450 Abzahlung (24 Monate) + CHF 200 Betrieb. <b>Die Software gehört euch</b> — abbezahlt
+        ist sie nach 24 Monaten, ab dann nur noch Betrieb, monatlich kündbar.</div>
+      </div>
+      <div class="big"><div class="n">CHF 650</div><div class="u">pro Monat komplett</div></div>
+    </div>
+    <div class="duo">
+      <div class="card">
+        <div class="h">Alles inbegriffen</div>
+        <p><b>Keine fünf Software-Abos, keine versteckten Kosten</b> — alles läuft in den 650. Euer GP Manager
+        und eure Wix-Seite laufen weiter wie heute, direkt bei euch — es kommt <b>kein fremdes Zusatz-Abo</b>
+        dazu. Nachgerechnet: 24 × 450 = 10'800, genau der Aufbau-Preis oben. Und: das komplette System kostet
+        euch 7'800 im Jahr — die Rechnung oben bringt ab Jahr zwei über 25'000. <b>Mehr als das Dreifache.</b></p>
+      </div>
+      <div class="card">
+        <div class="h">Die 200 Betrieb — was drin ist</div>
+        <p>Server &amp; Betrieb eures Systems · der Mail-Versand · laufende Updates &amp; Verbesserungen ·
+        der System-Wächter · die 48-Stunden-Leitung direkt zu uns · ein monatlicher Check-in.
+        <b>Euer erster Schritt in die KI-Automatisierung</b> — ein System, auf dem alles aufbaut.</p>
+      </div>
+    </div>
+
+    <div class="joker">
+      <span class="tag">Der Türöffner-Joker — bringt ihr uns Hebel, geben wir euch Hebel</span>
+      Ihr stellt uns einem Betrieb vor — wird er Kunde, wählt ihr: <b>10% von dessen erstem Auftrag,</b> direkt
+      auf eure Kosten angerechnet — <b>oder 20% runter auf eure Raten,</b> solange ihr abzahlt. Wie gross der
+      Fisch ist, schauen wir gemeinsam an — und reden drüber.
+    </div>
+
+    <div class="urgent">Den Startkunden-Preis gibt es genau einmal — wir nehmen in der Orthopädie <b>einen</b>
+    Betrieb als Referenz-Startkunden, und das seid ihr. Ohne Eile: sagt Ja, wenn ihr so weit seid — dann legen
+    wir los, und ihr nehmt euer System <b>Punkt für Punkt selbst ab.</b></div>
+
+    <div class="foot">
+      <span class="who"><b>Shehryaar Khawaja</b> · Software &amp; KI · Zürich</span>
+      <span class="cta">Nächste Seite → eure Ausbau-Karte.</span>
+    </div>
+  </section>
+
+  <!-- ==================== SEITE 4 — AUSBAU-KARTE ==================== -->
+  <section class="sheet s3">
+    <div class="top"><span>Shehryaar Khawaja — <b>Software &amp; KI</b></span><span>Gut zu Fuss · Eure Ausbau-Karte: was später kommt</span></div>
+    <div class="rule"></div>
+
+    <h1>Euer System ist gebaut,<br>um <em>mitzuwachsen.</em></h1>
+    <p class="s3-intro">
+      Alles auf dieser Seite ist <b>optional und noch nicht im Start-Preis</b> — es zeigt, wohin die Reise gehen
+      kann. Jeder Baustein setzt auf eurer Kunden-Kartei auf und bekommt sein eigenes kleines Angebot,
+      <b>erst wenn ihr ihn wollt.</b> Daneben steht, was er euch bringt — als Schätzung, klar markiert.
+    </p>
+
+    <div class="s3-grid">
+      <div class="karte">
+        <div class="kopf"><span class="nr">1</span><h3>Eure neue Website</h3></div>
+        <p class="was">Euer eigener Wunsch: ein frischer Auftritt für das Traditionshaus — <b>eure
+        Online-Buchung bleibt erhalten,</b> und die Website wächst direkt aus eurem System: was ihr anbietet,
+        steht drauf, und jeder „Termin buchen"-Klick landet in eurer Kartei.</p>
+        <p class="plus">Direkt mitgebaut: <b>+150 im Monat</b> — statt als eigenes Agentur-Projekt.</p>
+      </div>
+
+      <div class="karte">
+        <div class="kopf"><span class="nr">2</span><h3>Bestandskunden-Erwecker</h3></div>
+        <p class="was">Rund <b>1000 Kunden</b> stehen heute in eurem GP Manager. Sobald wir gemeinsam am Rechner
+        sehen, wie sie sich rausholen lassen, wecken wir sie auf — sauber und <b>erst nach rechtlicher
+        Abklärung,</b> bevor die erste Mail rausgeht.</p>
+        <p class="plus">Euer Plus (Schätzung): der grösste Kunden-Schatz, den ihr habt — <b>heute unerreichbar, dann aktiv.</b></p>
+      </div>
+
+      <div class="karte">
+        <div class="kopf"><span class="nr">3</span><h3>Zuweiser-Bericht für die Praxen</h3></div>
+        <p class="was">Es gibt Ärzte und Praxen, die euch regelmässig Kunden schicken. Künftig bekommen sie
+        pro Quartal <b>schwarz auf weiss,</b> wie gut ihre Patienten bei euch versorgt wurden — freundlich,
+        kurz, automatisch.</p>
+        <p class="plus">Euer Plus (Schätzung): <b>der Kanal, der heute an Gewohnheit hängt, bekommt einen Grund mehr</b> — Zuweiser bleiben bei euch.</p>
+      </div>
+
+      <div class="karte">
+        <div class="kopf"><span class="nr">4</span><h3>Termin-Erinnerung</h3></div>
+        <p class="was">Vor jedem gebuchten Termin geht automatisch eine <b>freundliche Erinnerung</b> raus —
+        ein Klick zum Verschieben statt ein leerer Stuhl.</p>
+        <p class="plus">Euer Plus (Analogie aus der Zahnarzt-Welt — als solche benannt): mit Erinnerung
+        sinken verpasste Termine dort <b>von rund 20% auf 5%.</b></p>
+      </div>
+    </div>
+
+    <div class="lbl">Eure Fragen — kurz beantwortet</div>
+    <div class="faq">
+      <div class="qa">
+        <div class="q">Müssen wir unser System umstellen?</div>
+        <div class="a">Nein. Euer <b>GP Manager und die Wix-Buchung laufen weiter</b> wie heute. Kein Zusatz-Abo, kein zweites Programm.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Was ist mit unseren Daten?</div>
+        <div class="a">Gespeichert wird <b>nur Name und E-Mail</b> — keine Gesundheitsdaten. Alles nach Schweizer Datenschutz, mit Einverständnis beim Kauf. Die Kartei gehört euch ab Tag eins.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Was, wenn etwas nicht funktioniert?</div>
+        <div class="a">Ihr erreicht uns direkt. Ist eine Störung <b>nicht in 48 Stunden behoben,</b> ist der Betriebs-Monat (200) geschenkt und eure Rate verschiebt sich nach hinten.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Wie viel Aufwand ist das für uns?</div>
+        <div class="a"><b>Keine zwei Minuten pro Kauf</b> — Name, Mail, ein Häkchen. Wir schulen euer Team, bis jeder Handgriff sitzt.</div>
+      </div>
+    </div>
+
+    <div class="exit">
+      <div class="h">Und wenn ihr eines Tages <em>nicht mehr mit uns</em> arbeiten wollt?</div>
+      <div class="drei">
+        <p><b>Aussteigen geht jederzeit.</b> Die offenen Raten der Software zahlt ihr fertig ab — sie gehört
+        ja euch.</p>
+        <p><b>Der Betrieb (200) fällt weg.</b> Damit enden auch Updates, Verbesserungen und die Pflege durch
+        uns — System und Daten übergeben wir euch geordnet.</p>
+        <p><b>Später mehr?</b> Neue Bausteine von der Karte oben kommen als eigene Zusatz-Angebote — wann
+        ihr wollt.</p>
+      </div>
+      <div class="quelle">So steht es auch im Vertrag — kein Kleingedrucktes, das euch festhält.</div>
+    </div>
+
+    <div class="foot">
+      <span class="who"><b>Shehryaar Khawaja</b> · Software &amp; KI · Zürich</span>
+      <span class="cta">Ihr habt alles gesehen — ihr entscheidet, in eurem Takt.</span>
+    </div>
+  </section>
+
+</body>
+</html>
