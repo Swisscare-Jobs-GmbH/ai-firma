@@ -17,10 +17,14 @@ Verkaufs-MVP `C:\dev\finelli-cockpit` (SA-Rechner, Ports 8012/5173) · Produktio
 - 🟡 **KI-Etappe** auf Sicherungs-Spur `sicherung/ki-etappe-2026-07-19`. Darauf aufgesetzt: 4 Demo-Killer
   gefixt (Draft-PR #1: Mock-Tages-Cache, KI-Timeouts 30s, CORS 127.0.0.1) — nur SA merged.
 - **Naechster Schritt:** vor Mittwoch die Demo-Killer-Fixes + KI-Etappe in die Haupt-Spur, dann Klick-Probe.
+- 🟡 **Bauplan "3 KI-Mitarbeiter"** (Research + KPI + Manager, SA-Auftrag 21.07) liegt vor:
+  `2026-07-21-bauplan-ki-mitarbeiter.md` — von Richter-Panel geprueft. **Bau-Start (auch Mock)
+  erst nach Finelli-Ja (Gate 0)**; Bau dann durch Opus 4.8 nach Etappen E0-E5.
 
 **Dateien hier:** firma-profil · schmerz-landkarte · deal-strategie · wert-ranking · ausbau-plan ·
 feinplan · logistik-research · offene-fragen · antworten-sa · antworten-runde2 ·
-branchen-recherche-markt-schmerzen (19.07) · angebots-panel-2026-07-19 · klick-beweis-2026-07-19 ·
+branchen-recherche-markt-schmerzen (19.07) · **bauplan-ki-mitarbeiter (21.07)** ·
+angebots-panel-2026-07-19 · klick-beweis-2026-07-19 ·
 wochen-bericht-2026-07-19 (Entwurf, SA muss gegenlesen) · **demo/** (Verkaufs-Demo fuer den
 Termin, 20.07 — Pitch-Seite `index.html` + App-Simulation "Cockpit-Vorschau" `app.html` (PIN 2019), je mit eigenem Klick-Beweis) ·
 **praesentation/** (Ueberzeugungs-Deck 3 Modelle Basic/Premium/Max + Konfig, 20.07 — Generator:
