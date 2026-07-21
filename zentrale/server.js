@@ -6,6 +6,7 @@ const http = require("http");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const crypto = require("crypto");
 const { spawn, exec } = require("child_process");
 
 const PORT = 8020;
@@ -13,6 +14,18 @@ const HOST = "127.0.0.1";
 const BASIS_ORDNER = __dirname;
 const DATEN_ORDNER = path.join(BASIS_ORDNER, "data");
 const PUBLIC_ORDNER = path.join(BASIS_ORDNER, "public");
+
+// ---------- Nutzer + persoenliches Brain ----------
+// Zwei feste Nutzer. Beim Login wird das persoenliche Brain (die .md-Dateien im
+// jeweiligen Ordner unter brain/users/) als System-Prompt an jeden Claude-Aufruf
+// gehaengt, damit Claude sich pro Nutzer angepasst verhaelt.
+const BRAIN_ORDNER = path.join(BASIS_ORDNER, "..", "brain", "users");
+const USER_STATE_DATEI = path.join(DATEN_ORDNER, "aktiver-user.json");
+const SYSTEM_PROMPT_DATEI = path.join(DATEN_ORDNER, "system-prompt-aktiv.md");
+const NUTZER = {
+  cherry: { id: "cherry", name: "Cherry", person: "Shehryaar Khawaja", brainOrdner: "sa" },
+  amb: { id: "amb", name: "Amb", person: "Abdul Bhatti", brainOrdner: "ab" }
+};
 
 const CONTENT_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -253,6 +266,7 @@ function baueClaudeArgumente(modellId, zusatzFlags) {
     argumente.push("--model", modellId.trim());
   }
   argumente.push("--output-format", "stream-json", "--verbose");
+  haengeSystemPromptAn(argumente);
   if (typeof zusatzFlags === "string" && zusatzFlags.trim() !== "") {
     argumente.push(...zusatzFlags.trim().split(/\s+/));
   }
@@ -840,6 +854,453 @@ function handleKontenRoute(req, res, teile) {
   return sendeFehler(res, 404, "Unbekannter Konten-Pfad");
 }
 
+// ---------- Claude-Chats (persistente Gespraeche) ----------
+
+// Jeder Chat ist ein fortlaufendes claude-Gespraech mit eigener Session-UUID:
+// erste Nachricht laeuft mit --session-id, jede weitere mit --resume derselben
+// UUID. Die claude-CLI haelt den inhaltlichen Verlauf der Session selbst; unsere
+// Datei data/chats/<id>.json ist der durchsuch- und wiederherstellbare Index
+// (Metadaten + Nachrichten-Text). Chats werden NICHT nach GitHub gepusht.
+const CHAT_ORDNER = path.join(DATEN_ORDNER, "chats");
+const MEMORY_DATEI = path.join(DATEN_ORDNER, "claude-memory.md");
+const UUID_MUSTER = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+const CHAT_TITEL_MAX = 80;
+// Permission-Flags aus den globalen Zusatz-Flags werden fuer Chats entfernt: die
+// Bau-Freigabe steuert allein der Pro-Chat-Schalter (Sicherheit per Default).
+const BERECHTIGUNGS_FLAGS = new Set(["--permission-mode", "--dangerously-skip-permissions"]);
+// Verhindert zwei gleichzeitige Nachrichten im selben Chat (Session-Kollision).
+const laufendeChatSessions = new Set();
+
+function stelleChatOrdnerSicher() {
+  if (!fs.existsSync(CHAT_ORDNER)) {
+    fs.mkdirSync(CHAT_ORDNER, { recursive: true });
+  }
+}
+
+function chatPfad(id) {
+  return path.join(CHAT_ORDNER, id + ".json");
+}
+
+function ladeChat(id) {
+  if (!UUID_MUSTER.test(id)) return null;
+  const pfad = chatPfad(id);
+  if (!fs.existsSync(pfad)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(pfad, "utf8"));
+  } catch (err) {
+    console.error("Chat " + id + " nicht lesbar:", err.message);
+    return null;
+  }
+}
+
+function speichereChat(chat) {
+  fs.writeFileSync(chatPfad(chat.id), JSON.stringify(chat, null, 2), "utf8");
+}
+
+// Kompakte Metadaten fuer die Liste (ohne den vollen Nachrichten-Text).
+function chatMeta(chat) {
+  return {
+    id: chat.id,
+    titel: chat.titel || "Neuer Chat",
+    modellId: chat.modellId || "",
+    cwd: chat.cwd || "",
+    bauenErlaubt: !!chat.bauenErlaubt,
+    erstellt: chat.erstellt || "",
+    aktualisiert: chat.aktualisiert || chat.erstellt || "",
+    anzahlNachrichten: Array.isArray(chat.nachrichten) ? chat.nachrichten.length : 0
+  };
+}
+
+// Alle Chats als Metadaten, neueste (zuletzt aktualisiert) zuerst.
+function listeChats() {
+  stelleChatOrdnerSicher();
+  let dateien = [];
+  try {
+    dateien = fs.readdirSync(CHAT_ORDNER).filter((n) => n.endsWith(".json"));
+  } catch (err) {
+    console.error("Chat-Ordner nicht lesbar:", err.message);
+    return [];
+  }
+  const metas = [];
+  for (const datei of dateien) {
+    const chat = ladeChat(datei.slice(0, -5));
+    if (chat && chat.id) metas.push(chatMeta(chat));
+  }
+  metas.sort((a, b) => String(b.aktualisiert).localeCompare(String(a.aktualisiert)));
+  return metas;
+}
+
+// Aus dem ersten Prompt einen kurzen, einzeiligen Titel machen.
+function titelAusPrompt(prompt) {
+  const eine = String(prompt || "").replace(/\s+/g, " ").trim();
+  if (eine === "") return "Neuer Chat";
+  return eine.length > CHAT_TITEL_MAX ? eine.slice(0, CHAT_TITEL_MAX - 1).trim() + "…" : eine;
+}
+
+// Zusatz-Flags der Einstellungen ohne die Permission-Flags (die steuert der
+// Pro-Chat-Schalter). Flag plus zugehoeriger Wert werden gemeinsam entfernt.
+function zusatzFlagsOhneBerechtigung(flagText) {
+  const tokens = String(flagText || "").trim().split(/\s+/).filter(Boolean);
+  const raus = [];
+  for (let i = 0; i < tokens.length; i++) {
+    if (BERECHTIGUNGS_FLAGS.has(tokens[i])) {
+      if (tokens[i] === "--permission-mode") i++; // Wert mitueberspringen
+      continue;
+    }
+    raus.push(tokens[i]);
+  }
+  return raus;
+}
+
+// Baut die claude-Argumente fuer eine Chat-Nachricht (Modell schon geprueft).
+function baueChatArgumente(chat, modellId) {
+  const argumente = ["-p", "--output-format", "stream-json", "--verbose"];
+  if (modellId) {
+    argumente.push("--model", modellId);
+  }
+  if (chat.sessionGestartet) {
+    argumente.push("--resume", chat.id);
+  } else {
+    argumente.push("--session-id", chat.id);
+  }
+  if (chat.bauenErlaubt) {
+    argumente.push("--permission-mode", "acceptEdits");
+  }
+  // Persoenliches Brain des aktiven Nutzers + gemeinsames Gedaechtnis in einer Datei.
+  haengeSystemPromptAn(argumente);
+  const einst = ladeDatei("einstellungen.json");
+  for (const token of zusatzFlagsOhneBerechtigung(einst && einst.zusatzFlags)) {
+    argumente.push(token);
+  }
+  return argumente;
+}
+
+// --- Chat-CRUD ---
+
+function handleChatsListe(res) {
+  return sendeJson(res, 200, { chats: listeChats() });
+}
+
+async function handleChatErstellen(req, res) {
+  const kopfFehler = pruefeClaudeRequestKopf(req);
+  if (kopfFehler) return sendeFehler(res, kopfFehler.status, kopfFehler.text);
+  const geparst = parseObjektBody(await leseBody(req));
+  if (geparst.fehler) return sendeFehler(res, 400, geparst.fehler);
+  const wert = geparst.wert;
+
+  const modellId = typeof wert.modellId === "string" ? wert.modellId.trim() : "";
+  if (modellId !== "" && !ARGUMENT_MUSTER.test(modellId)) {
+    return sendeFehler(res, 400, "modellId enthält unerlaubte Zeichen");
+  }
+  const einst = ladeDatei("einstellungen.json");
+  let cwd = typeof wert.cwd === "string" && wert.cwd.trim() !== ""
+    ? wert.cwd.trim()
+    : (einst && einst.standardCwd) || BASIS_ORDNER;
+  if (!fs.existsSync(cwd) || !fs.statSync(cwd).isDirectory()) {
+    return sendeFehler(res, 400, "cwd ist kein existierender Ordner: " + cwd);
+  }
+
+  stelleChatOrdnerSicher();
+  const jetzt = new Date().toISOString();
+  const chat = {
+    id: crypto.randomUUID(),
+    titel: typeof wert.titel === "string" && wert.titel.trim() !== "" ? wert.titel.trim().slice(0, CHAT_TITEL_MAX) : "",
+    titelAuto: !(typeof wert.titel === "string" && wert.titel.trim() !== ""),
+    modellId: modellId,
+    cwd: cwd,
+    bauenErlaubt: wert.bauenErlaubt === true,
+    sessionGestartet: false,
+    erstellt: jetzt,
+    aktualisiert: jetzt,
+    nachrichten: []
+  };
+  speichereChat(chat);
+  return sendeJson(res, 200, chat);
+}
+
+function handleChatEinzel(res, id) {
+  const chat = ladeChat(id);
+  if (!chat) return sendeFehler(res, 404, "Chat " + id + " nicht gefunden");
+  return sendeJson(res, 200, chat);
+}
+
+async function handleChatAendern(req, res, id) {
+  const kopfFehler = pruefeClaudeRequestKopf(req);
+  if (kopfFehler) return sendeFehler(res, kopfFehler.status, kopfFehler.text);
+  const chat = ladeChat(id);
+  if (!chat) return sendeFehler(res, 404, "Chat " + id + " nicht gefunden");
+  const geparst = parseObjektBody(await leseBody(req));
+  if (geparst.fehler) return sendeFehler(res, 400, geparst.fehler);
+  const wert = geparst.wert;
+
+  if (typeof wert.titel === "string") {
+    const titel = wert.titel.trim().slice(0, CHAT_TITEL_MAX);
+    if (titel !== "") {
+      chat.titel = titel;
+      chat.titelAuto = false;
+    }
+  }
+  if (typeof wert.modellId === "string") {
+    const modellId = wert.modellId.trim();
+    if (modellId !== "" && !ARGUMENT_MUSTER.test(modellId)) {
+      return sendeFehler(res, 400, "modellId enthält unerlaubte Zeichen");
+    }
+    chat.modellId = modellId;
+  }
+  if (typeof wert.bauenErlaubt === "boolean") {
+    chat.bauenErlaubt = wert.bauenErlaubt;
+  }
+  // Arbeitsordner nur aenderbar, solange die Session nicht laeuft (danach ist
+  // sie fest an diesen Ordner gebunden, ein Wechsel wuerde --resume brechen).
+  if (typeof wert.cwd === "string" && wert.cwd.trim() !== "") {
+    const hatVerlauf = Array.isArray(chat.nachrichten) && chat.nachrichten.length > 0;
+    if (chat.sessionGestartet || hatVerlauf) {
+      return sendeFehler(res, 409, "Arbeitsordner kann nach der ersten Nachricht nicht mehr geändert werden");
+    }
+    const cwd = wert.cwd.trim();
+    if (!fs.existsSync(cwd) || !fs.statSync(cwd).isDirectory()) {
+      return sendeFehler(res, 400, "cwd ist kein existierender Ordner: " + cwd);
+    }
+    chat.cwd = cwd;
+  }
+  chat.aktualisiert = new Date().toISOString();
+  speichereChat(chat);
+  return sendeJson(res, 200, chatMeta(chat));
+}
+
+function handleChatLoeschen(res, id) {
+  if (!UUID_MUSTER.test(id)) return sendeFehler(res, 400, "Ungültige Chat-ID");
+  const pfad = chatPfad(id);
+  if (!fs.existsSync(pfad)) return sendeFehler(res, 404, "Chat " + id + " nicht gefunden");
+  try {
+    fs.unlinkSync(pfad);
+  } catch (err) {
+    return sendeFehler(res, 500, "Chat konnte nicht gelöscht werden: " + err.message);
+  }
+  return sendeJson(res, 200, { ok: true });
+}
+
+// --- Chat-Nachricht als Server-Sent-Events (mit Session-Fortsetzung) ---
+
+async function handleChatNachricht(req, res, id) {
+  const kopfFehler = pruefeClaudeRequestKopf(req);
+  if (kopfFehler) return sendeFehler(res, kopfFehler.status, kopfFehler.text);
+  const chat = ladeChat(id);
+  if (!chat) return sendeFehler(res, 404, "Chat " + id + " nicht gefunden");
+
+  const geparst = parseObjektBody(await leseBody(req));
+  if (geparst.fehler) return sendeFehler(res, 400, geparst.fehler);
+  const prompt = geparst.wert.prompt;
+  if (typeof prompt !== "string" || prompt.trim() === "") {
+    return sendeFehler(res, 400, "Feld prompt fehlt oder ist leer");
+  }
+
+  const modellId = typeof chat.modellId === "string" ? chat.modellId.trim() : "";
+  const argumentFehler = pruefeClaudeArgumente(modellId, "");
+  if (argumentFehler) return sendeFehler(res, 400, argumentFehler);
+
+  let arbeitsOrdner = BASIS_ORDNER;
+  if (typeof chat.cwd === "string" && chat.cwd.trim() !== "") {
+    if (!fs.existsSync(chat.cwd) || !fs.statSync(chat.cwd).isDirectory()) {
+      return sendeFehler(res, 400, "Arbeitsordner des Chats existiert nicht: " + chat.cwd);
+    }
+    arbeitsOrdner = chat.cwd;
+  }
+
+  if (laufendeChatSessions.has(chat.id)) {
+    return sendeFehler(res, 409, "Chat verarbeitet gerade eine Nachricht");
+  }
+  laufendeChatSessions.add(chat.id);
+
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    "Connection": "keep-alive",
+    "X-Accel-Buffering": "no"
+  });
+
+  const kind = spawn("claude", baueChatArgumente(chat, modellId), {
+    shell: true,
+    cwd: arbeitsOrdner
+  });
+
+  // stdout zeilenweise: als SSE weiterreichen UND den Antworttext + Kosten
+  // serverseitig einsammeln, damit der Verlauf gespeichert werden kann.
+  let antwortAkku = "";
+  let ergebnisText = "";
+  let kostenUsd = null;
+  let sahInit = false;
+  let restPuffer = "";
+
+  function verarbeiteAusgabeZeile(sauber) {
+    if (sauber === "") return;
+    sendeSse(res, null, sauber);
+    let obj;
+    try {
+      obj = JSON.parse(sauber);
+    } catch (err) {
+      return;
+    }
+    if (!obj || typeof obj !== "object") return;
+    if (obj.type === "system" && obj.subtype === "init") {
+      sahInit = true;
+    } else if (obj.type === "assistant" && obj.message && Array.isArray(obj.message.content)) {
+      for (const block of obj.message.content) {
+        if (block && block.type === "text" && typeof block.text === "string") {
+          antwortAkku += (antwortAkku ? "\n" : "") + block.text;
+        }
+      }
+    } else if (obj.type === "result") {
+      if (typeof obj.result === "string") ergebnisText = obj.result;
+      if (typeof obj.total_cost_usd === "number") kostenUsd = obj.total_cost_usd;
+    }
+  }
+
+  kind.stdout.on("data", (teil) => {
+    restPuffer += teil.toString("utf8");
+    const zeilen = restPuffer.split("\n");
+    restPuffer = zeilen.pop();
+    for (const zeile of zeilen) {
+      verarbeiteAusgabeZeile(zeile.replace(/\r$/, ""));
+    }
+  });
+  leiteStromAlsSse(kind.stderr, res, "fehler");
+
+  function speichereVerlauf(code) {
+    const jetzt = new Date().toISOString();
+    const antwortText = ergebnisText || antwortAkku;
+    // Frisch laden, damit parallele Metadaten-Aenderungen nicht verloren gehen.
+    const frisch = ladeChat(chat.id) || chat;
+    const nachrichten = Array.isArray(frisch.nachrichten) ? frisch.nachrichten.slice() : [];
+    nachrichten.push({ rolle: "user", text: prompt, zeit: jetzt });
+    nachrichten.push({
+      rolle: "assistant",
+      text: antwortText,
+      zeit: new Date().toISOString(),
+      modellId: modellId,
+      kostenUsd: kostenUsd,
+      exitCode: code === null ? 1 : code
+    });
+    frisch.nachrichten = nachrichten;
+    if (!frisch.sessionGestartet && (sahInit || code === 0)) {
+      frisch.sessionGestartet = true;
+    }
+    if (frisch.titelAuto !== false && (!frisch.titel || frisch.titel === "")) {
+      frisch.titel = titelAusPrompt(prompt);
+      frisch.titelAuto = true;
+    }
+    frisch.aktualisiert = jetzt;
+    try {
+      speichereChat(frisch);
+    } catch (err) {
+      console.error("Chat-Verlauf fuer " + chat.id + " nicht speicherbar:", err.message);
+    }
+  }
+
+  let beendet = false;
+  function beendeSauber(code) {
+    if (beendet) return;
+    beendet = true;
+    const sauber = restPuffer.replace(/\r$/, "");
+    if (sauber !== "") verarbeiteAusgabeZeile(sauber);
+    restPuffer = "";
+    laufendeChatSessions.delete(chat.id);
+    speichereVerlauf(code);
+    sendeSse(res, "ende", String(code === null ? 1 : code));
+    if (!res.writableEnded) res.end();
+  }
+
+  kind.on("error", (err) => {
+    sendeSse(res, "fehler", "Konnte claude nicht starten: " + err.message);
+    beendeSauber(1);
+  });
+  kind.on("close", (code) => {
+    beendeSauber(code);
+  });
+
+  // Bricht die Verbindung ab, den Prozessbaum beenden (Windows: taskkill).
+  res.on("error", function () {});
+  res.on("close", () => {
+    if (kind.exitCode === null && !kind.killed) {
+      if (process.platform === "win32") {
+        spawn("taskkill", ["/pid", String(kind.pid), "/T", "/F"]).on("error", (err) => {
+          console.error("taskkill fuer claude-Chat fehlgeschlagen:", err.message);
+        });
+      } else {
+        kind.kill();
+      }
+    }
+  });
+
+  kind.stdin.on("error", (err) => {
+    console.error("stdin-Fehler beim claude-Chat:", err.message);
+  });
+  kind.stdin.write(prompt);
+  kind.stdin.end();
+}
+
+// --- Memory (globale Dauer-Instruktionen fuer jeden Chat) ---
+
+const MEMORY_MAX_ZEICHEN = 20000;
+
+function handleMemoryGet(res) {
+  let text = "";
+  try {
+    if (fs.existsSync(MEMORY_DATEI)) text = fs.readFileSync(MEMORY_DATEI, "utf8");
+  } catch (err) {
+    return sendeFehler(res, 500, "Memory nicht lesbar: " + err.message);
+  }
+  return sendeJson(res, 200, { text: text });
+}
+
+async function handleMemorySpeichern(req, res) {
+  const kopfFehler = pruefeClaudeRequestKopf(req);
+  if (kopfFehler) return sendeFehler(res, kopfFehler.status, kopfFehler.text);
+  const geparst = parseObjektBody(await leseBody(req));
+  if (geparst.fehler) return sendeFehler(res, 400, geparst.fehler);
+  const text = typeof geparst.wert.text === "string" ? geparst.wert.text : "";
+  if (text.length > MEMORY_MAX_ZEICHEN) {
+    return sendeFehler(res, 400, "Memory ist zu lang (max " + MEMORY_MAX_ZEICHEN + " Zeichen)");
+  }
+  try {
+    if (text.trim() === "") {
+      if (fs.existsSync(MEMORY_DATEI)) fs.unlinkSync(MEMORY_DATEI);
+    } else {
+      fs.writeFileSync(MEMORY_DATEI, text, "utf8");
+    }
+  } catch (err) {
+    return sendeFehler(res, 500, "Memory nicht speicherbar: " + err.message);
+  }
+  return sendeJson(res, 200, { ok: true });
+}
+
+function handleMemoryRoute(req, res) {
+  if (req.method === "GET") return handleMemoryGet(res);
+  if (req.method === "PUT") return handleMemorySpeichern(req, res);
+  return sendeFehler(res, 405, "Methode " + req.method + " hier nicht erlaubt");
+}
+
+function handleChatsRoute(req, res, teile) {
+  const id = teile[2];
+  const unterpfad = teile[3];
+
+  if (!id) {
+    if (req.method === "GET") return handleChatsListe(res);
+    if (req.method === "POST") return handleChatErstellen(req, res);
+    return sendeFehler(res, 405, "Methode " + req.method + " hier nicht erlaubt");
+  }
+  if (!unterpfad) {
+    if (req.method === "GET") return handleChatEinzel(res, id);
+    if (req.method === "PUT") return handleChatAendern(req, res, id);
+    if (req.method === "DELETE") return handleChatLoeschen(res, id);
+    return sendeFehler(res, 405, "Methode " + req.method + " hier nicht erlaubt");
+  }
+  if (unterpfad === "nachricht" && req.method === "POST") {
+    return handleChatNachricht(req, res, id);
+  }
+  return sendeFehler(res, 404, "Unbekannter Chat-Pfad");
+}
+
 // ---------- Auto-GitHub-Sync der drei Daten-Dateien ----------
 
 // Nach jedem Schreiben von kunden.json, workflows.json oder einstellungen.json
@@ -1040,8 +1501,127 @@ function handleStatisch(req, res, pfadName) {
     return sendeFehler(res, 404, "Nicht gefunden: " + relativ);
   }
   const typ = CONTENT_TYPES[path.extname(vollPfad).toLowerCase()] || "application/octet-stream";
-  res.writeHead(200, { "Content-Type": typ });
+  // no-cache: der Browser holt nach jeder Aenderung den frischen Stand (lokales
+  // Werkzeug, winzige Dateien) statt veraltetes JS/CSS aus dem Cache zu zeigen.
+  res.writeHead(200, { "Content-Type": typ, "Cache-Control": "no-cache" });
   res.end(fs.readFileSync(vollPfad));
+}
+
+// ---------- Nutzer + persoenliches Brain ----------
+
+// Aktiver Nutzer aus der Zustands-Datei; null wenn keiner eingeloggt ist.
+function ladeAktivenUser() {
+  try {
+    if (fs.existsSync(USER_STATE_DATEI)) {
+      const zustand = JSON.parse(fs.readFileSync(USER_STATE_DATEI, "utf8"));
+      if (zustand && NUTZER[zustand.id]) return NUTZER[zustand.id];
+    }
+  } catch (err) {
+    console.error("Nutzer-Zustand nicht lesbar:", err.message);
+  }
+  return null;
+}
+
+// Setzt den aktiven Nutzer (oder loggt aus bei id === null) und baut die
+// System-Prompt-Datei neu. Gibt den Nutzer (oder null) zurueck.
+function setzeAktivenUser(id) {
+  if (id === null) {
+    try { if (fs.existsSync(USER_STATE_DATEI)) fs.unlinkSync(USER_STATE_DATEI); } catch (err) {
+      console.error("Nutzer-Zustand nicht loeschbar:", err.message);
+    }
+    schreibeSystemPromptDatei();
+    return null;
+  }
+  const user = NUTZER[id];
+  if (!user) return null;
+  fs.writeFileSync(USER_STATE_DATEI, JSON.stringify({ id: user.id, zeit: new Date().toISOString() }, null, 2), "utf8");
+  schreibeSystemPromptDatei();
+  return user;
+}
+
+// Liest die .md-Dateien im persoenlichen Brain-Ordner und macht daraus einen
+// System-Prompt-Block. Leer, wenn der Ordner (noch) fehlt.
+function baueUserBrainText(user) {
+  const dir = path.join(BRAIN_ORDNER, user.brainOrdner);
+  const teile = [
+    "# Aktiver Nutzer dieser Sitzung: " + user.name + " (" + user.person + ")",
+    "Du sprichst gerade mit " + user.name + ". Passe Ansprache, Ton und Vorschlaege an",
+    "dieses persoenliche Profil an. Das Folgende ist das persoenliche Brain von " + user.name + ":",
+    ""
+  ];
+  try {
+    if (fs.existsSync(dir) && fs.statSync(dir).isDirectory()) {
+      const dateien = fs.readdirSync(dir).filter((n) => n.toLowerCase().endsWith(".md")).sort();
+      for (const datei of dateien) {
+        const inhalt = fs.readFileSync(path.join(dir, datei), "utf8").trim();
+        if (inhalt !== "") {
+          teile.push("## " + user.brainOrdner + "/" + datei, inhalt, "");
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Brain-Ordner " + dir + " nicht lesbar:", err.message);
+  }
+  return teile.join("\n").trim();
+}
+
+// Schreibt die kombinierte System-Prompt-Datei (persoenliches Brain + gemeinsames
+// Gedaechtnis) und gibt ihren Pfad zurueck, oder null wenn nichts anzuhaengen ist.
+// Diese Datei wird an JEDEN Claude-Aufruf (Chat, Run, Jobs) angehaengt.
+function schreibeSystemPromptDatei() {
+  const bloecke = [];
+  const user = ladeAktivenUser();
+  if (user) {
+    const brain = baueUserBrainText(user);
+    if (brain !== "") bloecke.push(brain);
+  }
+  try {
+    if (fs.existsSync(MEMORY_DATEI)) {
+      const memo = fs.readFileSync(MEMORY_DATEI, "utf8").trim();
+      if (memo !== "") bloecke.push("# Gemeinsames Gedaechtnis\n" + memo);
+    }
+  } catch (err) {
+    console.error("Memory-Datei nicht lesbar:", err.message);
+  }
+  const inhalt = bloecke.join("\n\n").trim();
+  if (inhalt === "") {
+    try { if (fs.existsSync(SYSTEM_PROMPT_DATEI)) fs.unlinkSync(SYSTEM_PROMPT_DATEI); } catch (err) {
+      console.error("System-Prompt-Datei nicht loeschbar:", err.message);
+    }
+    return null;
+  }
+  fs.writeFileSync(SYSTEM_PROMPT_DATEI, inhalt, "utf8");
+  return SYSTEM_PROMPT_DATEI;
+}
+
+// Haengt die frisch geschriebene System-Prompt-Datei an ein Argument-Array an.
+function haengeSystemPromptAn(argumente) {
+  const pfad = schreibeSystemPromptDatei();
+  if (pfad) argumente.push("--append-system-prompt-file", pfad);
+}
+
+async function handleNutzerRoute(req, res, teile) {
+  const unter = teile[2];
+  if (unter === "status" && req.method === "GET") {
+    const user = ladeAktivenUser();
+    return sendeJson(res, 200, {
+      aktiv: user ? { id: user.id, name: user.name, person: user.person } : null,
+      nutzer: Object.values(NUTZER).map((u) => ({ id: u.id, name: u.name, person: u.person }))
+    });
+  }
+  if (unter === "login" && req.method === "POST") {
+    const geparst = parseObjektBody(await leseBody(req));
+    if (geparst.fehler) return sendeFehler(res, 400, geparst.fehler);
+    const id = typeof geparst.wert.id === "string" ? geparst.wert.id.trim() : "";
+    if (!NUTZER[id]) return sendeFehler(res, 400, "Unbekannter Nutzer: " + id);
+    const user = setzeAktivenUser(id);
+    return sendeJson(res, 200, { aktiv: { id: user.id, name: user.name, person: user.person } });
+  }
+  if (unter === "logout" && req.method === "POST") {
+    setzeAktivenUser(null);
+    return sendeJson(res, 200, { aktiv: null });
+  }
+  return sendeFehler(res, 404, "Unbekannter Nutzer-Pfad");
 }
 
 // ---------- Router ----------
@@ -1050,6 +1630,10 @@ async function routeApi(req, res, pfadName) {
   const teile = pfadName.split("/").filter(Boolean);
   const bereich = teile[1];
   const id = teile[2];
+
+  if (bereich === "nutzer") {
+    return handleNutzerRoute(req, res, teile);
+  }
 
   if ((bereich === "kunden" || bereich === "workflows") && teile.length <= 3) {
     return handleKollektion(req, res, bereich, id);
@@ -1065,6 +1649,12 @@ async function routeApi(req, res, pfadName) {
   }
   if (bereich === "konten") {
     return handleKontenRoute(req, res, teile);
+  }
+  if (bereich === "chats") {
+    return handleChatsRoute(req, res, teile);
+  }
+  if (bereich === "memory" && teile.length === 2) {
+    return handleMemoryRoute(req, res);
   }
   if (bereich === "sync" && teile.length === 2 && req.method === "POST") {
     return handleSync(req, res);
@@ -1094,6 +1684,7 @@ const server = http.createServer(async (req, res) => {
 
 stelleDatenDateienSicher();
 stelleJobLogOrdnerSicher();
+stelleChatOrdnerSicher();
 bereinigeHaengendeJobs();
 server.listen(PORT, HOST, () => {
   console.log("SEA laeuft auf http://127.0.0.1:8020");

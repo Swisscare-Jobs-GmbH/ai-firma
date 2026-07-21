@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Finelli — Laden Zürich (Demo)</title>
+<!--
+  Finelli MDE-Demo B — LADEN ZUERICH (POS/Tablet-Terminal, Uebungs-Modus, Beispieldaten).
+  Zweck: Khawar zeigen, wie der Laden-Flow laeuft: Verkauf bucht Bestand automatisch ab
+  (Schluss mit Phantom-Ware), Groesse finden ueber alle Orte, Online-Order aufnehmen, Umtausch.
+  Selbsttragend: Doppelklick, kein Server. VERBOTEN: Preise/Geld (Zahlung laeuft ueber SumUp),
+  Endkunden-Daten, Auto-Buchung durch KI, Eszett, Zufallszahlen. Groessen-Farben = Spec 21.07.
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#17161a;--bg:#f4f4f2;--card:#fff;--line:#e5e3df;--red:#a8271c;--g:#2f7d43;--y:#b9861a;
+  --gb:#e7f0e9;--yb:#f5ecd9;--rb:#f7e5e2;--mut:#77747c;}
+html,body{background:#0e0d10;color:var(--ink);font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+.serif{font-family:Georgia,"Times New Roman",serif}
+.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font:inherit}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-left:2px;vertical-align:middle}
+
+/* ===== Geraete-Rahmen (Tablet/POS) — nur Desktop ===== */
+.stage{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.device{position:relative;width:100%;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+@media(min-width:980px){
+  .stage{padding:26px}
+  .device{width:900px;min-height:0;height:calc(100vh - 52px);max-height:760px;border-radius:24px;
+    box-shadow:0 0 0 14px #201e25,0 0 0 17px #101015,0 34px 70px rgba(0,0,0,.55)}
+  .reader{display:flex}
+}
+/* SumUp-Kartenleser (nur Desktop, als Hinweis wo Geld passiert) */
+.reader{display:none;position:absolute;right:-64px;top:50%;transform:translateY(-50%);width:58px;height:112px;
+  background:#26242b;border-radius:10px;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#8a8790;font-size:8px;letter-spacing:1px;box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.reader .scr{width:38px;height:26px;background:#0e0d10;border-radius:3px}
+.reader .pay{width:38px;height:5px;background:var(--g);border-radius:3px}
+
+.app{flex:1;display:flex;flex-direction:column;min-height:0;background:var(--bg)}
+.top{background:var(--ink);color:#fff;display:flex;align-items:center;gap:9px;padding:11px 16px;flex:none}
+.top .wm{font-size:17px;font-weight:700;letter-spacing:.5px}
+.top .loc{font-size:11px;color:#b7b4bd;letter-spacing:1.5px;text-transform:uppercase}
+.top .sp{flex:1}
+.top .dt{font-size:11px;color:#cfccd4}
+.ueb{background:#2a1a18;border:1px solid var(--red);color:#f0c9c3;font-size:10px;padding:3px 8px;border-radius:20px;white-space:nowrap}
+
+.body{flex:1;display:flex;min-height:0}
+.nav{background:var(--ink);flex:none;display:flex}
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
+.view{display:none;animation:fade .16s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
+h1{font-size:20px;font-family:Georgia,"Times New Roman",serif;margin-bottom:2px}
+.sub{color:var(--mut);font-size:12.5px;margin:0 0 14px;line-height:1.45}
+
+/* Desktop: side-nav; Mobile: bottom-nav */
+@media(min-width:760px){
+  .nav{flex-direction:column;width:190px;padding:10px 0}
+  .nav button{display:flex;align-items:center;gap:11px;width:100%;padding:13px 18px;color:#b7b4bd;font-size:13.5px;position:relative;min-height:48px}
+  .nav button svg{width:20px;height:20px}
+  .nav button.act{color:#fff;background:#242229}
+  .nav button.act::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red)}
+}
+@media(max-width:759px){
+  .body{flex-direction:column}
+  .nav{order:2;padding-bottom:env(safe-area-inset-bottom)}
+  .nav button{flex:1;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#8f8c96;font-size:10px}
+  .nav button svg{width:22px;height:22px}
+  .nav button.act{color:#fff}
+  .nav button.act svg{color:var(--red)}
+  main{order:1}
+}
+
+/* cards / grid */
+.c{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:12px}
+.c h2{font-size:14px;margin-bottom:10px}
+.ct{font-size:13px;color:#4b4951;line-height:1.5}
+.mut{color:var(--mut);font-size:12px}
+.b{background:var(--red);color:#fff;border-radius:11px;padding:12px 15px;font-size:14px;font-weight:600;min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.b.gh{background:#eceae7;color:var(--ink)}
+.b.full{width:100%}
+.b:active{transform:scale(.99)}
+.b:disabled{opacity:.4}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.cols{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:760px){.cols{grid-template-columns:1.3fr 1fr}}
+
+/* scan / search */
+.scanbar{display:flex;gap:9px;margin-bottom:12px}
+.scanbar input{flex:1;padding:14px 14px;border:2px solid var(--ink);border-radius:12px;font-size:16px;min-height:52px}
+.scanbar .b{min-height:52px}
+
+/* size color */
+.szd{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle;flex:none}
+.leg{display:flex;flex-wrap:wrap;gap:5px;margin:2px 0}
+.szchip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:3px 9px;border:1px solid var(--line);border-radius:20px;background:#fff}
+.szchip i{width:10px;height:10px;border-radius:50%}
+.fach{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;background:#f0eeeb;border-radius:8px;padding:3px 8px}
+
+/* Artikel-Kacheln (Kasse) */
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.tile{text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;min-height:64px}
+.tile:active{transform:scale(.98)}
+.tile .nm{font-weight:600;font-size:13.5px}
+.tile .mt{font-size:11.5px;color:var(--mut);margin-top:2px}
+
+/* Warenkorb */
+.cart{position:sticky;top:0}
+.cline{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.cline b{min-width:30px}
+.cline .x{margin-left:auto;width:30px;height:30px;border-radius:8px;background:#f0eeeb;font-size:16px;color:#8a8891}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px}
+.chip.g{background:var(--gb);color:var(--g)}.chip.y{background:var(--yb);color:var(--y)}.chip.r{background:var(--rb);color:var(--red)}
+.ort{display:grid;grid-template-columns:1fr;gap:8px;margin-top:6px}
+.ortrow{display:flex;align-items:center;gap:9px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.ortrow .nm{font-weight:700;font-size:13px;min-width:116px}
+.ortrow.empty{opacity:.5}
+.ok{color:var(--g);font-weight:700}
+.banner{border:1px solid var(--y);background:var(--yb);border-radius:11px;padding:12px;font-size:13px;color:#7a5c12;margin:10px 0}
+.banner.rr{border-color:var(--red);background:var(--rb);color:#7a1c14}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--mut);border:1px solid var(--line);border-radius:20px;padding:5px 11px;background:#fff}
+
+/* stepper / fields */
+.fld{margin-bottom:12px}
+.fld label{display:block;font-size:12px;color:var(--mut);margin-bottom:5px;font-weight:600}
+.inp{width:100%;padding:11px 12px;border:1px solid #d8d6d2;border-radius:10px;background:#fff;min-height:46px}
+
+/* toast + modal */
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:78px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-size:13px;max-width:86%;text-align:center;opacity:0;pointer-events:none;transition:.2s;z-index:80;border:1px solid #2b2930}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(min-width:980px){#toast{bottom:30px}}
+#ov{position:fixed;inset:0;background:rgba(14,13,16,.55);z-index:70;display:none;align-items:center;justify-content:center;padding:16px}
+#ov.on{display:flex}
+.mcard{background:#fff;border-radius:16px;padding:18px;width:100%;max-width:440px;max-height:88vh;overflow-y:auto;animation:up .2s ease}
+@keyframes up{from{transform:translateY(20px)}to{transform:translateY(0)}}
+.mcard h3{font-size:16px;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="stage">
+ <div class="device">
+  <div class="reader"><div class="scr"></div><div class="pay"></div><span>SumUp</span></div>
+  <div class="app">
+   <header class="top">
+     <span class="wm serif">FINELLI<span class="dot"></span></span>
+     <span class="loc">Laden Zürich City</span>
+     <span class="sp"></span>
+     <span class="ueb">Übungs-Modus</span>
+     <span class="dt" id="dt"></span>
+   </header>
+   <div class="body">
+     <nav class="nav" id="nav"></nav>
+     <main id="main">
+       <section class="view" data-v="kasse" id="v-kasse"></section>
+       <section class="view" data-v="finden" id="v-finden"></section>
+       <section class="view" data-v="online" id="v-online"></section>
+       <section class="view" data-v="umtausch" id="v-umtausch"></section>
+     </main>
+   </div>
+  </div>
+ </div>
+</div>
+<div id="ov" onclick="if(event.target.id=='ov')closeModal()"><div class="mcard" id="mcard"></div></div>
+<div id="toast"></div>
+
+<script>
+/* ===== Kalendertag ===== */
+const NOW=new Date();
+const DOY=Math.floor((Date.UTC(NOW.getFullYear(),NOW.getMonth(),NOW.getDate())-Date.UTC(NOW.getFullYear(),0,1))/864e5)+1;
+const YMD=NOW.getFullYear()+String(NOW.getMonth()+1).padStart(2,'0')+String(NOW.getDate()).padStart(2,'0');
+
+/* ===== Groessen-Farben (Spec 21.07) ===== */
+const SZF={'XS':'#6b4fa1','S':'#2f7d43','M':'#1f5fae','L':'#b9861a','XL':'#a8271c','XXL':'#77747c','One Size':'#5b5860','39-42':'#2f7d43','43-46':'#1f5fae'};
+const szf=s=>SZF[s]||'#5b5860';
+const LEGEND=['XS','S','M','L','XL','XXL'];
+
+/* ===== Katalog (identisch zu Demo Lager) ===== */
+const CAT=[
+ {id:'HOOD-01',name:'Hoodie Classic',kat:'Hoodies',sizes:['S','M','L','XL'],abc:'A',online:55,typ:'nos',
+  fach:{front:'A1',reserve:'R1',ug:'U1',embrach:'P1'}, q:{front:[6,0,5,3],reserve:[3,4,3,2],ug:[5,6,4,3],embrach:[10,3,8,6]}},
+ {id:'TEE-02',name:'Tee Box-Logo',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',
+  fach:{front:'A2',reserve:'R2',ug:'U2',embrach:'P2'}, q:{front:[9,7,6,4],reserve:[5,5,4,3],ug:[8,7,6,4],embrach:[16,14,11,8]}},
+ {id:'TEE-05',name:'Heavy Tee',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:85,typ:'nos',
+  fach:{front:'A3',reserve:'R3',ug:'U3',embrach:'P3'}, q:{front:[1,1,0,0],reserve:[0,1,0,0],ug:[2,2,1,1],embrach:[9,11,8,6]}},
+ {id:'COACH-01',name:'Jacke Coach',kat:'Jacken',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',
+  fach:{front:'A4',reserve:'R4',ug:'U4',embrach:'P4'}, q:{front:[4,5,3,2],reserve:[2,3,2,1],ug:[3,4,3,2],embrach:[6,8,5,5]}},
+ {id:'CARGO-01',name:'Cargo Pant',kat:'Hosen',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'nos',
+  fach:{front:'A5',reserve:'R5',ug:'U5',embrach:'S1'}, q:{front:[4,4,5,4],reserve:[3,3,3,2],ug:[4,4,5,3],embrach:[7,8,9,6]}},
+ {id:'LS-01',name:'Longsleeve Script',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'nos',
+  fach:{front:'A6',reserve:'R6',ug:'U6',embrach:'S2'}, q:{front:[7,6,6,5],reserve:[4,4,3,3],ug:[6,5,5,4],embrach:[10,9,8,7]}},
+ {id:'CAP-01',name:'Cap Sport',kat:'Caps',sizes:['One Size'],abc:'B',online:40,typ:'nos',
+  fach:{front:'A7',reserve:'R7',ug:'U7',embrach:'S3'}, q:{front:[3],reserve:[4],ug:[6],embrach:[15]}},
+ {id:'BEAN-01',name:'Beanie Logo',kat:'Caps',sizes:['One Size'],abc:'C',online:35,typ:'nos',
+  fach:{front:'A8',reserve:'R8',ug:'U8',embrach:'S4'}, q:{front:[2],reserve:[2],ug:[3],embrach:[6]}},
+ {id:'SOCK-01',name:'Socken 2er-Pack',kat:'Accessoires',sizes:['39-42','43-46'],abc:'C',online:30,typ:'nos',
+  fach:{front:'A9',reserve:'R9',ug:'U9',embrach:'S5'}, q:{front:[14,11],reserve:[8,6],ug:[10,8],embrach:[25,22]}},
+ {id:'JEAN-07',name:'Jeans Slim (Vorjahr)',kat:'Hosen',sizes:['S','M','L','XL'],abc:'D',online:20,typ:'nos',
+  fach:{front:'A10',reserve:'R10',ug:'U11',embrach:'L1'}, q:{front:[1,0,1,0],reserve:[0,1,0,0],ug:[1,0,0,1],embrach:[2,1,2,1]}}
+];
+const getC=id=>CAT.find(c=>c.id===id);
+const si=(c,s)=>c.sizes.indexOf(s);
+
+/* ===== State ===== */
+const S={view:'kasse',cart:[],verkaeufeHeute:9+DOY%7,onlineOrders:2+DOY%3,findRes:null,_pre:null};
+
+/* ===== Helfer ===== */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2600);}
+function openModal(h){$('mcard').innerHTML=h;$('ov').classList.add('on');}
+function closeModal(){$('ov').classList.remove('on');}
+function legendBar(){return '<div class="leg">'+LEGEND.map(s=>`<span class="szchip"><i style="background:${szf(s)}"></i>${s}</span>`).join('')+'</div>';}
+const ortLabel={front:'Front (Laden)',reserve:'Reserve',ug:'Untergeschoss',embrach:'Embrach'};
+
+/* ===== Icons ===== */
+const IC={
+ kasse:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="12" rx="1"/><path d="M3 8l2-4h14l2 4M7 12h.01M12 12h5"/></svg>',
+ find:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>',
+ online:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>',
+ ret:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>'
+};
+
+/* ===== Navigation ===== */
+const NAV=[['kasse','Kasse','kasse'],['finden','Grösse finden','find'],['online','Online-Order','online'],['umtausch','Umtausch','ret']];
+function buildNav(){$('nav').innerHTML=NAV.map(n=>`<button class="${S.view===n[0]?'act':''}" onclick="go('${n[0]}')">${IC[n[2]]}<span>${n[1]}</span></button>`).join('');}
+function go(id){S.view=id;document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.dataset.v===id));$('main').scrollTop=0;buildNav();render();}
+function render(){setDate();({kasse:rKasse,finden:rFinden,online:rOnline,umtausch:rUmtausch}[S.view])();}
+function setDate(){$('dt').textContent=NOW.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'});}
+function head(t,sub){return `<h1>${t}</h1>`+(sub?`<div class="sub">${sub}</div>`:'');}
+
+/* ================= KASSE ================= */
+function rKasse(){
+ const tiles=CAT.filter(c=>c.q.front.some(v=>v>0)).slice(0,8).map(c=>{
+  const front=c.q.front.reduce((a,b)=>a+b,0);
+  return `<button class="tile" onclick="pickSize('${c.id}')"><div class="nm">${esc(c.name)}</div><div class="mt">${esc(c.kat)} · Front ${front}×</div></button>`;
+ }).join('');
+ const cart=S.cart.length?S.cart.map((it,i)=>{const c=getC(it.id);return `<div class="cline"><span class="szd" style="background:${szf(it.size)}"></span><b>${it.size}</b><span style="flex:1">${esc(c.name)}</span><span class="mut">×${it.n}</span><button class="x" onclick="cartDel(${i})">×</button></div>`;}).join(''):'<div class="mut" style="padding:8px 0">Noch nichts im Warenkorb — Artikel antippen oder scannen.</div>';
+ const anz=S.cart.reduce((a,it)=>a+it.n,0);
+ $('v-kasse').innerHTML=head('Kasse — Verkauf','Jeder Verkauf bucht den Bestand automatisch ab. Schluss mit „im Shop steht Ware, die gar nicht da ist".')+`
+  <div class="cols">
+   <div>
+    <div class="scanbar"><input id="ksearch" placeholder="Artikel scannen oder tippen…" aria-label="Artikel suchen"><button class="b" onclick="kScan()">Scan</button></div>
+    <div class="tiles">${tiles}</div>
+   </div>
+   <div>
+    <div class="c cart"><h2>Warenkorb (${anz})</h2>${cart}
+     <button class="b full" style="margin-top:12px" ${S.cart.length?'':'disabled'} onclick="verkaufAbschliessen()">Verkauf abschliessen</button>
+     <div class="mut" style="margin-top:8px">Zahlung läuft weiter über das SumUp-Terminal — hier wird nur der Bestand sauber gebucht.</div></div>
+    <div class="c"><div class="ct"><b>${S.verkaeufeHeute}</b> Verkäufe heute · alle sofort im System.</div><div style="margin-top:8px">${legendBar()}</div></div>
+   </div>
+  </div>`;
+ const inp=$('ksearch');if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')kScan();});
+}
+function kScan(){
+ const v=($('ksearch').value||'').trim().toLowerCase();
+ const c=v?CAT.find(x=>x.name.toLowerCase().includes(v)||x.id.toLowerCase().includes(v)):CAT.find(x=>x.q.front.some(q=>q>0));
+ if(!c){toast('Artikel nicht gefunden — im Übungs-Modus tippe z. B. „Hoodie".');return;}
+ pickSize(c.id);
+}
+function pickSize(id){
+ const c=getC(id);
+ openModal(`<h3>${esc(c.name)} — Grösse wählen</h3>
+  <div class="row" style="gap:8px">${c.sizes.map(s=>{const q=c.q.front[si(c,s)];return `<button class="b ${q>0?'gh':''}" ${q>0?'':'disabled'} style="min-width:70px;flex-direction:column;gap:2px;padding:12px 8px" onclick="cartAdd('${id}','${s}')"><span style="display:flex;align-items:center;gap:6px"><span class="szd" style="background:${szf(s)}"></span><b>${s}</b></span><span class="mut" style="font-size:11px">Front ${q}×</span></button>`;}).join('')}</div>
+  <div class="mut" style="margin-top:10px">Grau = Front leer. Über „Grösse finden" siehst du, ob sie in Reserve/UG/Embrach liegt.</div>`);
+}
+function cartAdd(id,size){
+ const ex=S.cart.find(it=>it.id===id&&it.size===size);
+ if(ex)ex.n++;else S.cart.push({id,size,n:1});
+ closeModal();render();
+}
+function cartDel(i){S.cart.splice(i,1);render();}
+function verkaufAbschliessen(){
+ let leer=[];
+ S.cart.forEach(it=>{const c=getC(it.id),i=si(c,it.size);c.q.front[i]=Math.max(0,c.q.front[i]-it.n);S.verkaeufeHeute+=it.n;
+   if(c.q.front[i]===0&&c.q.reserve[i]>0)leer.push(`${c.name} ${it.size} → Nachschub aus Reserve ${c.fach.reserve}`);});
+ const anz=S.cart.reduce((a,it)=>a+it.n,0);S.cart=[];
+ let msg=`<div class="ok" style="font-size:16px">✓ Verkauf gebucht — ${anz} Stück</div>
+  <div class="ct" style="margin:8px 0">Der Bestand wurde sofort abgebucht. Dein Onlineshop zeigt jetzt genau, was noch da ist — keine Phantom-Ware mehr.</div>`;
+ if(leer.length)msg+=`<div class="banner">Front jetzt leer:<br>${leer.map(esc).join('<br>')}</div>`;
+ msg+=`<button class="b full" onclick="closeModal()">Weiter</button>`;
+ openModal(msg);render();
+}
+
+/* ================= GROESSE FINDEN ================= */
+function rFinden(){
+ let res='';
+ if(S.findRes){
+  const {id,size}=S.findRes;const c=getC(id);const i=si(c,size);
+  const orte=['front','reserve','ug','embrach'];
+  const imHaus=c.q.front[i]+c.q.reserve[i]+c.q.ug[i];
+  const rows=orte.map(o=>{const q=c.q[o][i];const fach=c.fach[o];
+    return `<div class="ortrow ${q>0?'':'empty'}"><span class="nm">${ortLabel[o]}</span><span class="chip ${q>0?'g':'r'}">${q}×</span>${q>0&&fach!=='—'?`<span class="fach">${fach}</span>`:'<span class="mut">—</span>'}</div>`;}).join('');
+  let hint='';
+  if(c.q.front[i]===0&&(c.q.reserve[i]>0||c.q.ug[i]>0)){
+   const wo=c.q.reserve[i]>0?`Reserve ${c.fach.reserve}`:`Untergeschoss ${c.fach.ug}`;
+   hint=`<div class="banner">Front leer, aber im Haus: <b>${wo}</b> — kurz holen statt Kunde vertrösten.</div>`;
+  }else if(imHaus===0){
+   hint=`<div class="banner rr">Diese Grösse ist im Laden nicht da${c.q.embrach[i]>0?` (nur in Embrach, ${c.q.embrach[i]}×)`:''}. Kunde nicht verlieren → <b>Online-Order aufnehmen</b>.
+     <div style="margin-top:8px"><button class="b" onclick="prefillOnline('${id}','${size}')">Online-Order für Kunden aufnehmen</button></div></div>`;
+  }
+  res=`<div class="c"><div class="row" style="align-items:center;gap:10px"><span class="szd" style="background:${szf(size)};width:16px;height:16px"></span><h2 style="margin:0">${esc(c.name)} · ${size}</h2></div>
+    ${hint}<div class="ort">${rows}</div>
+    <div class="mut" style="margin-top:8px">Farbe = Grösse · Fach-Code = wo es liegt. Nie mehr „kurz hinten suchen".</div></div>`;
+ }
+ $('v-finden').innerHTML=head('Grösse finden','Kunde fragt nach einer Grösse — scannen und in 5 Sekunden sehen, wo sie liegt.')+`
+  <div class="scanbar"><input id="fsearch" placeholder="Artikel scannen oder tippen…" aria-label="Artikel suchen"><button class="b" onclick="fScan()">Suchen</button></div>
+  <div class="row" style="margin-bottom:12px">${CAT.slice(0,6).map(c=>`<button class="pill" onclick="fPick('${c.id}')">${esc(c.name)}</button>`).join('')}</div>
+  ${res}`;
+ const inp=$('fsearch');if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')fScan();});
+}
+function fScan(){const v=($('fsearch').value||'').trim().toLowerCase();const c=v?CAT.find(x=>x.name.toLowerCase().includes(v)||x.id.toLowerCase().includes(v)):CAT[0];if(!c){toast('Nicht gefunden — tippe z. B. „Heavy Tee".');return;}fPick(c.id);}
+function fPick(id){const c=getC(id);
+ openModal(`<h3>${esc(c.name)} — welche Grösse?</h3><div class="row" style="gap:8px">${c.sizes.map(s=>`<button class="b gh" style="min-width:64px" onclick="fShow('${id}','${s}')"><span class="szd" style="background:${szf(s)}"></span>&nbsp;${s}</button>`).join('')}</div>`);
+}
+function fShow(id,size){S.findRes={id,size};closeModal();render();}
+function prefillOnline(id,size){S._pre={id,size};go('online');}
+
+/* ================= ONLINE-ORDER ================= */
+function rOnline(){
+ const pre=S._pre;S._pre=null;
+ const opts=CAT.map(c=>`<option value="${c.id}" ${pre&&pre.id===c.id?'selected':''}>${esc(c.name)}</option>`).join('');
+ $('v-online').innerHTML=head('Online-Order aufnehmen','Grösse nicht im Laden? Bestellung direkt für den Kunden erfassen — der Verkauf ist gerettet, das Paket kommt aus Embrach.')+`
+  <div class="c" style="max-width:520px">
+   <div class="fld"><label>Artikel</label><select class="inp" id="oArt" onchange="oSizes()">${opts}</select></div>
+   <div class="fld"><label>Grösse</label><select class="inp" id="oSize"></select></div>
+   <div class="fld"><label>Vorname Kunde (für die Zuordnung — keine weiteren Daten)</label><input class="inp" id="oName" placeholder="z. B. Kundin am Tresen"></div>
+   <button class="b full" onclick="oSend()">Order aufnehmen</button>
+   <div class="mut" style="margin-top:10px">Die Order erscheint drüben in Embrach als offener Pack-Auftrag — dein Team packt und verschickt.</div>
+  </div>
+  <div class="c" style="max-width:520px"><div class="ct">Offene Online-Orders aus dem Laden heute: <b>${S.onlineOrders}</b></div></div>`;
+ oSizes(pre);
+}
+function oSizes(pre){const c=getC($('oArt').value);$('oSize').innerHTML=c.sizes.map(s=>`<option ${pre&&pre.size===s?'selected':''}>${s}</option>`).join('');}
+function oSend(){
+ const c=getC($('oArt').value),size=$('oSize').value;
+ S.onlineOrders++;
+ openModal(`<h3>Order aufgenommen</h3><div class="ok" style="font-size:16px">✓ ${esc(c.name)} · ${size}</div>
+  <div class="ct" style="margin:8px 0">Neuer Pack-Auftrag <b class="mono">PA-${YMD}-${9+S.onlineOrders}</b> für Embrach. Der Kunde bekommt sein Teil, obwohl es im Laden fehlte.</div>
+  <button class="b full" onclick="closeModal()">Fertig</button>`);
+ render();
+}
+
+/* ================= UMTAUSCH ================= */
+function rUmtausch(){
+ $('v-umtausch').innerHTML=head('Umtausch / Rücknahme','Kunde bringt etwas zurück — sauber ins System buchen, damit der Bestand stimmt.')+`
+  <div class="c" style="max-width:520px">
+   <div class="fld"><label>Artikel</label><select class="inp" id="uArt" onchange="uSizes()">${CAT.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></div>
+   <div class="fld"><label>Grösse</label><select class="inp" id="uSize"></select></div>
+   <div class="fld"><label>Grund</label><select class="inp" id="uGrund"><option>Grösse getauscht</option><option>Gefällt nicht</option><option>Defekt (prüfen)</option></select></div>
+   <button class="b full" onclick="uDo()">Zurück ins Regal buchen</button>
+   <div class="mut" style="margin-top:10px">Bei „Defekt" landet das Teil zur Prüfung, nicht direkt in die Front — keine kaputte Ware zurück in den Verkauf.</div>
+  </div>`;
+ uSizes();
+}
+function uSizes(){const c=getC($('uArt').value);$('uSize').innerHTML=c.sizes.map(s=>`<option>${s}</option>`).join('');}
+function uDo(){
+ const c=getC($('uArt').value),size=$('uSize').value,grund=$('uGrund').value,i=si(c,size);
+ const defekt=grund.startsWith('Defekt');
+ if(!defekt)c.q.front[i]+=1;
+ toast(defekt?`${c.name} ${size} zur Prüfung genommen — nicht in den Verkauf.`:`${c.name} ${size} zurück in Front ${c.fach.front} — Bestand stimmt.`);
+ render();
+}
+
+/* ===== Init ===== */
+buildNav();go('kasse');
+</script>
+</body>
+</html>

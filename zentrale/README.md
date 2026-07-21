@@ -20,7 +20,7 @@ Danach im Browser: http://127.0.0.1:8020 (bindet nur auf 127.0.0.1, kein Zugriff
 | Generator | Websites, CRMs, Automatisierungen oder eigene Projekte per Fragebogen starten. Der Bau laeuft als Hintergrund-Job mit Live-Log. |
 | Kunden | Kunden anlegen, bearbeiten, Status pflegen (offen, in_arbeit, fertig) |
 | Workflows | Workflows mit Nodes und Verbindungen (Start, Claude, Bedingung, Aktion, Notiz) |
-| Claude | Prompt direkt an die Claude-CLI schicken, Ausgabe als Live-Stream |
+| Claude | Vollwertiges Chat-Fenster wie das Original: gespeicherte Gespraeche mit Gedaechtnis, Sidebar mit Chat-Liste, Markdown- und Code-Rendering, Live-Streaming, Modell- und Ordner-Wahl pro Chat, Memory (globale Instruktionen) |
 | Konten | Claude-Konten ansehen (5h/7d/Modell-Auslastung) und mit einem Klick wechseln — der Wechsel gilt sofort fuer Claude Code am ganzen PC |
 | Einstellungen | Standard-Modell, Zusatz-Flags, Theme, Standard-Ordner, Modell-Regeln |
 
@@ -53,6 +53,20 @@ Fehlende Dateien legt der Server beim Start mit Defaults neu an. Die Dateien las
 ## Auto-GitHub-Sync
 
 Nach jedem Schreiben von `kunden.json`, `workflows.json` oder `einstellungen.json` loest der Server einen entprellten (etwa 4 Sekunden) Sync im Repo-Wurzelordner aus: `git add` der drei Daten-Dateien, dann `git commit`, dann `git push`. Schnelle Aenderungen werden so zu einem Commit gebuendelt. Ein leerer Commit (`nothing to commit`) wird still uebersprungen, Fehler werden nur geloggt und blockieren nie eine Anfrage. Jobs-Daten (`jobs.json`, `job-logs/`) werden nicht committed (siehe `.gitignore`).
+
+## Claude-Chat (persistente Gespraeche)
+
+Der Claude-Tab ist ein vollwertiges Chat-Fenster auf Basis der Claude-Code-CLI. Jeder Chat ist ein fortlaufendes Gespraech mit eigener Session-UUID: die erste Nachricht laeuft mit `--session-id`, jede weitere mit `--resume` derselben UUID, sodass Claude den Verlauf behaelt. Metadaten und Nachrichten liegen als `data/chats/<uuid>.json` (lokal, nicht in Git). Markdown und Code werden mit den lokalen Vendor-Libs (`public/vendor/`: marked, DOMPurify, highlight.js — kein npm, kein Build) sicher gerendert.
+
+- `GET /api/chats` listet alle Chats (Metadaten, neueste zuerst).
+- `POST /api/chats` legt einen Chat an (`{titel?, modellId?, cwd?, bauenErlaubt?}`).
+- `GET /api/chats/:id` liefert einen Chat samt Verlauf.
+- `PUT /api/chats/:id` aendert Titel, Modell, Bau-Freigabe (und `cwd`, solange kein Verlauf existiert).
+- `DELETE /api/chats/:id` loescht einen Chat.
+- `POST /api/chats/:id/nachricht` `{prompt}` sendet eine Nachricht (Server-Sent-Events, fuehrt die Session fort).
+- `GET`/`PUT /api/memory` liest/schreibt die globale Memory (`data/claude-memory.md`), die jedem Chat per `--append-system-prompt-file` als System-Prompt mitgegeben wird.
+
+**Bau-Freigabe:** Standardmaessig darf ein Chat nur lesen und antworten. Der Schalter "Bauen erlauben" pro Chat schaltet Datei-Aenderungen frei (`--permission-mode acceptEdits`). Der Arbeitsordner ist nach der ersten Nachricht fest (die Session ist an ihn gebunden). Claude erbt im gewaehlten Ordner dessen `CLAUDE.md` und Hooks — fuer ein neutrales Verhalten einen Ordner ohne Projekt-Regeln waehlen.
 
 ## Claude-Konten (cswap)
 

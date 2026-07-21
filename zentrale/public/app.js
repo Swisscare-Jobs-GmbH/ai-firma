@@ -209,7 +209,9 @@ function injiziereLayoutCss() {
     #seitenleiste:not(.ist-gepinnt):not(:hover) .nav-btn .nav-icon { font-size: 20px; }
 
     .nav-btn { white-space: nowrap; }
-    .nav-icon { display: inline-block; width: 22px; text-align: center; }
+    .nav-icon { display: inline-flex; align-items: center; justify-content: center; width: 22px; }
+    .svg-icon { display: block; flex-shrink: 0; }
+    .pin-btn { display: inline-flex; align-items: center; justify-content: center; }
     .nav-btn .nav-label { margin-left: 8px; }
     .nav-btn:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
 
@@ -552,6 +554,9 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
   document.documentElement.dataset.theme = window.einstellungen.theme || "dunkel";
 
+  // Statische Icons (Seitenleiste, Pin, Sync) mit den professionellen SVGs fuellen.
+  if (window.iconsAnwenden) window.iconsAnwenden(document);
+
   initSeitenleiste();
   initTooltips();
 
@@ -566,5 +571,26 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (syncKnopf) syncKnopf.addEventListener("click", fuehreSyncAus);
 
   window.addEventListener("hashchange", rendereAktuelleView);
+
+  // Login-Gate: bei jedem Start fragen, wer arbeitet. Der Server laedt dann das
+  // persoenliche Brain des gewaehlten Nutzers fuer alle Claude-Aufraufe.
+  await starteMitLogin();
   rendereAktuelleView();
 });
+
+// Zeigt das Login-Overlay, setzt den aktiven Nutzer und den Seitenleisten-Chip.
+async function starteMitLogin() {
+  let nutzerListe = null;
+  try {
+    const status = await window.api.get("/api/nutzer/status");
+    nutzerListe = status && status.nutzer;
+  } catch (fehler) {
+    // Ohne Status zeigt das Overlay die fest hinterlegten zwei Nutzer.
+  }
+  let user = null;
+  if (window.loginAnzeigen) {
+    user = await window.loginAnzeigen(nutzerListe);
+  }
+  window.aktiverNutzer = user;
+  if (user && window.nutzerChipSetzen) window.nutzerChipSetzen(user);
+}

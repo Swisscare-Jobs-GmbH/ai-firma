@@ -4,7 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SEA</title>
+  <meta name="theme-color" content="#0a0714">
+  <meta name="description" content="SEA — Software. Efficient. Automation. Management-Zentrale.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="vendor/highlight-github-dark.min.css">
+  <script src="vendor/marked.min.js" defer></script>
+  <script src="vendor/purify.min.js" defer></script>
+  <script src="vendor/highlight.min.js" defer></script>
+  <script src="icons.js" defer></script>
+  <script src="login.js" defer></script>
   <script src="app.js" defer></script>
   <script src="modell.js" defer></script>
   <script src="kunden.js" defer></script>
@@ -26,38 +37,48 @@
           </span>
         </div>
         <button id="pin-btn" class="pin-btn" type="button" aria-pressed="false"
-          aria-label="Seitenleiste anheften" data-tooltip="Seitenleiste anheften">📌</button>
+          aria-label="Seitenleiste anheften" data-tooltip="Seitenleiste anheften">
+          <span class="pin-icon" data-icon="pin" data-icon-groesse="15" aria-hidden="true"></span>
+        </button>
       </div>
       <button class="nav-btn" data-view="dashboard" data-tooltip="Dashboard">
-        <span class="nav-icon" aria-hidden="true">📊</span><span class="nav-label">Dashboard</span>
+        <span class="nav-icon" data-icon="dashboard" aria-hidden="true"></span><span class="nav-label">Dashboard</span>
       </button>
       <button class="nav-btn" data-view="generator" data-tooltip="Generator">
-        <span class="nav-icon" aria-hidden="true">✨</span><span class="nav-label">Generator</span>
+        <span class="nav-icon" data-icon="generator" aria-hidden="true"></span><span class="nav-label">Generator</span>
       </button>
       <button class="nav-btn" data-view="kunden" data-tooltip="Kunden">
-        <span class="nav-icon" aria-hidden="true">👥</span><span class="nav-label">Kunden</span>
+        <span class="nav-icon" data-icon="kunden" aria-hidden="true"></span><span class="nav-label">Kunden</span>
       </button>
       <button class="nav-btn" data-view="workflows" data-tooltip="Workflows">
-        <span class="nav-icon" aria-hidden="true">🔀</span><span class="nav-label">Workflows</span>
+        <span class="nav-icon" data-icon="workflows" aria-hidden="true"></span><span class="nav-label">Workflows</span>
       </button>
       <button class="nav-btn" data-view="claude" data-tooltip="Claude">
-        <span class="nav-icon" aria-hidden="true">💬</span><span class="nav-label">Claude</span>
+        <span class="nav-icon" data-icon="claude" aria-hidden="true"></span><span class="nav-label">Claude</span>
       </button>
       <button class="nav-btn" data-view="konten" data-tooltip="Konten">
-        <span class="nav-icon" aria-hidden="true">🔑</span><span class="nav-label">Konten</span>
+        <span class="nav-icon" data-icon="konten" aria-hidden="true"></span><span class="nav-label">Konten</span>
       </button>
       <button class="nav-btn" data-view="einstellungen" data-tooltip="Einstellungen">
-        <span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Einstellungen</span>
+        <span class="nav-icon" data-icon="einstellungen" aria-hidden="true"></span><span class="nav-label">Einstellungen</span>
       </button>
       <div id="seitenleiste-fuss">
+        <button id="nutzer-chip" type="button" aria-label="Angemeldeter Nutzer"></button>
         <button id="sync-btn" class="nav-btn sync-btn" type="button"
           data-tooltip="Alles syncen: committen, pullen, pushen">
-          <span class="nav-icon" aria-hidden="true">🔄</span><span class="nav-label">Sync</span>
+          <span class="nav-icon" data-icon="sync" aria-hidden="true"></span><span class="nav-label">Sync</span>
         </button>
       </div>
     </nav>
     <main id="ansicht"></main>
   </div>
   <div id="toast-container"></div>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("sw.js").catch(function () { /* App laeuft auch ohne SW */ });
+      });
+    }
+  </script>
 </body>
 </html>

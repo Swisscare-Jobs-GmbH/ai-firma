@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Finelli — Lager Embrach (Demo)</title>
+<!--
+  Finelli MDE-Demo A — LAGER EMBRACH (Handscanner-Terminal, Uebungs-Modus, Beispieldaten).
+  Zweck: Khawar zeigen, wie der Lager-Flow mit Scan + Fach-Ordnung + Packstation laeuft.
+  Selbsttragend: Doppelklick, kein Server, kein Internet. Alle Zahlen aus CAT/S deterministisch.
+  VERBOTEN (Demo-Regeln, siehe README): Preise/Geld, Endkunden-Daten, Auto-Buchung durch KI,
+  Eszett, Zufallszahlen zur Laufzeit. Groessen-Farben = Lager-Layout-Spec 21.07.
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#17161a;--panel:#1f1d23;--bg:#f4f4f2;--card:#fff;--line:#e5e3df;
+  --red:#a8271c;--g:#2f7d43;--y:#b9861a;
+  --gb:#e7f0e9;--yb:#f5ecd9;--rb:#f7e5e2;--mut:#77747c;
+}
+html,body{background:#0e0d10;color:var(--ink);font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+.serif{font-family:Georgia,"Times New Roman",serif}
+.mono{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font:inherit}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-left:2px;vertical-align:middle}
+
+/* ===== Geraete-Rahmen (Handscanner) — nur Desktop ===== */
+.stage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:0}
+.device{position:relative;width:100%;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+@media(min-width:980px){
+  .stage{padding:26px}
+  .device{width:440px;min-height:0;height:calc(100vh - 52px);max-height:880px;border-radius:30px;
+    box-shadow:0 0 0 12px #26242b,0 0 0 15px #131217,0 34px 70px rgba(0,0,0,.55);}
+  .scanwin{display:flex}
+  .grip{display:flex}
+}
+.scanwin{display:none;align-items:center;justify-content:center;gap:10px;background:#121116;color:#6f6c77;
+  font-size:10.5px;letter-spacing:2px;padding:9px 0;position:relative;overflow:hidden;flex:none}
+.scanwin::after{content:"";position:absolute;left:8%;right:8%;height:2px;background:linear-gradient(90deg,transparent,#e5473a,transparent);
+  top:50%;animation:laser 2.4s ease-in-out infinite}
+@keyframes laser{0%,100%{transform:translateY(-8px);opacity:.3}50%{transform:translateY(8px);opacity:1}}
+.grip{display:none;align-items:center;justify-content:space-between;background:#121116;color:#8a8790;padding:10px 18px;flex:none}
+.grip .trg{width:56px;height:22px;border-radius:6px;background:#2a2830;border:1px solid #3a3742}
+.grip .bm{font-size:13px;font-weight:700;letter-spacing:1px;color:#e7e5ea}
+
+/* ===== App-Flaeche ===== */
+.app{flex:1;display:flex;flex-direction:column;min-height:0;background:var(--bg)}
+.top{background:var(--ink);color:#fff;display:flex;align-items:center;gap:9px;padding:11px 14px;flex:none}
+.top .wm{font-size:17px;font-weight:700;letter-spacing:.5px}
+.top .loc{font-size:11px;color:#b7b4bd;letter-spacing:1.5px;text-transform:uppercase}
+.top .sp{flex:1}
+.top .dt{font-size:11px;color:#cfccd4}
+.ueb{background:#2a1a18;border:1px solid var(--red);color:#f0c9c3;font-size:10px;padding:3px 8px;border-radius:20px;white-space:nowrap}
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px 22px}
+.view{display:none;animation:fade .16s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
+h1{font-size:19px;font-family:Georgia,"Times New Roman",serif;margin-bottom:2px}
+.sub{color:var(--mut);font-size:12.5px;margin:0 0 12px;line-height:1.45}
+
+/* cards / buttons */
+.c{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:11px}
+.c h2{font-size:14px;margin-bottom:9px}
+.ct{font-size:13px;color:#4b4951;line-height:1.5}
+.mut{color:var(--mut);font-size:12px}
+.b{background:var(--red);color:#fff;border-radius:11px;padding:12px 15px;font-size:14px;font-weight:600;min-height:46px;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.b.gh{background:#eceae7;color:var(--ink)}
+.b.full{width:100%}
+.b:active{transform:scale(.985)}
+.b:disabled{opacity:.45}
+.row{display:flex;gap:9px;flex-wrap:wrap}
+
+/* Scan-Hero */
+.scanhero{width:100%;background:var(--ink);color:#fff;border-radius:16px;padding:22px;display:flex;align-items:center;gap:16px;
+  min-height:96px;border:1px solid #2b2930}
+.scanhero:active{transform:scale(.99)}
+.scanhero .ic{width:52px;height:52px;flex:none;border:2px solid var(--red);border-radius:12px;display:flex;align-items:center;justify-content:center}
+.scanhero .ic svg{width:28px;height:28px;color:#fff}
+.scanhero .t{font-size:19px;font-weight:700}
+.scanhero .s{font-size:12px;color:#b7b4bd;margin-top:2px}
+.scanhero.pulse{animation:pl .45s ease}
+@keyframes pl{50%{transform:scale(.97)}}
+
+/* size chip / legend */
+.szd{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle;flex:none}
+.leg{display:flex;flex-wrap:wrap;gap:5px;margin:2px 0 4px}
+.szchip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:3px 9px;border:1px solid var(--line);border-radius:20px;background:#fff}
+.szchip i{width:10px;height:10px;border-radius:50%}
+.fach{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;background:#f0eeeb;border-radius:8px;padding:4px 9px}
+.fach.mono{letter-spacing:.5px}
+
+/* stepper */
+.step-in{display:flex;align-items:center;gap:12px}
+.step-in button{width:48px;height:48px;border-radius:11px;background:#eceae7;font-size:24px;font-weight:600}
+.step-in .v{font-size:26px;font-weight:800;min-width:44px;text-align:center}
+
+/* toggle */
+.sw{display:flex;align-items:center;gap:10px;font-size:12.5px}
+.tgl{width:46px;height:26px;border-radius:20px;background:#cfcdca;position:relative;transition:.15s;flex:none}
+.tgl.on{background:var(--red)}
+.tgl b{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.15s}
+.tgl.on b{left:23px}
+
+/* ok / banners */
+.ok{color:var(--g);font-weight:700}
+.qcard{border:1px solid var(--y);background:var(--yb);border-radius:12px;padding:12px;margin-top:11px}
+.pzline{font-size:12.5px;color:#3f3d45;padding:6px 0;border-bottom:1px dashed var(--line);display:flex;align-items:center;gap:8px}
+.pzline:last-child{border-bottom:none}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px}
+.chip.g{background:var(--gb);color:var(--g)}.chip.y{background:var(--yb);color:var(--y)}.chip.r{background:var(--rb);color:var(--red)}
+
+/* Pack-Auftraege */
+.pa{width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:9px;display:flex;align-items:center;gap:11px}
+.pa.act{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink)}
+.pa .nr{font-weight:800;font-size:14px}
+.pa .mt{font-size:12px;color:var(--mut)}
+.pa .cv{margin-left:auto;color:#bbb}
+
+/* Timer */
+.tmr{font-size:40px;font-weight:800;letter-spacing:1px}
+.tmr.run{color:var(--red)}
+
+/* 2D Karte */
+.map{background:#fbfaf8;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:6px}
+.zone{margin-bottom:10px}
+.zone .zt{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.cells{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+.cell{aspect-ratio:1;border-radius:7px;background:#eceae7;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#6c6971;border:1px solid #e2e0dc}
+.cell.pack{background:var(--ink);color:#fff;border-color:var(--ink)}
+.cell.hot{background:var(--red);color:#fff;border-color:var(--red);animation:glow 1.4s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 4px var(--rb)}}
+.mapleg{font-size:11px;color:var(--mut);margin-top:8px;display:flex;flex-wrap:wrap;gap:12px}
+.mapleg span{display:inline-flex;align-items:center;gap:5px}
+.mapleg i{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+/* nav */
+.bn{background:var(--ink);display:flex;flex:none;padding-bottom:env(safe-area-inset-bottom)}
+.bn button{flex:1;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#8f8c96;font-size:10px}
+.bn button svg{width:22px;height:22px}
+.bn button.act{color:#fff}
+.bn button.act svg{color:var(--red)}
+
+/* toast + modal */
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:78px;background:var(--ink);color:#fff;
+  padding:12px 18px;border-radius:12px;font-size:13px;max-width:86%;text-align:center;opacity:0;pointer-events:none;transition:.2s;z-index:80;border:1px solid #2b2930}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#ov{position:fixed;inset:0;background:rgba(14,13,16,.55);z-index:70;display:none;align-items:flex-end;justify-content:center}
+#ov.on{display:flex}
+.mcard{background:#fff;border-radius:16px 16px 0 0;padding:18px;width:100%;max-width:460px;max-height:86vh;overflow-y:auto;animation:up .2s ease}
+@media(min-width:620px){#ov{align-items:center}.mcard{border-radius:16px}}
+@keyframes up{from{transform:translateY(28px)}to{transform:translateY(0)}}
+.mcard h3{font-size:16px;margin-bottom:12px}
+.fld{margin-bottom:12px}
+.fld label{display:block;font-size:12px;color:var(--mut);margin-bottom:5px;font-weight:600}
+.inp{width:100%;padding:11px 12px;border:1px solid #d8d6d2;border-radius:10px;background:#fff;min-height:46px}
+
+/* footer switch */
+.swap{display:flex;align-items:center;gap:8px;justify-content:center;margin-top:6px;padding:12px}
+.swap a{color:#b7b4bd;font-size:12px;text-decoration:none;border:1px solid #2b2930;border-radius:20px;padding:7px 13px;background:#1a191e}
+</style>
+</head>
+<body>
+<div class="stage">
+ <div class="device">
+  <div class="scanwin">SCAN&nbsp;&nbsp;&nbsp;FENSTER</div>
+  <div class="app">
+   <header class="top">
+     <span class="wm serif">FINELLI<span class="dot"></span></span>
+     <span class="loc">Lager Embrach</span>
+     <span class="sp"></span>
+     <span class="ueb">Übungs-Modus</span>
+     <span class="dt" id="dt"></span>
+   </header>
+   <main id="main">
+     <section class="view" data-v="scan" id="v-scan"></section>
+     <section class="view" data-v="pack" id="v-pack"></section>
+     <section class="view" data-v="karte" id="v-karte"></section>
+     <section class="view" data-v="nachschub" id="v-nachschub"></section>
+   </main>
+   <nav class="bn" id="bn"></nav>
+  </div>
+  <div class="grip"><span class="trg"></span><span class="bm serif">FINELLI</span><span class="trg"></span></div>
+ </div>
+</div>
+<div id="ov" onclick="if(event.target.id=='ov')closeModal()"><div class="mcard" id="mcard"></div></div>
+<div id="toast"></div>
+
+<script>
+/* ===== Kalendertag (zeitzonenfest, deterministisch) ===== */
+const NOW=new Date();
+const DOY=Math.floor((Date.UTC(NOW.getFullYear(),NOW.getMonth(),NOW.getDate())-Date.UTC(NOW.getFullYear(),0,1))/864e5)+1;
+const YMD=NOW.getFullYear()+String(NOW.getMonth()+1).padStart(2,'0')+String(NOW.getDate()).padStart(2,'0');
+
+/* ===== Groessen-Farben (Lager-Layout-Spec 21.07) ===== */
+const SZF={'XS':'#6b4fa1','S':'#2f7d43','M':'#1f5fae','L':'#b9861a','XL':'#a8271c','XXL':'#77747c','One Size':'#5b5860','39-42':'#2f7d43','43-46':'#1f5fae'};
+const szf=s=>SZF[s]||'#5b5860';
+const LEGEND=['XS','S','M','L','XL','XXL'];
+
+/* ===== Katalog (Modelle) — Faecher: Front A* / Reserve R* / UG U* / Embrach-Zone ===== */
+/* Embrach-Zonen: P=Packzone (Top/A), S=Standard, W=Saison/Winter, L=Langsamdreher/D */
+const CAT=[
+ {id:'HOOD-01',name:'Hoodie Classic',kat:'Hoodies',sizes:['S','M','L','XL'],abc:'A',online:55,typ:'nos',
+  fach:{front:'A1',reserve:'R1',ug:'U1',embrach:'P1'}, q:{front:[6,0,5,3],reserve:[3,4,3,2],ug:[5,6,4,3],embrach:[10,3,8,6]}},
+ {id:'TEE-02',name:'Tee Box-Logo',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',
+  fach:{front:'A2',reserve:'R2',ug:'U2',embrach:'P2'}, q:{front:[9,7,6,4],reserve:[5,5,4,3],ug:[8,7,6,4],embrach:[16,14,11,8]}},
+ {id:'TEE-05',name:'Heavy Tee',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:85,typ:'nos',
+  fach:{front:'A3',reserve:'R3',ug:'U3',embrach:'P3'}, q:{front:[1,1,0,0],reserve:[0,1,0,0],ug:[2,2,1,1],embrach:[9,11,8,6]}},
+ {id:'COACH-01',name:'Jacke Coach',kat:'Jacken',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',
+  fach:{front:'A4',reserve:'R4',ug:'U4',embrach:'P4'}, q:{front:[4,5,3,2],reserve:[2,3,2,1],ug:[3,4,3,2],embrach:[6,8,5,5]}},
+ {id:'CARGO-01',name:'Cargo Pant',kat:'Hosen',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'nos',
+  fach:{front:'A5',reserve:'R5',ug:'U5',embrach:'S1'}, q:{front:[4,4,5,4],reserve:[3,3,3,2],ug:[4,4,5,3],embrach:[7,8,9,6]}},
+ {id:'LS-01',name:'Longsleeve Script',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'nos',
+  fach:{front:'A6',reserve:'R6',ug:'U6',embrach:'S2'}, q:{front:[7,6,6,5],reserve:[4,4,3,3],ug:[6,5,5,4],embrach:[10,9,8,7]}},
+ {id:'CAP-01',name:'Cap Sport',kat:'Caps',sizes:['One Size'],abc:'B',online:40,typ:'nos',
+  fach:{front:'A7',reserve:'R7',ug:'U7',embrach:'S3'}, q:{front:[3],reserve:[4],ug:[6],embrach:[15]}},
+ {id:'BEAN-01',name:'Beanie Logo',kat:'Caps',sizes:['One Size'],abc:'C',online:35,typ:'nos',
+  fach:{front:'A8',reserve:'R8',ug:'U8',embrach:'S4'}, q:{front:[2],reserve:[2],ug:[3],embrach:[6]}},
+ {id:'SOCK-01',name:'Socken 2er-Pack',kat:'Accessoires',sizes:['39-42','43-46'],abc:'C',online:30,typ:'nos',
+  fach:{front:'A9',reserve:'R9',ug:'U9',embrach:'S5'}, q:{front:[14,11],reserve:[8,6],ug:[10,8],embrach:[25,22]}},
+ {id:'JACK-01',name:'Winterjacke Alpin',kat:'Jacken',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'saison',geplant:'01.09.',
+  fach:{front:'—',reserve:'—',ug:'U10',embrach:'W1'}, q:{front:[0,0,0,0],reserve:[0,0,0,0],ug:[3,4,4,2],embrach:[8,10,9,5]}},
+ {id:'JEAN-07',name:'Jeans Slim (Vorjahr)',kat:'Hosen',sizes:['S','M','L','XL'],abc:'D',online:20,typ:'nos',
+  fach:{front:'A10',reserve:'R10',ug:'U11',embrach:'L1'}, q:{front:[1,0,1,0],reserve:[0,1,0,0],ug:[1,0,0,1],embrach:[2,1,2,1]}}
+];
+const getC=id=>CAT.find(c=>c.id===id);
+const si=(c,s)=>c.sizes.indexOf(s);
+const embSum=c=>c.q.embrach.reduce((a,b)=>a+b,0);
+const frontSum=c=>c.q.front.reduce((a,b)=>a+b,0);
+
+/* ===== Wareneingang-Warteschlange (was reinkommt) ===== */
+const EINGANG=[
+ {id:'TEE-05',size:'M'},{id:'HOOD-01',size:'M'},{id:'COACH-01',size:'L'},
+ {id:'CARGO-01',size:'M'},{id:'SOCK-01',size:'39-42'}
+];
+
+/* ===== Pack-Auftraege (Online-Bestellungen, A-Modelle) ===== */
+const PA_TPL=[
+ {ziel:'Zürich',pos:[['HOOD-01','L',1],['TEE-02','M',1]]},
+ {ziel:'Basel',pos:[['TEE-05','M',1]]},
+ {ziel:'Winterthur',pos:[['COACH-01','M',1],['SOCK-01','39-42',1]]},
+ {ziel:'Bern',pos:[['TEE-02','S',2]]}
+];
+const paNr=i=>'PA-'+YMD+'-'+(i+1);
+const packAnz=3+DOY%2;
+
+/* ===== State ===== */
+const S={view:'scan',offline:false,queue:[],eingebucht:0,scanIdx:DOY%EINGANG.length,scanShown:false,scanBusy:false,scanDone:false,
+  pack:PA_TPL.slice(0,packAnz).map((t,i)=>({tpl:i,nr:paNr(i),status:'offen'})),
+  activePa:null,tmrStart:0,tmrId:0,packStat:{anzahl:4+DOY%3,summe:(4+DOY%3)*135}};
+try{if(localStorage.finLagerQ){S.queue=JSON.parse(localStorage.finLagerQ);S.offline=S.queue.length>0;}}catch(e){}
+
+/* ===== Helfer ===== */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+function zoneName(f){const z=f[0];return z==='P'?'Packzone':z==='W'?'Saison':z==='L'?'Langsamdreher':z==='S'?'Standard':'';}
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2600);}
+function openModal(h){$('mcard').innerHTML=h;$('ov').classList.add('on');}
+function closeModal(){$('ov').classList.remove('on');}
+function legendBar(){return '<div class="leg">'+LEGEND.map(s=>`<span class="szchip"><i style="background:${szf(s)}"></i>${s}</span>`).join('')+'</div>';}
+
+/* ===== Icons ===== */
+const IC={
+ scan:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h3M20 7V4h-3M4 17v3h3M20 17v3h-3M4 12h16"/></svg>',
+ pack:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>',
+ map:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>',
+ truck:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h11v9H3zM14 9h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.7"/><circle cx="17" cy="18" r="1.7"/></svg>'
+};
+
+/* ===== Navigation ===== */
+const NAV=[['scan','Wareneingang','scan'],['pack','Packstation','pack'],['karte','Lager-Karte','map'],['nachschub','Nachschub','truck']];
+function buildNav(){
+ $('bn').innerHTML=NAV.map(n=>`<button class="${S.view===n[0]?'act':''}" onclick="go('${n[0]}')">${IC[n[2]]}<span>${n[1]}</span></button>`).join('');
+}
+function go(id){S.view=id;document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.dataset.v===id));$('main').scrollTop=0;buildNav();render();}
+function render(){setDate();({scan:rScan,pack:rPack,karte:rKarte,nachschub:rNach}[S.view])();}
+function setDate(){$('dt').textContent=NOW.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'});}
+function head(t,sub){return `<h1>${t}</h1>`+(sub?`<div class="sub">${sub}</div>`:'');}
+
+/* ================= WARENEINGANG ================= */
+function rScan(){
+ let res='';
+ if(S.scanShown){
+  const inp=EINGANG[S.scanIdx%EINGANG.length];const c=getC(inp.id);
+  if(S.scanDone){
+   const wo=S.offline?'in Warteschlange':'eingebucht';
+   res=`<div class="c"><div class="ok">✓ ${wo}: 1× ${esc(c.name)} ${inp.size} → Fach ${c.fach.embrach} (${zoneName(c.fach.embrach)})</div></div>`;
+  }else{
+   res=`<div class="c">
+     <div class="row" style="align-items:center;justify-content:space-between"><h2 style="margin:0">${esc(c.name)}</h2><span class="chip g">ABC ${c.abc}</span></div>
+     <div class="row" style="align-items:center;gap:8px;margin:10px 0"><span class="szd" style="background:${szf(inp.size)}"></span><b style="font-size:22px">${inp.size}</b><span class="mut">${esc(c.kat)}</span></div>
+     <div class="ct" style="margin-bottom:6px">Fach-Vorschlag (kürzester Laufweg):</div>
+     <span class="fach mono" style="font-size:15px;padding:8px 12px">→ ${c.fach.embrach} · ${zoneName(c.fach.embrach)}</span>
+     <div class="fld" style="margin-top:14px"><label>Menge</label>
+       <div class="step-in"><button onclick="mStep(-1)">−</button><span class="v" id="mv">1</span><button onclick="mStep(1)">+</button></div></div>
+     <button class="b full" onclick="einbuchen()">${S.offline?'In Warteschlange':'Einbuchen'}</button>
+    </div>`;
+  }
+ }
+ let queue='';
+ if(S.queue.length){
+  const ql=S.queue.map(q=>{const c=getC(q.id);return `<div class="pzline">${q.n}× ${esc(c.name)} ${q.size} → ${c.fach.embrach}</div>`;}).join('');
+  queue=`<div class="qcard"><b>Warteschlange</b> <span class="chip y">${S.queue.length}</span><div style="margin-top:6px">${ql}</div>
+   <div class="mut" style="margin-top:6px">Wird nachgereicht, sobald das WLAN zurück ist — jede Buchung genau einmal.</div></div>`;
+ }
+ $('v-scan').innerHTML=head('Wareneingang','Karton auf, Code scannen, Fach übernehmen — die Ware ist ab Sekunde 1 im System erfasst.')+`
+  <button class="scanhero ${S._pulse?'pulse':''}" onclick="doScan()"><span class="ic">${IC.scan}</span><span><span class="t">Artikel scannen</span><span class="s">Barcode ins Scan-Fenster halten</span></span></button>
+  <div class="c" style="margin-top:11px"><div class="sw"><button class="tgl ${S.offline?'on':''}" role="switch" aria-checked="${S.offline}" onclick="toggleOffline()"><b></b></button> Test: Lager-WLAN ausgefallen</div></div>
+  ${res}${queue}
+  <div class="ct mut" style="margin-top:12px">Heute eingebucht: <b>${S.eingebucht}</b> Stück · So entsteht die „eine Wahrheit" über den Bestand — nicht mehr „einfach einlagern".</div>`;
+ S._pulse=false;
+}
+window._m=1;
+function mStep(d){window._m=Math.max(1,Math.min(20,window._m+d));$('mv').textContent=window._m;}
+function doScan(){S._pulse=true;S.scanShown=false;S.scanDone=false;S.scanBusy=false;window._m=1;render();setTimeout(()=>{S.scanShown=true;render();},480);}
+function einbuchen(){
+ if(S.scanBusy){toast('Doppelt getippt — trotzdem genau 1× gebucht.');return;}
+ S.scanBusy=true;
+ const inp=EINGANG[S.scanIdx%EINGANG.length];const c=getC(inp.id);const idx=si(c,inp.size);const n=window._m;
+ if(S.offline){
+  S.queue.push({id:inp.id,size:inp.size,n});try{localStorage.finLagerQ=JSON.stringify(S.queue);}catch(e){}
+  S.scanDone=true;S.scanIdx++;toast('Offline — Buchung wartet in der Warteschlange.');
+ }else{
+  c.q.embrach[idx]+=n;S.eingebucht+=n;S.scanDone=true;S.scanIdx++;
+  toast(`Eingebucht: ${n}× ${c.name} ${inp.size} → ${c.fach.embrach}`);
+ }
+ render();
+}
+function toggleOffline(){
+ S.offline=!S.offline;
+ if(!S.offline&&S.queue.length){
+  const n=S.queue.length;
+  S.queue.forEach(q=>{const c=getC(q.id);c.q.embrach[si(c,q.size)]+=q.n;S.eingebucht+=q.n;});
+  S.queue=[];try{localStorage.removeItem('finLagerQ');}catch(e){}
+  toast(`Synchronisiert — ${n} ${n===1?'Buchung':'Buchungen'} angekommen.`);
+ }
+ render();
+}
+
+/* ================= PACKSTATION ================= */
+function rPack(){
+ if(S.activePa!==null){rPackDetail();return;}
+ const list=S.pack.map((o,i)=>{
+  const t=PA_TPL[o.tpl];const anz=t.pos.reduce((a,p)=>a+p[2],0);
+  const done=o.status==='gepackt';
+  return `<button class="pa" onclick="openPa(${i})"${done?' style="opacity:.5"':''}>
+    <span class="nr mono">${o.nr}</span>
+    <span><span class="mt">→ ${esc(t.ziel)} · ${t.pos.length} Position(en), ${anz} Stück</span></span>
+    <span class="cv">${done?'✓':'›'}</span></button>`;
+ }).join('');
+ const st=S.packStat;const avg=Math.round(st.summe/Math.max(1,st.anzahl));
+ $('v-pack').innerHTML=head('Packstation','Auftrag wählen → Karte zeigt den Laufweg → Start/Fertig misst die Zeit.')+list+`
+  <div class="c"><h2>Tempo heute</h2>
+   <div class="row" style="gap:22px"><div><div style="font-size:26px;font-weight:800">${st.anzahl}</div><div class="mut">Pakete gepackt</div></div>
+   <div><div style="font-size:26px;font-weight:800">${Math.floor(avg/60)}:${String(avg%60).padStart(2,'0')}</div><div class="mut">Ø Pack-Zeit (Min)</div></div></div>
+   <div class="mut" style="margin-top:8px">Transparente Prozess-Messung — zeigt, wo Laufwege klemmen, nicht wer wie schnell ist.</div></div>`;
+}
+function openPa(i){S.activePa=i;S.tmrStart=0;clearInterval(S.tmrId);render();}
+function rPackDetail(){
+ const o=S.pack[S.activePa];const t=PA_TPL[o.tpl];
+ const hotFaecher=t.pos.map(p=>getC(p[0]).fach.embrach);
+ const pick=t.pos.map(p=>{const c=getC(p[0]);return `<div class="pzline"><span class="szd" style="background:${szf(p[1])}"></span><b style="font-size:16px;min-width:34px">${p[1]}</b><span style="flex:1">${esc(c.name)}</span><span class="fach mono">${c.fach.embrach}</span> <span class="mut">×${p[2]}</span></div>`;}).join('');
+ const running=S.tmrStart>0;
+ $('v-pack').innerHTML=head('Packstation')+`
+  <button class="b gh" onclick="closePa()" style="margin-bottom:10px">‹ Zurück zu den Aufträgen</button>
+  <div class="c"><div class="row" style="align-items:center;justify-content:space-between"><b class="mono" style="font-size:16px">${o.nr}</b><span class="chip ${o.status==='gepackt'?'g':'y'}">${o.status==='gepackt'?'gepackt':'offen'}</span></div>
+   <div class="mt mut" style="margin:4px 0 10px">→ ${esc(t.ziel)}</div>
+   <h2>Pickliste</h2>${pick}
+   <div class="mut" style="margin-top:6px">Farbe = Grösse · fette Zahl = greifen · Fach = wo. Laufweg statt Suchweg.</div></div>
+  <div class="c"><h2>Karte Embrach — leuchtende Fächer</h2>${lagerkarte(hotFaecher)}${legendBar()}</div>
+  <div class="c" style="text-align:center">
+   <div class="tmr ${running?'run':''}" id="tmr">${running?'00:00':'00:00'}</div>
+   <div class="mut" id="tmrlbl" style="margin:4px 0 12px">${o.status==='gepackt'?'Fertig gepackt':'Bereit'}</div>
+   ${o.status==='gepackt'?'<div class="ok">✓ Auftrag abgeschlossen</div>':(running
+     ?`<button class="b full" onclick="tmrFertig()">Fertig — Paket gepackt</button>`
+     :`<button class="b full" onclick="tmrStartFn()">Start — jetzt packen</button>`)}
+  </div>`;
+ if(running)tick();
+}
+function closePa(){S.activePa=null;S.tmrStart=0;clearInterval(S.tmrId);render();}
+function tmrStartFn(){S.tmrStart=Date.now();clearInterval(S.tmrId);S.tmrId=setInterval(tick,1000);render();}
+function tick(){const el=$('tmr');if(!el||!S.tmrStart)return;const s=Math.floor((Date.now()-S.tmrStart)/1000);el.textContent=`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
+function tmrFertig(){
+ const s=Math.floor((Date.now()-S.tmrStart)/1000);clearInterval(S.tmrId);
+ const o=S.pack[S.activePa];o.status='gepackt';
+ S.packStat.anzahl++;S.packStat.summe+=Math.max(30,s);
+ S.tmrStart=0;toast(`${o.nr} gepackt in ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')} Min — Tempo notiert.`);render();
+}
+
+/* ===== 2D Lager-Karte (Zonen + Faecher) ===== */
+function lagerkarte(hot){
+ hot=hot||[];
+ const zones=[['P','Packzone',6,'var(--red)'],['S','Standard',6,'#c9c6c1'],['W','Saison',4,'#3a6ea5'],['L','Langsamdreher',4,'#8a8891']];
+ let h='<div class="map">';
+ zones.forEach(([pfx,name,n,col])=>{
+  h+=`<div class="zone"><div class="zt"><span class="szd" style="border-radius:3px;background:${col}"></span>${name} (${pfx}*)</div><div class="cells">`;
+  for(let i=1;i<=n;i++){const code=pfx+i;const isHot=hot.includes(code);h+=`<div class="cell ${isHot?'hot':''}">${code}</div>`;}
+  h+='</div></div>';
+ });
+ h+='<div class="cells" style="grid-template-columns:1fr"><div class="cell pack" style="aspect-ratio:auto;padding:9px">Packplatz — Top-Seller (P*) liegen direkt daneben</div></div>';
+ h+='<div class="mapleg"><span><i style="background:var(--red)"></i>Packzone</span><span><i style="background:#c9c6c1"></i>Standard</span><span><i style="background:#3a6ea5"></i>Saison</span><span><i style="background:#8a8891"></i>Langsamdreher</span></div>';
+ return h+'</div>';
+}
+
+/* ================= LAGER-KARTE (Ordnung) ================= */
+function rKarte(){
+ $('v-karte').innerHTML=head('Lager-Karte & Ordnung','So ist Embrach eingeteilt: 4 Zonen, jedes Fach beschriftet mit Code + Grössen-Farbe. Jeder weiss in Sekunden, wo alles liegt.')+`
+  <div class="c">${lagerkarte([])}</div>
+  <div class="c"><h2>Fach-Beschriftung: Code + Grössen-Farbe</h2>
+   <div class="ct" style="margin-bottom:8px">Am Regal klebt der Fach-Code und ein Farbpunkt pro Grösse — greifen auf einen Blick, ohne Etikett lesen.</div>
+   ${legendBar()}
+   <div class="mut" style="margin-top:6px">One Size / Schuhe: grau mit fetter Zahl. Farbstandard ist ein Vorschlag — Khawar darf ihn anpassen.</div></div>
+  <div class="c"><h2>Die 4 Orte im Überblick</h2>
+   <div class="pzline"><b style="min-width:104px">Laden-Front</b> <span>Was der Kunde sieht (A*)</span></div>
+   <div class="pzline"><b style="min-width:104px">Laden-Reserve</b> <span>Nachschub der Front (R*)</span></div>
+   <div class="pzline"><b style="min-width:104px">Untergeschoss</b> <span>Grössen-Vorrat + kommende Kollektionen (U*)</span></div>
+   <div class="pzline"><b style="min-width:104px">Embrach</b> <span>Gross-Lager, hier wird gepackt (P/S/W/L)</span></div></div>`;
+}
+
+/* ================= NACHSCHUB / UMLAGERN ================= */
+function rNach(){
+ /* Empfehlungen aus dem Bestand abgeleitet — das System schlaegt vor, der Mensch entscheidet. */
+ const holen=CAT.filter(c=>c.online>=60&&c.abc==='A'&&frontSum(c)<=2&&embSum(c)>0);
+ const letzte=CAT.filter(c=>c.abc==='D');
+ const uml=[];
+ CAT.forEach(c=>{c.sizes.forEach((s,i)=>{if(c.typ==='nos'&&c.q.front[i]===0&&c.q.embrach[i]>0&&(c.abc==='A'||c.abc==='B')){uml.push({c,s,i});}});});
+ const nach=CAT.filter(c=>c.abc==='A'&&c.q.front.some(v=>v===0)&&(frontSum(c)+embSum(c))<24);
+
+ const card=(titel,farbe,body)=>`<div class="c" style="border-left:4px solid ${farbe}"><h2>${titel}</h2>${body}</div>`;
+ let h=head('Nachschub & Mitnahme-Liste','Vor der 20-Minuten-Fahrt nach Zürich: genau das, was mit muss. Empfehlungen — du entscheidest.');
+
+ h+=card('Nachbestellen (unter Meldebestand)','var(--red)',
+   nach.length?nach.map(c=>`<div class="pzline"><b>${esc(c.name)}</b> <span class="mut">ABC ${c.abc} · online ${c.online}%</span><span style="margin-left:auto"><span class="chip r">prüfen</span></span></div>`).join(''):'<div class="mut">Aktuell keine Modelle im roten Bereich.</div>');
+
+ h+=card('Online-Renner in den Laden holen','var(--y)',
+   holen.length?holen.map(c=>`<div class="pzline"><span class="szd" style="background:${szf('M')}"></span><b>${esc(c.name)}</b><span class="mut" style="margin-left:6px">online ${c.online}% · Laden fast leer, Embrach ${embSum(c)}×</span></div>`).join(''):'<div class="mut">—</div>');
+
+ h+=card('Umlagern Embrach → Laden (Mitnahme-Liste)','#3a6ea5',
+   uml.length?uml.map(({c,s})=>`<div class="pzline"><span class="szd" style="background:${szf(s)}"></span><b style="min-width:32px">${s}</b><span style="flex:1">${esc(c.name)}</span><span class="fach mono">${c.fach.embrach}</span> <button class="b" style="min-height:34px;padding:6px 12px" onclick="umlModal('${c.id}','${s}')">Mitnehmen</button></div>`).join(''):'<div class="mut">—</div>');
+
+ h+=card('Letzte Stücke — in den Laden zum Abverkauf','#8a8891',
+   letzte.length?letzte.map(c=>`<div class="pzline"><b>${esc(c.name)}</b> <span class="mut">Ladenhüter (D) · bindet Kapital, macht Platz</span></div>`).join(''):'<div class="mut">—</div>');
+
+ h+=`<div class="ct mut" style="margin-top:4px">Winterjacke Alpin liegt im UG (U10), Plan-Auslage <b>ab ${getC('JACK-01').geplant}</b> — Saisonware, ruht bis dahin.</div>`;
+ $('v-nachschub').innerHTML=h;
+}
+function umlModal(id,sz){
+ const c=getC(id);const i=si(c,sz);const max=c.q.embrach[i];
+ openModal(`<h3>Mitnehmen — ${esc(c.name)} ${sz}</h3>
+  <div class="ct" style="margin-bottom:10px">Von Embrach ${c.fach.embrach} → Laden-Front ${c.fach.front}. Verfügbar: ${max}×.</div>
+  <div class="fld"><label>Menge</label><div class="step-in"><button onclick="umStep(-1)">−</button><span class="v" id="uv">1</span><button onclick="umStep(1)">+</button></div></div>
+  <button class="b full" onclick="umDo('${id}','${sz}')">Auf die Mitnahme-Liste</button>`);
+ window._u={max,v:1};
+}
+function umStep(d){window._u.v=Math.max(1,Math.min(window._u.max,window._u.v+d));$('uv').textContent=window._u.v;}
+function umDo(id,sz){const c=getC(id),i=si(c,sz),v=window._u.v;c.q.embrach[i]-=v;c.q.front[i]+=v;closeModal();toast(`${v}× ${c.name} ${sz} auf die Mitnahme-Liste — Karte führt Buch.`);render();}
+
+/* ===== Init ===== */
+buildNav();go('scan');
+</script>
+</body>
+</html>

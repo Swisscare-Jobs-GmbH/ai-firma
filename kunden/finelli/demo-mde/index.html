@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Finelli — Wo starten wir?</title>
+<!-- Startseite der 2 MDE-Demos. Rahmt die Entscheidung: Lager Embrach ODER Laden Zuerich. Uebungs-Modus. -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#17161a;--red:#a8271c;--mut:#8a8790;--line:#2b2930}
+body{background:#0e0d10;color:#f4f4f2;font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;padding:34px 20px 50px}
+.serif{font-family:Georgia,"Times New Roman",serif}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-left:3px;vertical-align:middle}
+.wrap{max-width:860px;margin:0 auto}
+.wm{font-size:30px;font-weight:700;letter-spacing:.5px}
+.ueb{display:inline-block;background:#2a1a18;border:1px solid var(--red);color:#f0c9c3;font-size:11px;padding:3px 9px;border-radius:20px;margin-left:8px;vertical-align:middle}
+h1{font-size:26px;margin:22px 0 6px;font-family:Georgia,"Times New Roman",serif}
+.lead{color:#c8c5cd;font-size:15px;line-height:1.6;max-width:640px}
+.cards{display:grid;grid-template-columns:1fr;gap:16px;margin-top:26px}
+@media(min-width:720px){.cards{grid-template-columns:1fr 1fr}}
+.card{display:block;text-decoration:none;color:inherit;background:#1a191e;border:1px solid var(--line);border-radius:18px;padding:22px;transition:.15s}
+.card:hover{border-color:var(--red);transform:translateY(-2px)}
+.tag{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut)}
+.card h2{font-size:20px;margin:8px 0 4px;font-family:Georgia,"Times New Roman",serif}
+.card p{color:#c8c5cd;font-size:13.5px;line-height:1.55}
+.card ul{list-style:none;margin:12px 0 0;padding:0}
+.card li{font-size:13px;color:#d9d6de;padding:4px 0 4px 20px;position:relative}
+.card li::before{content:"›";position:absolute;left:2px;color:var(--red);font-weight:700}
+.go{display:inline-flex;align-items:center;gap:7px;margin-top:16px;background:var(--red);color:#fff;font-weight:600;font-size:14px;padding:11px 16px;border-radius:11px}
+.foot{margin-top:30px;color:var(--mut);font-size:12.5px;line-height:1.6;border-top:1px solid var(--line);padding-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div><span class="wm serif">FINELLI<span class="dot"></span></span><span class="ueb">Übungs-Modus — Beispieldaten</span></div>
+  <h1>Wo fangen wir an?</h1>
+  <p class="lead">Zwei Wege, dein Lager-System zu vereinfachen — mit Scan, klarer Fach-Ordnung und Automatik.
+     Probier beide aus (klicken, tippen, scannen simulieren) und sag uns, wo der Schuh am meisten drückt.
+     <b>Beides gehört am Ende zusammen — die Frage ist nur, womit wir starten.</b></p>
+
+  <div class="cards">
+    <a class="card" href="lager-embrach.html">
+      <div class="tag">Weg A · Gross-Lager</div>
+      <h2>Lager Embrach</h2>
+      <p>Der Handscanner fürs Lager: Ware rein, gescannt, jedes Teil hat sein Fach — und die Pakete gehen schneller raus.</p>
+      <ul>
+        <li>Wareneingang scannen → Fach-Vorschlag</li>
+        <li>Packstation mit 2D-Karte + Laufweg + Tempo</li>
+        <li>Fach-Ordnung mit Grössen-Farben</li>
+        <li>Mitnahme-Liste für die Fahrt in den Laden</li>
+      </ul>
+      <span class="go">Lager-Demo öffnen →</span>
+    </a>
+
+    <a class="card" href="laden-zuerich.html">
+      <div class="tag">Weg B · Laden</div>
+      <h2>Laden Zürich City</h2>
+      <p>Das Kassen-Terminal für den Laden: Verkauf bucht den Bestand automatisch ab — Schluss mit Phantom-Ware im Shop.</p>
+      <ul>
+        <li>Verkauf abschliessen → Bestand stimmt sofort</li>
+        <li>Grösse finden über Front / Reserve / UG / Embrach</li>
+        <li>Online-Order aufnehmen — Kunde nicht verlieren</li>
+        <li>Umtausch sauber zurückbuchen</li>
+      </ul>
+      <span class="go">Laden-Demo öffnen →</span>
+    </a>
+  </div>
+
+  <div class="foot">
+    Beides sind Vorschauen mit <b>Beispieldaten</b> (kein echter Bestand, keine Preise, keine Kundendaten) — zum Ausprobieren, nicht zum Kaufen.
+    Die echte App holt die Zahlen später live aus deinem Onlineshop. Öffnen per Doppelklick, kein Internet nötig.
+  </div>
+</div>
+</body>
+</html>

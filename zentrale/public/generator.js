@@ -68,7 +68,7 @@
   // Fragebogen je Art. typ: text | textarea | kunde. Der Kunde wird aus /api/kunden befuellt.
   const ARTEN = {
     website: {
-      icon: "🌐",
+      icon: "website",
       titel: "Website erstellen",
       kurz: "Auftritt und Seiten.",
       info: "Erzeugt eine lauffähige Website (mehrere Seiten, modernes Design) im " +
@@ -86,7 +86,7 @@
       ]
     },
     crm: {
-      icon: "🗂️",
+      icon: "crm",
       titel: "CRM erstellen",
       kurz: "Daten und Abläufe verwalten.",
       info: "Erzeugt ein einfaches CRM (Kundendaten, Status, Ansichten). Der Fragebogen " +
@@ -102,7 +102,7 @@
       ]
     },
     automation: {
-      icon: "⚙️",
+      icon: "automation",
       titel: "Automatisierung erstellen",
       kurz: "Abläufe automatisieren.",
       info: "Erzeugt ein Skript oder kleines Programm, das eine wiederkehrende Aufgabe " +
@@ -117,7 +117,7 @@
       ]
     },
     custom: {
-      icon: "🧩",
+      icon: "custom",
       titel: "Eigenes Projekt",
       kurz: "Frei beschreiben.",
       info: "Für alles andere: beschreibe frei, was gebaut werden soll. Claude baut es " +
@@ -185,7 +185,9 @@
       .gen-karte::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(100deg, var(--akzent), var(--akzent-hell)); opacity: 0.7; }
       .gen-karte:hover { transform: translateY(-3px); border-color: var(--akzent); box-shadow: 0 12px 30px rgba(139, 61, 255, 0.28); }
       .gen-karte:focus-visible { outline: none; border-color: var(--akzent); box-shadow: 0 0 0 3px var(--akzent-weich), 0 12px 30px rgba(139, 61, 255, 0.28); }
-      .gen-karte-icon { font-size: 30px; line-height: 1; }
+      .gen-karte-icon { line-height: 0; color: var(--akzent-hell); }
+      .gen-modal-titel { display: flex; align-items: center; gap: 8px; }
+      .gen-titel-icon { display: inline-flex; color: var(--akzent-hell); }
       .gen-karte-titel { font-size: 17px; font-weight: 700; }
       .gen-karte-kurz { font-size: 13px; color: var(--muted); }
 
@@ -195,7 +197,7 @@
 
       .build-karte { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; }
       .build-kopf { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-      .build-icon { font-size: 20px; }
+      .build-icon { display: inline-flex; line-height: 0; color: var(--akzent-hell); }
       .build-name { font-weight: 700; }
       .build-fueller { flex: 1; }
       .build-zeit { color: var(--muted); font-size: 12px; }
@@ -237,7 +239,7 @@
     const conf = ARTEN[art];
     return '<div class="karte gen-karte" data-art="' + art + '" tabindex="0" role="button" aria-label="' +
       window.escapeHtml(conf.titel) + '">' +
-      '<span class="gen-karte-icon" aria-hidden="true">' + conf.icon + "</span>" +
+      '<span class="gen-karte-icon" aria-hidden="true">' + window.svgIcon(conf.icon, 28) + "</span>" +
       '<span class="gen-karte-titel">' + window.escapeHtml(conf.titel) + "</span>" +
       '<span class="gen-karte-kurz">' + window.escapeHtml(conf.kurz) + " " + infoChip(conf.info) + "</span>" +
       "</div>";
@@ -296,7 +298,9 @@
     const felderHtml = felder.map(feldHtml).join("");
     return (
       '<div class="modal gen-modal" role="dialog" aria-modal="true" aria-labelledby="gen-modal-titel">' +
-      '<h2 id="gen-modal-titel">' + conf.icon + " " + window.escapeHtml(conf.titel) + "</h2>" +
+      '<h2 id="gen-modal-titel" class="gen-modal-titel">' +
+      '<span class="gen-titel-icon" aria-hidden="true">' + window.svgIcon(conf.icon, 22) + "</span> " +
+      window.escapeHtml(conf.titel) + "</h2>" +
       '<div class="gen-felder">' + felderHtml + "</div>" +
       '<div class="gen-optionen">' +
         "<div><label>Modell " + infoChip(MODELL_INFO) + "</label>" + modellSelectHtml() + "</div>" +
@@ -649,7 +653,7 @@
     const icon = document.createElement("span");
     icon.className = "build-icon";
     icon.setAttribute("aria-hidden", "true");
-    icon.textContent = (ARTEN[job.art] && ARTEN[job.art].icon) || "🧩";
+    icon.innerHTML = window.svgIcon((ARTEN[job.art] && ARTEN[job.art].icon) || "custom", 20);
 
     const name = document.createElement("span");
     name.className = "build-name";

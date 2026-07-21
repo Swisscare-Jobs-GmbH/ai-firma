@@ -12,12 +12,19 @@
   const MAX_SCHRITTE = 500;
 
   const NODE_TYPEN = {
-    start: { icon: "▶", label: "Start" },
-    claude: { icon: "✨", label: "Claude-Aufgabe" },
-    bedingung: { icon: "⑂", label: "Bedingung" },
-    aktion: { icon: "⚙", label: "Aktion" },
-    notiz: { icon: "📝", label: "Notiz" }
+    start: { icon: "start", label: "Start" },
+    claude: { icon: "generator", label: "Claude-Aufgabe" },
+    bedingung: { icon: "bedingung", label: "Bedingung" },
+    aktion: { icon: "automation", label: "Aktion" },
+    notiz: { icon: "note", label: "Notiz" }
   };
+
+  // Node-Icon als SVG-Markup (professionelle Icons statt Emoji).
+  function nodeIcon(typ, groesse) {
+    const def = NODE_TYPEN[typ];
+    const name = def ? def.icon : "custom";
+    return window.svgIcon ? window.svgIcon(name, groesse || 18) : "";
+  }
 
   const OPERATOREN = [
     ["enthaelt", "enthält"],
