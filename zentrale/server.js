@@ -73,6 +73,10 @@ function stelleDatenDateienSicher() {
       fs.writeFileSync(pfad, JSON.stringify(standard, null, 2), "utf8");
     }
   }
+  // Beim Start den Kunden-Spiegel im kunden-Ordner erzeugen, damit er immer
+  // existiert (der Auto-Sync fasst ihn per git add an).
+  const start = ladeDatei("kunden.json");
+  spiegleKundenInOrdner(start && start.kunden ? start.kunden : []);
 }
 
 function ladeDatei(datei) {
@@ -88,6 +92,9 @@ function ladeDatei(datei) {
 function speichereDatei(datei, inhalt) {
   const pfad = path.join(DATEN_ORDNER, datei);
   fs.writeFileSync(pfad, JSON.stringify(inhalt, null, 2), "utf8");
+  if (datei === "kunden.json") {
+    spiegleKundenInOrdner(inhalt && inhalt.kunden ? inhalt.kunden : []);
+  }
   if (SYNC_DATEI_NAMEN.has(datei)) {
     planeDatenSync();
   }
@@ -600,27 +607,108 @@ const SYNC_ENTPRELLUNG_MS = 4000;
 const SYNC_DATEI_PFADE = [
   "zentrale/data/kunden.json",
   "zentrale/data/workflows.json",
-  "zentrale/data/einstellungen.json"
+  "zentrale/data/einstellungen.json",
+  "kunden/_sea/kunden-aus-sea.md"
 ];
 let syncTimer = null;
+let syncLaeuft = false;
+let syncNochmal = false;
+
+const STATUS_TEXT = {
+  offen: "Noch nicht angefangen",
+  in_arbeit: "In Bearbeitung",
+  fertig: "Fertig"
+};
+
+// Macht einen Wert tabellensicher (keine Zeilenumbrueche, kein Pipe-Zeichen).
+function einzeilig(wert) {
+  return String(wert || "").replace(/\r?\n/g, " ").replace(/\|/g, "/").trim();
+}
+
+// Spiegelt die Kunden aus der App in eine gut sichtbare Datei im kunden-Ordner.
+// Additiv: fasst die kuratierte kunden/UEBERSICHT.md NICHT an.
+function spiegleKundenInOrdner(kunden) {
+  try {
+    const ordner = path.join(REPO_WURZEL, "kunden", "_sea");
+    fs.mkdirSync(ordner, { recursive: true });
+    const stand = new Date().toISOString().slice(0, 10);
+    const zeilen = [];
+    zeilen.push("# Kunden aus SEA (automatisch gespiegelt)");
+    zeilen.push("");
+    zeilen.push("> Automatisch aus zentrale/data/kunden.json erzeugt, bei jeder Aenderung in SEA.");
+    zeilen.push("> Nicht von Hand bearbeiten. Kuratierte Registry bleibt kunden/UEBERSICHT.md.");
+    zeilen.push("");
+    zeilen.push("Stand: " + stand + " | Anzahl: " + kunden.length);
+    zeilen.push("");
+    zeilen.push("| Name | Branche | Status | Aktualisiert |");
+    zeilen.push("|---|---|---|---|");
+    for (const k of kunden) {
+      const status = STATUS_TEXT[k.status] || einzeilig(k.status);
+      zeilen.push("| " + einzeilig(k.name) + " | " + einzeilig(k.branche)
+        + " | " + status + " | " + einzeilig(k.aktualisiert) + " |");
+    }
+    zeilen.push("");
+    zeilen.push("## Notizen");
+    for (const k of kunden) {
+      zeilen.push("");
+      zeilen.push("### " + einzeilig(k.name));
+      zeilen.push((k.notizen || "").trim() || "(keine)");
+    }
+    zeilen.push("");
+    fs.writeFileSync(path.join(ordner, "kunden-aus-sea.md"), zeilen.join("\n"), "utf8");
+  } catch (err) {
+    console.error("Kunden-Spiegelung fehlgeschlagen:", err.message);
+  }
+}
 
 function planeDatenSync() {
   if (syncTimer) clearTimeout(syncTimer);
   syncTimer = setTimeout(fuehreDatenSyncAus, SYNC_ENTPRELLUNG_MS);
 }
 
-function fuehreDatenSyncAus() {
-  syncTimer = null;
-  const befehl = "git add " + SYNC_DATEI_PFADE.join(" ")
-    + " && git commit -m \"auto: Datenupdate aus SEA\""
-    + " && git push";
-  exec(befehl, { cwd: REPO_WURZEL, shell: true }, (fehler, stdout, stderr) => {
-    if (!fehler) return;
-    const text = String(stdout || "") + String(stderr || "") + fehler.message;
-    // "nothing to commit" ist kein Fehler, nur nichts zu tun.
-    if (/nothing to commit/i.test(text)) return;
-    console.error("Auto-Sync fehlgeschlagen:", text.trim());
+// Ein einzelner git-Schritt. Loest nie aus, gibt {fehler, stdout, stderr} zurueck.
+function execSchritt(befehl) {
+  return new Promise((resolve) => {
+    exec(befehl, { cwd: REPO_WURZEL, shell: true }, (fehler, stdout, stderr) => {
+      resolve({ fehler: fehler, stdout: String(stdout || ""), stderr: String(stderr || "") });
+    });
   });
+}
+
+// Robuster Auto-Sync: stagen, nur bei Aenderung committen, per Rebase die
+// Remote-Commits integrieren (damit der Push nicht scheitert wenn origin voraus
+// ist), dann pushen. Bei Rebase-Konflikt sauber abbrechen statt das Repo in einem
+// halben Zustand zu lassen. Laeuft nie zweimal gleichzeitig.
+async function fuehreDatenSyncAus() {
+  syncTimer = null;
+  if (syncLaeuft) { syncNochmal = true; return; }
+  syncLaeuft = true;
+  try {
+    await execSchritt("git add " + SYNC_DATEI_PFADE.join(" "));
+    // git diff --cached --quiet beendet mit Code 1, wenn es gestagte Aenderungen gibt.
+    const gestaged = await execSchritt("git diff --cached --quiet");
+    if (gestaged.fehler) {
+      await execSchritt("git commit -m \"auto: Datenupdate aus SEA\"");
+    }
+    const pull = await execSchritt("git pull --rebase --autostash origin master");
+    if (pull.fehler) {
+      await execSchritt("git rebase --abort");
+      console.error("Auto-Sync: Rebase-Konflikt, abgebrochen. Push uebersprungen, lokaler Commit bleibt erhalten.");
+      return;
+    }
+    const push = await execSchritt("git push origin master");
+    if (push.fehler) {
+      const text = push.stdout + push.stderr + (push.fehler.message || "");
+      if (!/everything up-to-date/i.test(text)) {
+        console.error("Auto-Sync: Push fehlgeschlagen:", text.trim().slice(0, 300));
+      }
+    }
+  } catch (err) {
+    console.error("Auto-Sync Ausnahme:", err.message);
+  } finally {
+    syncLaeuft = false;
+    if (syncNochmal) { syncNochmal = false; planeDatenSync(); }
+  }
 }
 
 // ---------- Statische Dateien ----------
