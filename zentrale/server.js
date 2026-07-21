@@ -711,6 +711,70 @@ async function fuehreDatenSyncAus() {
   }
 }
 
+// ---------- Voller Sync per Knopf (committen, pullen, pushen) ----------
+
+// Ein Knopfdruck in der App: alles stagen, nur bei Aenderung committen, origin
+// per rebase integrieren, dann pushen. Bei Konflikt sauber abbrechen (nichts wird
+// ueberschrieben). Antwortet immer mit HTTP 200; das Ergebnis steht im Body (ok).
+async function syncRepoVoll() {
+  const schritte = [];
+  const merke = (name, r) => {
+    schritte.push({ name, ok: !r.fehler, ausgabe: (r.stdout + r.stderr).trim().slice(0, 400) });
+    return r;
+  };
+  const branchRoh = await execSchritt("git rev-parse --abbrev-ref HEAD");
+  const branch = branchRoh.stdout.trim() || "master";
+
+  merke("stagen", await execSchritt("git add -A"));
+
+  let committet = false;
+  const gestaged = await execSchritt("git diff --cached --quiet");
+  if (gestaged.fehler) {
+    const stand = new Date().toISOString().slice(0, 19).replace("T", " ");
+    const commit = merke("committen", await execSchritt(
+      "git commit -m \"manuell: Sync aus SEA (" + stand + ")\""));
+    committet = !commit.fehler;
+  }
+
+  const pull = merke("pullen", await execSchritt("git pull --rebase --autostash origin " + branch));
+  if (pull.fehler) {
+    await execSchritt("git rebase --abort");
+    return {
+      ok: false, phase: "pullen", branch, committet,
+      meldung: "Konflikt beim Pullen. Rebase sauber abgebrochen, nichts wurde ueberschrieben. Bitte die Kollision manuell klaeren.",
+      schritte
+    };
+  }
+
+  const push = merke("pushen", await execSchritt("git push origin " + branch));
+  const pushText = (push.stdout + push.stderr + (push.fehler ? push.fehler.message : "")).toLowerCase();
+  const pushOk = !push.fehler || /everything up-to-date|up to date/.test(pushText);
+
+  const head = (await execSchritt("git rev-parse --short HEAD")).stdout.trim();
+  const offen = (await execSchritt("git status --porcelain")).stdout.split("\n").filter(Boolean).length;
+
+  return {
+    ok: pushOk, branch, head, committet, offeneDateien: offen,
+    meldung: pushOk
+      ? (committet
+          ? "Committet, gepullt und gepusht. Alles aktuell und sauber."
+          : "Nichts Neues zu committen. Gepullt und gepusht. Alles aktuell.")
+      : "Push fehlgeschlagen (origin evtl. nicht erreichbar). Aenderungen sind lokal committet.",
+    schritte
+  };
+}
+
+async function handleSync(req, res) {
+  const kopfFehler = pruefeClaudeRequestKopf(req);
+  if (kopfFehler) return sendeFehler(res, kopfFehler.status, kopfFehler.text);
+  try {
+    const ergebnis = await syncRepoVoll();
+    return sendeJson(res, 200, ergebnis);
+  } catch (err) {
+    return sendeJson(res, 200, { ok: false, meldung: "Sync-Ausnahme: " + err.message });
+  }
+}
+
 // ---------- Statische Dateien ----------
 
 function handleStatisch(req, res, pfadName) {
@@ -753,6 +817,9 @@ async function routeApi(req, res, pfadName) {
   }
   if (bereich === "jobs") {
     return handleJobsRoute(req, res, teile);
+  }
+  if (bereich === "sync" && teile.length === 2 && req.method === "POST") {
+    return handleSync(req, res);
   }
   return sendeFehler(res, 404, "Unbekannter API-Pfad: " + pfadName);
 }

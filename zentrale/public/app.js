@@ -213,6 +213,13 @@ function injiziereLayoutCss() {
     .nav-btn .nav-label { margin-left: 8px; }
     .nav-btn:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
 
+    /* Sync-Knopf am Fuss der Seitenleiste */
+    #seitenleiste-fuss { margin-top: auto; }
+    .sync-btn { color: var(--akzent-hell); }
+    .sync-btn.laeuft { opacity: 0.85; }
+    .sync-btn.laeuft .nav-icon { animation: sea-spin 0.9s linear infinite; }
+    @keyframes sea-spin { to { transform: rotate(360deg); } }
+
     /* Info-Chip (i) */
     .info-chip {
       display: inline-flex; align-items: center; justify-content: center;
@@ -374,6 +381,28 @@ function initSeitenleiste() {
 
 injiziereLayoutCss();
 
+/* ---------- Sync-Knopf (committen, pullen, pushen) ---------- */
+
+let syncLaeuftUi = false;
+
+async function fuehreSyncAus() {
+  if (syncLaeuftUi) return;
+  const knopf = document.getElementById("sync-btn");
+  syncLaeuftUi = true;
+  if (knopf) { knopf.classList.add("laeuft"); knopf.disabled = true; }
+  window.toast("Sync laeuft: committen, pullen, pushen.", "ok");
+  try {
+    const ergebnis = await window.api.post("/api/sync", {});
+    const zusatz = ergebnis.head ? " (" + ergebnis.head + ")" : "";
+    window.toast((ergebnis.meldung || "Sync abgeschlossen.") + zusatz, ergebnis.ok ? "ok" : "fehler");
+  } catch (fehler) {
+    window.toast("Sync fehlgeschlagen: " + fehler.message, "fehler");
+  } finally {
+    syncLaeuftUi = false;
+    if (knopf) { knopf.classList.remove("laeuft"); knopf.disabled = false; }
+  }
+}
+
 /* ---------- Router ---------- */
 
 function aktuelleViewAusHash() {
@@ -528,9 +557,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   document.querySelectorAll(".nav-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
+      if (!btn.dataset.view) return;
       location.hash = "#" + btn.dataset.view;
     });
   });
+
+  const syncKnopf = document.getElementById("sync-btn");
+  if (syncKnopf) syncKnopf.addEventListener("click", fuehreSyncAus);
 
   window.addEventListener("hashchange", rendereAktuelleView);
   rendereAktuelleView();
