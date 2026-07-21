@@ -80,23 +80,36 @@ function baueSnapshot(daten, heute, optionen) {
     const ampel = A.artikelAmpel(reichweite, wbz, ip, rop);
     if ((abc === "A" || abc === "B") && (ampel === "gelb" || ampel === "rot")) abGelbAB++;
 
-    // Varianten inkl. Stockout-Tage (aus Bestandsdaten).
+    // Varianten inkl. Stockout-Tage + Bestand je Lager-Ort.
     let modellStockoutTage = 0;
+    let detFront = 0, detReserve = 0, detUg = 0, detEmbrach = 0;
     const varianten = m.varianten.map((v) => {
       const b = B.bestandVariante(bestandIndex, v.sku);
       const so = b.stockout_tage_t30 || 0;
       modellStockoutTage += so;
+      detFront += b.front; detReserve += b.reserve; detUg += b.untergeschoss; detEmbrach += b.embrach;
       return {
         sku: v.sku,
         groesse: v.groesse,
         farbe: v.farbe,
         bestand_laden: b.laden,
+        bestand_front: b.front,
+        bestand_reserve: b.reserve,
+        bestand_untergeschoss: b.untergeschoss,
         bestand_embrach: b.embrach,
         offene_kundenorders: b.offene_kundenorders || 0,
         stockout_tage_t30: so,
         transfer_trigger: umlagerungen.some((u) => u.sku === v.sku),
       };
     });
+
+    // Online-Anteil am 30-Tage-Absatz (fuer "Online-Renner in den Laden holen").
+    const skusSet = new Set(m.varianten.map((v) => v.sku));
+    let online30 = 0;
+    for (const vk of verkaeufe) {
+      if (skusSet.has(vk.sku) && vk.kanal === "online" && imFenster(vk.datum, heute, 30)) online30 += vk.menge;
+    }
+    const onlineAnteil = a30 > 0 ? Math.round((online30 / a30) * 100) : 0;
     stockoutTageT30 += modellStockoutTage;
     const soStueck = Math.round(modellStockoutTage * ta.wert);
     stockoutStueckT30 += soStueck;
@@ -125,6 +138,9 @@ function baueSnapshot(daten, heute, optionen) {
       abc: abc,
       nos: m.nos,
       saison_fenster: m.saison_fenster || null,
+      faecher: m.faecher || null,
+      online_anteil_t30: onlineAnteil,
+      bestand_detail: { front: detFront, reserve: detReserve, untergeschoss: detUg, embrach: detEmbrach },
       absatz: { t7: a7, t30: a30, t90: a90, t365: a365 },
       rohertrag_t30: a30 * (m.vk - m.ek),
       sell_through: K.sellThroughModell(verkaeufe, wareneingaenge, m),
@@ -192,6 +208,44 @@ function baueSnapshot(daten, heute, optionen) {
     ausverkauf: A.ausverkaufAmpel(abGelbAB),
   };
 
+  // ---------- Logistik-Hinweise (fuer den Logistik-Leiter) ----------
+  const logistikHinweise = [];
+  for (const a of artikel) {
+    if (a.online_anteil_t30 >= 60 && a.abc === "A" && a.bestand_detail.front <= 2 && a.bestand_detail.embrach > 0)
+      logistikHinweise.push({ typ: "laden_holen", modell_id: a.modell_id, name: a.name, text: a.name + ": " + a.online_anteil_t30 + "% online, im Laden fast leer (" + a.bestand_detail.front + " in Front). Aus Embrach (" + a.bestand_detail.embrach + ") in den Laden holen." });
+    if (a.bestand_gesamt >= 1 && a.bestand_gesamt <= 10 && (a.abc === "C" || a.abc === "D" || (a.bestellvorschlag && a.bestellvorschlag.moq_ueber_ziel)))
+      logistikHinweise.push({ typ: "letzte_stuecke", modell_id: a.modell_id, name: a.name, text: a.name + ": nur noch " + a.bestand_gesamt + " Stueck, kein sinnvoller Nachschub. Im Laden zum Abverkauf praesentieren." });
+    if (a.abc === "A" && a.faecher && a.faecher.embrach && a.faecher.embrach[0] !== "P")
+      logistikHinweise.push({ typ: "slotting", modell_id: a.modell_id, name: a.name, text: a.name + " ist Top-Seller (A), liegt aber in Fach " + a.faecher.embrach + " (nicht Packzone). Naeher an den Packplatz." });
+    if (a.umlagerungen && a.umlagerungen.length)
+      logistikHinweise.push({ typ: "umlagerung", modell_id: a.modell_id, name: a.name, text: a.name + ": " + a.umlagerungen.length + " Variante(n) im Laden leer, in Embrach da. Umlagern." });
+  }
+
+  // ---------- Pack-Auftraege anreichern + Statistik aus dem Packlog ----------
+  const packlog = (opt.packlog && opt.packlog.eintraege) || [];
+  const packAuftraege = (daten.bestand.pack_auftraege || []).filter((p) => p.status === "offen").map((p) => ({
+    id: p.id, quelle: p.quelle, status: p.status,
+    positionen: p.positionen.map((pos) => {
+      const ref = stammIndex.proSku.get(pos.sku);
+      return {
+        sku: pos.sku, menge: pos.menge,
+        name: ref ? ref.modell.name : pos.sku,
+        groesse: ref ? ref.variante.groesse : "",
+        farbe: ref ? ref.variante.farbe : "",
+        fach: ref && ref.modell.faecher ? ref.modell.faecher.embrach : "?",
+      };
+    }),
+  }));
+  const dauern = packlog.map((e) => e.dauer_s).filter((x) => typeof x === "number");
+  const pack = {
+    auftraege: packAuftraege,
+    statistik: {
+      anzahl_gepackt: packlog.length,
+      dauer_avg_s: dauern.length ? Math.round(dauern.reduce((s, x) => s + x, 0) / dauern.length) : null,
+      letzte: packlog.slice(-5).reverse(),
+    },
+  };
+
   return {
     lauf: {
       datum: heute,
@@ -202,6 +256,9 @@ function baueSnapshot(daten, heute, optionen) {
     aggregate: aggregate,
     ampeln: ampeln,
     offene_bestellungen: offeneBestellungen,
+    groessen_farben: daten.stammdaten.groessen_farben || {},
+    logistik_hinweise: logistikHinweise,
+    pack: pack,
     artikel: artikel,
   };
 }

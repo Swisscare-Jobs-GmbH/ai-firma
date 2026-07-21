@@ -49,7 +49,8 @@ function pruefeOrigin(req) {
 function baueStand(optionen) {
   daten.stelleSicher(DATEN_ORDNER, heuteIso());
   const alle = daten.ladeAlle(DATEN_ORDNER);
-  const stand = fuehreLauf(alle, heuteIso(), optionen || {});
+  const packlog = daten.ladePacklog(DATEN_ORDNER);
+  const stand = fuehreLauf(alle, heuteIso(), Object.assign({ packlog }, optionen || {}));
   const prot = daten.protokolliere(DATEN_ORDNER, {
     datum: stand.lauf.datum, modus: stand.lauf.modus, status: stand.lauf.status,
     anzahl_alarme: stand.lauf.anzahl_alarme, versand_freigegeben: stand.lauf.versand_freigegeben,
@@ -116,6 +117,37 @@ async function routeApi(req, res, pfadName) {
       return sendeJson(res, 200, { ok: true });
     }
     return sendeFehler(res, 404, "Unbekannte Daten-Datei");
+  }
+
+  if (bereich === "pack" && rest === "fertig" && req.method === "POST") {
+    if (!pruefeOrigin(req)) return sendeFehler(res, 403, "Origin nicht erlaubt");
+    let b;
+    try { b = JSON.parse(await leseBody(req)); } catch (e) { return sendeFehler(res, 400, "Ungueltiges JSON"); }
+    if (!b || !b.auftrag_id || typeof b.dauer_s !== "number") return sendeFehler(res, 400, "auftrag_id und dauer_s (Zahl) noetig");
+    const bestand = daten.lies(DATEN_ORDNER, "bestand");
+    const auftrag = (bestand.pack_auftraege || []).find((p) => p.id === b.auftrag_id);
+    if (!auftrag) return sendeFehler(res, 404, "Auftrag nicht gefunden");
+    auftrag.status = "gepackt";
+    daten.schreibe(DATEN_ORDNER, "bestand", bestand);
+    daten.packlogEintrag(DATEN_ORDNER, { datum: heuteIso(), auftrag_id: b.auftrag_id, dauer_s: Math.round(b.dauer_s) });
+    return sendeJson(res, 200, { ok: true });
+  }
+
+  if (bereich === "pack" && rest === "order" && req.method === "POST") {
+    if (!pruefeOrigin(req)) return sendeFehler(res, 403, "Origin nicht erlaubt");
+    let b;
+    try { b = JSON.parse(await leseBody(req)); } catch (e) { return sendeFehler(res, 400, "Ungueltiges JSON"); }
+    if (!b || !b.sku) return sendeFehler(res, 400, "sku noetig");
+    const bestand = daten.lies(DATEN_ORDNER, "bestand");
+    if (!bestand.pack_auftraege) bestand.pack_auftraege = [];
+    const auftrag = {
+      id: "PA-" + heuteIso() + "-L" + (bestand.pack_auftraege.length + 1),
+      quelle: "laden", status: "offen",
+      positionen: [{ sku: b.sku, menge: Math.max(1, Math.round(b.menge || 1)) }],
+    };
+    bestand.pack_auftraege.push(auftrag);
+    daten.schreibe(DATEN_ORDNER, "bestand", bestand);
+    return sendeJson(res, 200, { ok: true, auftrag });
   }
 
   if (bereich === "mock-neu" && req.method === "POST") {

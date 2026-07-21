@@ -148,3 +148,40 @@ textarea {
 
 .fuss { padding: 16px 28px 30px; color: var(--text-schwach); font-size: 12px; border-top: 1px solid var(--linie); }
 .leer { color: var(--text-schwach); padding: 20px; }
+
+/* Groessen-Farb-Legende + Chips */
+.legende { margin: 6px 0 14px; color: var(--text-schwach); font-size: 12px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.gr-chip { display: inline-block; min-width: 26px; text-align: center; color: #06110a; font-weight: 800; font-size: 12px; padding: 2px 7px; border-radius: 5px; }
+
+/* Packstation */
+.pack-layout { display: grid; grid-template-columns: 260px 300px 1fr; gap: 16px; align-items: start; }
+@media (max-width: 1100px) { .pack-layout { grid-template-columns: 1fr; } }
+.pack-spalte { background: var(--panel); border: 1px solid var(--linie); border-radius: 12px; padding: 14px 16px; }
+.pack-spalte h3 { margin: 0 0 10px; font-size: 15px; }
+.auftrag { border: 1px solid var(--linie); border-radius: 9px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; font-size: 13px; }
+.auftrag:hover { background: var(--panel-2); }
+.auftrag.aktiv { border-color: var(--violett); background: var(--panel-2); box-shadow: 0 0 0 1px var(--violett); }
+.pack-stat { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--linie); font-size: 13px; }
+.pack-stat-klein { font-size: 12px; color: var(--text-schwach); margin-top: 4px; }
+.pick { background: var(--panel); border: 1px solid var(--linie); border-radius: 12px; padding: 14px 16px; }
+.pick h3 { margin: 0 0 10px; font-size: 15px; }
+.pick-zeile { padding: 9px 0; border-bottom: 1px solid var(--linie); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.fach-chip { background: var(--panel-2); border: 1px solid var(--violett); color: var(--violett-hell); font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
+.packplatz-zeile { font-size: 12px; color: var(--text-schwach); margin-bottom: 10px; }
+.packplatz { display: inline-block; background: var(--violett); color: #fff; font-weight: 800; padding: 3px 10px; border-radius: 6px; margin-right: 6px; }
+.zone { margin-bottom: 12px; }
+.zone-titel { font-size: 12px; color: var(--text-schwach); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.fach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+.fach { border: 1px solid var(--linie); border-radius: 8px; padding: 8px 10px; background: var(--panel-2); }
+.fach-code { font-weight: 800; font-size: 13px; }
+.fach-name { font-size: 12px; color: var(--text); margin: 2px 0; }
+.fach-count { font-size: 11px; color: var(--text-schwach); }
+.zone-P .fach-code { color: var(--violett-hell); }
+.zone-W .fach-code { color: var(--gelb); }
+.zone-L .fach-code { color: var(--rot); }
+.fach.leucht { border-color: var(--violett); box-shadow: 0 0 0 2px var(--violett); background: rgba(139,92,246,.18); }
+
+/* Laden-Scan */
+.scan-input { flex: 1 1 320px; background: #0f0c17; color: var(--text); border: 1px solid var(--violett); border-radius: 9px; padding: 12px 14px; font-size: 16px; }
+.ort-chips { display: flex; gap: 10px; flex-wrap: wrap; margin: 6px 0; }
+.ort-chip { background: var(--panel-2); border: 1px solid var(--linie); border-radius: 8px; padding: 8px 12px; font-size: 13px; }

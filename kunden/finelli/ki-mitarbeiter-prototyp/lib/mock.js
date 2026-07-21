@@ -33,6 +33,15 @@ function rngFor(sku, ord) {
 
 const FARBCODE = { Schwarz: "BLK", Grau: "GRY", Weiss: "WHT", Oliv: "OLV", Navy: "NVY", Sand: "SND", Beige: "BEI", Rot: "RED", Creme: "CRM" };
 const SIZE_W = { XS: 0.5, S: 0.9, M: 1.3, L: 1.3, XL: 0.9, XXL: 0.5, One: 1, "40": 0.6, "41": 1, "42": 1.2, "43": 1.1, "44": 0.8, "45": 0.5 };
+// Groessen-Farb-Legende: eine Farbe je Groesse, damit Mitarbeiter auf einen Blick greifen.
+const GROESSEN_FARBEN = { XS: "#8b5cf6", S: "#34c26b", M: "#3b82f6", L: "#e6b93b", XL: "#e5484d", XXL: "#9a92b4", One: "#9a92b4", "40": "#34c26b", "41": "#3b82f6", "42": "#e6b93b", "43": "#e5484d", "44": "#8b5cf6", "45": "#9a92b4" };
+
+// Naechstes Vorkommen eines "MM-TT"-Datums ab heute (fuer geplante Kollektionen).
+function naechstesDatum(heuteIso, mmtt) {
+  const jahr = Number(heuteIso.slice(0, 4));
+  const kandidat = jahr + "-" + mmtt;
+  return heuteIso < kandidat ? kandidat : (jahr + 1) + "-" + mmtt;
+}
 const APPAREL = ["S", "M", "L", "XL"];
 const APPAREL_XXL = ["S", "M", "L", "XL", "XXL"];
 const SNKR = ["40", "41", "42", "43", "44", "45"];
@@ -55,7 +64,17 @@ const KATALOG = [
   { id: "PANT-01", name: "Track Pant", kat: "Hosen", her: "Zurich Denim", wbz: [25, 40, 60], tr: 3, moq: 40, ek: 24, vk: 99, groessen: APPAREL, farben: ["Schwarz", "Navy"], rate: 0.10, szen: "normal" },
   { id: "TEE-04", name: "Longsleeve", kat: "T-Shirts", her: "Porto Tees", wbz: [14, 21, 30], tr: 2, moq: 100, ek: 11, vk: 45, groessen: APPAREL, farben: ["Weiss", "Schwarz"], rate: 0.09, szen: "normal" },
   { id: "CAP-02", name: "Trucker Cap", kat: "Caps", her: "Basel Headwear", wbz: [20, 30, 45], tr: 2, moq: 48, ek: 6, vk: 32, groessen: ["One"], farben: ["Schwarz", "Rot"], rate: 0.14, szen: "normal" },
+  { id: "TEE-05", name: "Heavy Tee", kat: "T-Shirts", her: "Porto Tees", wbz: [14, 21, 30], tr: 2, moq: 100, ek: 12, vk: 55, groessen: APPAREL, farben: ["Schwarz", "Weiss"], rate: 0.30, szen: "ladenholen", online: 0.85 },
 ];
+
+// Embrach-Fach-Praefix je Szenario: P = Packzone (Top-Seller nah am Packplatz),
+// W = Saison, L = Langsamdreher, S = Standard.
+function embrachPraefix(szen) {
+  if (szen === "alarm" || szen === "moq" || szen === "ladenholen") return "P";
+  if (szen === "saison") return "W";
+  if (szen === "ladenhueter") return "L";
+  return "S";
+}
 
 function baueVarianten(m) {
   const out = [];
@@ -85,14 +104,22 @@ function generiere(heuteIso) {
   const positionen = [];
   const last30 = new Map();
   const total365 = new Map();
+  const embrachZaehler = { P: 0, W: 0, L: 0, S: 0 };
 
-  for (const m of KATALOG) {
+  KATALOG.forEach((m, mi) => {
     const varianten = baueVarianten(m);
+    const px = embrachPraefix(m.szen);
+    embrachZaehler[px] += 1;
+    const faecher = {
+      front: "A" + (mi + 1), reserve: "R" + (mi + 1), untergeschoss: "U" + (mi + 1),
+      embrach: px + embrachZaehler[px],
+    };
+    if (m.saison) faecher.geplant_ab = naechstesDatum(heuteIso, m.saison.von);
     modelle.push({
       modell_id: m.id, name: m.name, kategorie: m.kat, hersteller: m.her,
       lieferzeit_min_tage: m.wbz[0], lieferzeit_typisch_tage: m.wbz[1], lieferzeit_max_tage: m.wbz[2],
       transferzeit_tage: m.tr, moq: m.moq, ek: m.ek, vk: m.vk,
-      nos: m.szen !== "saison", saison_fenster: m.saison || null, varianten,
+      nos: m.szen !== "saison", saison_fenster: m.saison || null, faecher, varianten,
     });
 
     for (const v of varianten) {
@@ -108,7 +135,7 @@ function generiere(heuteIso) {
         const r = rngFor(v.sku, ord);
         const menge = tagesMenge(m.rate * gw, r);
         if (menge <= 0) continue;
-        const online = r() < 0.55;
+        const online = r() < (m.online || 0.55);
         verkaeufe.push({
           sku: v.sku, datum, menge,
           kanal: online ? "online" : "laden",
@@ -124,14 +151,15 @@ function generiere(heuteIso) {
       const erhalten = m.szen === "ladenhueter" ? 20 : Math.max(4, Math.round(sum365 * 1.25));
       wareneingaenge.push({ sku: v.sku, datum: ausOrdinal(ordHeute - 200), menge: erhalten });
     }
-  }
+  });
 
-  // ---------- Bestand (aktuell) je Szenario ----------
+  // ---------- Bestand (aktuell) je Szenario, aufgeteilt Front/Reserve/Untergeschoss ----------
   for (const m of modelle) {
     const tmpl = KATALOG.find((k) => k.id === m.modell_id);
     m.varianten.forEach((v, i) => {
       const ta = (last30.get(v.sku) || 0) / 30;
       let laden = 0, embrach = 0, kundenorders = 0, stockout = 0;
+      let front = null; // wenn gesetzt, ueberschreibt die 40/30/30-Aufteilung
 
       if (tmpl.szen === "alarm") {
         const stock = Math.max(1, Math.round(ta * 8)); // Reichweite ~8 Tage -> ROT
@@ -140,6 +168,8 @@ function generiere(heuteIso) {
       } else if (tmpl.szen === "moq") {
         const stock = Math.max(1, Math.round(ta * 12)); // knapp -> ROT, aber Bedarf < MOQ
         laden = Math.round(stock * 0.45); embrach = stock - laden;
+      } else if (tmpl.szen === "ladenholen") {
+        front = 1; laden = 1; embrach = Math.max(8, Math.round(ta * 40)); // Online-Renner: Laden fast leer, Embrach voll
       } else if (tmpl.szen === "umlagerung") {
         if (i === 0) { laden = 0; embrach = Math.max(8, Math.round(ta * 40)); } // Laden leer, Embrach voll
         else { const s = Math.max(2, Math.round(ta * 55)); laden = Math.round(s * 0.5); embrach = s - laden; }
@@ -151,19 +181,38 @@ function generiere(heuteIso) {
         const s = Math.max(3, Math.round(ta * 70)); // Reichweite ~10 Wochen -> GRUEN
         laden = Math.round(s * 0.4); embrach = s - laden;
       }
-      positionen.push({ sku: v.sku, laden, embrach, offene_kundenorders: kundenorders, stockout_tage_t30: stockout });
+
+      let f, res, ug;
+      if (front !== null) { f = front; res = 0; ug = 0; }
+      else { f = Math.round(laden * 0.4); res = Math.round(laden * 0.3); ug = laden - f - res; }
+      positionen.push({
+        sku: v.sku, front: f, reserve: res, untergeschoss: ug, embrach,
+        offene_kundenorders: kundenorders, stockout_tage_t30: stockout,
+      });
     });
   }
+
+  // ---------- Offene Pack-Auftraege (fuer die Packstation) ----------
+  const packAuftraege = [];
+  modelle.filter((m) => KATALOG.find((k) => k.id === m.modell_id).szen === "alarm")
+    .slice(0, 3).forEach((m, k) => {
+      packAuftraege.push({
+        id: "PA-" + heuteIso + "-" + (k + 1),
+        quelle: "online",
+        status: "offen",
+        positionen: m.varianten.slice(0, 2).map((v) => ({ sku: v.sku, menge: 1 })),
+      });
+    });
 
   const offeneBestellungen = [
     { modell_id: "CARGO-01", menge: 40, erwartet_am: ausOrdinal(ordHeute + 12) },
   ];
 
   return {
-    stammdaten: { modelle },
+    stammdaten: { modelle, groessen_farben: GROESSEN_FARBEN },
     verkaeufe: { eintraege: verkaeufe },
     wareneingaenge: { eintraege: wareneingaenge },
-    bestand: { stand_datum: heuteIso, positionen, offene_bestellungen: offeneBestellungen },
+    bestand: { stand_datum: heuteIso, positionen, offene_bestellungen: offeneBestellungen, pack_auftraege: packAuftraege },
     config: { sauber_seit: ausOrdinal(ordHeute - 40), erzeugt: heuteIso, quelle: "mock" },
     dossier: baueMockDossier(heuteIso),
   };

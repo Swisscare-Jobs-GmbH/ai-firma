@@ -31,6 +31,7 @@ function fuehreLauf(daten, heute, optionen) {
     modus: opt.modus || "MOCK",
     status: opt.dritt_ausfall ? "dritt-ausfall" : "ok",
     dritt_ausfall: opt.dritt_ausfall || null,
+    packlog: opt.packlog || { eintraege: [] },
   });
   const dossier = ladeDossier(daten);
 

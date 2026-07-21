@@ -82,4 +82,24 @@ function protokolliere(ordner, laufInfo) {
   return { neu: !schonDa, protokoll: prot };
 }
 
-module.exports = { DATEIEN, stelleSicher, neuMock, ladeAlle, schreibe, lies, ladeProtokoll, protokolliere };
+// ---------- Packlog (Pack-Zeiten der Mitarbeiter) ----------
+
+function packlogPfad(ordner) {
+  return path.join(ordner, "packlog.json");
+}
+
+function ladePacklog(ordner) {
+  const p = packlogPfad(ordner);
+  if (!fs.existsSync(p)) return { eintraege: [] };
+  try { return JSON.parse(fs.readFileSync(p, "utf8")); } catch (e) { return { eintraege: [] }; }
+}
+
+function packlogEintrag(ordner, eintrag) {
+  const log = ladePacklog(ordner);
+  log.eintraege.push(eintrag);
+  if (log.eintraege.length > 200) log.eintraege = log.eintraege.slice(-200);
+  fs.writeFileSync(packlogPfad(ordner), JSON.stringify(log, null, 2), "utf8");
+  return log;
+}
+
+module.exports = { DATEIEN, stelleSicher, neuMock, ladeAlle, schreibe, lies, ladeProtokoll, protokolliere, ladePacklog, packlogEintrag };

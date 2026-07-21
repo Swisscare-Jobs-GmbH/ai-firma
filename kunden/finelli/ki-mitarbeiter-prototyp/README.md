@@ -24,6 +24,20 @@ Dann im Browser: **http://127.0.0.1:8030** (bindet nur auf 127.0.0.1). Tests: `n
 
 Orchestriert vom **Tageslauf** (`lib/lauf.js`): Snapshot -> Einschaetzung -> Berichte -> Vor-Versand-Check.
 
+## Die 4 Rollen-Ansichten (Lager-Layout, Spec [lager-layout-rollen](../2026-07-21-lager-layout-rollen-spec.md))
+
+4 Lager-Orte mit beschrifteten Faechern (Name + Groessen-Farbe): **Laden-Front** (`A*`) ·
+**Laden-Reserve** (`R*`) · **Untergeschoss** (`U*`, inkl. geplanter Kollektionen) ·
+**Embrach** (Zonen: Packzone `P*` mit Top-Sellern nah am Packplatz · Standard `S*` · Saison `W*` ·
+Langsamdreher `L*`).
+
+| Tab | Rolle | Was sie kann |
+|---|---|---|
+| **Packstation** | Packer online | 2D-Karte Embrach, offene Pakete, Pickliste mit Farbpunkt + fetter Groesse + Fach, Start/Fertig-Timer (Tempo-Messung als transparente Prozess-Messung, nicht Ueberwachung). |
+| **Laden-Scan** | Laden-Mitarbeiter | Artikel scannen -> sofort wo welche Groesse liegt (Front/Reserve/UG/Embrach). Fehlt die Groesse im Laden: **Online-Order fuer den Kunden aufnehmen** (Kunde nicht verlieren). |
+| **Logistik** | Logistik-Leiter | Empfehlungen: nachbestellen · Online-Renner in den Laden holen · letzte Stuecke praesentieren · umlagern · Slotting; Lager-Landkarte der 4 Orte. |
+| **Uebersicht / Berichte** | Manager | Die 3 KI-Mitarbeiter-Berichte + Top-vs-Dead. |
+
 ## Wichtigste Regeln (aus dem Bauplan)
 
 - **Liest nur, bucht nie Bestand** — alle Ausgaben sind Empfehlungen; buchen tut ein Mensch.
@@ -63,8 +77,8 @@ Direkt: die Dateien in `daten/*.json` ersetzen. Fehlen sie, erzeugt der Server M
 
 ## Abnahme-Beweis (Stand 2026-07-21)
 
-- `node tests/test.js` → **18/18 gruen** (Formeln handnachgerechnet, ABC, Idempotenz,
-  Vor-Versand-Check blockt manipulierte Zahl).
+- `node tests/test.js` → **24/24 gruen** (Formeln handnachgerechnet, ABC, Idempotenz,
+  Vor-Versand-Check blockt manipulierte Zahl, Faecher/Packzone, Pack-Auftraege, Logistik-Hinweise).
 - `GET /api/stand` end-zu-end: 16 Modelle, 3 ROT-Alarme, alle Checks ok.
 - Browser-Klick auf "Bestell-Alarme" → volle Alarm-Karten mit Rechenweg + Trend-Einschaetzung.
 - Alle Pflicht-Szenarien im Mock belegt: ROT-Alarm (A), MOQ>Ziel-Entscheidungsfall,

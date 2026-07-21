@@ -16,7 +16,14 @@ const ZIEL_REICHWEITE_WOCHEN = 8; // mit Co-Founder final festzulegen (Bauplan A
 
 function bestandVariante(bestandIndex, sku) {
   const p = bestandIndex.get(sku);
-  return p || { laden: 0, embrach: 0, offene_kundenorders: 0 };
+  if (!p) return { laden: 0, front: 0, reserve: 0, untergeschoss: 0, embrach: 0, offene_kundenorders: 0, stockout_tage_t30: 0 };
+  // Laden = Front + Reserve + Untergeschoss (neues Modell) ODER direktes laden-Feld (alt/echt).
+  const front = p.front || 0, reserve = p.reserve || 0, untergeschoss = p.untergeschoss || 0;
+  const laden = p.front !== undefined ? front + reserve + untergeschoss : (p.laden || 0);
+  return {
+    laden, front, reserve, untergeschoss, embrach: p.embrach || 0,
+    offene_kundenorders: p.offene_kundenorders || 0, stockout_tage_t30: p.stockout_tage_t30 || 0,
+  };
 }
 
 function offeneBestellungModell(offeneBestellungen, modellId) {

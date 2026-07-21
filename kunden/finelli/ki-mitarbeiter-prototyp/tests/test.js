@@ -137,4 +137,32 @@ pruef("MOQ-ueber-Ziel-Entscheidungsfall kommt vor", () => {
   assert.ok(hatMoqFall, "erwarte mind. 1 Artikel mit moq_ueber_ziel");
 });
 
+console.log("Lager-Layout + Rollen:");
+
+pruef("Jedes Modell hat Faecher (front/reserve/untergeschoss/embrach)", () => {
+  for (const a of stand.snapshot.artikel) {
+    assert.ok(a.faecher && a.faecher.front && a.faecher.reserve && a.faecher.untergeschoss && a.faecher.embrach, "fehlt bei " + a.modell_id);
+  }
+});
+pruef("Mindestens 1 Modell liegt in der Packzone (Embrach-Fach P*)", () => {
+  assert.ok(stand.snapshot.artikel.some((a) => a.faecher.embrach[0] === "P"));
+});
+pruef("bestandVariante: laden = front + reserve + untergeschoss", () => {
+  const idx = new Map([["Z-1", { front: 4, reserve: 3, untergeschoss: 2, embrach: 10 }]]);
+  const b = B.bestandVariante(idx, "Z-1");
+  assert.strictEqual(b.laden, 9);
+  assert.strictEqual(b.embrach, 10);
+});
+pruef("Mindestens 1 offener Pack-Auftrag mit Fach + Farbe", () => {
+  assert.ok(stand.snapshot.pack.auftraege.length >= 1);
+  const pos = stand.snapshot.pack.auftraege[0].positionen[0];
+  assert.ok(pos.fach && pos.groesse && pos.name);
+});
+pruef("Logistik-Hinweis 'laden_holen' (Online-Renner) kommt vor", () => {
+  assert.ok(stand.snapshot.logistik_hinweise.some((h) => h.typ === "laden_holen"), JSON.stringify(stand.snapshot.logistik_hinweise.map((h) => h.typ)));
+});
+pruef("Logistik-Hinweis 'letzte_stuecke' oder 'slotting' kommt vor", () => {
+  assert.ok(stand.snapshot.logistik_hinweise.some((h) => h.typ === "letzte_stuecke" || h.typ === "slotting"));
+});
+
 console.log("\nAlle " + n + " Tests bestanden.");
