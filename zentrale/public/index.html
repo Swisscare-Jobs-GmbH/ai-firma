@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIWorks Zentrale</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+  <script src="modell.js" defer></script>
+  <script src="kunden.js" defer></script>
+  <script src="workflows.js" defer></script>
+  <script src="claude.js" defer></script>
+  <script src="einstellungen.js" defer></script>
+</head>
+<body>
+  <div id="app">
+    <nav id="seitenleiste">
+      <div id="logo">AIWorks Zentrale</div>
+      <button class="nav-btn" data-view="dashboard">Dashboard</button>
+      <button class="nav-btn" data-view="kunden">Kunden</button>
+      <button class="nav-btn" data-view="workflows">Workflows</button>
+      <button class="nav-btn" data-view="claude">Claude</button>
+      <button class="nav-btn" data-view="einstellungen">Einstellungen</button>
+    </nav>
+    <main id="ansicht"></main>
+  </div>
+  <div id="toast-container"></div>
+</body>
+</html>

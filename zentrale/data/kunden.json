@@ -1,0 +1,28 @@
+{
+  "kunden": [
+    {
+      "id": "k_swisscare",
+      "name": "SwissCare",
+      "branche": "Serum/CRM, internes Produkt (Kunde 0)",
+      "status": "in_arbeit",
+      "notizen": "Läuft produktiv, wird laufend betreut. Repo auf SA-Rechner (C:/dev/swisscare-crm). Daten-Wand beachten: nie mit ai-firma-Daten mischen.",
+      "aktualisiert": "2026-07-20"
+    },
+    {
+      "id": "k_finelli",
+      "name": "Finelli",
+      "branche": "Streetwear Zürich, Lager-App auf Shopify",
+      "status": "in_arbeit",
+      "notizen": "Angebot V6 überreicht 19.07. Deal 2500 + 1000/Mt. Produktions-Repo finelli-lagerverwaltung (Phase 1, noch kein Code). Verkaufs-Demo Cockpit auf SA-Rechner.",
+      "aktualisiert": "2026-07-20"
+    },
+    {
+      "id": "k_gzf",
+      "name": "GzF (Gut zu Fuss)",
+      "branche": "Orthopädie Rorschach, Kundendatenbank + Mail-Flows",
+      "status": "offen",
+      "notizen": "Phase 0-1. Budget-Deckel 850/Mt. Schmerz-Gespräch ausstehend, Inhaber Farhad Akbarzada. Noch kein Repo.",
+      "aktualisiert": "2026-07-20"
+    }
+  ]
+}
