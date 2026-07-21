@@ -22,6 +22,7 @@ async function laden(post) {
   renderUebersicht();
   renderPack();
   renderLadenScan();
+  renderHandyScan();
   renderLogistik();
   renderAlarme();
   renderBericht("woche", stand.berichte.woche);
@@ -394,6 +395,79 @@ function renderLogistik() {
 }
 function ortKachel(name, stueck) {
   return '<div class="kachel"><div class="titel">' + esc(name) + '</div><div class="wert">' + stueck + '</div><div class="zusatz">Stueck</div></div>';
+}
+
+// ---------- Handy-Scan (Kamera-App, Demo) ----------
+function renderHandyScan() {
+  // Schnell-Scan-Buttons: erster Artikel, ein Online-Renner, eine Groesse die NICHT im Laden ist.
+  const arts = stand.snapshot.artikel;
+  const chips = [];
+  const benutzt = new Set();
+  if (arts[0]) { chips.push(arts[0].varianten[0].sku); benutzt.add(arts[0].modell_id); }
+  // Online-Renner (hoechster Online-Anteil, anderes Modell)
+  const online = arts.filter((a) => a.online_anteil_t30 >= 60 && !benutzt.has(a.modell_id))
+    .sort((a, b) => b.online_anteil_t30 - a.online_anteil_t30)[0];
+  if (online) { chips.push(online.varianten[Math.min(1, online.varianten.length - 1)].sku); benutzt.add(online.modell_id); }
+  // Eine Groesse, die NICHT im Laden ist (drittes Modell) -> zeigt die Order-Aufnahme
+  for (const a of arts) {
+    if (benutzt.has(a.modell_id)) continue;
+    const v = a.varianten.find((v) => (v.bestand_front + v.bestand_reserve + v.bestand_untergeschoss) === 0 && v.bestand_embrach > 0);
+    if (v) { chips.push(v.sku); break; }
+  }
+  const uniq = [...new Set(chips)];
+
+  el("handyscan").innerHTML =
+    '<div class="daten-hinweis">So sieht der Mitarbeiter es auf dem Handy: Artikel mit der Kamera scannen, sofort steht da, wo die Groesse liegt. (Demo: Code tippen oder unten antippen — die echte App scannt den Barcode.)</div>' +
+    '<div class="handy-wrap"><div class="handy">' +
+      '<div class="handy-kamera"><div class="scanlinie"></div><span class="kamera-text">Kamera — Barcode scannen</span></div>' +
+      '<div class="handy-screen">' +
+        '<input id="handy-feld" class="handy-input" placeholder="Code tippen + Enter" />' +
+        '<div class="handy-quick">' + uniq.map((s) => '<button class="quick-chip" data-sku="' + esc(s) + '">' + esc(s) + "</button>").join("") + "</div>" +
+        '<div id="handy-ergebnis"></div>' +
+      "</div></div></div>";
+
+  const feld = el("handy-feld");
+  feld.onkeydown = (e) => { if (e.key === "Enter") handyScanne(feld.value.trim()); };
+  el("handyscan").querySelectorAll(".quick-chip").forEach((b) => {
+    b.onclick = () => { feld.value = b.dataset.sku; handyScanne(b.dataset.sku); };
+  });
+}
+
+function handyScanne(text) {
+  const ziel = el("handy-ergebnis");
+  if (!text) { ziel.innerHTML = ""; return; }
+  const t = text.toUpperCase();
+  const art = stand.snapshot.artikel.find((a) => a.modell_id === t) ||
+    stand.snapshot.artikel.find((a) => a.varianten.some((v) => v.sku === t));
+  if (!art) { ziel.innerHTML = '<div class="ht-fehler">Nicht gefunden: ' + esc(text) + "</div>"; return; }
+  const v = art.varianten.find((x) => x.sku === t) || null;
+  const orte = v
+    ? [["Laden-Front", art.faecher.front, v.bestand_front], ["Reserve", art.faecher.reserve, v.bestand_reserve], ["Untergeschoss", art.faecher.untergeschoss, v.bestand_untergeschoss], ["Embrach", art.faecher.embrach, v.bestand_embrach]]
+    : [["Laden-Front", art.faecher.front, art.bestand_detail.front], ["Reserve", art.faecher.reserve, art.bestand_detail.reserve], ["Untergeschoss", art.faecher.untergeschoss, art.bestand_detail.untergeschoss], ["Embrach", art.faecher.embrach, art.bestand_detail.embrach]];
+  const naechste = orte.find((o) => o[2] > 0);
+
+  let h = '<div class="handy-treffer"><div class="ht-name">' + esc(art.name) + (v ? " " + groesseChip(v.groesse) + " " + esc(v.groesse) + "/" + esc(v.farbe) : "") + "</div>";
+  if (naechste) {
+    h += '<div class="ht-ziel">Geh zu <span class="fach-chip">' + esc(naechste[1]) + "</span> " + esc(naechste[0]) + " · <strong>" + naechste[2] + "</strong> St.</div>";
+  } else {
+    h += '<div class="ht-ziel warn">Nirgends auf Lager.</div>';
+  }
+  h += '<div class="ht-orte">' + orte.map((o) => '<div class="ht-ort' + (o[2] > 0 ? "" : " leer") + '">' + esc(o[0]) + " <span class='fach-mini'>" + esc(o[1]) + "</span> <strong>" + o[2] + "</strong></div>").join("") + "</div>";
+  const imLaden = v ? (v.bestand_front + v.bestand_reserve + v.bestand_untergeschoss) : (art.bestand_detail.front + art.bestand_detail.reserve + art.bestand_detail.untergeschoss);
+  if (imLaden === 0) {
+    const sku = v ? v.sku : art.varianten[0].sku;
+    h += '<div class="ht-warn">Nicht im Laden — Order fuer den Kunden aufnehmen.</div>' +
+      '<button class="btn btn-primaer" id="btn-order-h" data-sku="' + esc(sku) + '" style="width:100%;margin-top:8px">Online-Order aufnehmen</button><div class="status-text" id="order-h-status"></div>';
+  }
+  h += "</div>";
+  ziel.innerHTML = h;
+  const bo = el("btn-order-h");
+  if (bo) bo.onclick = async () => {
+    const res = await fetch("/api/pack/order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sku: bo.dataset.sku, menge: 1 }) });
+    const j = await res.json();
+    el("order-h-status").textContent = res.ok ? "Order aufgenommen: " + j.auftrag.id : "Fehler: " + j.fehler;
+    el("order-h-status").className = "status-text " + (res.ok ? "ok" : "fehler");
+  };
 }
 
 // ---------- Tabs + Knoepfe ----------

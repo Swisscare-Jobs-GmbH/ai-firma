@@ -35,6 +35,7 @@ Langsamdreher `L*`).
 |---|---|---|
 | **Packstation** | Packer online | 2D-Karte Embrach, offene Pakete, Pickliste mit Farbpunkt + fetter Groesse + Fach, Start/Fertig-Timer (Tempo-Messung als transparente Prozess-Messung, nicht Ueberwachung). |
 | **Laden-Scan** | Laden-Mitarbeiter | Artikel scannen -> sofort wo welche Groesse liegt (Front/Reserve/UG/Embrach). Fehlt die Groesse im Laden: **Online-Order fuer den Kunden aufnehmen** (Kunde nicht verlieren). |
+| **Handy-Scan** | Laden-Mitarbeiter mobil | Gleiche Funktion im Telefon-Rahmen mit Kamera-Optik (Demo: Code tippen / antippen; die echte App scannt den Barcode). "Geh zu Fach X" + Order-Aufnahme. |
 | **Logistik** | Logistik-Leiter | Empfehlungen: nachbestellen · Online-Renner in den Laden holen · letzte Stuecke praesentieren · umlagern · Slotting; Lager-Landkarte der 4 Orte. |
 | **Uebersicht / Berichte** | Manager | Die 3 KI-Mitarbeiter-Berichte + Top-vs-Dead. |
 
