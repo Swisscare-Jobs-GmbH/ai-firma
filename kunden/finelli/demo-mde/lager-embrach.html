@@ -232,6 +232,8 @@ const getC=id=>CAT.find(c=>c.id===id);
 const si=(c,s)=>c.sizes.indexOf(s);
 const embSum=c=>c.q.embrach.reduce((a,b)=>a+b,0);
 const frontSum=c=>c.q.front.reduce((a,b)=>a+b,0);
+const ladenSum=c=>['front','reserve','ug'].reduce((a,o)=>a+c.q[o].reduce((x,y)=>x+y,0),0);
+const melde=c=>({A:15,B:12,C:8,D:6}[c.abc]||10);
 
 /* ===== Wareneingang-Warteschlange (was reinkommt) ===== */
 const EINGANG=[
@@ -296,7 +298,7 @@ function rScan(){
      <div class="row" style="align-items:center;gap:8px;margin:10px 0"><span class="szd" style="background:${szf(inp.size)}"></span><b style="font-size:22px">${inp.size}</b><span class="mut">${esc(c.kat)}</span></div>
      <div class="ct" style="margin-bottom:6px">Fach:</div>
      <span class="fach mono" style="font-size:15px;padding:8px 12px">→ ${c.fach.embrach} · ${zoneName(c.fach.embrach)}</span>
-     ${lagerkarte([c.fach.embrach])}
+     ${lagerkarte([{code:c.fach.embrach,size:inp.size}])}
      <div class="fld" style="margin-top:14px"><label>Menge</label>
        <div class="step-in"><button onclick="mStep(-1)">−</button><span class="v" id="mv">1</span><button onclick="mStep(1)">+</button></div></div>
      <button class="b full" onclick="einbuchen()">${S.offline?'In Warteschlange':'Einbuchen'}</button>
@@ -355,7 +357,9 @@ function rPack(){
     <span class="cv">${done?'✓':'›'}</span></button>`;
  }).join('');
  const st=S.packStat;const avg=Math.round(st.summe/Math.max(1,st.anzahl));
- $('v-pack').innerHTML=head('Packstation','Auftrag wählen. Karte zeigt den Weg.')+list+`
+ const offen=S.pack.filter(o=>o.status!=='gepackt').length;
+ const offenBanner=`<div class="c" style="border-left:4px solid ${offen>0?'var(--red)':'var(--g)'};display:flex;align-items:center;gap:12px"><div style="font-size:30px;font-weight:800;color:${offen>0?'var(--red)':'var(--g)'}">${offen}</div><div><div style="font-weight:700">${offen>0?`Bestellung${offen===1?'':'en'} heute noch offen`:'Alles gepackt heute'}</div><div class="mut">${offen>0?'Auftrag wählen, die Karte zeigt den Weg.':'Keine offenen Aufträge mehr.'}</div></div></div>`;
+ $('v-pack').innerHTML=head('Packstation','Auftrag wählen. Karte zeigt den Weg.')+offenBanner+list+`
   <div class="c"><h2>Tempo heute</h2>
    <div class="row" style="gap:22px"><div><div style="font-size:26px;font-weight:800">${st.anzahl}</div><div class="mut">Pakete gepackt</div></div>
    <div><div style="font-size:26px;font-weight:800">${Math.floor(avg/60)}:${String(avg%60).padStart(2,'0')}</div><div class="mut">Ø Pack-Zeit (Min)</div></div></div>
@@ -364,7 +368,7 @@ function rPack(){
 function openPa(i){S.activePa=i;S.tmrStart=0;clearInterval(S.tmrId);render();}
 function rPackDetail(){
  const o=S.pack[S.activePa];const t=PA_TPL[o.tpl];
- const hotFaecher=t.pos.map(p=>getC(p[0]).fach.embrach);
+ const hotFaecher=t.pos.map(p=>({code:getC(p[0]).fach.embrach,size:p[1]}));
  const pick=t.pos.map(p=>{const c=getC(p[0]);return `<div class="pzline"><span class="szd" style="background:${szf(p[1])}"></span><b style="font-size:16px;min-width:34px">${p[1]}</b><span style="flex:1">${esc(c.name)}</span><span class="fach mono">${c.fach.embrach}</span> <span class="mut">×${p[2]}</span></div>`;}).join('');
  const running=S.tmrStart>0;
  $('v-pack').innerHTML=head('Packstation')+`
@@ -396,8 +400,10 @@ function tmrFertig(){
 /* ===== Lager-Karte: Raum von oben, Regale an den Waenden, Laufrunde im Gang ===== */
 function lagerkarte(hot){
  hot=hot||[];
+ /* hot akzeptiert 'P3' ODER {code:'P3',size:'M'} -> Fuellung leuchtet in Groessen-Farbe beim Greifen */
+ const hotMap={};hot.forEach(h=>{if(typeof h==='string')hotMap[h]=null;else if(h&&h.code)hotMap[h.code]=h.size||null;});
  const order=[];[['P',6],['S',6],['W',4],['L',4]].forEach(([p,n])=>{for(let i=1;i<=n;i++)order.push(p+i);});
- const zoneCol={P:'#a8271c',S:'#c9c6c1',W:'#3a6ea5',L:'#8a8891'};
+ const zoneCol={P:'#a8271c',S:'#9a9790',W:'#2f8f8f',L:'#7a5a3a'};/* Zonen-Rahmen geschaerft: Packzone/Standard/Saison/Langsamdreher */
  /* Regal-Balken an den Waenden, in Laufreihenfolge (Runde ab Packplatz) */
  const segs=[
   {x:46,y:256,w:80,h:30,n:2,vert:false,rev:true},   // unten-links
@@ -417,13 +423,13 @@ function lagerkarte(hot){
  s+='<path d="M66 145 l-5 8 l10 0 z" fill="#c9a24a"/><path d="M160 60 l8 5 l0 -10 z" fill="#c9a24a"/><path d="M254 155 l5 -8 l-10 0 z" fill="#c9a24a"/><path d="M160 240 l-8 -5 l0 10 z" fill="#c9a24a"/>';
  s+='<rect x="132" y="308" width="56" height="6" fill="#faf9f7"/><text x="160" y="304" text-anchor="middle" font-size="10" fill="#8a8891">Eingang</text>';
  s+='<rect x="134" y="252" width="52" height="40" rx="6" fill="#17161a"/><text x="160" y="269" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">Pack-</text><text x="160" y="280" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">platz</text>';
- cells.forEach(c=>{const isHot=hot.includes(c.code);
-   s+=`<rect x="${(c.x+1.5).toFixed(1)}" y="${(c.y+1.5).toFixed(1)}" width="${(c.w-3).toFixed(1)}" height="${(c.h-3).toFixed(1)}" rx="3" fill="${isHot?'#a8271c':'#fff'}" stroke="${isHot?'#a8271c':zoneCol[c.code[0]]}" stroke-width="${isHot?2.5:1.5}"/>`;
+ cells.forEach(c=>{const isHot=c.code in hotMap;const hsz=isHot?hotMap[c.code]:null;const glow=hsz?szf(hsz):'#17161a';
+   s+=`<rect x="${(c.x+1.5).toFixed(1)}" y="${(c.y+1.5).toFixed(1)}" width="${(c.w-3).toFixed(1)}" height="${(c.h-3).toFixed(1)}" rx="3" fill="${isHot?glow:'#fff'}" stroke="${isHot?glow:zoneCol[c.code[0]]}" stroke-width="${isHot?2.8:1.8}"/>`;
    s+=`<text x="${c.cx.toFixed(1)}" y="${(c.cy+3.2).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="${isHot?'#fff':'#4b4951'}">${c.code}</text>`;});
- cells.filter(c=>hot.includes(c.code)).forEach(c=>{s+=`<circle class="puls" cx="${c.cx.toFixed(1)}" cy="${c.cy.toFixed(1)}" r="13" fill="none" stroke="#a8271c" stroke-width="2.5"/>`;});
+ cells.filter(c=>c.code in hotMap).forEach(c=>{const hsz=hotMap[c.code];const ring=hsz?szf(hsz):'#17161a';s+=`<circle class="puls" cx="${c.cx.toFixed(1)}" cy="${c.cy.toFixed(1)}" r="13" fill="none" stroke="${ring}" stroke-width="2.5"/>`;});
  s+='</svg>';
- const leg='<div class="mapleg"><span><i style="background:var(--red)"></i>Packzone</span><span><i style="background:#c9c6c1"></i>Standard</span><span><i style="background:#3a6ea5"></i>Saison</span><span><i style="background:#8a8891"></i>Langsamdreher</span></div>';
- return `<div class="map">${s}${leg}<div class="mut" style="text-align:center;margin-top:6px">Regale an den Wänden. Pfeil = Laufrunde.</div></div>`;
+ const leg='<div class="mapleg"><span><i style="background:#a8271c"></i>Packzone</span><span><i style="background:#9a9790"></i>Standard</span><span><i style="background:#2f8f8f"></i>Saison</span><span><i style="background:#7a5a3a"></i>Langsamdreher</span></div>';
+ return `<div class="map">${s}${leg}<div class="mut" style="text-align:center;margin-top:6px">Rahmen = Zone · Füllung leuchtet in Grössen-Farbe beim Greifen · Pfeil = Laufrunde.</div></div>`;
 }
 
 /* ================= LAGER-KARTE (Ordnung) ================= */
@@ -451,7 +457,7 @@ function rNach(){
  let h=head('Nachschub','Was mit in den Laden muss. Du entscheidest.');
 
  h+=card('Nachbestellen (unter Meldebestand)','var(--red)',
-   nach.length?nach.map(c=>`<div class="pzline"><b>${esc(c.name)}</b> <span class="mut">ABC ${c.abc} · online ${c.online}%</span><span style="margin-left:auto"><span class="chip r">prüfen</span></span></div>`).join(''):'<div class="mut">Aktuell keine Modelle im roten Bereich.</div>');
+   nach.length?nach.map(c=>{const best=ladenSum(c),mb=melde(c);return `<div class="pzline"><b>${esc(c.name)}</b> <span class="mut">ABC ${c.abc} · online ${c.online}%</span><span style="margin-left:auto;display:flex;align-items:center;gap:8px"><span class="mono" style="font-size:12px">Bestand ${best} / Melde ${mb}</span><span class="chip r">nachbestellen</span></span></div>`;}).join(''):'<div class="mut">Aktuell keine Modelle im roten Bereich.</div>');
 
  h+=card('Online-Renner in den Laden holen','var(--y)',
    holen.length?holen.map(c=>`<div class="pzline"><span class="szd" style="background:${szf('M')}"></span><b>${esc(c.name)}</b><span class="mut" style="margin-left:6px">online ${c.online}% · Laden fast leer, Embrach ${embSum(c)}×</span></div>`).join(''):'<div class="mut">—</div>');
