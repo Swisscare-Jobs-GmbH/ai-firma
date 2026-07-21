@@ -1,12 +1,15 @@
 // workflows.js
 // Visueller Node-Editor fuer Workflows (Stil: n8n), komplett lokal gebaut.
 // Registriert sich als window.views.workflows. Keine externen Skripte, kein Framework.
+// Voll nutzbar: Bedingungen verzweigen echt (ja/nein), Aktionen fuehren echt aus,
+// Claude-Ergebnisse fliessen ueber Variablen ({{name}}) in nachfolgende Nodes.
 (function () {
   "use strict";
 
   const CANVAS_BREITE = 2400;
   const CANVAS_HOEHE = 1400;
-  const NODE_BREITE = 160;
+  const NODE_BREITE = 170;
+  const MAX_SCHRITTE = 500;
 
   const NODE_TYPEN = {
     start: { icon: "▶", label: "Start" },
@@ -15,6 +18,31 @@
     aktion: { icon: "⚙", label: "Aktion" },
     notiz: { icon: "📝", label: "Notiz" }
   };
+
+  const OPERATOREN = [
+    ["enthaelt", "enthält"],
+    ["enthaelt_nicht", "enthält nicht"],
+    ["gleich", "ist gleich"],
+    ["ungleich", "ist ungleich"],
+    ["nicht_leer", "ist nicht leer"],
+    ["leer", "ist leer"],
+    ["groesser", "Zahl grösser als"],
+    ["kleiner", "Zahl kleiner als"]
+  ];
+
+  const STATUS_OPTIONEN = [
+    ["offen", "Noch nicht angefangen"],
+    ["in_arbeit", "In Bearbeitung"],
+    ["fertig", "Fertig"]
+  ];
+
+  const AKTIONS_TYPEN = [
+    ["meldung", "Meldung ins Log schreiben"],
+    ["variable_setzen", "Variable setzen"],
+    ["kunde_anlegen", "Kunde anlegen"],
+    ["kunde_status", "Kunde Status ändern"],
+    ["kunde_notiz", "Notiz an Kunde anhängen"]
+  ];
 
   let nodeZaehler = 0;
   let aktiverTastenHandler = null;
@@ -26,8 +54,16 @@
     ausgewaehlterNode: null,
     ausgewaehlteVerbindung: null,
     lauf: null,
+    kundenCache: [],
     dom: {}
   };
+
+  function esc(s) { return window.escapeHtml(s); }
+
+  function slug(s) {
+    return String(s || "").toLowerCase()
+      .replace(/[^\w]+/g, "_").replace(/^_+|_+$/g, "") || "ergebnis";
+  }
 
   // ---------- CSS ----------
 
@@ -41,33 +77,44 @@
 #wf-neu-wrap{display:none;gap:6px;align-items:center}
 #wf-neu-wrap.offen{display:inline-flex}
 #wf-editor{display:flex;gap:12px;flex:1;min-height:0}
-#wf-palette{width:170px;flex-shrink:0;display:flex;flex-direction:column;gap:8px}
-.wf-palette-kachel{cursor:grab;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;display:flex;gap:8px;align-items:center;user-select:none;font-size:13px}
+#wf-palette{width:172px;flex-shrink:0;display:flex;flex-direction:column;gap:8px}
+.wf-palette-kachel{cursor:grab;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:9px 11px;display:flex;gap:8px;align-items:center;user-select:none;font-size:13px;font-weight:600}
 .wf-palette-kachel:active{cursor:grabbing}
+.wf-palette-hilfe{font-size:11px;color:var(--muted);line-height:1.4;margin-top:4px}
 #wf-canvas-scroll{flex:1;overflow:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);min-width:0}
 #wf-canvas{position:relative;width:${CANVAS_BREITE}px;height:${CANVAS_HOEHE}px;background-image:radial-gradient(circle, var(--border) 1px, transparent 1px);background-size:24px 24px}
 #wf-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
 #wf-svg path{pointer-events:stroke}
 .wf-kurve{fill:none;stroke:var(--muted);stroke-width:2.5}
+.wf-kurve-ja{stroke:var(--gruen)}
+.wf-kurve-nein{stroke:var(--rot)}
 .wf-kurve.ausgewaehlt{stroke:var(--akzent);stroke-width:4}
 .wf-kurve-hit{fill:none;stroke:transparent;stroke-width:14;cursor:pointer}
+.wf-kurve-label{font-size:10px;font-weight:700;fill:var(--muted);pointer-events:none;user-select:none}
 .wf-gummiband{fill:none;stroke:var(--akzent);stroke-width:2;stroke-dasharray:6 4;pointer-events:none}
 .wf-node{position:absolute;width:${NODE_BREITE}px;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);z-index:1;user-select:none}
 .wf-node.ausgewaehlt{border-color:var(--akzent);box-shadow:0 0 0 2px var(--akzent)}
 .wf-node-kopf{display:flex;align-items:center;gap:6px;padding:8px 10px;cursor:move;touch-action:none}
-.wf-node-titel{flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wf-node-titel{flex:1;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .wf-node-loeschen{border:none;background:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 2px;line-height:1}
 .wf-node-loeschen:hover{color:var(--rot)}
 .wf-node-typ{padding:0 10px 8px;font-size:11px;color:var(--muted)}
 .wf-port{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--panel);border:2px solid var(--akzent);top:50%;transform:translateY(-50%);z-index:2;touch-action:none}
 .wf-port-ein{left:-7px}
 .wf-port-aus{right:-7px;cursor:crosshair}
-#wf-detail{width:280px;flex-shrink:0;overflow-y:auto;padding:12px}
+.wf-port-ja{top:34%;border-color:var(--gruen)}
+.wf-port-nein{top:66%;border-color:var(--rot)}
+.wf-port-label{position:absolute;right:8px;font-size:9px;font-weight:700}
+.wf-port-label-ja{top:calc(34% - 6px);color:var(--gruen)}
+.wf-port-label-nein{top:calc(66% - 6px);color:var(--rot)}
+#wf-detail{width:290px;flex-shrink:0;overflow-y:auto;padding:12px}
 .wf-detail-feld{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
 .wf-detail-feld label{font-size:12px;color:var(--muted)}
-.wf-detail-feld textarea{min-height:90px;resize:vertical}
+.wf-detail-feld textarea{min-height:80px;resize:vertical}
 #wf-empfehlung{font-size:12px;color:var(--muted);margin-top:4px}
 .wf-detail-tipp{font-size:11px;color:var(--muted);margin-top:10px}
+.wf-detail-hilfe{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
+.wf-detail-hilfe code{background:var(--panel-2);padding:1px 5px;border-radius:5px;font-size:11px}
 #wf-log-panel{border:1px solid var(--border);border-radius:var(--radius);background:var(--panel);flex-shrink:0}
 #wf-log-kopf{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;user-select:none}
 #wf-log-inhalt{display:none;max-height:220px;overflow-y:auto;padding:8px 12px;font-family:ui-monospace,Consolas,monospace;font-size:12px;border-top:1px solid var(--border)}
@@ -75,6 +122,7 @@
 .wf-log-zeile{white-space:pre-wrap;margin:2px 0;color:var(--text)}
 .wf-log-zeile.fehler{color:var(--rot)}
 .wf-log-zeile.hinweis{color:var(--muted)}
+.wf-log-zeile.aktion{color:var(--akzent-hell)}
 `;
     document.head.appendChild(style);
   }
@@ -105,7 +153,9 @@
       '    </div>' +
       '  </div>' +
       '  <div id="wf-editor">' +
-      '    <aside id="wf-palette">' + kacheln + '</aside>' +
+      '    <aside id="wf-palette">' + kacheln +
+      '      <div class="wf-palette-hilfe">Ziehe Bausteine auf die Fläche. Vom rechten Punkt eine Linie zum nächsten Baustein ziehen legt die Reihenfolge fest. Bedingungen haben einen grünen (ja) und einen roten (nein) Ausgang.</div>' +
+      '    </aside>' +
       '    <div id="wf-canvas-scroll"><div id="wf-canvas">' +
       '      <svg id="wf-svg" xmlns="http://www.w3.org/2000/svg"></svg>' +
       '    </div></div>' +
@@ -148,8 +198,12 @@
   }
 
   function standardConfig(typ) {
-    if (typ === "claude") return { prompt: "", modellId: "" };
-    if (typ === "bedingung" || typ === "aktion") return { beschreibung: "" };
+    if (typ === "claude") return { prompt: "", modellId: "", ergebnisVar: "" };
+    if (typ === "bedingung") return { quelle: "{{letztes}}", operator: "enthaelt", vergleich: "" };
+    if (typ === "aktion") return {
+      aktionsTyp: "meldung", text: "", varName: "", wert: "",
+      kName: "", kBranche: "", kStatus: "offen", kNotizen: "", kundeId: ""
+    };
     if (typ === "notiz") return { text: "" };
     return {};
   }
@@ -158,7 +212,30 @@
     return Math.max(min, Math.min(max, wert));
   }
 
+  function verfuegbareVariablen() {
+    const namen = ["letztes", "kunde_id"];
+    const nodes = editorState.aktuelle ? editorState.aktuelle.nodes : [];
+    nodes.forEach(function (n) {
+      if (n.typ === "claude") {
+        namen.push(((n.config && n.config.ergebnisVar) || "").trim() || slug(n.titel));
+      }
+      if (n.typ === "aktion" && n.config && n.config.aktionsTyp === "variable_setzen" && n.config.varName) {
+        namen.push(n.config.varName.trim());
+      }
+    });
+    return Array.from(new Set(namen.filter(Boolean)));
+  }
+
   // ---------- Laden und Auswahl ----------
+
+  async function ladeKunden() {
+    try {
+      const antwort = await window.api.get("/api/kunden");
+      editorState.kundenCache = antwort.kunden || [];
+    } catch (fehler) {
+      editorState.kundenCache = [];
+    }
+  }
 
   async function ladeWorkflows(auswahlId) {
     try {
@@ -178,7 +255,7 @@
   function fuelleAuswahl(auswahlId) {
     const auswahl = editorState.dom.auswahl;
     auswahl.innerHTML = editorState.workflows.map(function (w) {
-      return '<option value="' + window.escapeHtml(w.id) + '">' + window.escapeHtml(w.name) + '</option>';
+      return '<option value="' + esc(w.id) + '">' + esc(w.name) + '</option>';
     }).join("");
     if (auswahlId) auswahl.value = auswahlId;
   }
@@ -267,6 +344,16 @@
     });
   }
 
+  function baueAusPorts(node) {
+    if (node.typ === "bedingung") {
+      return '<span class="wf-port wf-port-aus wf-port-ja" data-node="' + esc(node.id) + '" data-zweig="ja" title="ja"></span>' +
+        '<span class="wf-port-label wf-port-label-ja">ja</span>' +
+        '<span class="wf-port wf-port-aus wf-port-nein" data-node="' + esc(node.id) + '" data-zweig="nein" title="nein"></span>' +
+        '<span class="wf-port-label wf-port-label-nein">nein</span>';
+    }
+    return '<span class="wf-port wf-port-aus" data-node="' + esc(node.id) + '" data-zweig=""></span>';
+  }
+
   function erstelleNodeElement(node) {
     const def = NODE_TYPEN[node.typ] || { icon: "?", label: node.typ };
     const el = document.createElement("div");
@@ -276,11 +363,11 @@
     el.style.top = node.y + "px";
     el.innerHTML =
       '<div class="wf-node-kopf"><span>' + def.icon + '</span>' +
-      '<span class="wf-node-titel">' + window.escapeHtml(node.titel || def.label) + '</span>' +
+      '<span class="wf-node-titel">' + esc(node.titel || def.label) + '</span>' +
       '<button class="wf-node-loeschen" title="Node löschen">×</button></div>' +
-      '<div class="wf-node-typ">' + window.escapeHtml(def.label) + '</div>' +
-      (node.typ !== "start" ? '<span class="wf-port wf-port-ein" data-node="' + window.escapeHtml(node.id) + '"></span>' : '') +
-      '<span class="wf-port wf-port-aus" data-node="' + window.escapeHtml(node.id) + '"></span>';
+      '<div class="wf-node-typ">' + esc(def.label) + '</div>' +
+      (node.typ !== "start" ? '<span class="wf-port wf-port-ein" data-node="' + esc(node.id) + '"></span>' : '') +
+      baueAusPorts(node);
     verdrahteNodeElement(el, node);
     return el;
   }
@@ -298,8 +385,10 @@
       if (e.target.closest(".wf-node-loeschen")) return;
       starteNodeVerschieben(e, node, el);
     });
-    el.querySelector(".wf-port-aus").addEventListener("pointerdown", function (e) {
-      starteVerbindungZiehen(e, node);
+    el.querySelectorAll(".wf-port-aus").forEach(function (port) {
+      port.addEventListener("pointerdown", function (e) {
+        starteVerbindungZiehen(e, node, port.dataset.zweig || "");
+      });
     });
   }
 
@@ -317,20 +406,32 @@
     function beiEnde() {
       document.removeEventListener("pointermove", beiBewegung);
       document.removeEventListener("pointerup", beiEnde);
+      document.removeEventListener("pointercancel", beiEnde);
     }
     document.addEventListener("pointermove", beiBewegung);
     document.addEventListener("pointerup", beiEnde);
+    document.addEventListener("pointercancel", beiEnde);
   }
 
   // ---------- Verbindungen ----------
 
-  function portKoordinaten(nodeId, seite) {
-    const node = findeNode(nodeId);
-    const el = editorState.dom.canvas.querySelector('.wf-node[data-id="' + CSS.escape(nodeId) + '"]');
-    if (!node || !el) return null;
-    const y = node.y + el.offsetHeight / 2;
-    if (seite === "aus") return { x: node.x + el.offsetWidth, y: y };
-    return { x: node.x, y: y };
+  function portKoordinaten(nodeId, seite, zweig) {
+    const canvas = editorState.dom.canvas;
+    let selektor;
+    if (seite === "aus") {
+      selektor = '.wf-node[data-id="' + CSS.escape(nodeId) + '"] .wf-port-aus' +
+        (zweig ? '[data-zweig="' + zweig + '"]' : "");
+    } else {
+      selektor = '.wf-node[data-id="' + CSS.escape(nodeId) + '"] .wf-port-ein';
+    }
+    let port = canvas.querySelector(selektor);
+    if (!port && seite === "aus") {
+      port = canvas.querySelector('.wf-node[data-id="' + CSS.escape(nodeId) + '"] .wf-port-aus');
+    }
+    if (!port) return null;
+    const r = port.getBoundingClientRect();
+    const c = canvas.getBoundingClientRect();
+    return { x: r.left + r.width / 2 - c.left, y: r.top + r.height / 2 - c.top };
   }
 
   function bezierPfad(von, zu) {
@@ -347,17 +448,29 @@
     return pfad;
   }
 
+  function textElement(x, y, text) {
+    const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    t.setAttribute("x", x);
+    t.setAttribute("y", y);
+    t.setAttribute("class", "wf-kurve-label");
+    t.textContent = text;
+    return t;
+  }
+
   function zeichneVerbindungen() {
     const svg = editorState.dom.svg;
     svg.innerHTML = "";
     if (!editorState.aktuelle) return;
     editorState.aktuelle.verbindungen.forEach(function (verbindung, index) {
-      const von = portKoordinaten(verbindung.von, "aus");
+      const von = portKoordinaten(verbindung.von, "aus", verbindung.zweig || "");
       const zu = portKoordinaten(verbindung.zu, "ein");
       if (!von || !zu) return;
       const d = bezierPfad(von, zu);
-      const sichtbar = pfadElement(d, "wf-kurve" +
-        (index === editorState.ausgewaehlteVerbindung ? " ausgewaehlt" : ""));
+      let klasse = "wf-kurve";
+      if (verbindung.zweig === "ja") klasse += " wf-kurve-ja";
+      else if (verbindung.zweig === "nein") klasse += " wf-kurve-nein";
+      if (index === editorState.ausgewaehlteVerbindung) klasse += " ausgewaehlt";
+      const sichtbar = pfadElement(d, klasse);
       const treffer = pfadElement(d, "wf-kurve-hit");
       treffer.addEventListener("click", function (e) {
         e.stopPropagation();
@@ -365,10 +478,11 @@
       });
       svg.appendChild(sichtbar);
       svg.appendChild(treffer);
+      if (verbindung.zweig) svg.appendChild(textElement(von.x + 14, von.y - 6, verbindung.zweig));
     });
   }
 
-  function starteVerbindungZiehen(e, vonNode) {
+  function starteVerbindungZiehen(e, vonNode, zweig) {
     if (e.button !== 0) return;
     e.preventDefault();
     e.stopPropagation();
@@ -376,7 +490,7 @@
     const canvas = editorState.dom.canvas;
     const gummiband = pfadElement("", "wf-gummiband");
     svg.appendChild(gummiband);
-    const start = portKoordinaten(vonNode.id, "aus");
+    const start = portKoordinaten(vonNode.id, "aus", zweig);
     function beiBewegung(ev) {
       const rect = canvas.getBoundingClientRect();
       const maus = { x: ev.clientX - rect.left, y: ev.clientY - rect.top };
@@ -385,22 +499,25 @@
     function beiEnde(ev) {
       document.removeEventListener("pointermove", beiBewegung);
       document.removeEventListener("pointerup", beiEnde);
+      document.removeEventListener("pointercancel", beiEnde);
       gummiband.remove();
+      if (ev.type === "pointercancel") return;
       const ziel = document.elementFromPoint(ev.clientX, ev.clientY);
       const port = ziel ? ziel.closest(".wf-port-ein") : null;
-      if (port) verbinde(vonNode.id, port.dataset.node);
+      if (port) verbinde(vonNode.id, port.dataset.node, zweig);
     }
     document.addEventListener("pointermove", beiBewegung);
     document.addEventListener("pointerup", beiEnde);
+    document.addEventListener("pointercancel", beiEnde);
   }
 
-  function verbinde(von, zu) {
+  function verbinde(von, zu, zweig) {
     if (von === zu) { window.toast("Selbstbezug ist nicht erlaubt", "fehler"); return; }
     const existiert = editorState.aktuelle.verbindungen.some(function (v) {
-      return v.von === von && v.zu === zu;
+      return v.von === von && v.zu === zu && (v.zweig || "") === (zweig || "");
     });
     if (existiert) { window.toast("Verbindung existiert bereits", "fehler"); return; }
-    editorState.aktuelle.verbindungen.push({ von: von, zu: zu });
+    editorState.aktuelle.verbindungen.push({ von: von, zu: zu, zweig: zweig || "" });
     zeichneVerbindungen();
   }
 
@@ -475,6 +592,28 @@
     return '<div class="wf-detail-feld"><label>' + beschriftung + '</label>' + inhaltHtml + '</div>';
   }
 
+  function statusSelect(id, wert) {
+    return '<select id="' + id + '" class="eingabe">' + STATUS_OPTIONEN.map(function (s) {
+      return '<option value="' + s[0] + '"' + (wert === s[0] ? " selected" : "") + '>' + s[1] + '</option>';
+    }).join("") + '</select>';
+  }
+
+  function kundeSelect(id, wert) {
+    const opts = ['<option value="">Kunde wählen</option>'].concat(
+      (editorState.kundenCache || []).map(function (k) {
+        return '<option value="' + esc(k.id) + '"' + (wert === k.id ? " selected" : "") + '>' + esc(k.name) + '</option>';
+      })
+    );
+    return '<select id="' + id + '" class="eingabe">' + opts.join("") + '</select>';
+  }
+
+  function variablenHilfe() {
+    const vars = verfuegbareVariablen();
+    return '<div class="wf-detail-hilfe">Variablen einsetzen mit <code>{{name}}</code>. Verfügbar: ' +
+      vars.map(function (v) { return '<code>{{' + esc(v) + '}}</code>'; }).join(" ") +
+      '. <code>{{letztes}}</code> ist immer das letzte Claude-Ergebnis.</div>';
+  }
+
   function zeigeDetail() {
     const panel = editorState.dom.detail;
     const node = findeNode(editorState.ausgewaehlterNode);
@@ -486,16 +625,12 @@
   function zeigeNodeDetail(panel, node) {
     const cfg = node.config || (node.config = standardConfig(node.typ));
     let html = feld("Titel",
-      '<input id="wf-f-titel" class="eingabe" value="' + window.escapeHtml(node.titel || "") + '">');
-    if (node.typ === "claude") html += baueClaudeFelder(cfg);
-    else if (node.typ === "bedingung" || node.typ === "aktion") {
-      html += feld("Beschreibung",
-        '<textarea id="wf-f-beschreibung" class="eingabe">' +
-        window.escapeHtml(cfg.beschreibung || "") + '</textarea>');
-    } else if (node.typ === "notiz") {
-      html += feld("Text",
-        '<textarea id="wf-f-text" class="eingabe">' + window.escapeHtml(cfg.text || "") + '</textarea>');
-    }
+      '<input id="wf-f-titel" class="eingabe" value="' + esc(node.titel || "") + '">');
+    if (node.typ === "claude") html += baueClaudeFelder(cfg) + variablenHilfe();
+    else if (node.typ === "bedingung") html += baueBedingungFelder(cfg) + variablenHilfe();
+    else if (node.typ === "aktion") html += baueAktionFelder(cfg) + variablenHilfe();
+    else if (node.typ === "notiz") html += feld("Text",
+      '<textarea id="wf-f-text" class="eingabe">' + esc(cfg.text || "") + '</textarea>');
     panel.innerHTML = html;
     verdrahteNodeDetail(node);
   }
@@ -504,50 +639,112 @@
     const optionen = ['<option value="">Auto (Empfehlung)</option>'].concat(
       window.modelle.map(function (m) {
         const gewaehlt = m.id === cfg.modellId ? " selected" : "";
-        return '<option value="' + window.escapeHtml(m.id) + '"' + gewaehlt + '>' +
-          window.escapeHtml(m.name) + '</option>';
+        return '<option value="' + esc(m.id) + '"' + gewaehlt + '>' + esc(m.name) + '</option>';
       })
     ).join("");
-    return feld("Prompt",
-      '<textarea id="wf-f-prompt" class="eingabe">' + window.escapeHtml(cfg.prompt || "") + '</textarea>') +
+    return feld("Prompt (Variablen mit {{name}})",
+      '<textarea id="wf-f-prompt" class="eingabe">' + esc(cfg.prompt || "") + '</textarea>') +
       feld("Modell",
-        '<select id="wf-f-modell" class="eingabe">' + optionen + '</select>' +
-        '<div id="wf-empfehlung"></div>');
+        '<select id="wf-f-modell" class="eingabe">' + optionen + '</select><div id="wf-empfehlung"></div>') +
+      feld("Ergebnis speichern als",
+        '<input id="wf-f-ergebnisvar" class="eingabe" placeholder="automatisch aus Titel" value="' + esc(cfg.ergebnisVar || "") + '">');
+  }
+
+  function baueBedingungFelder(cfg) {
+    const opOptionen = OPERATOREN.map(function (o) {
+      return '<option value="' + o[0] + '"' + (cfg.operator === o[0] ? " selected" : "") + '>' + o[1] + '</option>';
+    }).join("");
+    return feld("Quelle (Text oder {{variable}})",
+      '<input id="wf-f-quelle" class="eingabe" value="' + esc(cfg.quelle || "") + '">') +
+      feld("Vergleich",
+        '<select id="wf-f-operator" class="eingabe">' + opOptionen + '</select>') +
+      feld("Vergleichswert",
+        '<input id="wf-f-vergleich" class="eingabe" value="' + esc(cfg.vergleich || "") + '">') +
+      '<p class="wf-detail-tipp">Grüner Ausgang (ja) wird genommen wenn die Bedingung erfüllt ist, sonst der rote (nein).</p>';
+  }
+
+  function baueAktionFelder(cfg) {
+    const typSelect = '<select id="wf-f-aktionstyp" class="eingabe">' + AKTIONS_TYPEN.map(function (t) {
+      return '<option value="' + t[0] + '"' + (cfg.aktionsTyp === t[0] ? " selected" : "") + '>' + t[1] + '</option>';
+    }).join("") + '</select>';
+    let felder = "";
+    const t = cfg.aktionsTyp || "meldung";
+    if (t === "meldung") {
+      felder = feld("Text", '<textarea id="wf-f-text" class="eingabe">' + esc(cfg.text || "") + '</textarea>');
+    } else if (t === "variable_setzen") {
+      felder = feld("Variablenname", '<input id="wf-f-varname" class="eingabe" value="' + esc(cfg.varName || "") + '">') +
+        feld("Wert", '<textarea id="wf-f-wert" class="eingabe">' + esc(cfg.wert || "") + '</textarea>');
+    } else if (t === "kunde_anlegen") {
+      felder = feld("Name", '<input id="wf-f-kname" class="eingabe" value="' + esc(cfg.kName || "") + '">') +
+        feld("Branche", '<input id="wf-f-kbranche" class="eingabe" value="' + esc(cfg.kBranche || "") + '">') +
+        feld("Status", statusSelect("wf-f-kstatus", cfg.kStatus)) +
+        feld("Notizen", '<textarea id="wf-f-knotizen" class="eingabe">' + esc(cfg.kNotizen || "") + '</textarea>');
+    } else if (t === "kunde_status") {
+      felder = feld("Kunde", kundeSelect("wf-f-kundeid", cfg.kundeId)) +
+        feld("Neuer Status", statusSelect("wf-f-kstatus", cfg.kStatus));
+    } else if (t === "kunde_notiz") {
+      felder = feld("Kunde", kundeSelect("wf-f-kundeid", cfg.kundeId)) +
+        feld("Text anhängen", '<textarea id="wf-f-text" class="eingabe">' + esc(cfg.text || "") + '</textarea>');
+    }
+    return feld("Aktionstyp", typSelect) + felder;
+  }
+
+  function bindeEingabe(panel, selektor, cfg, schluessel) {
+    const el = panel.querySelector(selektor);
+    if (!el) return;
+    const ereignis = el.tagName === "SELECT" ? "change" : "input";
+    el.addEventListener(ereignis, function () { cfg[schluessel] = el.value; });
   }
 
   function verdrahteNodeDetail(node) {
     const panel = editorState.dom.detail;
     const titelFeld = panel.querySelector("#wf-f-titel");
-    titelFeld.addEventListener("input", function () {
+    if (titelFeld) titelFeld.addEventListener("input", function () {
       node.titel = titelFeld.value;
       const canvasTitel = editorState.dom.canvas.querySelector(
-        '.wf-node[data-id="' + node.id + '"] .wf-node-titel');
+        '.wf-node[data-id="' + CSS.escape(node.id) + '"] .wf-node-titel');
       if (canvasTitel) canvasTitel.textContent = node.titel || NODE_TYPEN[node.typ].label;
     });
-    verdrahteConfigFeld(panel, "#wf-f-beschreibung", node, "beschreibung");
-    verdrahteConfigFeld(panel, "#wf-f-text", node, "text");
-    verdrahteClaudeDetail(panel, node);
+    if (node.typ === "claude") verdrahteClaudeDetail(panel, node);
+    else if (node.typ === "bedingung") {
+      bindeEingabe(panel, "#wf-f-quelle", node.config, "quelle");
+      bindeEingabe(panel, "#wf-f-operator", node.config, "operator");
+      bindeEingabe(panel, "#wf-f-vergleich", node.config, "vergleich");
+    } else if (node.typ === "aktion") verdrahteAktionDetail(panel, node);
+    else bindeEingabe(panel, "#wf-f-text", node.config, "text");
   }
 
-  function verdrahteConfigFeld(panel, selektor, node, schluessel) {
-    const eingabe = panel.querySelector(selektor);
-    if (!eingabe) return;
-    eingabe.addEventListener("input", function () {
-      node.config[schluessel] = eingabe.value;
+  function verdrahteAktionDetail(panel, node) {
+    const cfg = node.config;
+    const typSel = panel.querySelector("#wf-f-aktionstyp");
+    if (typSel) typSel.addEventListener("change", function () {
+      cfg.aktionsTyp = typSel.value;
+      zeigeNodeDetail(panel, node);
     });
+    bindeEingabe(panel, "#wf-f-text", cfg, "text");
+    bindeEingabe(panel, "#wf-f-varname", cfg, "varName");
+    bindeEingabe(panel, "#wf-f-wert", cfg, "wert");
+    bindeEingabe(panel, "#wf-f-kname", cfg, "kName");
+    bindeEingabe(panel, "#wf-f-kbranche", cfg, "kBranche");
+    bindeEingabe(panel, "#wf-f-knotizen", cfg, "kNotizen");
+    bindeEingabe(panel, "#wf-f-kstatus", cfg, "kStatus");
+    bindeEingabe(panel, "#wf-f-kundeid", cfg, "kundeId");
   }
 
   function verdrahteClaudeDetail(panel, node) {
     const promptFeld = panel.querySelector("#wf-f-prompt");
     const modellFeld = panel.querySelector("#wf-f-modell");
-    if (!promptFeld || !modellFeld) return;
-    promptFeld.addEventListener("input", function () {
+    const ergebnisFeld = panel.querySelector("#wf-f-ergebnisvar");
+    if (promptFeld) promptFeld.addEventListener("input", function () {
       node.config.prompt = promptFeld.value;
       aktualisiereEmpfehlung(node);
     });
-    modellFeld.addEventListener("change", function () {
+    if (modellFeld) modellFeld.addEventListener("change", function () {
       node.config.modellId = modellFeld.value;
       aktualisiereEmpfehlung(node);
+    });
+    if (ergebnisFeld) ergebnisFeld.addEventListener("input", function () {
+      node.config.ergebnisVar = ergebnisFeld.value;
     });
     aktualisiereEmpfehlung(node);
   }
@@ -564,9 +761,10 @@
     const index = editorState.ausgewaehlteVerbindung;
     const verbindung = editorState.aktuelle.verbindungen[index];
     if (!verbindung) { panel.innerHTML = '<div class="leer">Keine Verbindung</div>'; return; }
+    const zweigText = verbindung.zweig ? " [" + verbindung.zweig + "]" : "";
     panel.innerHTML =
-      feld("Verbindung", '<div>' + window.escapeHtml(nodeTitel(verbindung.von)) +
-        ' → ' + window.escapeHtml(nodeTitel(verbindung.zu)) + '</div>') +
+      feld("Verbindung", '<div>' + esc(nodeTitel(verbindung.von)) + esc(zweigText) +
+        ' → ' + esc(nodeTitel(verbindung.zu)) + '</div>') +
       '<button id="wf-verbindung-loeschen" class="btn btn-gefahr">Verbindung löschen</button>' +
       '<p class="wf-detail-tipp">Tipp: Die Entf-Taste löscht die ausgewählte Verbindung.</p>';
     panel.querySelector("#wf-verbindung-loeschen").addEventListener("click", function () {
@@ -574,7 +772,7 @@
     });
   }
 
-  // ---------- Log-Panel und Ausfuehrung ----------
+  // ---------- Log-Panel ----------
 
   function oeffneLogPanel() {
     editorState.dom.logPanel.classList.add("offen");
@@ -589,48 +787,72 @@
     editorState.dom.logInhalt.scrollTop = editorState.dom.logInhalt.scrollHeight;
   }
 
-  function berechneReihenfolge() {
-    const wf = editorState.aktuelle;
-    const warteschlange = wf.nodes
-      .filter(function (n) { return n.typ === "start"; })
-      .map(function (n) { return n.id; });
-    const besucht = new Set();
-    const reihenfolge = [];
-    while (warteschlange.length) {
-      const id = warteschlange.shift();
-      if (besucht.has(id)) continue;
-      besucht.add(id);
-      const node = findeNode(id);
-      if (!node) continue;
-      reihenfolge.push(node);
-      wf.verbindungen.forEach(function (v) {
-        if (v.von === id) warteschlange.push(v.zu);
-      });
+  // ---------- Ausfuehrung ----------
+
+  function fuelleVorlage(text) {
+    const v = (editorState.lauf && editorState.lauf.variablen) || {};
+    return String(text || "").replace(/\{\{\s*([\w-]+)\s*\}\}/g, function (_, name) {
+      return (v[name] !== undefined && v[name] !== null) ? String(v[name]) : "";
+    });
+  }
+
+  function werteBedingungAus(cfg) {
+    const links = fuelleVorlage(cfg.quelle).trim();
+    const rechts = fuelleVorlage(cfg.vergleich).trim();
+    const l = links.toLowerCase();
+    const r = rechts.toLowerCase();
+    switch (cfg.operator || "enthaelt") {
+      case "enthaelt": return l.indexOf(r) >= 0;
+      case "enthaelt_nicht": return l.indexOf(r) < 0;
+      case "gleich": return l === r;
+      case "ungleich": return l !== r;
+      case "leer": return links === "";
+      case "nicht_leer": return links !== "";
+      case "groesser": return parseFloat(links) > parseFloat(rechts);
+      case "kleiner": return parseFloat(links) < parseFloat(rechts);
+      default: return false;
     }
-    return reihenfolge;
   }
 
   async function fuehreWorkflowAus() {
     if (!editorState.aktuelle) { window.toast("Kein Workflow ausgewählt", "fehler"); return; }
     if (editorState.lauf) { window.toast("Es läuft bereits eine Ausführung", "fehler"); return; }
-    const reihenfolge = berechneReihenfolge();
-    if (!reihenfolge.length) {
-      window.toast("Kein Start-Node vorhanden", "fehler");
-      return;
-    }
+    const wf = editorState.aktuelle;
+    const starts = wf.nodes.filter(function (n) { return n.typ === "start"; });
+    if (!starts.length) { window.toast("Kein Start-Node vorhanden", "fehler"); return; }
+
     oeffneLogPanel();
-    logZeile("Lauf gestartet: " + editorState.aktuelle.name, "hinweis");
-    editorState.lauf = { abgebrochen: false, stream: null, aufloesen: null };
+    logZeile("Lauf gestartet: " + wf.name, "hinweis");
+    editorState.lauf = { abgebrochen: false, stream: null, aufloesen: null, variablen: {} };
     setzeLaufUi(true);
     try {
-      for (const node of reihenfolge) {
+      const besucht = new Set();
+      const warteschlange = starts.map(function (n) { return n.id; });
+      let schritte = 0;
+      while (warteschlange.length) {
         if (editorState.lauf.abgebrochen) break;
-        await fuehreNodeAus(node);
+        if (++schritte > MAX_SCHRITTE) { logZeile("Abbruch: zu viele Schritte (Schleife?)", "fehler"); break; }
+        const id = warteschlange.shift();
+        if (besucht.has(id)) continue;
+        besucht.add(id);
+        const node = findeNode(id);
+        if (!node) continue;
+        const ergebnis = await fuehreNodeAus(node);
+        if (editorState.lauf.abgebrochen) break;
+        let folge = wf.verbindungen.filter(function (v) { return v.von === id; });
+        if (node.typ === "bedingung") {
+          const zweig = (ergebnis && ergebnis.zweig) || "ja";
+          folge = folge.filter(function (v) { return (v.zweig || "ja") === zweig; });
+        }
+        folge.forEach(function (v) { if (!besucht.has(v.zu)) warteschlange.push(v.zu); });
       }
       logZeile(editorState.lauf.abgebrochen ? "Lauf abgebrochen." : "Lauf beendet.", "hinweis");
+    } catch (fehler) {
+      logZeile("Lauf-Fehler: " + fehler.message, "fehler");
     } finally {
       editorState.lauf = null;
       setzeLaufUi(false);
+      ladeKunden();
     }
   }
 
@@ -640,18 +862,54 @@
     if (node.typ === "start") { logZeile("[" + titel + "] Start"); return; }
     if (node.typ === "claude") { await fuehreClaudeNodeAus(node, titel); return; }
     if (node.typ === "bedingung") {
-      logZeile("[" + titel + "] Bedingung: " + (cfg.beschreibung || "ohne Beschreibung"));
-      return;
+      const wahr = werteBedingungAus(cfg);
+      logZeile("[" + titel + "] Bedingung " + (wahr ? "erfüllt, gehe ja" : "nicht erfüllt, gehe nein"));
+      return { zweig: wahr ? "ja" : "nein" };
     }
-    if (node.typ === "aktion") {
-      logZeile("[" + titel + "] Aktion: " + (cfg.beschreibung || "ohne Beschreibung"));
-      return;
+    if (node.typ === "aktion") { await fuehreAktionAus(node, titel); return; }
+    if (node.typ === "notiz") { logZeile("[" + titel + "] Notiz: " + (cfg.text || "")); return; }
+    logZeile("[" + titel + "] Unbekannter Typ", "fehler");
+  }
+
+  async function fuehreAktionAus(node, titel) {
+    const cfg = node.config || {};
+    const typ = cfg.aktionsTyp || "meldung";
+    try {
+      if (typ === "meldung") {
+        logZeile("[" + titel + "] " + fuelleVorlage(cfg.text || ""), "aktion");
+      } else if (typ === "variable_setzen") {
+        const name = (cfg.varName || "").trim();
+        if (!name) { logZeile("[" + titel + "] Fehler: Variablenname fehlt", "fehler"); return; }
+        editorState.lauf.variablen[name] = fuelleVorlage(cfg.wert || "");
+        logZeile("[" + titel + "] Variable {{" + name + "}} gesetzt", "aktion");
+      } else if (typ === "kunde_anlegen") {
+        const daten = {
+          name: fuelleVorlage(cfg.kName || "").trim(),
+          branche: fuelleVorlage(cfg.kBranche || ""),
+          status: cfg.kStatus || "offen",
+          notizen: fuelleVorlage(cfg.kNotizen || "")
+        };
+        if (!daten.name) { logZeile("[" + titel + "] Fehler: Kundenname fehlt", "fehler"); return; }
+        const neu = await window.api.post("/api/kunden", daten);
+        editorState.lauf.variablen.kunde_id = neu.id;
+        logZeile("[" + titel + "] Kunde angelegt: " + neu.name + " (id in {{kunde_id}})", "aktion");
+      } else if (typ === "kunde_status") {
+        if (!cfg.kundeId) { logZeile("[" + titel + "] Fehler: kein Kunde gewählt", "fehler"); return; }
+        const neu = await window.api.put("/api/kunden/" + cfg.kundeId, { status: cfg.kStatus || "offen" });
+        logZeile("[" + titel + "] Status von " + neu.name + " auf " + neu.status + " gesetzt", "aktion");
+      } else if (typ === "kunde_notiz") {
+        if (!cfg.kundeId) { logZeile("[" + titel + "] Fehler: kein Kunde gewählt", "fehler"); return; }
+        const liste = (await window.api.get("/api/kunden")).kunden || [];
+        const k = liste.find(function (x) { return x.id === cfg.kundeId; });
+        if (!k) { logZeile("[" + titel + "] Fehler: Kunde nicht gefunden", "fehler"); return; }
+        const angehaengt = fuelleVorlage(cfg.text || "");
+        const neueNotiz = (k.notizen ? k.notizen + "\n" : "") + angehaengt;
+        const neu = await window.api.put("/api/kunden/" + cfg.kundeId, { notizen: neueNotiz });
+        logZeile("[" + titel + "] Notiz an " + neu.name + " angehängt", "aktion");
+      }
+    } catch (fehler) {
+      logZeile("[" + titel + "] Fehler: " + fehler.message, "fehler");
     }
-    if (node.typ === "notiz") {
-      logZeile("[" + titel + "] Notiz: " + (cfg.text || ""));
-      return;
-    }
-    logZeile("[" + titel + "] Unbekannter Typ: " + node.typ, "fehler");
   }
 
   function fuehreClaudeNodeAus(node, titel) {
@@ -663,14 +921,26 @@
         modellId = empfehlung.modellId;
         logZeile("[" + titel + "] Auto-Modell: " + empfehlung.name + " (" + empfehlung.grund + ")", "hinweis");
       }
+      const ergebnisVar = (cfg.ergebnisVar || "").trim() || slug(titel);
+      const prompt = fuelleVorlage(cfg.prompt || "");
       logZeile("[" + titel + "] Claude startet");
+      let gesammelt = "";
+      let resultText = null;
       editorState.lauf.aufloesen = aufloesen;
       editorState.lauf.stream = window.claudeStream({
-        prompt: cfg.prompt || "",
+        prompt: prompt,
         modellId: modellId,
         cwd: (window.einstellungen && window.einstellungen.standardCwd) || "",
         zusatzFlags: (window.einstellungen && window.einstellungen.zusatzFlags) || "",
         onZeile: function (zeile) {
+          if (zeile && typeof zeile === "object") {
+            if (zeile.type === "assistant" && zeile.message && Array.isArray(zeile.message.content)) {
+              zeile.message.content.forEach(function (b) {
+                if (b && b.type === "text" && b.text) gesammelt += b.text;
+              });
+            }
+            if (zeile.type === "result" && typeof zeile.result === "string") resultText = zeile.result;
+          }
           const text = formatiereLaufZeile(zeile);
           if (text) logZeile("[" + titel + "] " + text);
         },
@@ -678,7 +948,12 @@
           logZeile("[" + titel + "] Fehler: " + text, "fehler");
         },
         onEnde: function (code) {
-          logZeile("[" + titel + "] Beendet (Exit " + code + ")", "hinweis");
+          const ergebnis = (resultText !== null ? resultText : gesammelt).trim();
+          if (editorState.lauf) {
+            editorState.lauf.variablen[ergebnisVar] = ergebnis;
+            editorState.lauf.variablen.letztes = ergebnis;
+          }
+          logZeile("[" + titel + "] Beendet (Exit " + code + "), Ergebnis in {{" + ergebnisVar + "}}", "hinweis");
           aufloesen();
         }
       });
@@ -804,6 +1079,7 @@
       verdrahtePalette(container);
       verdrahteLogPanel(container);
       verdrahteTastatur();
+      await ladeKunden();
       await ladeWorkflows();
     }
   };
