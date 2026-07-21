@@ -3,6 +3,9 @@
 > Zweck: dasselbe Vorgehen wie bei Finelli — **schneller, mit weniger Fragen, automatischer.**
 > Destilliert 18.-19.07.2026. Jede Phase hat ein eigenes Blatt (`phase-0` … `phase-5`).
 > Pflicht-Haltung fuers Verkaufen: nie negativ eroeffnen, Hormozi-Reihenfolge (siehe Phase 4).
+>
+> **Offer-Ueberschrift ueber allem:** "AN der Firma, nicht drin" (Helden-Ton, IN/AN-Tabelle,
+> Klein-vs-Mittel-Nerv) — Master-Positionierung in [brain/decisions/E6](../brain/decisions/E6-positionierung-an-der-firma.md).
 
 ## Die 6 Phasen (Finelli-erprobt)
 

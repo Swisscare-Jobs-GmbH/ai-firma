@@ -45,3 +45,5 @@ entscheider: SA
 | [E3](E3-setup-entscheide-19-07.md) | Setup-Entscheide 19.07 (Absender vorerst Swiss Care Jobs GmbH · Repo-Zugriff nur SA · avatar.md lokal) | aktiv | 2026-07-19 |
 | [E4](E4-workspace-meta-layer.md) | Workspace-Meta-Layer am AIWorks-Root (Sync-Gesetz, Branchen-Schablonen, kanonische Kopie in vorlagen/workspace/) | aktiv | 2026-07-20 |
 | [E5](E5-finelli-ki-mitarbeiter-prototyp-vor-ja.md) | Finelli KI-Mitarbeiter-Prototyp VOR dem Ja bauen (Gate-0-Ausnahme, Demo fuer Termin 22.07) | aktiv | 2026-07-21 |
+| [E6](E6-positionierung-an-der-firma.md) | Master-Positionierung "AN der Firma, nicht drin" (Helden-Ton, IN/AN-Tabelle, Klein vs. Mittel) | aktiv | 2026-07-21 |
+| [E7](E7-brain-split-und-public-repo-fund.md) | Brain-Split beschlossen + Sofort-Fund: Repo ist PUBLIC (live geprueft) — erst privat stellen, dann brain/ ausgliedern | aktiv | 2026-07-21 |
