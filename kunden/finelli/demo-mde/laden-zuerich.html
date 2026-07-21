@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Finelli — Laden Zürich (Demo)</title>
+<title>Finelli · Laden Zürich (Demo)</title>
 <!--
   Finelli MDE-Demo B — LADEN ZUERICH (POS/Tablet-Terminal, Uebungs-Modus, Beispieldaten).
   Zweck: Khawar zeigen, wie der Laden-Flow laeuft: Verkauf bucht Bestand automatisch ab
@@ -235,9 +235,9 @@ function rKasse(){
   const front=c.q.front.reduce((a,b)=>a+b,0);
   return `<button class="tile" onclick="pickSize('${c.id}')"><div class="nm">${esc(c.name)}</div><div class="mt">${esc(c.kat)} · Front ${front}×</div></button>`;
  }).join('');
- const cart=S.cart.length?S.cart.map((it,i)=>{const c=getC(it.id);return `<div class="cline"><span class="szd" style="background:${szf(it.size)}"></span><b>${it.size}</b><span style="flex:1">${esc(c.name)}</span><span class="mut">×${it.n}</span><button class="x" onclick="cartDel(${i})">×</button></div>`;}).join(''):'<div class="mut" style="padding:8px 0">Noch nichts im Warenkorb — Artikel antippen oder scannen.</div>';
+ const cart=S.cart.length?S.cart.map((it,i)=>{const c=getC(it.id);return `<div class="cline"><span class="szd" style="background:${szf(it.size)}"></span><b>${it.size}</b><span style="flex:1">${esc(c.name)}</span><span class="mut">×${it.n}</span><button class="x" onclick="cartDel(${i})">×</button></div>`;}).join(''):'<div class="mut" style="padding:8px 0">Leer. Artikel antippen oder scannen.</div>';
  const anz=S.cart.reduce((a,it)=>a+it.n,0);
- $('v-kasse').innerHTML=head('Kasse — Verkauf','Jeder Verkauf bucht den Bestand automatisch ab. Schluss mit „im Shop steht Ware, die gar nicht da ist".')+`
+ $('v-kasse').innerHTML=head('Kasse','Verkauf bucht Bestand automatisch ab. Keine Phantom-Ware.')+`
   <div class="cols">
    <div>
     <div class="scanbar"><input id="ksearch" placeholder="Artikel scannen oder tippen…" aria-label="Artikel suchen"><button class="b" onclick="kScan()">Scan</button></div>
@@ -246,8 +246,8 @@ function rKasse(){
    <div>
     <div class="c cart"><h2>Warenkorb (${anz})</h2>${cart}
      <button class="b full" style="margin-top:12px" ${S.cart.length?'':'disabled'} onclick="verkaufAbschliessen()">Verkauf abschliessen</button>
-     <div class="mut" style="margin-top:8px">Zahlung läuft weiter über das SumUp-Terminal — hier wird nur der Bestand sauber gebucht.</div></div>
-    <div class="c"><div class="ct"><b>${S.verkaeufeHeute}</b> Verkäufe heute · alle sofort im System.</div><div style="margin-top:8px">${legendBar()}</div></div>
+     <div class="mut" style="margin-top:8px">Zahlung via SumUp. Hier nur Bestand buchen.</div></div>
+    <div class="c"><div class="ct"><b>${S.verkaeufeHeute}</b> Verkäufe heute.</div><div style="margin-top:8px">${legendBar()}</div></div>
    </div>
   </div>`;
  const inp=$('ksearch');if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')kScan();});
@@ -255,14 +255,14 @@ function rKasse(){
 function kScan(){
  const v=($('ksearch').value||'').trim().toLowerCase();
  const c=v?CAT.find(x=>x.name.toLowerCase().includes(v)||x.id.toLowerCase().includes(v)):CAT.find(x=>x.q.front.some(q=>q>0));
- if(!c){toast('Artikel nicht gefunden — im Übungs-Modus tippe z. B. „Hoodie".');return;}
+ if(!c){toast('Nicht gefunden. Tippe z. B. „Hoodie".');return;}
  pickSize(c.id);
 }
 function pickSize(id){
  const c=getC(id);
- openModal(`<h3>${esc(c.name)} — Grösse wählen</h3>
+ openModal(`<h3>${esc(c.name)}: Grösse wählen</h3>
   <div class="row" style="gap:8px">${c.sizes.map(s=>{const q=c.q.front[si(c,s)];return `<button class="b ${q>0?'gh':''}" ${q>0?'':'disabled'} style="min-width:70px;flex-direction:column;gap:2px;padding:12px 8px" onclick="cartAdd('${id}','${s}')"><span style="display:flex;align-items:center;gap:6px"><span class="szd" style="background:${szf(s)}"></span><b>${s}</b></span><span class="mut" style="font-size:11px">Front ${q}×</span></button>`;}).join('')}</div>
-  <div class="mut" style="margin-top:10px">Grau = Front leer. Über „Grösse finden" siehst du, ob sie in Reserve/UG/Embrach liegt.</div>`);
+  <div class="mut" style="margin-top:10px">Grau = Front leer. Siehe „Grösse finden".</div>`);
 }
 function cartAdd(id,size){
  const ex=S.cart.find(it=>it.id===id&&it.size===size);
@@ -275,8 +275,8 @@ function verkaufAbschliessen(){
  S.cart.forEach(it=>{const c=getC(it.id),i=si(c,it.size);c.q.front[i]=Math.max(0,c.q.front[i]-it.n);S.verkaeufeHeute+=it.n;
    if(c.q.front[i]===0&&c.q.reserve[i]>0)leer.push(`${c.name} ${it.size} → Nachschub aus Reserve ${c.fach.reserve}`);});
  const anz=S.cart.reduce((a,it)=>a+it.n,0);S.cart=[];
- let msg=`<div class="ok" style="font-size:16px">✓ Verkauf gebucht — ${anz} Stück</div>
-  <div class="ct" style="margin:8px 0">Der Bestand wurde sofort abgebucht. Dein Onlineshop zeigt jetzt genau, was noch da ist — keine Phantom-Ware mehr.</div>`;
+ let msg=`<div class="ok" style="font-size:16px">✓ Verkauf gebucht: ${anz} Stück</div>
+  <div class="ct" style="margin:8px 0">Bestand sofort abgebucht. Shop stimmt. Keine Phantom-Ware.</div>`;
  if(leer.length)msg+=`<div class="banner">Front jetzt leer:<br>${leer.map(esc).join('<br>')}</div>`;
  msg+=`<button class="b full" onclick="closeModal()">Weiter</button>`;
  openModal(msg);render();
@@ -294,24 +294,24 @@ function rFinden(){
   let hint='';
   if(c.q.front[i]===0&&(c.q.reserve[i]>0||c.q.ug[i]>0)){
    const wo=c.q.reserve[i]>0?`Reserve ${c.fach.reserve}`:`Untergeschoss ${c.fach.ug}`;
-   hint=`<div class="banner">Front leer, aber im Haus: <b>${wo}</b> — kurz holen statt Kunde vertrösten.</div>`;
+   hint=`<div class="banner">Front leer. Im Haus: <b>${wo}</b>. Kurz holen.</div>`;
   }else if(imHaus===0){
-   hint=`<div class="banner rr">Diese Grösse ist im Laden nicht da${c.q.embrach[i]>0?` (nur in Embrach, ${c.q.embrach[i]}×)`:''}. Kunde nicht verlieren → <b>Online-Order aufnehmen</b>.
-     <div style="margin-top:8px"><button class="b" onclick="prefillOnline('${id}','${size}')">Online-Order für Kunden aufnehmen</button></div></div>`;
+   hint=`<div class="banner rr">Nicht im Laden${c.q.embrach[i]>0?` (Embrach ${c.q.embrach[i]}×)`:''}. Online-Order aufnehmen.
+     <div style="margin-top:8px"><button class="b" onclick="prefillOnline('${id}','${size}')">Online-Order aufnehmen</button></div></div>`;
   }
   res=`<div class="c"><div class="row" style="align-items:center;gap:10px"><span class="szd" style="background:${szf(size)};width:16px;height:16px"></span><h2 style="margin:0">${esc(c.name)} · ${size}</h2></div>
     ${hint}<div class="ort">${rows}</div>
-    <div class="mut" style="margin-top:8px">Farbe = Grösse · Fach-Code = wo es liegt. Nie mehr „kurz hinten suchen".</div></div>`;
+    <div class="mut" style="margin-top:8px">Farbe = Grösse. Fach = wo.</div></div>`;
  }
- $('v-finden').innerHTML=head('Grösse finden','Kunde fragt nach einer Grösse — scannen und in 5 Sekunden sehen, wo sie liegt.')+`
+ $('v-finden').innerHTML=head('Grösse finden','Scannen. In 5 Sekunden sehen, wo die Grösse liegt.')+`
   <div class="scanbar"><input id="fsearch" placeholder="Artikel scannen oder tippen…" aria-label="Artikel suchen"><button class="b" onclick="fScan()">Suchen</button></div>
   <div class="row" style="margin-bottom:12px">${CAT.slice(0,6).map(c=>`<button class="pill" onclick="fPick('${c.id}')">${esc(c.name)}</button>`).join('')}</div>
   ${res}`;
  const inp=$('fsearch');if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')fScan();});
 }
-function fScan(){const v=($('fsearch').value||'').trim().toLowerCase();const c=v?CAT.find(x=>x.name.toLowerCase().includes(v)||x.id.toLowerCase().includes(v)):CAT[0];if(!c){toast('Nicht gefunden — tippe z. B. „Heavy Tee".');return;}fPick(c.id);}
+function fScan(){const v=($('fsearch').value||'').trim().toLowerCase();const c=v?CAT.find(x=>x.name.toLowerCase().includes(v)||x.id.toLowerCase().includes(v)):CAT[0];if(!c){toast('Nicht gefunden. Tippe z. B. „Heavy Tee".');return;}fPick(c.id);}
 function fPick(id){const c=getC(id);
- openModal(`<h3>${esc(c.name)} — welche Grösse?</h3><div class="row" style="gap:8px">${c.sizes.map(s=>`<button class="b gh" style="min-width:64px" onclick="fShow('${id}','${s}')"><span class="szd" style="background:${szf(s)}"></span>&nbsp;${s}</button>`).join('')}</div>`);
+ openModal(`<h3>${esc(c.name)}: welche Grösse?</h3><div class="row" style="gap:8px">${c.sizes.map(s=>`<button class="b gh" style="min-width:64px" onclick="fShow('${id}','${s}')"><span class="szd" style="background:${szf(s)}"></span>&nbsp;${s}</button>`).join('')}</div>`);
 }
 function fShow(id,size){S.findRes={id,size};closeModal();render();}
 function prefillOnline(id,size){S._pre={id,size};go('online');}
@@ -320,13 +320,13 @@ function prefillOnline(id,size){S._pre={id,size};go('online');}
 function rOnline(){
  const pre=S._pre;S._pre=null;
  const opts=CAT.map(c=>`<option value="${c.id}" ${pre&&pre.id===c.id?'selected':''}>${esc(c.name)}</option>`).join('');
- $('v-online').innerHTML=head('Online-Order aufnehmen','Grösse nicht im Laden? Bestellung direkt für den Kunden erfassen — der Verkauf ist gerettet, das Paket kommt aus Embrach.')+`
+ $('v-online').innerHTML=head('Online-Order','Grösse fehlt? Order aufnehmen. Paket kommt aus Embrach.')+`
   <div class="c" style="max-width:520px">
    <div class="fld"><label>Artikel</label><select class="inp" id="oArt" onchange="oSizes()">${opts}</select></div>
    <div class="fld"><label>Grösse</label><select class="inp" id="oSize"></select></div>
-   <div class="fld"><label>Vorname Kunde (für die Zuordnung — keine weiteren Daten)</label><input class="inp" id="oName" placeholder="z. B. Kundin am Tresen"></div>
+   <div class="fld"><label>Vorname Kunde (nur zur Zuordnung)</label><input class="inp" id="oName" placeholder="z. B. Kundin am Tresen"></div>
    <button class="b full" onclick="oSend()">Order aufnehmen</button>
-   <div class="mut" style="margin-top:10px">Die Order erscheint drüben in Embrach als offener Pack-Auftrag — dein Team packt und verschickt.</div>
+   <div class="mut" style="margin-top:10px">Erscheint in Embrach als Pack-Auftrag.</div>
   </div>
   <div class="c" style="max-width:520px"><div class="ct">Offene Online-Orders aus dem Laden heute: <b>${S.onlineOrders}</b></div></div>`;
  oSizes(pre);
@@ -336,20 +336,20 @@ function oSend(){
  const c=getC($('oArt').value),size=$('oSize').value;
  S.onlineOrders++;
  openModal(`<h3>Order aufgenommen</h3><div class="ok" style="font-size:16px">✓ ${esc(c.name)} · ${size}</div>
-  <div class="ct" style="margin:8px 0">Neuer Pack-Auftrag <b class="mono">PA-${YMD}-${9+S.onlineOrders}</b> für Embrach. Der Kunde bekommt sein Teil, obwohl es im Laden fehlte.</div>
+  <div class="ct" style="margin:8px 0">Neuer Pack-Auftrag <b class="mono">PA-${YMD}-${9+S.onlineOrders}</b> für Embrach.</div>
   <button class="b full" onclick="closeModal()">Fertig</button>`);
  render();
 }
 
 /* ================= UMTAUSCH ================= */
 function rUmtausch(){
- $('v-umtausch').innerHTML=head('Umtausch / Rücknahme','Kunde bringt etwas zurück — sauber ins System buchen, damit der Bestand stimmt.')+`
+ $('v-umtausch').innerHTML=head('Umtausch','Rücknahme sauber buchen. Bestand stimmt.')+`
   <div class="c" style="max-width:520px">
    <div class="fld"><label>Artikel</label><select class="inp" id="uArt" onchange="uSizes()">${CAT.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></div>
    <div class="fld"><label>Grösse</label><select class="inp" id="uSize"></select></div>
    <div class="fld"><label>Grund</label><select class="inp" id="uGrund"><option>Grösse getauscht</option><option>Gefällt nicht</option><option>Defekt (prüfen)</option></select></div>
    <button class="b full" onclick="uDo()">Zurück ins Regal buchen</button>
-   <div class="mut" style="margin-top:10px">Bei „Defekt" landet das Teil zur Prüfung, nicht direkt in die Front — keine kaputte Ware zurück in den Verkauf.</div>
+   <div class="mut" style="margin-top:10px">Defekt geht zur Prüfung, nicht in den Verkauf.</div>
   </div>`;
  uSizes();
 }
@@ -358,7 +358,7 @@ function uDo(){
  const c=getC($('uArt').value),size=$('uSize').value,grund=$('uGrund').value,i=si(c,size);
  const defekt=grund.startsWith('Defekt');
  if(!defekt)c.q.front[i]+=1;
- toast(defekt?`${c.name} ${size} zur Prüfung genommen — nicht in den Verkauf.`:`${c.name} ${size} zurück in Front ${c.fach.front} — Bestand stimmt.`);
+ toast(defekt?`${c.name} ${size} zur Prüfung.`:`${c.name} ${size} zurück in Front ${c.fach.front}.`);
  render();
 }
 

@@ -2,3 +2,5 @@ data/job-logs/
 data/jobs.json
 data/chats/
 data/claude-memory.md
+data/aktiver-user.json
+data/system-prompt-aktiv.md

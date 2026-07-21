@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Finelli — Lager Embrach (Demo)</title>
+<title>Finelli · Lager Embrach (Demo)</title>
 <!--
   Finelli MDE-Demo A — LAGER EMBRACH (Handscanner-Terminal, Uebungs-Modus, Beispieldaten).
   Zweck: Khawar zeigen, wie der Lager-Flow mit Scan + Fach-Ordnung + Packstation laeuft.
@@ -294,7 +294,7 @@ function rScan(){
    res=`<div class="c">
      <div class="row" style="align-items:center;justify-content:space-between"><h2 style="margin:0">${esc(c.name)}</h2><span class="chip g">ABC ${c.abc}</span></div>
      <div class="row" style="align-items:center;gap:8px;margin:10px 0"><span class="szd" style="background:${szf(inp.size)}"></span><b style="font-size:22px">${inp.size}</b><span class="mut">${esc(c.kat)}</span></div>
-     <div class="ct" style="margin-bottom:6px">Fach-Vorschlag (kürzester Laufweg):</div>
+     <div class="ct" style="margin-bottom:6px">Fach:</div>
      <span class="fach mono" style="font-size:15px;padding:8px 12px">→ ${c.fach.embrach} · ${zoneName(c.fach.embrach)}</span>
      ${lagerkarte([c.fach.embrach])}
      <div class="fld" style="margin-top:14px"><label>Menge</label>
@@ -307,25 +307,25 @@ function rScan(){
  if(S.queue.length){
   const ql=S.queue.map(q=>{const c=getC(q.id);return `<div class="pzline">${q.n}× ${esc(c.name)} ${q.size} → ${c.fach.embrach}</div>`;}).join('');
   queue=`<div class="qcard"><b>Warteschlange</b> <span class="chip y">${S.queue.length}</span><div style="margin-top:6px">${ql}</div>
-   <div class="mut" style="margin-top:6px">Wird nachgereicht, sobald das WLAN zurück ist — jede Buchung genau einmal.</div></div>`;
+   <div class="mut" style="margin-top:6px">Kommt nach, sobald WLAN da ist.</div></div>`;
  }
- $('v-scan').innerHTML=head('Wareneingang','Karton auf, Code scannen, Fach übernehmen — die Ware ist ab Sekunde 1 im System erfasst.')+`
-  <button class="scanhero ${S._pulse?'pulse':''}" onclick="doScan()"><span class="ic">${IC.scan}</span><span><span class="t">Artikel scannen</span><span class="s">Barcode ins Scan-Fenster halten</span></span></button>
+ $('v-scan').innerHTML=head('Wareneingang','Scannen, Fach übernehmen, fertig.')+`
+  <button class="scanhero ${S._pulse?'pulse':''}" onclick="doScan()"><span class="ic">${IC.scan}</span><span><span class="t">Artikel scannen</span><span class="s">Barcode ins Fenster halten</span></span></button>
   <div class="c" style="margin-top:11px"><div class="sw"><button class="tgl ${S.offline?'on':''}" role="switch" aria-checked="${S.offline}" onclick="toggleOffline()"><b></b></button> Test: Lager-WLAN ausgefallen</div></div>
   ${res}${queue}
-  <div class="ct mut" style="margin-top:12px">Heute eingebucht: <b>${S.eingebucht}</b> Stück · So entsteht die „eine Wahrheit" über den Bestand — nicht mehr „einfach einlagern".</div>`;
+  <div class="ct mut" style="margin-top:12px">Heute eingebucht: <b>${S.eingebucht}</b> Stück.</div>`;
  S._pulse=false;
 }
 window._m=1;
 function mStep(d){window._m=Math.max(1,Math.min(20,window._m+d));$('mv').textContent=window._m;}
 function doScan(){S._pulse=true;S.scanShown=false;S.scanDone=false;S.scanBusy=false;window._m=1;render();setTimeout(()=>{S.scanShown=true;render();},480);}
 function einbuchen(){
- if(S.scanBusy){toast('Doppelt getippt — trotzdem genau 1× gebucht.');return;}
+ if(S.scanBusy){toast('Doppelt getippt, trotzdem 1× gebucht.');return;}
  S.scanBusy=true;
  const inp=EINGANG[S.scanIdx%EINGANG.length];const c=getC(inp.id);const idx=si(c,inp.size);const n=window._m;
  if(S.offline){
   S.queue.push({id:inp.id,size:inp.size,n});try{localStorage.finLagerQ=JSON.stringify(S.queue);}catch(e){}
-  S.scanDone=true;S.scanIdx++;toast('Offline — Buchung wartet in der Warteschlange.');
+  S.scanDone=true;S.scanIdx++;toast('Offline. Buchung wartet.');
  }else{
   c.q.embrach[idx]+=n;S.eingebucht+=n;S.scanDone=true;S.scanIdx++;
   toast(`Eingebucht: ${n}× ${c.name} ${inp.size} → ${c.fach.embrach}`);
@@ -338,7 +338,7 @@ function toggleOffline(){
   const n=S.queue.length;
   S.queue.forEach(q=>{const c=getC(q.id);c.q.embrach[si(c,q.size)]+=q.n;S.eingebucht+=q.n;});
   S.queue=[];try{localStorage.removeItem('finLagerQ');}catch(e){}
-  toast(`Synchronisiert — ${n} ${n===1?'Buchung':'Buchungen'} angekommen.`);
+  toast(`Synchronisiert, ${n} ${n===1?'Buchung':'Buchungen'} angekommen.`);
  }
  render();
 }
@@ -355,11 +355,11 @@ function rPack(){
     <span class="cv">${done?'✓':'›'}</span></button>`;
  }).join('');
  const st=S.packStat;const avg=Math.round(st.summe/Math.max(1,st.anzahl));
- $('v-pack').innerHTML=head('Packstation','Auftrag wählen → Karte zeigt den Laufweg → Start/Fertig misst die Zeit.')+list+`
+ $('v-pack').innerHTML=head('Packstation','Auftrag wählen. Karte zeigt den Weg.')+list+`
   <div class="c"><h2>Tempo heute</h2>
    <div class="row" style="gap:22px"><div><div style="font-size:26px;font-weight:800">${st.anzahl}</div><div class="mut">Pakete gepackt</div></div>
    <div><div style="font-size:26px;font-weight:800">${Math.floor(avg/60)}:${String(avg%60).padStart(2,'0')}</div><div class="mut">Ø Pack-Zeit (Min)</div></div></div>
-   <div class="mut" style="margin-top:8px">Transparente Prozess-Messung — zeigt, wo Laufwege klemmen, nicht wer wie schnell ist.</div></div>`;
+   <div class="mut" style="margin-top:8px">Misst den Prozess, nicht die Person.</div></div>`;
 }
 function openPa(i){S.activePa=i;S.tmrStart=0;clearInterval(S.tmrId);render();}
 function rPackDetail(){
@@ -372,14 +372,14 @@ function rPackDetail(){
   <div class="c"><div class="row" style="align-items:center;justify-content:space-between"><b class="mono" style="font-size:16px">${o.nr}</b><span class="chip ${o.status==='gepackt'?'g':'y'}">${o.status==='gepackt'?'gepackt':'offen'}</span></div>
    <div class="mt mut" style="margin:4px 0 10px">→ ${esc(t.ziel)}</div>
    <h2>Pickliste</h2>${pick}
-   <div class="mut" style="margin-top:6px">Farbe = Grösse · fette Zahl = greifen · Fach = wo. Laufweg statt Suchweg.</div></div>
-  <div class="c"><h2>Karte Embrach — leuchtende Fächer</h2>${lagerkarte(hotFaecher)}${legendBar()}</div>
+   <div class="mut" style="margin-top:6px">Farbe = Grösse. Zahl = greifen. Fach = wo.</div></div>
+  <div class="c"><h2>Karte Embrach</h2>${lagerkarte(hotFaecher)}${legendBar()}</div>
   <div class="c" style="text-align:center">
    <div class="tmr ${running?'run':''}" id="tmr">${running?'00:00':'00:00'}</div>
    <div class="mut" id="tmrlbl" style="margin:4px 0 12px">${o.status==='gepackt'?'Fertig gepackt':'Bereit'}</div>
    ${o.status==='gepackt'?'<div class="ok">✓ Auftrag abgeschlossen</div>':(running
-     ?`<button class="b full" onclick="tmrFertig()">Fertig — Paket gepackt</button>`
-     :`<button class="b full" onclick="tmrStartFn()">Start — jetzt packen</button>`)}
+     ?`<button class="b full" onclick="tmrFertig()">Fertig, Paket gepackt</button>`
+     :`<button class="b full" onclick="tmrStartFn()">Start, jetzt packen</button>`)}
   </div>`;
  if(running)tick();
 }
@@ -390,33 +390,40 @@ function tmrFertig(){
  const s=Math.floor((Date.now()-S.tmrStart)/1000);clearInterval(S.tmrId);
  const o=S.pack[S.activePa];o.status='gepackt';
  S.packStat.anzahl++;S.packStat.summe+=Math.max(30,s);
- S.tmrStart=0;toast(`${o.nr} gepackt in ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')} Min — Tempo notiert.`);render();
+ S.tmrStart=0;toast(`${o.nr} gepackt in ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')} Min. Tempo notiert.`);render();
 }
 
-/* ===== Lager-Karte: Raum von oben, Faecher auf einem Rundweg ===== */
+/* ===== Lager-Karte: Raum von oben, Regale an den Waenden, Laufrunde im Gang ===== */
 function lagerkarte(hot){
  hot=hot||[];
  const order=[];[['P',6],['S',6],['W',4],['L',4]].forEach(([p,n])=>{for(let i=1;i<=n;i++)order.push(p+i);});
  const zoneCol={P:'#a8271c',S:'#c9c6c1',W:'#3a6ea5',L:'#8a8891'};
- const cx=160,cy=152,rx=120,ry=112,total=order.length;
- let s='<svg viewBox="0 0 320 328" role="img" aria-label="Lager Embrach von oben mit Rundweg">';
- s+='<rect x="6" y="6" width="308" height="298" rx="14" fill="#fff" stroke="#17161a" stroke-width="4"/>';
- s+='<rect x="132" y="300" width="56" height="8" fill="#f4f4f2"/><text x="160" y="322" text-anchor="middle" font-size="11" fill="#8a8891">Eingang</text>';
- s+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="#c9a24a" stroke-width="2.5" stroke-dasharray="6 6"/>`;
- s+=`<rect x="${cx-36}" y="${cy+ry-15}" width="72" height="30" rx="7" fill="#17161a"/><text x="${cx}" y="${cy+ry+4}" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">Packplatz</text>`;
- const dots=[];
- order.forEach((code,i)=>{
-  const a=Math.PI/2 + Math.PI/total + i*(2*Math.PI/total);
-  const x=cx+rx*Math.cos(a), y=cy+ry*Math.sin(a);
-  const isHot=hot.includes(code);
-  if(isHot)dots.push([x,y]);
-  s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="13" fill="${isHot?'#a8271c':'#fff'}" stroke="${isHot?'#a8271c':zoneCol[code[0]]}" stroke-width="${isHot?3:2}"/>`;
-  s+=`<text x="${x.toFixed(1)}" y="${(y+3.4).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${isHot?'#fff':'#4b4951'}">${code}</text>`;
- });
- dots.forEach(([x,y])=>{s+=`<circle class="puls" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="13" fill="none" stroke="#a8271c" stroke-width="2.5"/>`;});
+ /* Regal-Balken an den Waenden, in Laufreihenfolge (Runde ab Packplatz) */
+ const segs=[
+  {x:46,y:256,w:80,h:30,n:2,vert:false,rev:true},   // unten-links
+  {x:12,y:42,w:30,h:206,n:5,vert:true,rev:true},     // linke Wand (unten->oben)
+  {x:46,y:12,w:228,h:30,n:6,vert:false,rev:false},   // obere Wand (links->rechts)
+  {x:278,y:42,w:30,h:206,n:5,vert:true,rev:false},   // rechte Wand (oben->unten)
+  {x:194,y:256,w:80,h:30,n:2,vert:false,rev:false}   // unten-rechts
+ ];
+ const cells=[];let k=0;
+ segs.forEach(sg=>{for(let j=0;j<sg.n;j++){const idx=sg.rev?(sg.n-1-j):j;let x,y,w,h;
+   if(sg.vert){w=sg.w;h=sg.h/sg.n;x=sg.x;y=sg.y+idx*h;}else{w=sg.w/sg.n;h=sg.h;x=sg.x+idx*w;y=sg.y;}
+   if(k<order.length)cells.push({code:order[k++],x,y,w,h,cx:x+w/2,cy:y+h/2});}});
+ let s='<svg viewBox="0 0 320 320" role="img" aria-label="Lager Embrach von oben">';
+ s+='<rect x="4" y="4" width="312" height="308" rx="14" fill="#faf9f7" stroke="#17161a" stroke-width="4"/>';
+ segs.forEach(sg=>{s+=`<rect x="${sg.x}" y="${sg.y}" width="${sg.w}" height="${sg.h}" rx="4" fill="#eceae7"/>`;});
+ s+='<rect x="66" y="60" width="188" height="180" rx="26" fill="none" stroke="#c9a24a" stroke-width="2.5" stroke-dasharray="7 7"/>';
+ s+='<path d="M66 145 l-5 8 l10 0 z" fill="#c9a24a"/><path d="M160 60 l8 5 l0 -10 z" fill="#c9a24a"/><path d="M254 155 l5 -8 l-10 0 z" fill="#c9a24a"/><path d="M160 240 l-8 -5 l0 10 z" fill="#c9a24a"/>';
+ s+='<rect x="132" y="308" width="56" height="6" fill="#faf9f7"/><text x="160" y="304" text-anchor="middle" font-size="10" fill="#8a8891">Eingang</text>';
+ s+='<rect x="134" y="252" width="52" height="40" rx="6" fill="#17161a"/><text x="160" y="269" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">Pack-</text><text x="160" y="280" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">platz</text>';
+ cells.forEach(c=>{const isHot=hot.includes(c.code);
+   s+=`<rect x="${(c.x+1.5).toFixed(1)}" y="${(c.y+1.5).toFixed(1)}" width="${(c.w-3).toFixed(1)}" height="${(c.h-3).toFixed(1)}" rx="3" fill="${isHot?'#a8271c':'#fff'}" stroke="${isHot?'#a8271c':zoneCol[c.code[0]]}" stroke-width="${isHot?2.5:1.5}"/>`;
+   s+=`<text x="${c.cx.toFixed(1)}" y="${(c.cy+3.2).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="${isHot?'#fff':'#4b4951'}">${c.code}</text>`;});
+ cells.filter(c=>hot.includes(c.code)).forEach(c=>{s+=`<circle class="puls" cx="${c.cx.toFixed(1)}" cy="${c.cy.toFixed(1)}" r="13" fill="none" stroke="#a8271c" stroke-width="2.5"/>`;});
  s+='</svg>';
  const leg='<div class="mapleg"><span><i style="background:var(--red)"></i>Packzone</span><span><i style="background:#c9c6c1"></i>Standard</span><span><i style="background:#3a6ea5"></i>Saison</span><span><i style="background:#8a8891"></i>Langsamdreher</span></div>';
- return `<div class="map">${s}${leg}<div class="mut" style="text-align:center;margin-top:6px">Gelber Kreis = Rundweg: einmal herum, alles gepackt.</div></div>`;
+ return `<div class="map">${s}${leg}<div class="mut" style="text-align:center;margin-top:6px">Regale an den Wänden. Pfeil = Laufrunde.</div></div>`;
 }
 
 /* ================= LAGER-KARTE (Ordnung) ================= */
@@ -424,7 +431,7 @@ function rKarte(){
  const hot=S.karteHot?[S.karteHot]:[];
  const sel=CAT.find(c=>c.fach.embrach===S.karteHot);
  const pills=CAT.map(c=>`<button class="pill" style="${c.fach.embrach===S.karteHot?'border-color:var(--red);color:var(--red);font-weight:700':''}" onclick="karteShow('${c.fach.embrach}')">${esc(c.name)}</button>`).join('');
- $('v-karte').innerHTML=head('Lager-Karte','Von oben. Tippe einen Artikel, und der Punkt zeigt, wo im Raum er liegt.')+`
+ $('v-karte').innerHTML=head('Lager-Karte','Von oben. Artikel tippen, Fach leuchtet.')+`
   <div class="row" style="margin-bottom:10px">${pills}</div>
   <div class="c">${lagerkarte(hot)}${sel?`<div style="text-align:center;margin-top:8px"><b>${esc(sel.name)}</b> liegt in Fach <b class="mono">${sel.fach.embrach}</b> (${zoneName(sel.fach.embrach)})</div>`:''}</div>
   <div class="c"><h2>Fach = Code + Grössen-Farbe</h2>${legendBar()}<div class="mut" style="margin-top:6px">Vorschlag, Khawar darf die Farben ändern.</div></div>`;
@@ -441,7 +448,7 @@ function rNach(){
  const nach=CAT.filter(c=>c.abc==='A'&&c.q.front.some(v=>v===0)&&(frontSum(c)+embSum(c))<24);
 
  const card=(titel,farbe,body)=>`<div class="c" style="border-left:4px solid ${farbe}"><h2>${titel}</h2>${body}</div>`;
- let h=head('Nachschub & Mitnahme-Liste','Vor der 20-Minuten-Fahrt nach Zürich: genau das, was mit muss. Empfehlungen — du entscheidest.');
+ let h=head('Nachschub','Was mit in den Laden muss. Du entscheidest.');
 
  h+=card('Nachbestellen (unter Meldebestand)','var(--red)',
    nach.length?nach.map(c=>`<div class="pzline"><b>${esc(c.name)}</b> <span class="mut">ABC ${c.abc} · online ${c.online}%</span><span style="margin-left:auto"><span class="chip r">prüfen</span></span></div>`).join(''):'<div class="mut">Aktuell keine Modelle im roten Bereich.</div>');
@@ -452,22 +459,22 @@ function rNach(){
  h+=card('Umlagern Embrach → Laden (Mitnahme-Liste)','#3a6ea5',
    uml.length?uml.map(({c,s})=>`<div class="pzline"><span class="szd" style="background:${szf(s)}"></span><b style="min-width:32px">${s}</b><span style="flex:1">${esc(c.name)}</span><span class="fach mono">${c.fach.embrach}</span> <button class="b" style="min-height:34px;padding:6px 12px" onclick="umlModal('${c.id}','${s}')">Mitnehmen</button></div>`).join(''):'<div class="mut">—</div>');
 
- h+=card('Letzte Stücke — in den Laden zum Abverkauf','#8a8891',
+ h+=card('Letzte Stücke in den Laden','#8a8891',
    letzte.length?letzte.map(c=>`<div class="pzline"><b>${esc(c.name)}</b> <span class="mut">Ladenhüter (D) · bindet Kapital, macht Platz</span></div>`).join(''):'<div class="mut">—</div>');
 
- h+=`<div class="ct mut" style="margin-top:4px">Winterjacke Alpin liegt im UG (U10), Plan-Auslage <b>ab ${getC('JACK-01').geplant}</b> — Saisonware, ruht bis dahin.</div>`;
+ h+=`<div class="ct mut" style="margin-top:4px">Winterjacke Alpin: UG (U10), Auslage <b>ab ${getC('JACK-01').geplant}</b> Saisonware, ruht bis dahin.</div>`;
  $('v-nachschub').innerHTML=h;
 }
 function umlModal(id,sz){
  const c=getC(id);const i=si(c,sz);const max=c.q.embrach[i];
- openModal(`<h3>Mitnehmen — ${esc(c.name)} ${sz}</h3>
+ openModal(`<h3>Mitnehmen: ${esc(c.name)} ${sz}</h3>
   <div class="ct" style="margin-bottom:10px">Von Embrach ${c.fach.embrach} → Laden-Front ${c.fach.front}. Verfügbar: ${max}×.</div>
   <div class="fld"><label>Menge</label><div class="step-in"><button onclick="umStep(-1)">−</button><span class="v" id="uv">1</span><button onclick="umStep(1)">+</button></div></div>
   <button class="b full" onclick="umDo('${id}','${sz}')">Auf die Mitnahme-Liste</button>`);
  window._u={max,v:1};
 }
 function umStep(d){window._u.v=Math.max(1,Math.min(window._u.max,window._u.v+d));$('uv').textContent=window._u.v;}
-function umDo(id,sz){const c=getC(id),i=si(c,sz),v=window._u.v;c.q.embrach[i]-=v;c.q.front[i]+=v;closeModal();toast(`${v}× ${c.name} ${sz} auf die Mitnahme-Liste — Karte führt Buch.`);render();}
+function umDo(id,sz){const c=getC(id),i=si(c,sz),v=window._u.v;c.q.embrach[i]-=v;c.q.front[i]+=v;closeModal();toast(`${v}× ${c.name} ${sz} auf die Mitnahme-Liste.`);render();}
 
 /* ===== Init ===== */
 buildNav();go('scan');
