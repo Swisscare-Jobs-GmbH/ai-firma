@@ -5,6 +5,15 @@
   let regeln = [];
   let wurzel = null;
 
+  const FLAGS_INFO =
+    "Claude läuft über dein eingeloggtes Claude-Konto (MAX), ein API-Schlüssel ist nicht nötig. " +
+    "Für echte Datei-Änderungen und Builds braucht Claude ein Zusatz-Flag, " +
+    "empfohlen: --permission-mode acceptEdits. Ohne das Flag fragt Claude bei jeder Änderung nach.";
+
+  const REGEL_INFO =
+    "Regeln werden von oben nach unten geprüft, der erste Treffer gewinnt. " +
+    "Trifft keine Regel, wird Sonnet 5 genutzt.";
+
   function cssEinfuegen() {
     if (document.getElementById("css-einstellungen")) return;
     const style = document.createElement("style");
@@ -15,7 +24,6 @@
       .einst-feld { display: block; margin-bottom: 12px; font-size: 0.9em; }
       .einst-feld .eingabe { width: 100%; max-width: 480px; margin-top: 4px; display: block; }
       .einst-hinweis { color: var(--muted); font-size: 0.8em; margin-top: 4px; }
-      .regel-erklaerung { color: var(--muted); font-size: 0.85em; margin-bottom: 12px; }
       .regel-zeile { display: grid; grid-template-columns: 2fr 1fr 2fr auto; gap: 8px; margin-bottom: 8px; align-items: center; }
       .regel-btns { display: flex; gap: 4px; }
       .regel-btns .btn { padding: 4px 8px; }
@@ -65,7 +73,7 @@
   function regelnRendern() {
     const liste = wurzel.querySelector("#regel-liste");
     if (regeln.length === 0) {
-      liste.innerHTML = '<div class="leer">Keine Regeln definiert. Ohne Treffer wird Sonnet 5 genutzt.</div>';
+      liste.innerHTML = '<div class="leer">Keine Regeln definiert.</div>';
     } else {
       liste.innerHTML = regeln.map(function (regel, index) {
         return regelZeileHtml(regel, index, regeln.length);
@@ -130,13 +138,10 @@
       "</select></label>" +
       '<label class="einst-feld">Standard-Arbeitsordner' +
       '<input class="eingabe" id="einst-cwd" value="' + window.escapeHtml(einst.standardCwd || "") + '"></label>' +
-      '<label class="einst-feld">Zusatz-Flags für Claude' +
+      '<label class="einst-feld">Zusatz-Flags für Claude ' + window.infoIcon(FLAGS_INFO) +
       '<input class="eingabe" id="einst-flags" value="' + window.escapeHtml(einst.zusatzFlags || "") + '">' +
-      '<div class="einst-hinweis">Zum Beispiel: --permission-mode acceptEdits erlaubt Claude Datei-Änderungen ohne Rückfrage.</div>' +
       "</label></div>" +
-      '<div class="karte einst-karte"><h2>Modell-Regeln zum Token-Sparen</h2>' +
-      '<div class="regel-erklaerung">Regeln werden von oben nach unten geprüft, der erste Treffer gewinnt. ' +
-      "Trifft keine Regel, wird Sonnet 5 genutzt.</div>" +
+      '<div class="karte einst-karte"><h2>Modell-Regeln zum Token-Sparen ' + window.infoIcon(REGEL_INFO) + "</h2>" +
       '<div id="regel-liste"></div>' +
       '<button class="btn" id="regel-hinzufuegen">Zeile hinzufügen</button></div>' +
       '<div class="karte einst-karte"><h2>Modell-Katalog</h2>' + katalogHtml() + "</div>" +

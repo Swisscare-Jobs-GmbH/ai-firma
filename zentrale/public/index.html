@@ -3,24 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AIWorks Zentrale</title>
+  <title>SEA</title>
   <link rel="stylesheet" href="style.css">
   <script src="app.js" defer></script>
   <script src="modell.js" defer></script>
   <script src="kunden.js" defer></script>
   <script src="workflows.js" defer></script>
+  <script src="generator.js" defer></script>
   <script src="claude.js" defer></script>
   <script src="einstellungen.js" defer></script>
 </head>
 <body>
   <div id="app">
     <nav id="seitenleiste">
-      <div id="logo">AIWorks Zentrale</div>
-      <button class="nav-btn" data-view="dashboard">Dashboard</button>
-      <button class="nav-btn" data-view="kunden">Kunden</button>
-      <button class="nav-btn" data-view="workflows">Workflows</button>
-      <button class="nav-btn" data-view="claude">Claude</button>
-      <button class="nav-btn" data-view="einstellungen">Einstellungen</button>
+      <div id="seitenleiste-kopf">
+        <div id="logo">
+          <span class="logo-mono">S</span>
+          <span class="logo-voll">
+            <span class="logo-wort">SEA</span>
+            <span class="logo-claim">Software. Efficient. Automation.</span>
+          </span>
+        </div>
+        <button id="pin-btn" class="pin-btn" type="button" aria-pressed="false"
+          aria-label="Seitenleiste anheften" data-tooltip="Seitenleiste anheften">📌</button>
+      </div>
+      <button class="nav-btn" data-view="dashboard" data-tooltip="Dashboard">
+        <span class="nav-icon" aria-hidden="true">📊</span><span class="nav-label">Dashboard</span>
+      </button>
+      <button class="nav-btn" data-view="generator" data-tooltip="Generator">
+        <span class="nav-icon" aria-hidden="true">✨</span><span class="nav-label">Generator</span>
+      </button>
+      <button class="nav-btn" data-view="kunden" data-tooltip="Kunden">
+        <span class="nav-icon" aria-hidden="true">👥</span><span class="nav-label">Kunden</span>
+      </button>
+      <button class="nav-btn" data-view="workflows" data-tooltip="Workflows">
+        <span class="nav-icon" aria-hidden="true">🔀</span><span class="nav-label">Workflows</span>
+      </button>
+      <button class="nav-btn" data-view="claude" data-tooltip="Claude">
+        <span class="nav-icon" aria-hidden="true">💬</span><span class="nav-label">Claude</span>
+      </button>
+      <button class="nav-btn" data-view="einstellungen" data-tooltip="Einstellungen">
+        <span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Einstellungen</span>
+      </button>
     </nav>
     <main id="ansicht"></main>
   </div>

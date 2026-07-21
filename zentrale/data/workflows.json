@@ -1,15 +1,15 @@
 {
   "workflows": [
     {
-      "id": "w_onboarding",
-      "name": "Neukunde onboarden",
+      "id": "w_seed_onboarding",
+      "name": "Neukunde qualifizieren",
       "nodes": [
         {
           "id": "n_start",
           "typ": "start",
           "titel": "Neuer Kunde",
           "x": 60,
-          "y": 160,
+          "y": 180,
           "config": {}
         },
         {
@@ -17,41 +17,69 @@
           "typ": "claude",
           "titel": "Recherche",
           "x": 300,
-          "y": 80,
+          "y": 180,
           "config": {
-            "prompt": "Recherchiere den Betrieb: Google-Maps-Bewertungen live nachzählen, Webauftritt, Branche, Schmerzpunkte. Jede Zahl mit Quelle.",
-            "modellId": "claude-fable-5"
+            "prompt": "Recherchiere einen potenziellen Kunden fuer eine Automatisierungs-Firma. Pruefe Webauftritt, Branche, Groesse und moegliche Schmerzpunkte. Jede Zahl mit Quelle. Antworte am Ende in genau einem Wort: JA wenn der Kunde interessant ist, sonst NEIN.",
+            "modellId": "claude-fable-5",
+            "ergebnisVar": "recherche"
           }
         },
         {
-          "id": "n_fragen",
-          "typ": "claude",
-          "titel": "Schmerz-Fragen bauen",
-          "x": 300,
-          "y": 260,
-          "config": {
-            "prompt": "Baue die 10 Schmerz-Fragen nach GzF-Muster für diesen Kunden.",
-            "modellId": ""
-          }
-        },
-        {
-          "id": "n_registry",
-          "typ": "aktion",
-          "titel": "Registry-Eintrag",
+          "id": "n_pruefung",
+          "typ": "bedingung",
+          "titel": "Interessant?",
           "x": 560,
-          "y": 160,
+          "y": 180,
           "config": {
-            "beschreibung": "Kunde in ai-firma/kunden/UEBERSICHT.md eintragen und Ordner anlegen"
+            "quelle": "{{recherche}}",
+            "operator": "enthaelt",
+            "vergleich": "ja"
+          }
+        },
+        {
+          "id": "n_anlegen",
+          "typ": "aktion",
+          "titel": "Kunde anlegen",
+          "x": 820,
+          "y": 90,
+          "config": {
+            "aktionsTyp": "kunde_anlegen",
+            "kName": "Neuer Interessent",
+            "kBranche": "",
+            "kStatus": "offen",
+            "kNotizen": "Aus Recherche im Generator:\n{{recherche}}",
+            "text": "",
+            "varName": "",
+            "wert": "",
+            "kundeId": ""
+          }
+        },
+        {
+          "id": "n_verworfen",
+          "typ": "aktion",
+          "titel": "Verworfen notieren",
+          "x": 820,
+          "y": 290,
+          "config": {
+            "aktionsTyp": "meldung",
+            "text": "Kunde nach Recherche verworfen. Begruendung:\n{{recherche}}",
+            "kName": "",
+            "kBranche": "",
+            "kStatus": "offen",
+            "kNotizen": "",
+            "varName": "",
+            "wert": "",
+            "kundeId": ""
           }
         }
       ],
       "verbindungen": [
-        { "von": "n_start", "zu": "n_recherche" },
-        { "von": "n_start", "zu": "n_fragen" },
-        { "von": "n_recherche", "zu": "n_registry" },
-        { "von": "n_fragen", "zu": "n_registry" }
+        { "von": "n_start", "zu": "n_recherche", "zweig": "" },
+        { "von": "n_recherche", "zu": "n_pruefung", "zweig": "" },
+        { "von": "n_pruefung", "zu": "n_anlegen", "zweig": "ja" },
+        { "von": "n_pruefung", "zu": "n_verworfen", "zweig": "nein" }
       ],
-      "aktualisiert": "2026-07-20"
+      "aktualisiert": "2026-07-21"
     }
   ]
 }

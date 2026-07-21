@@ -1,5 +1,5 @@
 // modell.js: Modell-Katalog, Modell-Empfehlung und Formatierung der claude -p Stream-Zeilen.
-// Teil der AIWorks Zentrale (Vanilla JS, kein Build, wird per defer in index.html geladen).
+// Teil der SEA Plattform (Vanilla JS, kein Build, wird per defer in index.html geladen).
 
 window.modelle = [
   {

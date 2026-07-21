@@ -8,6 +8,10 @@
     { status: "fertig", titel: "Fertig", farbKlasse: "spalte-fertig" }
   ];
 
+  const KANBAN_INFO =
+    "Ziehe eine Karte per Drag and Drop in eine andere Spalte, um den Status zu ändern. " +
+    "Ein Klick auf die Karte öffnet die Bearbeitung.";
+
   let kundenListe = [];
   let boardElement = null;
 
@@ -25,8 +29,8 @@
       .spalte-arbeit .spalte-punkt { background: var(--gelb); }
       .spalte-fertig .spalte-punkt { background: var(--gruen); }
       .spalte-anzahl { color: var(--muted); font-weight: 400; margin-left: auto; }
-      .kunden-karte { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 8px; cursor: grab; }
-      .kunden-karte:hover { border-color: var(--akzent); }
+      .kunden-karte { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 8px; cursor: grab; transition: transform 0.15s ease, border-color 0.15s ease; }
+      .kunden-karte:hover { border-color: var(--akzent); transform: translateY(-2px); }
       .kunden-karte.wird-gezogen { opacity: 0.5; }
       .karte-name { font-weight: 600; margin-bottom: 2px; }
       .karte-branche { color: var(--muted); font-size: 0.85em; margin-bottom: 4px; }
@@ -248,7 +252,7 @@
     render: async function (container) {
       cssEinfuegen();
       container.innerHTML =
-        '<div class="kopfzeile"><h1>Kunden</h1>' +
+        '<div class="kopfzeile"><h1>Kunden ' + window.infoIcon(KANBAN_INFO) + "</h1>" +
         '<button class="btn btn-primaer" id="kunde-neu">Neuer Kunde</button></div>' +
         '<div class="kunden-board" id="kunden-board"></div>';
       boardElement = container.querySelector("#kunden-board");

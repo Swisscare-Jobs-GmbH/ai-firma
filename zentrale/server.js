@@ -1,11 +1,11 @@
-// AIWorks Zentrale, lokaler Management-Server.
+// SEA (Software, Efficient, Automation), lokaler Management-Server.
 // Keine npm-Abhaengigkeiten, nur Node-Bordmittel (http, fs, path, child_process).
 // Start: node server.js, danach http://127.0.0.1:8020
 
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
-const { spawn } = require("child_process");
+const { spawn, exec } = require("child_process");
 
 const PORT = 8020;
 const HOST = "127.0.0.1";
@@ -49,8 +49,12 @@ const STANDARD_EINSTELLUNGEN = {
 const DATEI_DEFAULTS = {
   "kunden.json": { kunden: [] },
   "workflows.json": { workflows: [] },
-  "einstellungen.json": STANDARD_EINSTELLUNGEN
+  "einstellungen.json": STANDARD_EINSTELLUNGEN,
+  "jobs.json": { jobs: [] }
 };
+
+// Nur diese drei Daten-Dateien loesen den Auto-GitHub-Sync aus (jobs.json nicht).
+const SYNC_DATEI_NAMEN = new Set(["kunden.json", "workflows.json", "einstellungen.json"]);
 
 const KOLLEKTIONEN = {
   kunden: { datei: "kunden.json", schluessel: "kunden", praefix: "k_" },
@@ -84,6 +88,9 @@ function ladeDatei(datei) {
 function speichereDatei(datei, inhalt) {
   const pfad = path.join(DATEN_ORDNER, datei);
   fs.writeFileSync(pfad, JSON.stringify(inhalt, null, 2), "utf8");
+  if (SYNC_DATEI_NAMEN.has(datei)) {
+    planeDatenSync();
+  }
 }
 
 // ---------- HTTP-Helfer ----------
@@ -196,11 +203,17 @@ async function handleEinstellungen(req, res) {
 const ERLAUBTE_ORIGINS = ["http://127.0.0.1:" + PORT, "http://localhost:" + PORT];
 const ARGUMENT_MUSTER = /^[A-Za-z0-9._-]+$/;
 
-function pruefeClaudeRequestKopf(req) {
+function pruefeOrigin(req) {
   const origin = req.headers.origin;
   if (origin && !ERLAUBTE_ORIGINS.includes(origin)) {
     return { status: 403, text: "Origin nicht erlaubt: " + origin };
   }
+  return null;
+}
+
+function pruefeClaudeRequestKopf(req) {
+  const originFehler = pruefeOrigin(req);
+  if (originFehler) return originFehler;
   const contentType = String(req.headers["content-type"] || "").toLowerCase();
   if (!contentType.startsWith("application/json")) {
     return { status: 400, text: "Content-Type muss application/json sein" };
@@ -324,6 +337,292 @@ async function handleClaudeRun(req, res) {
   kind.stdin.end();
 }
 
+// ---------- Jobs (Hintergrund-Builds) ----------
+
+const JOB_LOG_ORDNER = path.join(DATEN_ORDNER, "job-logs");
+const CWD_PRAEFIXE = ["C:/Projects/AIWorks", "C:\\Projects\\AIWorks"];
+const ERLAUBTE_JOB_ARTEN = ["website", "crm", "automation", "custom"];
+const laufendeJobs = new Map(); // jobId -> Kindprozess, ueberlebt keinen Neustart
+
+function ladeJobs() {
+  const daten = ladeDatei("jobs.json");
+  return Array.isArray(daten.jobs) ? daten.jobs : [];
+}
+
+function speichereJobs(jobs) {
+  speichereDatei("jobs.json", { jobs });
+}
+
+function jobLogPfad(id) {
+  return path.join(JOB_LOG_ORDNER, id + ".log");
+}
+
+function stelleJobLogOrdnerSicher() {
+  if (!fs.existsSync(JOB_LOG_ORDNER)) {
+    fs.mkdirSync(JOB_LOG_ORDNER, { recursive: true });
+  }
+}
+
+function aktualisiereJob(id, aenderung) {
+  const jobs = ladeJobs();
+  const index = jobs.findIndex((job) => job && job.id === id);
+  if (index < 0) return null;
+  const gemergt = Object.assign({}, jobs[index], aenderung);
+  speichereJobs(jobs.map((job, i) => (i === index ? gemergt : job)));
+  return gemergt;
+}
+
+// Beim Start alle noch als "laeuft" markierten Jobs auf "abgebrochen" setzen
+// (der Kindprozess ueberlebt einen Serverneustart nicht).
+function bereinigeHaengendeJobs() {
+  const jobs = ladeJobs();
+  let veraendert = false;
+  const neu = jobs.map((job) => {
+    if (job && job.status === "laeuft") {
+      veraendert = true;
+      return Object.assign({}, job, { status: "abgebrochen", beendet: new Date().toISOString() });
+    }
+    return job;
+  });
+  if (veraendert) speichereJobs(neu);
+}
+
+function istErlaubterCwd(cwd) {
+  if (typeof cwd !== "string" || cwd.trim() === "") return false;
+  const norm = cwd.trim();
+  return CWD_PRAEFIXE.some((praefix) => norm.startsWith(praefix));
+}
+
+// stdout und stderr zeilenweise an die Logdatei anhaengen.
+function haengeStromAnLog(strom, schreibeLog) {
+  let rest = "";
+  strom.on("data", (teil) => {
+    rest += teil.toString("utf8");
+    const zeilen = rest.split("\n");
+    rest = zeilen.pop();
+    for (const zeile of zeilen) {
+      schreibeLog(zeile.replace(/\r$/, "") + "\n");
+    }
+  });
+  strom.on("end", () => {
+    if (rest !== "") {
+      schreibeLog(rest.replace(/\r$/, "") + "\n");
+      rest = "";
+    }
+  });
+}
+
+// Ein bereits abgebrochener oder beendeter Job wird nicht mehr veraendert.
+function beendeJob(id, status, exitCode) {
+  laufendeJobs.delete(id);
+  const jobs = ladeJobs();
+  const aktuell = jobs.find((job) => job && job.id === id);
+  if (!aktuell || aktuell.status !== "laeuft") return;
+  aktualisiereJob(id, { status, exitCode, beendet: new Date().toISOString() });
+}
+
+function starteJobProzess(job, prompt, modellId, zusatzFlags) {
+  stelleJobLogOrdnerSicher();
+  const logPfad = jobLogPfad(job.id);
+  const schreibeLog = (text) => {
+    try {
+      fs.appendFileSync(logPfad, text, "utf8");
+    } catch (err) {
+      console.error("Job-Log fuer " + job.id + " nicht schreibbar:", err.message);
+    }
+  };
+
+  const kind = spawn("claude", baueClaudeArgumente(modellId, zusatzFlags), {
+    shell: true,
+    cwd: job.cwd
+  });
+  laufendeJobs.set(job.id, kind);
+
+  haengeStromAnLog(kind.stdout, schreibeLog);
+  haengeStromAnLog(kind.stderr, schreibeLog);
+
+  kind.on("error", (err) => {
+    schreibeLog("[Fehler] Konnte claude nicht starten: " + err.message + "\n");
+    beendeJob(job.id, "fehler", 1);
+  });
+  kind.on("close", (code) => {
+    beendeJob(job.id, code === 0 ? "fertig" : "fehler", code === null ? 1 : code);
+  });
+
+  kind.stdin.on("error", (err) => {
+    console.error("stdin-Fehler beim Job " + job.id + ":", err.message);
+  });
+  kind.stdin.write(prompt);
+  kind.stdin.end();
+}
+
+async function handleJobErstellen(req, res) {
+  const kopfFehler = pruefeClaudeRequestKopf(req);
+  if (kopfFehler) return sendeFehler(res, kopfFehler.status, kopfFehler.text);
+
+  const geparst = parseObjektBody(await leseBody(req));
+  if (geparst.fehler) return sendeFehler(res, 400, geparst.fehler);
+  const { art, name, prompt, modellId, cwd, zusatzFlags } = geparst.wert;
+
+  if (typeof prompt !== "string" || prompt.trim() === "") {
+    return sendeFehler(res, 400, "Feld prompt fehlt oder ist leer");
+  }
+  const argumentFehler = pruefeClaudeArgumente(modellId, zusatzFlags);
+  if (argumentFehler) return sendeFehler(res, 400, argumentFehler);
+  if (!istErlaubterCwd(cwd)) {
+    return sendeFehler(res, 400, "cwd muss mit C:/Projects/AIWorks beginnen");
+  }
+  const arbeitsOrdner = cwd.trim();
+  try {
+    fs.mkdirSync(arbeitsOrdner, { recursive: true });
+  } catch (err) {
+    return sendeFehler(res, 400, "cwd-Ordner konnte nicht angelegt werden: " + err.message);
+  }
+
+  const id = "job_" + Date.now();
+  const job = {
+    id,
+    art: ERLAUBTE_JOB_ARTEN.includes(art) ? art : "custom",
+    name: typeof name === "string" && name.trim() !== "" ? name.trim() : id,
+    cwd: arbeitsOrdner,
+    modellId: typeof modellId === "string" ? modellId.trim() : "",
+    status: "laeuft",
+    erstellt: new Date().toISOString(),
+    beendet: null,
+    exitCode: null
+  };
+  speichereJobs(ladeJobs().concat([job]));
+
+  starteJobProzess(job, prompt, modellId, zusatzFlags);
+  return sendeJson(res, 200, job);
+}
+
+function handleJobsListe(res) {
+  const jobs = ladeJobs().slice().sort((a, b) => {
+    return String(b.erstellt || "").localeCompare(String(a.erstellt || ""));
+  });
+  return sendeJson(res, 200, { jobs });
+}
+
+function handleJobEinzel(res, id) {
+  const job = ladeJobs().find((eintrag) => eintrag && eintrag.id === id);
+  if (!job) return sendeFehler(res, 404, "Job " + id + " nicht gefunden");
+  return sendeJson(res, 200, job);
+}
+
+// Liefert den Logtext ab Byte-Offset "von" plus die aktuelle Gesamtlaenge,
+// damit der Client beim naechsten Poll mit von=laenge nur Neues nachlaedt.
+function handleJobLog(res, id, vonRoh) {
+  const job = ladeJobs().find((eintrag) => eintrag && eintrag.id === id);
+  if (!job) return sendeFehler(res, 404, "Job " + id + " nicht gefunden");
+
+  let von = parseInt(vonRoh, 10);
+  if (!Number.isFinite(von) || von < 0) von = 0;
+
+  const pfad = jobLogPfad(id);
+  if (!fs.existsSync(pfad)) {
+    return sendeJson(res, 200, { text: "", laenge: 0, status: job.status, exitCode: job.exitCode });
+  }
+
+  let laenge = 0;
+  let text = "";
+  try {
+    laenge = fs.statSync(pfad).size;
+    if (von < laenge) {
+      const fd = fs.openSync(pfad, "r");
+      try {
+        const puffer = Buffer.alloc(laenge - von);
+        fs.readSync(fd, puffer, 0, puffer.length, von);
+        text = puffer.toString("utf8");
+      } finally {
+        fs.closeSync(fd);
+      }
+    }
+  } catch (err) {
+    console.error("Job-Log fuer " + id + " nicht lesbar:", err.message);
+  }
+  return sendeJson(res, 200, { text, laenge, status: job.status, exitCode: job.exitCode });
+}
+
+function handleJobStop(req, res, id) {
+  const originFehler = pruefeOrigin(req);
+  if (originFehler) return sendeFehler(res, originFehler.status, originFehler.text);
+
+  const job = ladeJobs().find((eintrag) => eintrag && eintrag.id === id);
+  if (!job) return sendeFehler(res, 404, "Job " + id + " nicht gefunden");
+
+  const kind = laufendeJobs.get(id);
+  if (kind && kind.exitCode === null && !kind.killed) {
+    if (process.platform === "win32") {
+      spawn("taskkill", ["/pid", String(kind.pid), "/T", "/F"]);
+    } else {
+      kind.kill();
+    }
+  }
+  laufendeJobs.delete(id);
+  if (job.status === "laeuft") {
+    aktualisiereJob(id, { status: "abgebrochen", beendet: new Date().toISOString() });
+  }
+  return sendeJson(res, 200, { ok: true });
+}
+
+function handleJobsRoute(req, res, teile) {
+  const id = teile[2];
+  const unterpfad = teile[3];
+
+  if (!id) {
+    if (req.method === "POST") return handleJobErstellen(req, res);
+    if (req.method === "GET") return handleJobsListe(res);
+    return sendeFehler(res, 405, "Methode " + req.method + " hier nicht erlaubt");
+  }
+  if (!unterpfad && req.method === "GET") {
+    return handleJobEinzel(res, id);
+  }
+  if (unterpfad === "log" && req.method === "GET") {
+    const von = new URL(req.url, "http://" + HOST + ":" + PORT).searchParams.get("von");
+    return handleJobLog(res, id, von);
+  }
+  if (unterpfad === "stop" && req.method === "POST") {
+    return handleJobStop(req, res, id);
+  }
+  return sendeFehler(res, 404, "Unbekannter Jobs-Pfad");
+}
+
+// ---------- Auto-GitHub-Sync der drei Daten-Dateien ----------
+
+// Nach jedem Schreiben von kunden.json, workflows.json oder einstellungen.json
+// wird ein entprellter git add/commit/push im Repo-Wurzelordner ausgeloest.
+// Der Debounce buendelt schnelle Aenderungen zu einem Commit. Fehler blockieren
+// nie den Request (der Sync laeuft asynchron nach der Antwort). Jobs-Daten werden
+// bewusst nicht committed (siehe .gitignore).
+const REPO_WURZEL = path.join(BASIS_ORDNER, "..");
+const SYNC_ENTPRELLUNG_MS = 4000;
+const SYNC_DATEI_PFADE = [
+  "zentrale/data/kunden.json",
+  "zentrale/data/workflows.json",
+  "zentrale/data/einstellungen.json"
+];
+let syncTimer = null;
+
+function planeDatenSync() {
+  if (syncTimer) clearTimeout(syncTimer);
+  syncTimer = setTimeout(fuehreDatenSyncAus, SYNC_ENTPRELLUNG_MS);
+}
+
+function fuehreDatenSyncAus() {
+  syncTimer = null;
+  const befehl = "git add " + SYNC_DATEI_PFADE.join(" ")
+    + " && git commit -m \"auto: Datenupdate aus SEA\""
+    + " && git push";
+  exec(befehl, { cwd: REPO_WURZEL, shell: true }, (fehler, stdout, stderr) => {
+    if (!fehler) return;
+    const text = String(stdout || "") + String(stderr || "") + fehler.message;
+    // "nothing to commit" ist kein Fehler, nur nichts zu tun.
+    if (/nothing to commit/i.test(text)) return;
+    console.error("Auto-Sync fehlgeschlagen:", text.trim());
+  });
+}
+
 // ---------- Statische Dateien ----------
 
 function handleStatisch(req, res, pfadName) {
@@ -364,6 +663,9 @@ async function routeApi(req, res, pfadName) {
   if (bereich === "claude" && id === "run" && teile.length === 3 && req.method === "POST") {
     return handleClaudeRun(req, res);
   }
+  if (bereich === "jobs") {
+    return handleJobsRoute(req, res, teile);
+  }
   return sendeFehler(res, 404, "Unbekannter API-Pfad: " + pfadName);
 }
 
@@ -388,6 +690,8 @@ const server = http.createServer(async (req, res) => {
 });
 
 stelleDatenDateienSicher();
+stelleJobLogOrdnerSicher();
+bereinigeHaengendeJobs();
 server.listen(PORT, HOST, () => {
-  console.log("AIWorks Zentrale laeuft auf http://127.0.0.1:8020");
+  console.log("SEA laeuft auf http://127.0.0.1:8020");
 });

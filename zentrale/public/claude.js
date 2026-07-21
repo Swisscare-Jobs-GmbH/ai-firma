@@ -15,7 +15,13 @@
   // Eintraege: {rolle:"user", text} | {rolle:"info", text} | {rolle:"claude", zeilen:[{art, text}]}
   let verlauf = [];
   let aktiverLauf = null;
-  let hinweisGezeigt = false;
+
+  // Kurzer Erklaertext zum Claude-Konto und Sitzungsverhalten (steckt hinter dem
+  // (i)-Chip im Kopf, damit die Ansicht selbst textarm bleibt).
+  const KONTO_HINWEIS =
+    "Läuft über das eingeloggte Claude-Konto (MAX). Jede Nachricht startet eine " +
+    "frische claude -p Sitzung ohne Gedächtnis an frühere Nachrichten. Für " +
+    "Datei-Änderungen die Zusatz-Flags in den Einstellungen setzen.";
 
   function cssEinfuegen() {
     if (document.getElementById("css-claude")) {
@@ -26,9 +32,7 @@
     style.textContent = [
       ".claude-view { display: flex; flex-direction: column; height: calc(100vh - 64px); gap: 12px; }",
       ".claude-kopf-aktionen { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }",
-      ".claude-hinweis { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);",
-      "  padding: 10px 14px; color: var(--muted); font-size: 13px; display: flex; justify-content: space-between;",
-      "  gap: 12px; align-items: center; }",
+      ".claude-titel-zeile { display: flex; align-items: center; gap: 8px; }",
       ".claude-chat { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 4px; }",
       ".chat-blase { max-width: 75%; padding: 10px 14px; border-radius: var(--radius); white-space: pre-wrap;",
       "  word-break: break-word; line-height: 1.45; }",
@@ -283,9 +287,18 @@
   function baueKopfzeile() {
     const kopf = document.createElement("div");
     kopf.className = "kopfzeile";
+
+    const titelZeile = document.createElement("div");
+    titelZeile.className = "claude-titel-zeile";
     const titel = document.createElement("h1");
     titel.textContent = "Claude";
-    kopf.appendChild(titel);
+    titelZeile.appendChild(titel);
+    if (typeof window.infoIcon === "function") {
+      // KONTO_HINWEIS ist statischer Text (keine Nutzereingabe), darum ist das
+      // Einsetzen des (i)-Chip-Markups per innerHTML hier unbedenklich.
+      titelZeile.insertAdjacentHTML("beforeend", window.infoIcon(KONTO_HINWEIS));
+    }
+    kopf.appendChild(titelZeile);
 
     const aktionen = document.createElement("div");
     aktionen.className = "claude-kopf-aktionen";
@@ -302,24 +315,6 @@
 
     kopf.appendChild(aktionen);
     return kopf;
-  }
-
-  function baueHinweis() {
-    const leiste = document.createElement("div");
-    leiste.className = "claude-hinweis";
-    const text = document.createElement("span");
-    text.textContent =
-      "Hinweis: Jeder Auftrag startet eine frische claude -p Sitzung ohne Gedächtnis " +
-      "an vorherige Nachrichten. Für Datei-Änderungen die Zusatz-Flags in den Einstellungen setzen.";
-    leiste.appendChild(text);
-    const schliessenBtn = document.createElement("button");
-    schliessenBtn.className = "btn";
-    schliessenBtn.textContent = "Verstanden";
-    schliessenBtn.addEventListener("click", function () {
-      leiste.remove();
-    });
-    leiste.appendChild(schliessenBtn);
-    return leiste;
   }
 
   function baueEingabe() {
@@ -360,10 +355,6 @@
     const view = document.createElement("div");
     view.className = "claude-view";
     view.appendChild(baueKopfzeile());
-    if (!hinweisGezeigt) {
-      view.appendChild(baueHinweis());
-      hinweisGezeigt = true;
-    }
 
     const chatEl = document.createElement("div");
     chatEl.id = "claude-chat";

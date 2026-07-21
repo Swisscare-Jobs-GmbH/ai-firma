@@ -1,4 +1,5 @@
-/* AIWorks Zentrale, Kern: API-Wrapper, Toast, Router, Claude-Stream, Dashboard-View. */
+/* SEA (Software. Efficient. Automation.), Kern: API-Wrapper, Toast, Router, Claude-Stream,
+   Seitenleiste, globale Tooltips, infoIcon, Dashboard-View. */
 
 window.views = {};
 window.einstellungen = {};
@@ -149,6 +150,230 @@ window.claudeStream = function (optionen) {
   };
 };
 
+/* ---------- Layout-CSS (Seitenleiste, Tooltip, Info-Chip) ---------- */
+
+function injiziereLayoutCss() {
+  if (document.getElementById("css-layout")) return;
+  const style = document.createElement("style");
+  style.id = "css-layout";
+  style.textContent = `
+    #app { position: relative; padding-left: 64px; transition: padding-left 0.18s ease; }
+    #app.sidebar-gepinnt { padding-left: 224px; }
+
+    #seitenleiste {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 64px;
+      overflow: hidden;
+      z-index: 60;
+      transition: width 0.18s ease, box-shadow 0.18s ease;
+    }
+    #seitenleiste.ist-gepinnt,
+    #seitenleiste:not(.ist-gepinnt):hover { width: 224px; }
+    #seitenleiste:not(.ist-gepinnt):hover { box-shadow: 0 14px 48px rgba(0, 0, 0, 0.5); }
+
+    #seitenleiste-kopf {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; margin-bottom: 6px;
+    }
+
+    .logo-mono { display: none; }
+    .logo-voll { display: flex; flex-direction: column; line-height: 1.15; }
+    .logo-wort { font-size: 18px; }
+    .logo-claim {
+      font-size: 9px; font-weight: 600; letter-spacing: 0.4px;
+      text-transform: none; color: var(--muted);
+      -webkit-text-fill-color: var(--muted);
+    }
+
+    .pin-btn {
+      flex-shrink: 0;
+      background: transparent; border: none; cursor: pointer;
+      font-size: 15px; line-height: 1; padding: 5px 7px;
+      border-radius: 9px; color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+    }
+    .pin-btn:hover { background: var(--akzent-weich); color: var(--text); }
+    .pin-btn.aktiv { color: var(--akzent-hell); }
+    .pin-btn:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
+
+    /* Eingeklappter Rail-Zustand: nur Icons, Beschriftungen und Voll-Logo aus */
+    #seitenleiste:not(.ist-gepinnt):not(:hover) .nav-label,
+    #seitenleiste:not(.ist-gepinnt):not(:hover) .logo-voll,
+    #seitenleiste:not(.ist-gepinnt):not(:hover) .pin-btn { display: none; }
+    #seitenleiste:not(.ist-gepinnt):not(:hover) .logo-mono {
+      display: inline-flex; align-items: center; justify-content: center; width: 100%;
+    }
+    #seitenleiste:not(.ist-gepinnt):not(:hover) .nav-btn {
+      text-align: center; padding-left: 0; padding-right: 0;
+    }
+    #seitenleiste:not(.ist-gepinnt):not(:hover) .nav-btn .nav-icon { font-size: 20px; }
+
+    .nav-btn { white-space: nowrap; }
+    .nav-icon { display: inline-block; width: 22px; text-align: center; }
+    .nav-btn .nav-label { margin-left: 8px; }
+    .nav-btn:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
+
+    /* Info-Chip (i) */
+    .info-chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 16px; height: 16px; margin-left: 6px;
+      border: 1px solid var(--akzent); border-radius: 50%;
+      background: var(--akzent-weich); color: var(--akzent-hell);
+      font-size: 11px; font-weight: 700; font-style: normal; line-height: 1;
+      cursor: help; vertical-align: middle; user-select: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .info-chip:hover, .info-chip:focus-visible {
+      background: var(--akzent); color: #ffffff; outline: none;
+    }
+
+    /* Globaler Tooltip (ein wiederverwendetes Element) */
+    #sea-tooltip {
+      position: fixed; top: 0; left: 0; z-index: 500;
+      max-width: 260px; padding: 9px 12px;
+      background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text);
+      font-size: 13px; line-height: 1.45;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
+      pointer-events: none; opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.14s ease, transform 0.14s ease;
+    }
+    #sea-tooltip.sichtbar { opacity: 1; transform: translateY(0); }
+  `;
+  document.head.appendChild(style);
+}
+
+/* ---------- Info-Chip (window.infoIcon) ---------- */
+
+window.infoIcon = function (text) {
+  const sicher = window.escapeHtml(text);
+  return '<span class="info-chip" tabindex="0" role="img" data-info="' + sicher
+    + '" aria-label="Info: ' + sicher + '">i</span>';
+};
+
+/* ---------- Globale Tooltips ---------- */
+
+function seitenleisteIstOffen() {
+  const leiste = document.getElementById("seitenleiste");
+  if (!leiste) return false;
+  return leiste.classList.contains("ist-gepinnt") || leiste.matches(":hover");
+}
+
+function tooltipTextFuer(el) {
+  if (el.hasAttribute("data-info")) return el.getAttribute("data-info");
+  // data-tooltip: bei Nav-Buttons nur zeigen, wenn die Leiste eingeklappt ist
+  if (el.classList.contains("nav-btn") && seitenleisteIstOffen()) return null;
+  return el.getAttribute("data-tooltip");
+}
+
+function initTooltips() {
+  let tip = document.getElementById("sea-tooltip");
+  if (!tip) {
+    tip = document.createElement("div");
+    tip.id = "sea-tooltip";
+    tip.setAttribute("role", "tooltip");
+    document.body.appendChild(tip);
+  }
+  let aktuellesZiel = null;
+
+  function verstecke() {
+    tip.classList.remove("sichtbar");
+    aktuellesZiel = null;
+  }
+
+  function positioniere(el) {
+    const rechteck = el.getBoundingClientRect();
+    const tRechteck = tip.getBoundingClientRect();
+    const rand = 8;
+    const imLeiste = !!(el.closest && el.closest("#seitenleiste"));
+    let oben, links;
+    if (imLeiste) {
+      links = rechteck.right + 10;
+      oben = rechteck.top + rechteck.height / 2 - tRechteck.height / 2;
+    } else {
+      oben = rechteck.bottom + 8;
+      links = rechteck.left + rechteck.width / 2 - tRechteck.width / 2;
+    }
+    links = Math.max(rand, Math.min(links, window.innerWidth - tRechteck.width - rand));
+    oben = Math.max(rand, Math.min(oben, window.innerHeight - tRechteck.height - rand));
+    tip.style.left = links + "px";
+    tip.style.top = oben + "px";
+  }
+
+  function zeigeFuer(el) {
+    if (el === aktuellesZiel && tip.classList.contains("sichtbar")) return;
+    const text = tooltipTextFuer(el);
+    if (!text) { verstecke(); return; }
+    tip.textContent = text;
+    positioniere(el);
+    tip.classList.add("sichtbar");
+    aktuellesZiel = el;
+  }
+
+  function quelleAus(ereignis) {
+    const ziel = ereignis.target;
+    return ziel && ziel.closest ? ziel.closest("[data-info],[data-tooltip]") : null;
+  }
+
+  document.addEventListener("mouseover", function (ereignis) {
+    const el = quelleAus(ereignis);
+    if (el) zeigeFuer(el);
+  });
+  document.addEventListener("mouseout", function (ereignis) {
+    const el = quelleAus(ereignis);
+    if (el && (!ereignis.relatedTarget || !el.contains(ereignis.relatedTarget))) verstecke();
+  });
+  document.addEventListener("focusin", function (ereignis) {
+    const el = quelleAus(ereignis);
+    if (el) zeigeFuer(el);
+  });
+  document.addEventListener("focusout", verstecke);
+  window.addEventListener("scroll", verstecke, true);
+  window.addEventListener("resize", verstecke);
+}
+
+/* ---------- Seitenleiste (einklappbar, Pin) ---------- */
+
+function initSeitenleiste() {
+  const leiste = document.getElementById("seitenleiste");
+  const app = document.getElementById("app");
+  const pinKnopf = document.getElementById("pin-btn");
+  if (!leiste || !app || !pinKnopf) return;
+
+  const SPEICHER_SCHLUESSEL = "sea_sidebar_pinned";
+
+  function setzeGepinnt(gepinnt) {
+    leiste.classList.toggle("ist-gepinnt", gepinnt);
+    app.classList.toggle("sidebar-gepinnt", gepinnt);
+    pinKnopf.classList.toggle("aktiv", gepinnt);
+    pinKnopf.setAttribute("aria-pressed", gepinnt ? "true" : "false");
+    const beschriftung = gepinnt ? "Seitenleiste loesen" : "Seitenleiste anheften";
+    pinKnopf.setAttribute("aria-label", beschriftung);
+    pinKnopf.setAttribute("data-tooltip", beschriftung);
+  }
+
+  let gepinnt = false;
+  try {
+    gepinnt = localStorage.getItem(SPEICHER_SCHLUESSEL) === "true";
+  } catch (fehler) {
+    gepinnt = false;
+  }
+  setzeGepinnt(gepinnt);
+
+  pinKnopf.addEventListener("click", function () {
+    gepinnt = !gepinnt;
+    try {
+      localStorage.setItem(SPEICHER_SCHLUESSEL, gepinnt ? "true" : "false");
+    } catch (fehler) {
+      window.toast("Pin-Zustand konnte nicht gespeichert werden.", "fehler");
+    }
+    setzeGepinnt(gepinnt);
+  });
+}
+
+injiziereLayoutCss();
+
 /* ---------- Router ---------- */
 
 function aktuelleViewAusHash() {
@@ -183,7 +408,7 @@ function injiziereDashboardCss() {
   const style = document.createElement("style");
   style.id = "css-dashboard";
   style.textContent = `
-    .dash-kacheln { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .dash-kacheln { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .dash-kachel { cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
     .dash-kachel:hover { border-color: var(--akzent); transform: translateY(-2px); }
     .dash-kachel .zahl { font-size: 34px; font-weight: 700; line-height: 1.2; }
@@ -234,20 +459,38 @@ async function rendereDashboard(container) {
     window.toast("Daten konnten nicht geladen werden: " + fehler.message, "fehler");
   }
 
+  let laufendeBuilds = null;
+  try {
+    const jobAntwort = await window.api.get("/api/jobs");
+    const jobs = (jobAntwort && jobAntwort.jobs) || [];
+    laufendeBuilds = jobs.filter(function (job) { return job.status === "laeuft"; }).length;
+  } catch (fehler) {
+    laufendeBuilds = null;
+  }
+
   const anzahl = function (status) {
     return kunden.filter(function (k) { return k.status === status; }).length;
   };
 
-  container.innerHTML = ''
-    + '<div class="kopfzeile"><h1>Dashboard</h1></div>'
-    + '<div class="dash-kacheln">'
+  let kachelnHtml = ''
     + baueDashboardKachel(anzahl("offen"), "zahl-rot", "Kunden offen", "kunden")
     + baueDashboardKachel(anzahl("in_arbeit"), "zahl-gelb", "Kunden in Bearbeitung", "kunden")
     + baueDashboardKachel(anzahl("fertig"), "zahl-gruen", "Kunden fertig", "kunden")
-    + baueDashboardKachel(workflows.length, "zahl-akzent", "Workflows", "workflows")
-    + "</div>"
+    + baueDashboardKachel(workflows.length, "zahl-akzent", "Workflows", "workflows");
+  if (laufendeBuilds !== null) {
+    kachelnHtml += baueDashboardKachel(laufendeBuilds, "zahl-akzent", "Builds laufen", "generator");
+  }
+
+  const wegweiserInfo = window.infoIcon(
+    "Firmen-Regel zum Token-Sparen: Recherche, Planung und Audit laufen auf Fabel 5, "
+    + "der Bau von Features auf Opus 4.8. Generator und Claude-Chat waehlen danach automatisch."
+  );
+
+  container.innerHTML = ''
+    + '<div class="kopfzeile"><h1>Dashboard</h1></div>'
+    + '<div class="dash-kacheln">' + kachelnHtml + "</div>"
     + '<div class="karte dash-wegweiser">'
-    + "<h2>Modell-Wegweiser zum Token-Sparen</h2>"
+    + "<h2>Modell-Wegweiser " + wegweiserInfo + "</h2>"
     + baueModellTabelle()
     + "</div>"
     + '<div class="dash-schnell">'
@@ -279,6 +522,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     window.toast("Einstellungen konnten nicht geladen werden: " + fehler.message, "fehler");
   }
   document.documentElement.dataset.theme = window.einstellungen.theme || "dunkel";
+
+  initSeitenleiste();
+  initTooltips();
 
   document.querySelectorAll(".nav-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {

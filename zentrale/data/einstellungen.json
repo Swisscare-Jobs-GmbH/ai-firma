@@ -5,17 +5,43 @@
   "standardCwd": "C:/Projects/AIWorks",
   "modellRegeln": [
     {
-      "muster": ["plan", "architektur", "audit", "recherche", "konzept", "analyse", "review", "strategie"],
+      "muster": [
+        "plan",
+        "architektur",
+        "audit",
+        "recherche",
+        "konzept",
+        "analyse",
+        "review",
+        "strategie"
+      ],
       "modellId": "claude-fable-5",
       "grund": "Firmen-Regel: Recherche, Plan und Audit laufen auf Fabel 5"
     },
     {
-      "muster": ["baue", "implementier", "feature", "refactor", "umbauen", "erstelle app", "migration"],
+      "muster": [
+        "baue",
+        "implementier",
+        "feature",
+        "refactor",
+        "umbauen",
+        "erstelle app",
+        "migration"
+      ],
       "modellId": "claude-opus-4-8",
       "grund": "Firmen-Regel: Bau läuft auf Opus 4.8"
     },
     {
-      "muster": ["fix", "tippfehler", "umbenenn", "formatier", "kleine", "doku", "kommentar", "aufräumen"],
+      "muster": [
+        "fix",
+        "tippfehler",
+        "umbenenn",
+        "formatier",
+        "kleine",
+        "doku",
+        "kommentar",
+        "aufräumen"
+      ],
       "modellId": "claude-haiku-4-5-20251001",
       "grund": "Mechanische Kleinarbeit: Haiku spart am meisten Tokens"
     }
