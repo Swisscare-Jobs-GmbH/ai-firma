@@ -1,0 +1,150 @@
+/* Finelli KI-Mitarbeiter — Prototyp. Dark-Violet (passend zum Praesentations-Deck). */
+:root {
+  --bg: #0c0a12;
+  --panel: #16121f;
+  --panel-2: #1e1830;
+  --linie: #2c2440;
+  --text: #ece9f5;
+  --text-schwach: #9a92b4;
+  --violett: #8b5cf6;
+  --violett-hell: #a78bfa;
+  --gruen: #34c26b;
+  --gelb: #e6b93b;
+  --rot: #e5484d;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif; font-size: 15px; line-height: 1.5;
+}
+strong { color: #fff; }
+
+/* Kopf */
+.kopf {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: 16px 28px; border-bottom: 1px solid var(--linie);
+  background: linear-gradient(120deg, #140f22, #0c0a12 70%);
+}
+.marke { font-weight: 800; letter-spacing: 3px; font-size: 20px; }
+.untertitel { color: var(--text-schwach); font-size: 13px; margin-top: 2px; }
+.badge-mock {
+  background: var(--violett); color: #fff; font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 5px; letter-spacing: 1px; margin-left: 4px;
+}
+.kopf-rechts { display: flex; align-items: center; gap: 14px; }
+.lauf-info { text-align: right; font-size: 12px; color: var(--text-schwach); }
+.versand { margin-top: 3px; font-weight: 600; }
+.versand.ok { color: var(--gruen); }
+.versand.blockiert { color: var(--rot); }
+
+.btn {
+  border: 1px solid var(--linie); background: var(--panel-2); color: var(--text);
+  padding: 9px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;
+  transition: filter .12s, transform .05s;
+}
+.btn:hover { filter: brightness(1.2); }
+.btn:active { transform: translateY(1px); }
+.btn-primaer { background: var(--violett); border-color: var(--violett); color: #fff; }
+.btn-neben { background: transparent; }
+
+/* Team-Leiste */
+.team-leiste { display: flex; gap: 12px; padding: 14px 28px 0; flex-wrap: wrap; }
+.team-karte {
+  flex: 1 1 240px; display: flex; gap: 12px; align-items: center;
+  background: var(--panel); border: 1px solid var(--linie); border-radius: 10px; padding: 12px 14px;
+}
+.team-nr {
+  width: 30px; height: 30px; flex: none; border-radius: 50%; background: var(--violett);
+  color: #fff; font-weight: 800; display: grid; place-items: center;
+}
+.team-was { color: var(--text-schwach); font-size: 12px; }
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; padding: 16px 28px 0; flex-wrap: wrap; }
+.tab {
+  border: none; background: transparent; color: var(--text-schwach); cursor: pointer;
+  padding: 10px 14px; border-radius: 8px 8px 0 0; font-size: 14px; font-weight: 600;
+}
+.tab:hover { color: var(--text); }
+.tab.aktiv { color: #fff; background: var(--panel); box-shadow: inset 0 -2px 0 var(--violett); }
+.tab-zahl {
+  background: var(--rot); color: #fff; font-size: 11px; border-radius: 9px; padding: 1px 7px; margin-left: 3px;
+}
+
+main { padding: 0 28px 28px; }
+.seite { display: none; padding-top: 20px; }
+.seite.aktiv { display: block; }
+
+/* Kacheln */
+.kachel-reihe { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+.kachel {
+  flex: 1 1 200px; background: var(--panel); border: 1px solid var(--linie);
+  border-radius: 12px; padding: 16px 18px; position: relative;
+}
+.kachel .titel { color: var(--text-schwach); font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+.kachel .wert { font-size: 26px; font-weight: 800; margin-top: 6px; }
+.kachel .zusatz { font-size: 12px; color: var(--text-schwach); margin-top: 2px; }
+.kachel.ampel-gruen { border-left: 4px solid var(--gruen); }
+.kachel.ampel-gelb { border-left: 4px solid var(--gelb); }
+.kachel.ampel-rot { border-left: 4px solid var(--rot); }
+
+/* Ampel-Punkt */
+.punkt { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.punkt.gruen { background: var(--gruen); }
+.punkt.gelb { background: var(--gelb); }
+.punkt.rot { background: var(--rot); }
+
+/* Tabelle */
+.panel { background: var(--panel); border: 1px solid var(--linie); border-radius: 12px; padding: 4px 0; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 760px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--linie); white-space: nowrap; }
+th { color: var(--text-schwach); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; }
+tbody tr:hover { background: var(--panel-2); }
+td.zahl, th.zahl { text-align: right; font-variant-numeric: tabular-nums; }
+.klasse { font-weight: 700; padding: 1px 7px; border-radius: 5px; font-size: 12px; }
+.klasse-A { background: rgba(52,194,107,.18); color: var(--gruen); }
+.klasse-B { background: rgba(139,92,246,.2); color: var(--violett-hell); }
+.klasse-C { background: rgba(154,146,180,.18); color: var(--text-schwach); }
+.klasse-D { background: rgba(229,72,77,.18); color: var(--rot); }
+
+/* Berichte / Karten */
+.karte {
+  background: var(--panel); border: 1px solid var(--linie); border-radius: 12px;
+  padding: 18px 20px; margin-bottom: 16px;
+}
+.karte.rot { border-left: 4px solid var(--rot); }
+.karte h3 { margin: 0 0 12px; font-size: 16px; }
+.block { margin-bottom: 12px; }
+.block-titel { color: var(--violett-hell); font-size: 12px; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+.block-zeile { margin: 3px 0; }
+.hinweis-check { font-size: 12px; margin-top: 10px; }
+.hinweis-check.ok { color: var(--gruen); }
+.hinweis-check.fehler { color: var(--rot); }
+
+/* Research */
+.dossier-hinweis { background: var(--panel-2); border: 1px dashed var(--violett); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; color: var(--text-schwach); font-size: 13px; }
+.tier { font-weight: 700; padding: 1px 7px; border-radius: 5px; font-size: 11px; margin-right: 6px; }
+.tier-A { background: rgba(52,194,107,.18); color: var(--gruen); }
+.tier-B { background: rgba(139,92,246,.2); color: var(--violett-hell); }
+.tier-C { background: rgba(154,146,180,.18); color: var(--text-schwach); }
+.richtung { font-weight: 700; }
+.richtung.kommt { color: var(--gruen); }
+.richtung.geht { color: var(--rot); }
+.richtung.stabil { color: var(--text-schwach); }
+.dossier-quelle { font-size: 12px; color: var(--text-schwach); margin-top: 4px; }
+
+/* Daten */
+.daten-hinweis { color: var(--text-schwach); font-size: 13.5px; margin-bottom: 16px; max-width: 780px; }
+textarea {
+  width: 100%; min-height: 220px; background: #0f0c17; color: var(--text); border: 1px solid var(--linie);
+  border-radius: 10px; padding: 12px; font-family: "Consolas", "Courier New", monospace; font-size: 12.5px; resize: vertical;
+}
+.daten-block { margin-bottom: 22px; }
+.daten-block h3 { margin: 0 0 8px; font-size: 15px; }
+.zeilen-knopf { margin-top: 10px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.status-text { font-size: 13px; }
+.status-text.ok { color: var(--gruen); }
+.status-text.fehler { color: var(--rot); }
+
+.fuss { padding: 16px 28px 30px; color: var(--text-schwach); font-size: 12px; border-top: 1px solid var(--linie); }
+.leer { color: var(--text-schwach); padding: 20px; }

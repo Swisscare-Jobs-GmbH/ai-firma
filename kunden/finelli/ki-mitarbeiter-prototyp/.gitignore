@@ -1,0 +1,3 @@
+# Generierte Uebungs-/Laufdaten — erzeugt der Server beim Start deterministisch neu.
+daten/*.json
+laufprotokoll.json

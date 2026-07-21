@@ -5,7 +5,9 @@
 > Quellen und Formeln adversarial LIVE geprueft, Abrufdatum 21.07.2026) + Richter-Panel
 > (3 Richter: Regel-Treue, Daten-Realismus, Opus-Baubarkeit — alle 12 Pflicht-Funde eingearbeitet).
 > **Bau: Opus 4.8** nach den Etappen in Abschnitt 10.
-> **Status: Bauplan fertig · Bau-Start (auch Mock) erst nach Gate 0 = Finelli-Ja (Termin 22.07).**
+> **Status (21.07): Prototyp E0-E4 als Mock GEBAUT** in `ki-mitarbeiter-prototyp/` — auf SA-Entscheid
+> ([Gate-0-Ausnahme E5](../../brain/decisions/E5-finelli-ki-mitarbeiter-prototyp-vor-ja.md)) als Demo
+> fuer Termin 22.07. Etappe E5 (Echtbetrieb: Shopify + Live-Research + POS-Regel) bleibt hinter dem Ja.
 > Gehoert zu: [README](README.md) · [Ausbau-Plan V4 Analyse](2026-07-18-finelli-ausbau-plan.md) ·
 > [Feinplan KI-Etappe](2026-07-18-finelli-feinplan.md) · [Branchen-Recherche](2026-07-19-branchen-recherche-markt-schmerzen.md)
 

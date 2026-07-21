@@ -18,8 +18,11 @@ Verkaufs-MVP `C:\dev\finelli-cockpit` (SA-Rechner, Ports 8012/5173) · Produktio
   gefixt (Draft-PR #1: Mock-Tages-Cache, KI-Timeouts 30s, CORS 127.0.0.1) — nur SA merged.
 - **Naechster Schritt:** vor Mittwoch die Demo-Killer-Fixes + KI-Etappe in die Haupt-Spur, dann Klick-Probe.
 - 🟡 **Bauplan "3 KI-Mitarbeiter"** (Research + KPI + Manager, SA-Auftrag 21.07) liegt vor:
-  `2026-07-21-bauplan-ki-mitarbeiter.md` — von Richter-Panel geprueft. **Bau-Start (auch Mock)
-  erst nach Finelli-Ja (Gate 0)**; Bau dann durch Opus 4.8 nach Etappen E0-E5.
+  `2026-07-21-bauplan-ki-mitarbeiter.md` — von Richter-Panel geprueft.
+- 🟢 **Prototyp gebaut 21.07** (Opus 4.8): `ki-mitarbeiter-prototyp/` — lauffaehige Demo aller 3
+  Mitarbeiter (Node, Port 8030, `node server.js`), 18/18 Tests gruen, Klick-bewiesen. Gebaut vor
+  dem Ja auf SA-Entscheid ([Gate-0-Ausnahme E5](../../brain/decisions/E5-finelli-ki-mitarbeiter-prototyp-vor-ja.md))
+  als **Demo fuer Termin 22.07**. Echtbetrieb (Shopify + Live-Research) bleibt hinter Gate E5.
 
 **Dateien hier:** firma-profil · schmerz-landkarte · deal-strategie · wert-ranking · ausbau-plan ·
 feinplan · logistik-research · offene-fragen · antworten-sa · antworten-runde2 ·

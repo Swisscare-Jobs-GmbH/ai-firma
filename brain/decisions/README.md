@@ -44,3 +44,4 @@ entscheider: SA
 | [E2](E2-webresearch-leitplanken.md) | Webrecherche-Leitplanken (kein RAG, Schwaerme nur Lesen, unabhaengige Richter) | aktiv | 2026-07-19 |
 | [E3](E3-setup-entscheide-19-07.md) | Setup-Entscheide 19.07 (Absender vorerst Swiss Care Jobs GmbH · Repo-Zugriff nur SA · avatar.md lokal) | aktiv | 2026-07-19 |
 | [E4](E4-workspace-meta-layer.md) | Workspace-Meta-Layer am AIWorks-Root (Sync-Gesetz, Branchen-Schablonen, kanonische Kopie in vorlagen/workspace/) | aktiv | 2026-07-20 |
+| [E5](E5-finelli-ki-mitarbeiter-prototyp-vor-ja.md) | Finelli KI-Mitarbeiter-Prototyp VOR dem Ja bauen (Gate-0-Ausnahme, Demo fuer Termin 22.07) | aktiv | 2026-07-21 |

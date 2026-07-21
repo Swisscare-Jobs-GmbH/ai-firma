@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Finelli — KI-Mitarbeiter</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="kopf">
+    <div class="kopf-links">
+      <div class="marke">FINELLI</div>
+      <div class="untertitel">KI-Mitarbeiter <span class="badge-mock" id="modus">MOCK</span></div>
+    </div>
+    <div class="kopf-rechts">
+      <div class="lauf-info">
+        <div>Tageslauf: <strong id="lauf-datum">—</strong></div>
+        <div id="versand-status" class="versand">—</div>
+      </div>
+      <button id="btn-lauf" class="btn btn-primaer">Tageslauf starten</button>
+      <button id="btn-mock" class="btn btn-neben" title="Neue Uebungs-Daten erzeugen">Mock neu wuerfeln</button>
+    </div>
+  </header>
+
+  <div class="team-leiste">
+    <div class="team-karte"><span class="team-nr">1</span><div><strong>Research-Spaeher</strong><br/><span class="team-was">beobachtet Markt &amp; Trends aus gepruefteten Quellen</span></div></div>
+    <div class="team-karte"><span class="team-nr">2</span><div><strong>KPI-Experte</strong><br/><span class="team-was">rechnet Verkauf, Bestand &amp; Nachbestell-Bedarf</span></div></div>
+    <div class="team-karte"><span class="team-nr">3</span><div><strong>Manager</strong><br/><span class="team-was">schreibt die Berichte an den Co-Founder</span></div></div>
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab aktiv" data-ziel="uebersicht">Uebersicht</button>
+    <button class="tab" data-ziel="alarme">Bestell-Alarme <span class="tab-zahl" id="alarm-zahl"></span></button>
+    <button class="tab" data-ziel="woche">Wochenbericht</button>
+    <button class="tab" data-ziel="monat">Monatsbericht</button>
+    <button class="tab" data-ziel="research">Research</button>
+    <button class="tab" data-ziel="daten">Daten fuettern</button>
+  </nav>
+
+  <main>
+    <section id="uebersicht" class="seite aktiv"></section>
+    <section id="alarme" class="seite"></section>
+    <section id="woche" class="seite"></section>
+    <section id="monat" class="seite"></section>
+    <section id="research" class="seite"></section>
+    <section id="daten" class="seite"></section>
+  </main>
+
+  <footer class="fuss">
+    Prototyp (Gate-0-Ausnahme E5) · liest nur, bucht nie Bestand · Zahlen aus dem Rechenkern, mit Vor-Versand-Check.
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

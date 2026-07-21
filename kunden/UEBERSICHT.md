@@ -7,7 +7,7 @@
 | Kunde | Repo | Ports (Backend/Frontend) | Stack | Deal-Stand | seit |
 |---|---|---|---|---|---|
 | **SwissCare** (Kunde 0 — Serum/CRM, internes Produkt) | `C:\dev\swisscare-crm` | 8000 / 3000 (reserviert) | Astro+React / FastAPI / Supabase | 🟢 laeuft produktiv, wird weiter betreut | vor Firmen-Start |
-| **Finelli** (Streetwear Zuerich, Lager-App auf Shopify) | MVP: `C:\dev\finelli-cockpit` (SA) · Produktion: `C:\Projects\AIWorks\finelli-lagerverwaltung` (AB, GitHub `AbdulBhatti2001/finelli-lagerverwaltung`, Phase 1 — noch kein Code) | 8012 / 5173 (Cockpit) · Lagerverwaltung noch offen | Cockpit: Python/FastAPI + Vite · Lagerverwaltung: React-PWA + Node + Postgres (geplant) | 🟡 Angebot V6 ueberreicht 19.07 · Verkaufs-Demo + App-Simulation "Cockpit-Vorschau" in `finelli/demo/` (20.07, mit Klick-Beweis) | 18.07.2026 |
+| **Finelli** (Streetwear Zuerich, Lager-App auf Shopify) | MVP: `C:\dev\finelli-cockpit` (SA) · Produktion: `C:\Projects\AIWorks\finelli-lagerverwaltung` (AB, GitHub `AbdulBhatti2001/finelli-lagerverwaltung`, Phase 1 — noch kein Code) · KI-Mitarbeiter-Prototyp: `kunden/finelli/ki-mitarbeiter-prototyp/` (in diesem Repo) | 8012 / 5173 (Cockpit) · **8030 (KI-Mitarbeiter-Prototyp)** · Lagerverwaltung noch offen | Cockpit: Python/FastAPI + Vite · Lagerverwaltung: React-PWA + Node + Postgres (geplant) · Prototyp: reines Node | 🟡 Angebot V6 ueberreicht 19.07 · Verkaufs-Demo in `finelli/demo/` (20.07) · **3-KI-Mitarbeiter-Prototyp gebaut 21.07** (Demo fuer Termin 22.07, Gate-0-Ausnahme E5) | 18.07.2026 |
 | **GzF** (Kaufmann Gut zu Fuss, Orthopaedie Rorschach — Kundendatenbank + Mail-Flows) | noch kein Repo | noch offen | offen (finelli-Basis vs. NocoDB) | 🟡 Phase 0-1, Budget-Deckel 850/Mt | 19.07.2026 |
 
 ## Detail pro Kunde
