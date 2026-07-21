@@ -9,7 +9,7 @@ Stand: 2026-07-21 | Anzahl: 7
 |---|---|---|---|
 | SwissCare | Serum/CRM, internes Produkt (Kunde 0) | In Bearbeitung | 2026-07-21 |
 | Finelli | Streetwear Zürich, Lager-App auf Shopify | In Bearbeitung | 2026-07-20 |
-| GzF (Gut zu Fuss) | Orthopädie Rorschach, Kundendatenbank + Mail-Flows | Noch nicht angefangen | 2026-07-20 |
+| GzF (Gut zu Fuss) | Orthopädie Rorschach, Kundendatenbank + Mail-Flows | In Bearbeitung | 2026-07-21 |
 | Yousef | Broker | Noch nicht angefangen | 2026-07-21 |
 | Saad | Bookkeeping & Investment | Noch nicht angefangen | 2026-07-21 |
 | Saif | Anwaltskanzlei | Noch nicht angefangen | 2026-07-21 |
