@@ -210,8 +210,10 @@ function injiziereLayoutCss() {
 
     .nav-btn { white-space: nowrap; }
     .nav-icon { display: inline-flex; align-items: center; justify-content: center; width: 22px; }
-    .svg-icon { display: block; flex-shrink: 0; }
+    .svg-icon { display: inline-block; vertical-align: middle; flex-shrink: 0; }
     .pin-btn { display: inline-flex; align-items: center; justify-content: center; }
+    .wf-typ-icon { display: inline-flex; align-items: center; color: var(--akzent-hell); }
+    .wf-node-loeschen { display: inline-flex; align-items: center; justify-content: center; }
     .nav-btn .nav-label { margin-left: 8px; }
     .nav-btn:focus-visible { outline: 2px solid var(--akzent); outline-offset: 2px; }
 

@@ -140,7 +140,7 @@
     const kacheln = Object.keys(NODE_TYPEN).map(function (typ) {
       const def = NODE_TYPEN[typ];
       return '<div class="wf-palette-kachel" draggable="true" data-typ="' + typ + '">' +
-        '<span>' + def.icon + '</span><span>' + def.label + '</span></div>';
+        '<span class="wf-typ-icon" aria-hidden="true">' + nodeIcon(typ, 18) + '</span><span>' + def.label + '</span></div>';
     }).join("");
     return '' +
       '<div id="wf-wurzel">' +
@@ -369,9 +369,10 @@
     el.style.left = node.x + "px";
     el.style.top = node.y + "px";
     el.innerHTML =
-      '<div class="wf-node-kopf"><span>' + def.icon + '</span>' +
+      '<div class="wf-node-kopf"><span class="wf-typ-icon" aria-hidden="true">' + nodeIcon(node.typ, 18) + '</span>' +
       '<span class="wf-node-titel">' + esc(node.titel || def.label) + '</span>' +
-      '<button class="wf-node-loeschen" title="Node löschen">×</button></div>' +
+      '<button class="wf-node-loeschen" title="Node löschen" aria-label="Node löschen">' +
+      (window.svgIcon ? window.svgIcon("schliessen", 14) : "×") + '</button></div>' +
       '<div class="wf-node-typ">' + esc(def.label) + '</div>' +
       (node.typ !== "start" ? '<span class="wf-port wf-port-ein" data-node="' + esc(node.id) + '"></span>' : '') +
       baueAusPorts(node);

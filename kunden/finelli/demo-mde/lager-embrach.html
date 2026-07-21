@@ -132,7 +132,10 @@ h1{font-size:19px;font-family:Georgia,"Times New Roman",serif;margin-bottom:2px}
 .cell.pack{background:var(--ink);color:#fff;border-color:var(--ink)}
 .cell.hot{background:var(--red);color:#fff;border-color:var(--red);animation:glow 1.4s ease-in-out infinite}
 @keyframes glow{50%{box-shadow:0 0 0 4px var(--rb)}}
-.mapleg{font-size:11px;color:var(--mut);margin-top:8px;display:flex;flex-wrap:wrap;gap:12px}
+.map svg{width:100%;max-width:340px;height:auto;display:block;margin:0 auto}
+.puls{transform-origin:center;transform-box:fill-box;animation:puls 1.6s ease-out infinite}
+@keyframes puls{0%{opacity:.7;transform:scale(.6)}70%{opacity:0;transform:scale(2)}100%{opacity:0}}
+.mapleg{font-size:11px;color:var(--mut);margin-top:8px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
 .mapleg span{display:inline-flex;align-items:center;gap:5px}
 .mapleg i{width:11px;height:11px;border-radius:3px;display:inline-block}
 
@@ -293,6 +296,7 @@ function rScan(){
      <div class="row" style="align-items:center;gap:8px;margin:10px 0"><span class="szd" style="background:${szf(inp.size)}"></span><b style="font-size:22px">${inp.size}</b><span class="mut">${esc(c.kat)}</span></div>
      <div class="ct" style="margin-bottom:6px">Fach-Vorschlag (kürzester Laufweg):</div>
      <span class="fach mono" style="font-size:15px;padding:8px 12px">→ ${c.fach.embrach} · ${zoneName(c.fach.embrach)}</span>
+     ${lagerkarte([c.fach.embrach])}
      <div class="fld" style="margin-top:14px"><label>Menge</label>
        <div class="step-in"><button onclick="mStep(-1)">−</button><span class="v" id="mv">1</span><button onclick="mStep(1)">+</button></div></div>
      <button class="b full" onclick="einbuchen()">${S.offline?'In Warteschlange':'Einbuchen'}</button>
@@ -389,35 +393,43 @@ function tmrFertig(){
  S.tmrStart=0;toast(`${o.nr} gepackt in ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')} Min — Tempo notiert.`);render();
 }
 
-/* ===== 2D Lager-Karte (Zonen + Faecher) ===== */
+/* ===== Lager-Karte: Raum von oben, Faecher auf einem Rundweg ===== */
 function lagerkarte(hot){
  hot=hot||[];
- const zones=[['P','Packzone',6,'var(--red)'],['S','Standard',6,'#c9c6c1'],['W','Saison',4,'#3a6ea5'],['L','Langsamdreher',4,'#8a8891']];
- let h='<div class="map">';
- zones.forEach(([pfx,name,n,col])=>{
-  h+=`<div class="zone"><div class="zt"><span class="szd" style="border-radius:3px;background:${col}"></span>${name} (${pfx}*)</div><div class="cells">`;
-  for(let i=1;i<=n;i++){const code=pfx+i;const isHot=hot.includes(code);h+=`<div class="cell ${isHot?'hot':''}">${code}</div>`;}
-  h+='</div></div>';
+ const order=[];[['P',6],['S',6],['W',4],['L',4]].forEach(([p,n])=>{for(let i=1;i<=n;i++)order.push(p+i);});
+ const zoneCol={P:'#a8271c',S:'#c9c6c1',W:'#3a6ea5',L:'#8a8891'};
+ const cx=160,cy=152,rx=120,ry=112,total=order.length;
+ let s='<svg viewBox="0 0 320 328" role="img" aria-label="Lager Embrach von oben mit Rundweg">';
+ s+='<rect x="6" y="6" width="308" height="298" rx="14" fill="#fff" stroke="#17161a" stroke-width="4"/>';
+ s+='<rect x="132" y="300" width="56" height="8" fill="#f4f4f2"/><text x="160" y="322" text-anchor="middle" font-size="11" fill="#8a8891">Eingang</text>';
+ s+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="#c9a24a" stroke-width="2.5" stroke-dasharray="6 6"/>`;
+ s+=`<rect x="${cx-36}" y="${cy+ry-15}" width="72" height="30" rx="7" fill="#17161a"/><text x="${cx}" y="${cy+ry+4}" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">Packplatz</text>`;
+ const dots=[];
+ order.forEach((code,i)=>{
+  const a=Math.PI/2 + Math.PI/total + i*(2*Math.PI/total);
+  const x=cx+rx*Math.cos(a), y=cy+ry*Math.sin(a);
+  const isHot=hot.includes(code);
+  if(isHot)dots.push([x,y]);
+  s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="13" fill="${isHot?'#a8271c':'#fff'}" stroke="${isHot?'#a8271c':zoneCol[code[0]]}" stroke-width="${isHot?3:2}"/>`;
+  s+=`<text x="${x.toFixed(1)}" y="${(y+3.4).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${isHot?'#fff':'#4b4951'}">${code}</text>`;
  });
- h+='<div class="cells" style="grid-template-columns:1fr"><div class="cell pack" style="aspect-ratio:auto;padding:9px">Packplatz — Top-Seller (P*) liegen direkt daneben</div></div>';
- h+='<div class="mapleg"><span><i style="background:var(--red)"></i>Packzone</span><span><i style="background:#c9c6c1"></i>Standard</span><span><i style="background:#3a6ea5"></i>Saison</span><span><i style="background:#8a8891"></i>Langsamdreher</span></div>';
- return h+'</div>';
+ dots.forEach(([x,y])=>{s+=`<circle class="puls" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="13" fill="none" stroke="#a8271c" stroke-width="2.5"/>`;});
+ s+='</svg>';
+ const leg='<div class="mapleg"><span><i style="background:var(--red)"></i>Packzone</span><span><i style="background:#c9c6c1"></i>Standard</span><span><i style="background:#3a6ea5"></i>Saison</span><span><i style="background:#8a8891"></i>Langsamdreher</span></div>';
+ return `<div class="map">${s}${leg}<div class="mut" style="text-align:center;margin-top:6px">Gelber Kreis = Rundweg: einmal herum, alles gepackt.</div></div>`;
 }
 
 /* ================= LAGER-KARTE (Ordnung) ================= */
 function rKarte(){
- $('v-karte').innerHTML=head('Lager-Karte & Ordnung','So ist Embrach eingeteilt: 4 Zonen, jedes Fach beschriftet mit Code + Grössen-Farbe. Jeder weiss in Sekunden, wo alles liegt.')+`
-  <div class="c">${lagerkarte([])}</div>
-  <div class="c"><h2>Fach-Beschriftung: Code + Grössen-Farbe</h2>
-   <div class="ct" style="margin-bottom:8px">Am Regal klebt der Fach-Code und ein Farbpunkt pro Grösse — greifen auf einen Blick, ohne Etikett lesen.</div>
-   ${legendBar()}
-   <div class="mut" style="margin-top:6px">One Size / Schuhe: grau mit fetter Zahl. Farbstandard ist ein Vorschlag — Khawar darf ihn anpassen.</div></div>
-  <div class="c"><h2>Die 4 Orte im Überblick</h2>
-   <div class="pzline"><b style="min-width:104px">Laden-Front</b> <span>Was der Kunde sieht (A*)</span></div>
-   <div class="pzline"><b style="min-width:104px">Laden-Reserve</b> <span>Nachschub der Front (R*)</span></div>
-   <div class="pzline"><b style="min-width:104px">Untergeschoss</b> <span>Grössen-Vorrat + kommende Kollektionen (U*)</span></div>
-   <div class="pzline"><b style="min-width:104px">Embrach</b> <span>Gross-Lager, hier wird gepackt (P/S/W/L)</span></div></div>`;
+ const hot=S.karteHot?[S.karteHot]:[];
+ const sel=CAT.find(c=>c.fach.embrach===S.karteHot);
+ const pills=CAT.map(c=>`<button class="pill" style="${c.fach.embrach===S.karteHot?'border-color:var(--red);color:var(--red);font-weight:700':''}" onclick="karteShow('${c.fach.embrach}')">${esc(c.name)}</button>`).join('');
+ $('v-karte').innerHTML=head('Lager-Karte','Von oben. Tippe einen Artikel, und der Punkt zeigt, wo im Raum er liegt.')+`
+  <div class="row" style="margin-bottom:10px">${pills}</div>
+  <div class="c">${lagerkarte(hot)}${sel?`<div style="text-align:center;margin-top:8px"><b>${esc(sel.name)}</b> liegt in Fach <b class="mono">${sel.fach.embrach}</b> (${zoneName(sel.fach.embrach)})</div>`:''}</div>
+  <div class="c"><h2>Fach = Code + Grössen-Farbe</h2>${legendBar()}<div class="mut" style="margin-top:6px">Vorschlag, Khawar darf die Farben ändern.</div></div>`;
 }
+function karteShow(code){S.karteHot=S.karteHot===code?null:code;render();}
 
 /* ================= NACHSCHUB / UMLAGERN ================= */
 function rNach(){

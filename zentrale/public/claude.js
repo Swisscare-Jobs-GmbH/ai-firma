@@ -374,7 +374,9 @@
         inhalt.appendChild(md);
         hatInhalt = true;
       } else if (seg.art === "werkzeug") {
-        inhalt.appendChild(el("div", "msg-werkzeug", "🔧 " + seg.text));
+        const werkzeugEl = el("div", "msg-werkzeug", seg.text);
+        if (window.svgIcon) werkzeugEl.insertAdjacentHTML("afterbegin", window.svgIcon("werkzeug", 13) + " ");
+        inhalt.appendChild(werkzeugEl);
         hatInhalt = true;
       } else if (seg.art === "fehler") {
         inhalt.appendChild(el("div", "msg-fehler", seg.text));
@@ -906,7 +908,9 @@
     liste.id = "chat-liste";
     sidebar.appendChild(liste);
     const fuss = el("div", "chat-sidebar-fuss");
-    fuss.appendChild(knopf("⚙ Memory", "btn chat-memory-btn", oeffneMemory));
+    const memoryBtn = knopf("Memory", "btn chat-memory-btn", oeffneMemory);
+    if (window.svgIcon) memoryBtn.insertAdjacentHTML("afterbegin", window.svgIcon("einstellungen", 15));
+    fuss.appendChild(memoryBtn);
     sidebar.appendChild(fuss);
     view.appendChild(sidebar);
 
