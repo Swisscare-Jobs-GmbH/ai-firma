@@ -4,6 +4,7 @@
 
 const http = require("http");
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const { spawn, exec } = require("child_process");
 
@@ -209,6 +210,10 @@ async function handleEinstellungen(req, res) {
 // Schutz gegen CSRF: nur eigene Origins, nur JSON, nur harmlose Argument-Zeichen.
 const ERLAUBTE_ORIGINS = ["http://127.0.0.1:" + PORT, "http://localhost:" + PORT];
 const ARGUMENT_MUSTER = /^[A-Za-z0-9._-]+$/;
+// Konto-Ziel fuer cswap: Nummer, E-Mail oder Alias. Alias enger gefasst und
+// mit alphanumerischem Anfang, damit kein Wert als cswap-Flag durchgeht.
+const KONTO_ZIEL_MUSTER = /^[A-Za-z0-9@._+-]{1,100}$/;
+const ALIAS_MUSTER = /^[A-Za-z0-9][A-Za-z0-9._-]{0,31}$/;
 
 function pruefeOrigin(req) {
   const origin = req.headers.origin;
@@ -595,6 +600,246 @@ function handleJobsRoute(req, res, teile) {
   return sendeFehler(res, 404, "Unbekannter Jobs-Pfad");
 }
 
+// ---------- Claude-Konten (cswap) ----------
+
+// Konten-Verwaltung ueber das CLI "cswap" (claude-swap). Ein Wechsel tauscht die
+// Credentials sofort fuer den ganzen PC. Immer spawn mit Argument-Array und
+// shell:false, damit es keine Injection-Flaeche gibt.
+const CSWAP_TIMEOUT_MS = 60000;
+
+function ermittleCswapBefehl() {
+  const exePfad = path.join(os.homedir(), ".local", "bin", "cswap.exe");
+  return fs.existsSync(exePfad) ? exePfad : "cswap";
+}
+
+// Fuehrt cswap aus, sammelt stdout/stderr, schreibt optional stdinText hinein
+// (z.B. "y\n" fuer die remove-Rueckfrage) und beendet den Prozessbaum nach
+// timeoutMs. Rueckgabe { code, stdout, stderr, timeout }.
+function fuehreCswapAus(argumente, optionen) {
+  const opts = optionen || {};
+  const timeoutMs = typeof opts.timeoutMs === "number" ? opts.timeoutMs : CSWAP_TIMEOUT_MS;
+  return new Promise((resolve, reject) => {
+    const kind = spawn(ermittleCswapBefehl(), argumente, { shell: false, windowsHide: true });
+    let stdout = "";
+    let stderr = "";
+    let timeout = false;
+    let fertig = false;
+
+    const timer = setTimeout(() => {
+      timeout = true;
+      if (kind.exitCode === null && !kind.killed) {
+        if (process.platform === "win32") {
+          spawn("taskkill", ["/pid", String(kind.pid), "/T", "/F"]).on("error", (err) => {
+            console.error("taskkill fuer cswap fehlgeschlagen:", err.message);
+          });
+        } else {
+          kind.kill();
+        }
+      }
+      // Notbremse: stirbt der Prozess nicht, den Request trotzdem beantworten
+      // (der fertig-Wächter verhindert ein doppeltes resolve beim spaeten close).
+      setTimeout(() => {
+        if (fertig) return;
+        fertig = true;
+        resolve({ code: 1, stdout, stderr, timeout: true });
+      }, 5000);
+    }, timeoutMs);
+
+    kind.stdout.on("data", (teil) => { stdout += teil.toString("utf8"); });
+    kind.stderr.on("data", (teil) => { stderr += teil.toString("utf8"); });
+
+    kind.on("error", (err) => {
+      if (fertig) return;
+      fertig = true;
+      clearTimeout(timer);
+      const text = err.code === "ENOENT"
+        ? "claude-swap ist nicht installiert (uv tool install claude-swap)"
+        : "cswap konnte nicht gestartet werden: " + err.message;
+      reject(new Error(text));
+    });
+    kind.on("close", (code) => {
+      if (fertig) return;
+      fertig = true;
+      clearTimeout(timer);
+      resolve({ code: code === null ? 1 : code, stdout, stderr, timeout });
+    });
+
+    kind.stdin.on("error", (err) => {
+      console.error("stdin-Fehler beim cswap-Prozess:", err.message);
+    });
+    if (typeof opts.stdinText === "string") {
+      kind.stdin.write(opts.stdinText);
+    }
+    kind.stdin.end();
+  });
+}
+
+// stdout eines --json-Befehls parsen; bei Muell kurze Fehlermeldung liefern.
+function parseCswapJson(ergebnis) {
+  try {
+    return { wert: JSON.parse(ergebnis.stdout.trim()) };
+  } catch (err) {
+    const auszug = (ergebnis.stdout.trim() || ergebnis.stderr.trim()).slice(0, 300);
+    return { fehler: "cswap lieferte kein gültiges JSON: " + auszug };
+  }
+}
+
+// Einheitliche Fehlerantwort fuer fehlgeschlagene cswap-Laeufe.
+function sendeCswapFehler(res, ergebnis) {
+  if (ergebnis.timeout) {
+    return sendeFehler(res, 504, "cswap hat nicht rechtzeitig geantwortet (Timeout)");
+  }
+  const text = (ergebnis.stderr.trim() || ergebnis.stdout.trim()).slice(0, 300);
+  return sendeFehler(res, 500, text || ("cswap beendet mit Exit-Code " + ergebnis.code));
+}
+
+// Fuehrt einen --json-Befehl aus und reicht das JSON unveraendert durch.
+async function handleKontenJsonBefehl(res, argumente) {
+  let ergebnis;
+  try {
+    ergebnis = await fuehreCswapAus(argumente, {});
+  } catch (err) {
+    return sendeFehler(res, 500, err.message);
+  }
+  if (ergebnis.timeout || ergebnis.code !== 0) return sendeCswapFehler(res, ergebnis);
+  const geparst = parseCswapJson(ergebnis);
+  if (geparst.fehler) return sendeFehler(res, 502, geparst.fehler);
+  return sendeJson(res, 200, geparst.wert);
+}
+
+// Fuehrt einen Befehl ohne JSON-Ausgabe aus und antwortet { ok, meldung }.
+async function handleKontenTextBefehl(res, argumente, stdinText) {
+  let ergebnis;
+  try {
+    ergebnis = await fuehreCswapAus(argumente, stdinText ? { stdinText } : {});
+  } catch (err) {
+    return sendeFehler(res, 500, err.message);
+  }
+  if (ergebnis.timeout || ergebnis.code !== 0) return sendeCswapFehler(res, ergebnis);
+  return sendeJson(res, 200, { ok: true, meldung: ergebnis.stdout.trim() });
+}
+
+// Origin/Content-Type pruefen und JSON-Body lesen; bei Fehler ist schon
+// geantwortet und es kommt null zurueck.
+async function leseKontenBody(req, res) {
+  const kopfFehler = pruefeClaudeRequestKopf(req);
+  if (kopfFehler) {
+    sendeFehler(res, kopfFehler.status, kopfFehler.text);
+    return null;
+  }
+  const geparst = parseObjektBody(await leseBody(req));
+  if (geparst.fehler) {
+    sendeFehler(res, 400, geparst.fehler);
+    return null;
+  }
+  return geparst.wert;
+}
+
+// Ziel validieren (Nummer, E-Mail oder Alias); fuehrende "-" waeren Flags.
+function pruefeKontoZiel(wert) {
+  const ziel = typeof wert === "string" ? wert.trim() : "";
+  if (!KONTO_ZIEL_MUSTER.test(ziel) || ziel.startsWith("-")) return null;
+  return ziel;
+}
+
+async function handleKontoWechseln(req, res) {
+  const body = await leseKontenBody(req, res);
+  if (!body) return;
+  const ziel = pruefeKontoZiel(body.ziel);
+  if (!ziel) return sendeFehler(res, 400, "Feld ziel fehlt oder enthält unerlaubte Zeichen");
+  return handleKontenJsonBefehl(res, ["switch", ziel, "--json"]);
+}
+
+// cswap add uebernimmt das gerade in Claude Code eingeloggte Konto. Optional
+// wird danach ein Alias gesetzt; scheitert das, kommt es als Warnung zurueck.
+async function handleKontoHinzufuegen(req, res) {
+  const body = await leseKontenBody(req, res);
+  if (!body) return;
+  const alias = typeof body.alias === "string" ? body.alias.trim() : "";
+  if (alias !== "" && !ALIAS_MUSTER.test(alias)) {
+    return sendeFehler(res, 400, "alias enthält unerlaubte Zeichen (erlaubt: Buchstaben, Ziffern, . _ -)");
+  }
+  let ergebnis;
+  try {
+    ergebnis = await fuehreCswapAus(["add"], {});
+  } catch (err) {
+    return sendeFehler(res, 500, err.message);
+  }
+  if (ergebnis.timeout || ergebnis.code !== 0) return sendeCswapFehler(res, ergebnis);
+
+  const antwort = { ok: true, meldung: ergebnis.stdout.trim() };
+  if (alias !== "") {
+    const treffer = /Account (\d+)/.exec(ergebnis.stdout);
+    if (!treffer) {
+      antwort.warnung = "Kontonummer nicht aus der add-Ausgabe erkennbar, Alias nicht gesetzt";
+    } else {
+      try {
+        const aliasLauf = await fuehreCswapAus(["alias", treffer[1], alias], {});
+        if (aliasLauf.timeout || aliasLauf.code !== 0) {
+          antwort.warnung = "Alias konnte nicht gesetzt werden: "
+            + (aliasLauf.stderr.trim() || aliasLauf.stdout.trim()).slice(0, 300);
+        }
+      } catch (err) {
+        antwort.warnung = "Alias konnte nicht gesetzt werden: " + err.message;
+      }
+    }
+  }
+  return sendeJson(res, 200, antwort);
+}
+
+// remove fragt interaktiv nach — die Bestaetigung "y" geht per stdin hinein.
+async function handleKontoEntfernen(req, res) {
+  const body = await leseKontenBody(req, res);
+  if (!body) return;
+  const ziel = pruefeKontoZiel(body.ziel);
+  if (!ziel) return sendeFehler(res, 400, "Feld ziel fehlt oder enthält unerlaubte Zeichen");
+  return handleKontenTextBefehl(res, ["remove", ziel], "y\n");
+}
+
+async function handleKontoAlias(req, res) {
+  const body = await leseKontenBody(req, res);
+  if (!body) return;
+  const ziel = pruefeKontoZiel(body.ziel);
+  if (!ziel) return sendeFehler(res, 400, "Feld ziel fehlt oder enthält unerlaubte Zeichen");
+  const alias = typeof body.alias === "string" ? body.alias.trim() : "";
+  if (alias === "") {
+    return handleKontenTextBefehl(res, ["alias", ziel, "--unset"]);
+  }
+  if (!ALIAS_MUSTER.test(alias)) {
+    return sendeFehler(res, 400, "alias enthält unerlaubte Zeichen (erlaubt: Buchstaben, Ziffern, . _ -)");
+  }
+  return handleKontenTextBefehl(res, ["alias", ziel, alias]);
+}
+
+async function handleKontoRotation(req, res) {
+  const body = await leseKontenBody(req, res);
+  if (!body) return;
+  const ziel = pruefeKontoZiel(body.ziel);
+  if (!ziel) return sendeFehler(res, 400, "Feld ziel fehlt oder enthält unerlaubte Zeichen");
+  if (typeof body.aktiv !== "boolean") {
+    return sendeFehler(res, 400, "Feld aktiv muss true oder false sein");
+  }
+  return handleKontenTextBefehl(res, [body.aktiv ? "enable" : "disable", ziel]);
+}
+
+function handleKontenRoute(req, res, teile) {
+  const unterpfad = teile[2];
+  if (!unterpfad && req.method === "GET") {
+    return handleKontenJsonBefehl(res, ["list", "--json"]);
+  }
+  if (unterpfad === "status" && req.method === "GET" && teile.length === 3) {
+    return handleKontenJsonBefehl(res, ["status", "--json"]);
+  }
+  if (req.method === "POST" && teile.length === 3) {
+    if (unterpfad === "wechseln") return handleKontoWechseln(req, res);
+    if (unterpfad === "hinzufuegen") return handleKontoHinzufuegen(req, res);
+    if (unterpfad === "entfernen") return handleKontoEntfernen(req, res);
+    if (unterpfad === "alias") return handleKontoAlias(req, res);
+    if (unterpfad === "rotation") return handleKontoRotation(req, res);
+  }
+  return sendeFehler(res, 404, "Unbekannter Konten-Pfad");
+}
+
 // ---------- Auto-GitHub-Sync der drei Daten-Dateien ----------
 
 // Nach jedem Schreiben von kunden.json, workflows.json oder einstellungen.json
@@ -817,6 +1062,9 @@ async function routeApi(req, res, pfadName) {
   }
   if (bereich === "jobs") {
     return handleJobsRoute(req, res, teile);
+  }
+  if (bereich === "konten") {
+    return handleKontenRoute(req, res, teile);
   }
   if (bereich === "sync" && teile.length === 2 && req.method === "POST") {
     return handleSync(req, res);

@@ -19,9 +19,10 @@
   // Kurzer Erklaertext zum Claude-Konto und Sitzungsverhalten (steckt hinter dem
   // (i)-Chip im Kopf, damit die Ansicht selbst textarm bleibt).
   const KONTO_HINWEIS =
-    "Läuft über das eingeloggte Claude-Konto (MAX). Jede Nachricht startet eine " +
-    "frische claude -p Sitzung ohne Gedächtnis an frühere Nachrichten. Für " +
-    "Datei-Änderungen die Zusatz-Flags in den Einstellungen setzen.";
+    "Läuft über das aktive Claude-Konto — im Konten-Tab wechselbar, der Wechsel " +
+    "gilt sofort für den ganzen PC. Jede Nachricht startet eine frische claude -p " +
+    "Sitzung ohne Gedächtnis an frühere Nachrichten. Für Datei-Änderungen die " +
+    "Zusatz-Flags in den Einstellungen setzen.";
 
   function cssEinfuegen() {
     if (document.getElementById("css-claude")) {
@@ -43,7 +44,12 @@
       ".chat-zeile-fehler { color: var(--rot); }",
       ".claude-eingabe { display: flex; gap: 8px; align-items: flex-end; }",
       ".claude-eingabe textarea { flex: 1; resize: vertical; min-height: 56px; }",
-      ".claude-ordner-frei { min-width: 220px; }"
+      ".claude-ordner-frei { min-width: 220px; }",
+      ".konto-chip { display: inline-flex; align-items: center; padding: 3px 10px; margin-left: 4px;",
+      "  border: 1px solid var(--border); border-radius: 999px; background: var(--panel-2);",
+      "  color: var(--muted); font-size: 12px; white-space: nowrap; cursor: pointer;",
+      "  transition: border-color 0.15s, color 0.15s; }",
+      ".konto-chip:hover { border-color: var(--akzent); color: var(--text); }"
     ].join("\n");
     document.head.appendChild(style);
   }
@@ -284,6 +290,53 @@
     return { ordnerSelect: ordnerSelect, ordnerFrei: ordnerFrei };
   }
 
+  // Konto-Chip im Kopf: aktives Konto samt Nutzung. Werte sind Fremd-Daten,
+  // darum textContent. Fehler zeigen nur "unbekannt" (kein Toast-Spam).
+  async function ladeKontoChip(chip) {
+    try {
+      const daten = await window.api.get("/api/konten/status");
+      const aktiv = daten && daten.active;
+      if (!aktiv || !chip.isConnected) {
+        chip.textContent = "Konto: unbekannt";
+        return;
+      }
+      let text = "Konto: " + (aktiv.alias || aktiv.email || ("Nr. " + aktiv.number));
+      const usage = aktiv.usage;
+      if (usage && usage.fiveHour && usage.sevenDay
+          && typeof usage.fiveHour.pct === "number" && typeof usage.sevenDay.pct === "number") {
+        text += " · 5h " + usage.fiveHour.pct + "% · 7d " + usage.sevenDay.pct + "%";
+      }
+      chip.textContent = text;
+    } catch (fehler) {
+      if (chip.isConnected) {
+        chip.textContent = "Konto: unbekannt";
+      }
+    }
+  }
+
+  function baueKontoChip() {
+    const chip = document.createElement("span");
+    chip.id = "claude-konto-chip";
+    chip.className = "konto-chip";
+    chip.textContent = "Konto: …";
+    chip.setAttribute("data-tooltip", "Zu den Konten wechseln");
+    // Tastaturbedienbar wie die anderen Chips (tabindex + Enter/Leertaste).
+    chip.setAttribute("tabindex", "0");
+    chip.setAttribute("role", "button");
+    function zuKonten() {
+      location.hash = "#konten";
+    }
+    chip.addEventListener("click", zuKonten);
+    chip.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        zuKonten();
+      }
+    });
+    ladeKontoChip(chip);
+    return chip;
+  }
+
   function baueKopfzeile() {
     const kopf = document.createElement("div");
     kopf.className = "kopfzeile";
@@ -298,6 +351,7 @@
       // Einsetzen des (i)-Chip-Markups per innerHTML hier unbedenklich.
       titelZeile.insertAdjacentHTML("beforeend", window.infoIcon(KONTO_HINWEIS));
     }
+    titelZeile.appendChild(baueKontoChip());
     kopf.appendChild(titelZeile);
 
     const aktionen = document.createElement("div");
@@ -376,6 +430,14 @@
     setzeSendeknopf(!!aktiverLauf);
     scrolleAnsEnde(chatEl);
   }
+
+  // Nach einem Kontowechsel im Konten-Tab zieht der Chip hier mit.
+  window.addEventListener("konto-gewechselt", function () {
+    const chip = document.getElementById("claude-konto-chip");
+    if (chip && chip.isConnected) {
+      ladeKontoChip(chip);
+    }
+  });
 
   window.views = window.views || {};
   window.views.claude = { titel: "Claude", render: renderClaude };

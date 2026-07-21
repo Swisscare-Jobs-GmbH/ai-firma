@@ -21,6 +21,7 @@ Danach im Browser: http://127.0.0.1:8020 (bindet nur auf 127.0.0.1, kein Zugriff
 | Kunden | Kunden anlegen, bearbeiten, Status pflegen (offen, in_arbeit, fertig) |
 | Workflows | Workflows mit Nodes und Verbindungen (Start, Claude, Bedingung, Aktion, Notiz) |
 | Claude | Prompt direkt an die Claude-CLI schicken, Ausgabe als Live-Stream |
+| Konten | Claude-Konten ansehen (5h/7d/Modell-Auslastung) und mit einem Klick wechseln — der Wechsel gilt sofort fuer Claude Code am ganzen PC |
 | Einstellungen | Standard-Modell, Zusatz-Flags, Theme, Standard-Ordner, Modell-Regeln |
 
 ## Generator und Jobs
@@ -53,6 +54,18 @@ Fehlende Dateien legt der Server beim Start mit Defaults neu an. Die Dateien las
 
 Nach jedem Schreiben von `kunden.json`, `workflows.json` oder `einstellungen.json` loest der Server einen entprellten (etwa 4 Sekunden) Sync im Repo-Wurzelordner aus: `git add` der drei Daten-Dateien, dann `git commit`, dann `git push`. Schnelle Aenderungen werden so zu einem Commit gebuendelt. Ein leerer Commit (`nothing to commit`) wird still uebersprungen, Fehler werden nur geloggt und blockieren nie eine Anfrage. Jobs-Daten (`jobs.json`, `job-logs/`) werden nicht committed (siehe `.gitignore`).
 
+## Claude-Konten (cswap)
+
+Die Konten-Ansicht steuert das CLI [claude-swap](https://github.com/realiti4/claude-swap) (`cswap`) — Voraussetzung: `uv tool install claude-swap` auf dem Rechner (der Server sucht `~/.local/bin/cswap.exe`, sonst `cswap` im PATH). Konten werden uebernommen, indem man sich in Claude Code mit dem Konto einloggt und in der Ansicht "Konto uebernehmen" klickt. Ein Wechsel tauscht die Credentials dateibasiert, Claude Code liest sie bei Aenderung neu — kein Neustart noetig.
+
+- `GET /api/konten` listet alle Konten mit Auslastung (`cswap list --json`).
+- `GET /api/konten/status` liefert das aktive Konto (fuer den Chip in der Claude-Ansicht).
+- `POST /api/konten/wechseln` `{ziel}` wechselt (Nummer, E-Mail oder Alias).
+- `POST /api/konten/hinzufuegen` `{alias?}` uebernimmt das eingeloggte Konto.
+- `POST /api/konten/entfernen` `{ziel}` entfernt ein Konto aus der Verwaltung.
+- `POST /api/konten/alias` `{ziel, alias}` setzt einen Alias (leer = entfernen).
+- `POST /api/konten/rotation` `{ziel, aktiv}` pausiert ein Konto bzw. setzt es fort.
+
 ## Modell-Regeln anpassen
 
 In den Einstellungen (UI oder direkt in `data/einstellungen.json`) stehen Regeln der Form:
@@ -69,7 +82,7 @@ Jedes Wort in `muster` wird case-insensitive als Teilstring im Prompt gesucht. D
 
 ## Voraussetzung fuer Claude-Laeufe
 
-Die Claude-CLI (`claude`) muss auf dem Rechner installiert und im PATH sein. Sie nutzt das eingeloggte Claude-Konto (MAX-Konto), ein API-Key ist nicht noetig. Der Server startet sie mit `-p --output-format stream-json --verbose` und streamt die Ausgabe: bei der Claude-Ansicht als Server-Sent-Events, bei Jobs in eine Logdatei, die die Generator-Ansicht pollt.
+Die Claude-CLI (`claude`) muss auf dem Rechner installiert und im PATH sein. Sie nutzt das eingeloggte Claude-Konto — welches das ist, laesst sich in der Konten-Ansicht wechseln. Ein API-Key ist nicht noetig. Der Server startet sie mit `-p --output-format stream-json --verbose` und streamt die Ausgabe: bei der Claude-Ansicht als Server-Sent-Events, bei Jobs in eine Logdatei, die die Generator-Ansicht pollt.
 
 ## Ports
 
