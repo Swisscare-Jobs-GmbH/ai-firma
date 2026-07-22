@@ -75,15 +75,23 @@ h2{font-size:15px;margin:0;font-weight:600}
 .b.klein{min-height:44px;padding:10px 14px;font-size:14px;width:auto}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
 
-.buehne{position:relative;width:100%;aspect-ratio:3/4;background:#0a090c;border-radius:var(--radius);
-  overflow:hidden;display:flex;align-items:center;justify-content:center}
+/* Kamera nur waehrend des Scannens, dann als Vollbild ueber allem. Sonst ist sie weg. */
+.buehne{position:fixed;inset:0;z-index:60;background:#000;display:none;
+  align-items:center;justify-content:center;overflow:hidden}
+.buehne.an{display:flex}
 .buehne video{width:100%;height:100%;object-fit:cover}
-.rahmen{position:absolute;inset:16% 10%;border:2px solid rgba(255,255,255,.85);border-radius:10px;
-  box-shadow:0 0 0 100vmax rgba(0,0,0,.42)}
+.rahmen{position:absolute;left:8%;right:8%;top:34%;height:26%;
+  border:2px solid rgba(255,255,255,.9);border-radius:12px;
+  box-shadow:0 0 0 100vmax rgba(0,0,0,.55)}
 .rahmen::after{content:"";position:absolute;left:0;right:0;height:2px;background:var(--rot-hell);
-  top:50%;box-shadow:0 0 12px var(--rot-hell);animation:sweep 2.6s ease-in-out infinite}
-@keyframes sweep{0%,100%{transform:translateY(-46px);opacity:.45}50%{transform:translateY(46px);opacity:1}}
-.buehne .aus{color:#8d8a93;font-size:14px;text-align:center;padding:26px;line-height:1.6}
+  top:50%;box-shadow:0 0 14px var(--rot-hell);animation:sweep 2.4s ease-in-out infinite}
+@keyframes sweep{0%,100%{transform:translateY(-52px);opacity:.4}50%{transform:translateY(52px);opacity:1}}
+.buehne-hinweis{position:absolute;top:calc(34% - 46px);left:0;right:0;text-align:center;
+  color:#fff;font-size:15px;font-weight:600;text-shadow:0 1px 6px rgba(0,0,0,.8);padding:0 24px}
+.buehne-stopp{position:absolute;bottom:calc(34px + env(safe-area-inset-bottom));left:50%;
+  transform:translateX(-50%);background:rgba(255,255,255,.16);color:#fff;border:1.5px solid rgba(255,255,255,.5);
+  border-radius:30px;padding:14px 34px;font-size:16px;font-weight:600;backdrop-filter:blur(8px)}
+.stand{font-size:13.5px;color:var(--grau);text-align:center;line-height:1.5;min-height:20px}
 
 .treffer{border-left:5px solid var(--rot)}
 .fachgross{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:46px;font-weight:800;
@@ -168,16 +176,11 @@ nav svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;
         <p class="unter">Etikett vor die Kamera halten, dann Scannen drücken. Die Kamera geht nach dem Treffer sofort wieder zu.</p>
       </div>
 
-      <div class="buehne" id="buehne">
-        <div class="aus" id="kam-aus">Bereit.<br>Etikett vor die Kamera halten und Scannen druecken.</div>
-        <video id="video" playsinline muted style="display:none"></video>
-        <div class="rahmen" id="rahmen" style="display:none"></div>
-      </div>
-
       <button class="b b-scan" id="b-kamera">
         <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>
         Scannen
       </button>
+      <div class="stand" id="kam-aus"></div>
 
       <div class="karte flach">
         <div class="feld">
@@ -270,6 +273,13 @@ nav svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;
   </nav>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="buehne" id="buehne">
+    <video id="video" playsinline muted></video>
+    <div class="rahmen" id="rahmen"></div>
+    <div class="buehne-hinweis">Etikett in den Rahmen halten</div>
+    <button class="buehne-stopp" id="b-stopp">Abbrechen</button>
+  </div>
 </div>
 
 <script>
@@ -583,12 +593,13 @@ function lagerkarte(aktiv, groesse){
   Object.keys(PLAETZE).forEach(k => { belegt[PLAETZE[k]] = 1; });
   const leucht = groesse ? (G_FARBE[groesse] || "#17161a") : "#17161a";
 
-  let s = '<svg viewBox="0 0 320 372" role="img" aria-label="Lager Raum 1 von oben" style="width:100%;height:auto;display:block">';
+  /* Enger zugeschnitten als in der Demo, damit die Faecher am Handy gross genug bleiben. */
+  let s = '<svg viewBox="2 44 316 322" role="img" aria-label="Lager Raum 1 von oben" style="width:100%;height:auto;display:block">';
   s += '<rect x="14" y="68" width="292" height="278" rx="8" fill="#faf9f7" stroke="#17161a" stroke-width="4"/>';
   s += '<rect x="42" y="63" width="52" height="10" fill="#faf9f7"/>';
-  s += '<text x="68" y="56" text-anchor="middle" font-size="11" fill="#8a8891" font-weight="600">Eingang</text>';
+  s += '<text x="68" y="58" text-anchor="middle" font-size="12" fill="#8a8891" font-weight="700">Eingang</text>';
   s += '<rect x="106" y="76" width="106" height="24" rx="4" fill="#17161a"/>';
-  s += '<text x="159" y="92" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">Tisch</text>';
+  s += '<text x="159" y="92" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">Tisch</text>';
   /* Regaltraeger */
   s += '<rect x="20" y="78" width="32" height="226" rx="4" fill="#eceae7"/>';
   s += '<rect x="110" y="106" width="184" height="46" rx="4" fill="#eceae7"/>';
@@ -597,32 +608,40 @@ function lagerkarte(aktiv, groesse){
   s += '<rect x="110" y="198" width="20" height="46" rx="4" fill="#e3e0dc"/>';
   s += '<rect x="72" y="314" width="212" height="24" rx="4" fill="#eceae7"/>';
   /* Beschriftung */
-  s += '<text x="8" y="190" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700" transform="rotate(-90 8 190)">Regalwand 1</text>';
-  s += '<text x="224" y="166" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700">Zwischengestell 1</text>';
-  s += '<text x="224" y="258" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700">Zwischengestell 2</text>';
-  s += '<text x="178" y="358" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700">Regalwand 2</text>';
-  s += '<text x="119" y="160" text-anchor="middle" font-size="6.5" fill="#8a8891" font-weight="600">Front</text>';
-  s += '<text x="119" y="252" text-anchor="middle" font-size="6.5" fill="#8a8891" font-weight="600">Front</text>';
+  s += '<text x="10" y="190" text-anchor="middle" font-size="10.5" fill="#6b6971" font-weight="700" transform="rotate(-90 10 190)">Regalwand 1</text>';
+  s += '<text x="224" y="167" text-anchor="middle" font-size="10.5" fill="#6b6971" font-weight="700">Zwischengestell 1</text>';
+  s += '<text x="224" y="259" text-anchor="middle" font-size="10.5" fill="#6b6971" font-weight="700">Zwischengestell 2</text>';
+  s += '<text x="178" y="357" text-anchor="middle" font-size="10.5" fill="#6b6971" font-weight="700">Regalwand 2</text>';
+  s += '<text x="119" y="161" text-anchor="middle" font-size="8" fill="#8a8891" font-weight="700">Front</text>';
+  s += '<text x="119" y="253" text-anchor="middle" font-size="8" fill="#8a8891" font-weight="700">Front</text>';
 
   ALLE_FAECHER.forEach(f => {
     if(f.x == null) return;
     const ist = f.c === aktiv;
     const an = belegt[f.c] === 1;
     const rand = ist ? leucht : (an ? zonenFarbe(f.c) : "#cfcdc9");
-    const strich = ist ? 2.6 : (an ? 1.6 : 1);
+    const strich = ist ? 3 : (an ? 1.6 : 1);
     s += '<rect x="' + (f.x + 1) + '" y="' + (f.y + 1) + '" width="' + (f.w - 2) + '" height="' + (f.h - 2) +
          '" rx="2.5" fill="' + (ist ? leucht : "#fff") + '" stroke="' + rand + '" stroke-width="' + strich + '"' +
          (an || ist ? "" : ' stroke-dasharray="2 2"') + '/>';
-    s += '<text x="' + (f.x + f.w / 2) + '" y="' + (f.y + f.h / 2 + 2.6) + '" text-anchor="middle" font-size="7" font-weight="' +
-         (an || ist ? 700 : 400) + '" fill="' + (ist ? "#fff" : (an ? "#4b4951" : "#b3b0ac")) + '">' +
-         f.c.split("-")[1] + '</text>';
+    s += '<text x="' + (f.x + f.w / 2) + '" y="' + (f.y + f.h / 2 + 3) + '" text-anchor="middle" font-size="' +
+         (ist ? 9 : 8.5) + '" font-weight="' + (an || ist ? 800 : 400) + '" fill="' +
+         (ist ? "#fff" : (an ? "#3a383f" : "#b3b0ac")) + '">' + f.c.split("-")[1] + '</text>';
   });
 
+  /* Der gesuchte Platz bekommt einen Ring und darueber den vollen Code, gross und lesbar. */
   if(aktiv){
     const f = fachInfo(aktiv);
     if(f && f.x != null){
-      s += '<circle class="puls" cx="' + (f.x + f.w / 2) + '" cy="' + (f.y + f.h / 2) +
-           '" r="15" fill="none" stroke="' + leucht + '" stroke-width="2.5"/>';
+      const mx = f.x + f.w / 2, my = f.y + f.h / 2;
+      s += '<circle class="puls" cx="' + mx + '" cy="' + my + '" r="17" fill="none" stroke="' +
+           leucht + '" stroke-width="3"/>';
+      const oben = my > 150;
+      const ly = oben ? my - 26 : my + 32;
+      const lx = Math.max(46, Math.min(274, mx));
+      s += '<rect x="' + (lx - 42) + '" y="' + (ly - 14) + '" width="84" height="20" rx="10" fill="#17161a"/>';
+      s += '<text x="' + lx + '" y="' + ly + '" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">' +
+           esc(aktiv) + '</text>';
     }
   }
   s += '</svg>';
@@ -801,11 +820,8 @@ async function kameraStarten(){
     const video = $("#video");
     video.srcObject = stream;
     await video.play();
-    video.style.display = "block";
-    $("#rahmen").style.display = "block";
-    $("#kam-aus").style.display = "none";
-    knopf.innerHTML = "Abbrechen";
-    knopf.classList.add("geist");
+    $("#buehne").classList.add("an");
+    $("#kam-aus").textContent = "";
     laeuft = true;
     clearTimeout(frist);
     frist = setTimeout(() => kameraStoppen("Nichts erkannt. Noch einmal antippen."), SCAN_FRIST);
@@ -824,15 +840,9 @@ function kameraStoppen(meldung){
   clearTimeout(frist);
   if(stream){ stream.getTracks().forEach(t => t.stop()); stream = null; }
   const video = $("#video");
-  video.style.display = "none";
   video.srcObject = null;
-  $("#rahmen").style.display = "none";
-  const aus = $("#kam-aus");
-  aus.style.display = "block";
-  aus.innerHTML = meldung ? esc(meldung) : "Bereit.<br>Etikett vor die Kamera halten und Scannen druecken.";
-  const knopf = $("#b-kamera");
-  knopf.innerHTML = SCAN_SYMBOL + "Scannen";
-  knopf.classList.remove("geist");
+  $("#buehne").classList.remove("an");
+  $("#kam-aus").textContent = meldung || "";
 }
 
 async function suchen(){
@@ -976,6 +986,7 @@ $$("nav button").forEach(b => {
 });
 
 $("#b-kamera").addEventListener("click", kameraStarten);
+$("#b-stopp").addEventListener("click", () => kameraStoppen(""));
 
 $("#f-manuell").addEventListener("submit", ev => {
   ev.preventDefault();
