@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Betriebsmodell der AI-Firma — die Sanduhr</title>
+<style>
+  :root { --fg:#1a1a1a; --muted:#666; --bg:#ffffff; }
+  @media (prefers-color-scheme: dark) { :root { --fg:#e8e8e8; --muted:#a6a6a6; --bg:#161616; } }
+  html,body { margin:0; background:var(--bg); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width:780px; margin:24px auto; padding:0 16px; }
+  h1 { font-size:18px; font-weight:600; color:var(--fg); margin:0 0 4px; }
+  p.sub { font-size:13px; color:var(--muted); margin:0 0 16px; }
+  svg { width:100%; height:auto; }
+  svg text { font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .t  { font-size:14px; fill:var(--fg); }
+  .ts { font-size:12px; fill:var(--muted); }
+  .th { font-size:14px; font-weight:600; fill:var(--fg); }
+  .c-teal   rect { fill:#d6f3ef; stroke:#0E9B94; }
+  .c-teal   .th, .c-teal .ts { fill:#0b3b38; }
+  .c-purple rect { fill:#e7e5fb; stroke:#7F77DD; }
+  .c-purple .th, .c-purple .ts { fill:#2e2a5e; }
+  .c-coral  rect { fill:#fbe4dd; stroke:#e06a4e; }
+  .c-coral  .th, .c-coral .ts { fill:#6b2415; }
+  @media (prefers-color-scheme: dark) {
+    .c-teal   rect { fill:#0e3b38; stroke:#3fb4ab; } .c-teal   .th, .c-teal   .ts { fill:#bff0e9; }
+    .c-purple rect { fill:#2a2660; stroke:#a49cf0; } .c-purple .th, .c-purple .ts { fill:#dad6f7; }
+    .c-coral  rect { fill:#4a2018; stroke:#f08a6e; } .c-coral  .th, .c-coral  .ts { fill:#f6ccc0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Betriebsmodell der AI-Firma — die „Sanduhr"</h1>
+  <p class="sub">Menschen · Operation · System — zwei gespiegelte Dreiecke, die sich an einem Punkt beruehren.</p>
+  <svg viewBox="0 0 700 540" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>Sanduhr-Modell: Menschen, Operation, System</title>
+    <desc>Oben das Kunden-Dreieck mit Menschen und System, unten das WIR-Dreieck der AI-Firma mit Menschen und System. Beide treffen sich in der Mitte an einem Punkt: Operation, zugleich die Bruecke.</desc>
+
+    <polygon points="120,85 580,85 350,275" fill="none" stroke="#0E9B94" stroke-width="1.5"/>
+    <polygon points="120,465 580,465 350,275" fill="none" stroke="#7F77DD" stroke-width="1.5"/>
+
+    <text class="th" x="350" y="175" text-anchor="middle">KUNDE</text>
+    <text class="ts" x="350" y="193" text-anchor="middle">Finelli · GzF</text>
+    <text class="th" x="350" y="372" text-anchor="middle">WIR</text>
+    <text class="ts" x="350" y="390" text-anchor="middle">AI-Firma</text>
+
+    <g class="c-teal">
+      <rect x="60" y="61" width="180" height="54" rx="8" stroke-width="0.5"/>
+      <text class="th" x="150" y="84" text-anchor="middle">Menschen</text>
+      <text class="ts" x="150" y="102" text-anchor="middle">Kunden-Team</text>
+    </g>
+    <g class="c-teal">
+      <rect x="460" y="61" width="180" height="54" rx="8" stroke-width="0.5"/>
+      <text class="th" x="550" y="84" text-anchor="middle">System</text>
+      <text class="ts" x="550" y="102" text-anchor="middle">die Software</text>
+    </g>
+
+    <g class="c-purple">
+      <rect x="60" y="433" width="180" height="54" rx="8" stroke-width="0.5"/>
+      <text class="th" x="150" y="456" text-anchor="middle">Menschen</text>
+      <text class="ts" x="150" y="474" text-anchor="middle">du + Team</text>
+    </g>
+    <g class="c-purple">
+      <rect x="460" y="433" width="180" height="54" rx="8" stroke-width="0.5"/>
+      <text class="th" x="550" y="456" text-anchor="middle">System</text>
+      <text class="ts" x="550" y="474" text-anchor="middle">KI baut &amp; wartet</text>
+    </g>
+
+    <g class="c-coral">
+      <rect x="205" y="245" width="290" height="60" rx="8" stroke-width="0.5"/>
+      <text class="th" x="350" y="270" text-anchor="middle">OPERATION — DIE BRÜCKE</text>
+      <text class="ts" x="350" y="290" text-anchor="middle">wir gehen hin &amp; bringen's bei</text>
+    </g>
+  </svg>
+</div>
+</body>
+</html>
