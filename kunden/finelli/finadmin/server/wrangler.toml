@@ -5,8 +5,9 @@ compatibility_date = "2026-07-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "sea-lager"
-database_id = "HIER_EINTRAGEN"
+database_id = "e76e93fd-a658-443f-97e6-dab9361fbdfc"
 
 [vars]
 # Regel beim Verkauf: zuerst Zuerich abziehen, erst wenn leer von Embrach.
 ABZUG_REIHENFOLGE = "zh,emb"
+SHOPIFY_CLIENT_ID = "cd2111c5a1d1ab9f20dd4f5008ae0c79"

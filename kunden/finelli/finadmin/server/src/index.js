@@ -22,7 +22,9 @@ export default {
     const pfad = new URL(anfrage.url).pathname;
     if (anfrage.method === "OPTIONS") return new Response(null, {status: 204, headers: KOPF});
     try {
-      if (pfad === "/")                 return antwort({dienst: "sea-lager", stand: "bereit"});
+      if (pfad === "/")                 return await startseite(env);
+      if (pfad === "/oauth/start")      return oauthStart(anfrage, env);
+      if (pfad === "/oauth/callback")   return await oauthRueckkehr(anfrage, env);
       if (pfad === "/webhooks/orders")  return await webhookBestellung(anfrage, env);
       if (pfad === "/webhooks/refunds") return await webhookRetoure(anfrage, env);
       if (pfad === "/api/bestand")      return await apiBestand(anfrage, env);
@@ -35,12 +37,118 @@ export default {
   }
 };
 
+/* ---------- Installation ueber OAuth ----------
+   Der Zugriffstoken wird nie von Hand kopiert. Shopify schickt beim Installieren
+   einen Code an /oauth/callback, der Worker tauscht ihn gegen den Token und legt
+   ihn in der Datenbank ab. */
+
+async function tokenHolen(env) {
+  if (env.SHOPIFY_TOKEN) return {shop: env.SHOPIFY_SHOP, token: env.SHOPIFY_TOKEN};
+  try {
+    const z = await env.DB.prepare("SELECT shop, token FROM laden ORDER BY erstellt DESC LIMIT 1").first();
+    return z || null;
+  } catch (e) { return null; }
+}
+
+async function startseite(env) {
+  const l = await tokenHolen(env);
+  let zeilen = 0;
+  try {
+    const z = await env.DB.prepare("SELECT COUNT(*) AS n FROM bestand").first();
+    zeilen = z ? z.n : 0;
+  } catch (e) {}
+  return antwort({
+    dienst: "sea-lager",
+    shopify: l ? "verbunden mit " + l.shop : "noch nicht installiert",
+    bestandszeilen: zeilen
+  });
+}
+
+function oauthStart(anfrage, env) {
+  const url = new URL(anfrage.url);
+  const shop = url.searchParams.get("shop");
+  if (!shop || !/^[a-z0-9-]+\.myshopify\.com$/i.test(shop)) {
+    return antwort({fehler: "shop fehlt, Beispiel: /oauth/start?shop=deinladen.myshopify.com"}, 400);
+  }
+  if (!env.SHOPIFY_CLIENT_ID) return antwort({fehler: "SHOPIFY_CLIENT_ID fehlt"}, 500);
+  const ziel = "https://" + shop + "/admin/oauth/authorize" +
+    "?client_id=" + encodeURIComponent(env.SHOPIFY_CLIENT_ID) +
+    "&scope=" + encodeURIComponent("read_products,read_inventory,write_inventory,read_orders") +
+    "&redirect_uri=" + encodeURIComponent(url.origin + "/oauth/callback");
+  return Response.redirect(ziel, 302);
+}
+
+async function oauthRueckkehr(anfrage, env) {
+  const url = new URL(anfrage.url);
+  const shop = url.searchParams.get("shop");
+  const code = url.searchParams.get("code");
+  if (!shop || !code) return antwort({fehler: "shop oder code fehlt"}, 400);
+  if (!env.SHOPIFY_CLIENT_ID || !env.SHOPIFY_CLIENT_SECRET) {
+    return antwort({fehler: "SHOPIFY_CLIENT_ID oder SHOPIFY_CLIENT_SECRET fehlt"}, 500);
+  }
+
+  const r = await fetch("https://" + shop + "/admin/oauth/access_token", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      client_id: env.SHOPIFY_CLIENT_ID,
+      client_secret: env.SHOPIFY_CLIENT_SECRET,
+      code: code
+    })
+  });
+  const daten = await r.json();
+  if (!daten.access_token) return antwort({fehler: "kein Token erhalten", antwort: daten}, 500);
+
+  await env.DB.prepare(
+    "CREATE TABLE IF NOT EXISTS laden (shop TEXT PRIMARY KEY, token TEXT NOT NULL, " +
+    "erstellt TEXT NOT NULL DEFAULT (datetime('now')))"
+  ).run();
+  await env.DB.prepare(
+    "INSERT INTO laden (shop, token) VALUES (?,?) ON CONFLICT(shop) DO UPDATE SET token = excluded.token"
+  ).bind(shop, daten.access_token).run();
+
+  const abos = await webhooksAnlegen(env, shop, daten.access_token, url.origin);
+  return new Response(
+    "<!doctype html><meta charset=utf-8><title>SEA Lager</title>" +
+    "<body style=\"font:17px/1.5 system-ui;padding:40px;max-width:520px\">" +
+    "<h1 style=\"font-family:Georgia,serif\">Verbunden</h1>" +
+    "<p>" + shop + "</p><p>Webhooks: " + abos.join(", ") + "</p>" +
+    "<p>Du kannst dieses Fenster schliessen.</p></body>",
+    {status: 200, headers: {"Content-Type": "text/html; charset=utf-8"}}
+  );
+}
+
+async function webhooksAnlegen(env, shop, token, basis) {
+  const wunsch = [
+    ["ORDERS_CREATE", basis + "/webhooks/orders"],
+    ["REFUNDS_CREATE", basis + "/webhooks/refunds"]
+  ];
+  const stand = [];
+  for (const [thema, ziel] of wunsch) {
+    const frage = "mutation($thema: WebhookSubscriptionTopic!, $eingabe: WebhookSubscriptionInput!) {" +
+      " webhookSubscriptionCreate(topic: $thema, webhookSubscription: $eingabe) {" +
+      " userErrors { message } webhookSubscription { id } } }";
+    const r = await fetch("https://" + shop + "/admin/api/2026-07/graphql.json", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "X-Shopify-Access-Token": token},
+      body: JSON.stringify({query: frage, variables: {thema: thema, eingabe: {callbackUrl: ziel, format: "JSON"}}})
+    });
+    const e = await r.json();
+    const w = e && e.data && e.data.webhookSubscriptionCreate;
+    stand.push(thema + (w && w.webhookSubscription ? " ok" : " " +
+      (w && w.userErrors && w.userErrors.length ? w.userErrors[0].message : "Fehler")));
+  }
+  return stand;
+}
+
 /* Signatur der Shopify-Webhooks pruefen */
 async function signaturStimmt(anfrage, roh, env) {
   const kopf = anfrage.headers.get("X-Shopify-Hmac-Sha256");
-  if (!kopf || !env.SHOPIFY_WEBHOOK_SECRET) return false;
+  // Bei OAuth-Apps ist das Client-Secret zugleich der Webhook-Schluessel.
+  const geheim = env.SHOPIFY_WEBHOOK_SECRET || env.SHOPIFY_CLIENT_SECRET;
+  if (!kopf || !geheim) return false;
   const schluessel = await crypto.subtle.importKey(
-    "raw", new TextEncoder().encode(env.SHOPIFY_WEBHOOK_SECRET),
+    "raw", new TextEncoder().encode(geheim),
     {name: "HMAC", hash: "SHA-256"}, false, ["sign"]
   );
   const sig = await crypto.subtle.sign("HMAC", schluessel, new TextEncoder().encode(roh));
@@ -194,7 +302,7 @@ async function apiBuchung(anfrage, env) {
   const neu = await env.DB.prepare("SELECT zh, emb FROM bestand WHERE artikel = ? AND groesse = ?")
     .bind(artikel, groesse).first();
   let shopify = null;
-  if (b.nach_shopify !== false && env.SHOPIFY_TOKEN && env.SHOPIFY_SHOP) {
+  if (b.nach_shopify !== false) {
     shopify = await shopifySetzen(env, artikel, groesse, (neu.zh || 0) + (neu.emb || 0));
   }
   return antwort({ok: true, zh: neu.zh, emb: neu.emb,
@@ -226,9 +334,11 @@ async function shopifySetzen(env, artikel, groesse, gesamt) {
 }
 
 async function shopifyGraphQL(env, frage, variablen) {
-  const r = await fetch("https://" + env.SHOPIFY_SHOP + "/admin/api/2026-07/graphql.json", {
+  const l = await tokenHolen(env);
+  if (!l || !l.token || !l.shop) return {fehler: "Shopify nicht verbunden"};
+  const r = await fetch("https://" + l.shop + "/admin/api/2026-07/graphql.json", {
     method: "POST",
-    headers: {"Content-Type": "application/json", "X-Shopify-Access-Token": env.SHOPIFY_TOKEN},
+    headers: {"Content-Type": "application/json", "X-Shopify-Access-Token": l.token},
     body: JSON.stringify({query: frage, variables: variablen})
   });
   return await r.json();
@@ -236,7 +346,7 @@ async function shopifyGraphQL(env, frage, variablen) {
 
 async function apiAbgleich(anfrage, env) {
   if (!schluesselStimmt(anfrage, env)) return antwort({fehler: "Kein Zugriff"}, 401);
-  if (!env.SHOPIFY_TOKEN || !env.SHOPIFY_SHOP) return antwort({fehler: "Shopify nicht eingerichtet"}, 400);
+  
 
   const frage = "query($nach: String) { productVariants(first: 250, after: $nach) { " +
     "pageInfo { hasNextPage endCursor } nodes { id sku barcode title product { title } } } }";
