@@ -63,8 +63,15 @@ pruefe("XXL-> 6", api.ebeneFuer("XXL", 6).nr, 6);
 console.log("\n=== 4. Pilot-Plaetze ===");
 pruefe("Rockstar Tee Black", api.platzFuer("Rockstar Tee Black"), "ZG1-A1");
 pruefe("Ornament Tee Green", api.platzFuer("Ornament Tee Green"), "ZG1-A4");
-pruefe("Star Shirt", api.platzFuer("Star Shirt"), "ZG1-A5");
-pruefe("I'm a Zurich Baby Tee", api.platzFuer("I'm a Zurich Baby Tee"), "ZG1-A6");
+// echte Shopify-Titel aus products_export_1.csv
+pruefe("Star T-Shirt", api.platzFuer("Star T-Shirt"), "ZG1-A5");
+pruefe("I'm a Zurich Baby T-Shirt", api.platzFuer("I'm a Zurich Baby T-Shirt"), "ZG1-A6");
+pruefe("Diamond ZURICH BABY Hoodie faellt NICHT auf A6", api.platzFuer("Diamond ZURICH BABY Hoodie"), null);
+pruefe("Reach for the Stars faellt NICHT auf A5", api.platzFuer("Reach for the Stars T-Shirt"), null);
+pruefe("Bronze Mystery Box faellt nirgends hin", api.platzFuer("Bronze Mystery Box"), null);
+pruefe("Turtoise Sunglasses", api.platzFuer("FINELLI Turtoise Sunglasses"), "ZG1-F1");
+pruefe("Brown Leather Duffle Bag", api.platzFuer("Brown FINELLI Leather Duffle Bag"), "ZG1-F1");
+pruefe("Baddie Cap voller Titel", api.platzFuer("FINELLI I need a hug from a Swiss Baddie Cap"), "ZG1-F1");
 pruefe("FINELLI Swiss Baddie Cap", api.platzFuer("FINELLI Swiss Baddie Cap"), "ZG1-F1");
 pruefe("FINELLI Pant Chain", api.platzFuer("FINELLI Pant Chain"), "ZG1-F1");
 pruefe("Camo Cargo Shorts", api.platzFuer("FINELLI Camo Cargo Shorts"), "RW1-1a");
