@@ -1,0 +1,897 @@
+<title>Finadmin</title>
+<style>
+:root{
+  --ink:#17161a; --papier:#f4f4f2; --karte:#ffffff; --linie:#e3e0dc;
+  --rot:#a8271c; --rot-hell:#c8503f; --kopfbg:#17161a;
+  --grau:#77747c; --grau-tief:#4b4951;
+  --gruen:#2f7d43; --gelb:#b9861a;
+  --xs:#8b5cf6; --s:#22c55e; --m:#3b82f6; --l:#eab308; --xl:#ef4444; --xxl:#94a3b8;
+  --schatten:0 10px 30px rgba(28,18,14,.13),0 2px 6px rgba(28,18,14,.07);
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#f2f0ee; --papier:#121114; --karte:#1c1a1f; --linie:#2e2b32;
+    --rot:#e0574a; --rot-hell:#f07a6d; --kopfbg:#000000;
+    --grau:#9a969f; --grau-tief:#c4c0c8;
+    --gruen:#4ade80; --gelb:#e3b34a;
+    --schatten:0 10px 30px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#f2f0ee; --papier:#121114; --karte:#1c1a1f; --linie:#2e2b32;
+  --rot:#e0574a; --rot-hell:#f07a6d; --kopfbg:#000000;
+  --grau:#9a969f; --grau-tief:#c4c0c8;
+  --gruen:#4ade80; --gelb:#e3b34a;
+  --schatten:0 10px 30px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.3);
+}
+:root[data-theme="light"]{
+  --ink:#17161a; --papier:#f4f4f2; --karte:#ffffff; --linie:#e3e0dc;
+  --rot:#a8271c; --rot-hell:#c8503f; --kopfbg:#17161a;
+  --grau:#77747c; --grau-tief:#4b4951;
+  --gruen:#2f7d43; --gelb:#b9861a;
+  --schatten:0 10px 30px rgba(28,18,14,.13),0 2px 6px rgba(28,18,14,.07);
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--papier);color:var(--ink);
+  font:16px/1.5 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--rot);outline-offset:2px}
+input,select{font:inherit;color:inherit}
+
+.app{display:flex;flex-direction:column;min-height:100dvh;max-width:560px;margin:0 auto;position:relative}
+
+.kopf{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--kopfbg);
+  color:#f2f0ee;flex:none;position:sticky;top:0;z-index:20}
+.wm{font-family:Georgia,"Times New Roman",serif;font-size:19px;font-weight:700;letter-spacing:.06em}
+.wm i{color:var(--rot-hell);font-style:normal}
+.kopf .sp{flex:1}
+.pill{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid currentColor;white-space:nowrap}
+.pill.ok{color:#6ee7a0}
+.pill.warn{color:#f0b355}
+
+main{flex:1;padding:14px 16px 100px;display:flex;flex-direction:column;gap:14px}
+.view{display:none;flex-direction:column;gap:14px}
+.view.on{display:flex}
+h1{font-family:Georgia,"Times New Roman",serif;font-size:22px;margin:0;text-wrap:balance}
+.unter{color:var(--grau);font-size:13.5px;margin:0}
+.karte{background:var(--karte);border:1px solid var(--linie);border-radius:var(--radius);
+  padding:16px;box-shadow:var(--schatten);display:flex;flex-direction:column;gap:12px}
+.karte.flach{box-shadow:none}
+h2{font-size:15px;margin:0;font-weight:600}
+.lab{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--grau);font-weight:700}
+
+.b{background:var(--rot);color:#fff;border-radius:12px;padding:15px 18px;font-size:16px;
+  font-weight:600;min-height:54px;display:flex;align-items:center;justify-content:center;gap:9px;
+  transition:transform .12s ease;width:100%;text-align:center}
+.b:active{transform:scale(.98)}
+.b.geist{background:transparent;color:var(--ink);border:1.5px solid var(--linie)}
+.b.klein{min-height:44px;padding:10px 14px;font-size:14px;width:auto}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+
+.buehne{position:relative;width:100%;aspect-ratio:3/4;background:#0a090c;border-radius:var(--radius);
+  overflow:hidden;display:flex;align-items:center;justify-content:center}
+.buehne video{width:100%;height:100%;object-fit:cover}
+.rahmen{position:absolute;inset:16% 10%;border:2px solid rgba(255,255,255,.85);border-radius:10px;
+  box-shadow:0 0 0 100vmax rgba(0,0,0,.42)}
+.rahmen::after{content:"";position:absolute;left:0;right:0;height:2px;background:var(--rot-hell);
+  top:50%;box-shadow:0 0 12px var(--rot-hell);animation:sweep 2.6s ease-in-out infinite}
+@keyframes sweep{0%,100%{transform:translateY(-46px);opacity:.45}50%{transform:translateY(46px);opacity:1}}
+.buehne .aus{color:#8d8a93;font-size:14px;text-align:center;padding:26px;line-height:1.6}
+
+.treffer{border-left:5px solid var(--rot)}
+.fachgross{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:46px;font-weight:800;
+  letter-spacing:.02em;line-height:1;font-variant-numeric:tabular-nums}
+.artikelname{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.3;text-wrap:balance}
+.gzeile{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.gchip{display:inline-flex;align-items:center;gap:7px;font-size:22px;font-weight:800;
+  padding:6px 14px;border-radius:11px;color:#0b0a0c}
+.ean{font-size:13px;color:var(--grau);font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+.regal{display:flex;flex-direction:column;gap:4px;border:1.5px solid var(--linie);
+  border-radius:10px;padding:8px;background:var(--papier)}
+.ebene{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:7px;
+  background:var(--karte);border:1px solid var(--linie);font-size:14px}
+.ebene.hier{border-color:var(--rot);border-width:2px;font-weight:700}
+.ebene .pos{font-size:11px;color:var(--grau);width:56px;flex:none}
+.ebene .farbe{width:15px;height:15px;border-radius:4px;flex:none}
+.ebene .txt{flex:1}
+.ebene .hierlab{color:var(--rot);font-weight:800;font-size:13px}
+
+.liste{display:flex;flex-direction:column}
+.zeile{display:flex;align-items:center;gap:11px;padding:13px 2px;border-bottom:1px solid var(--linie)}
+.zeile:last-child{border-bottom:none}
+.zeile .haupt{flex:1;min-width:0}
+.zeile .name{font-size:14.5px;line-height:1.35;overflow-wrap:anywhere}
+.zeile .sub{font-size:12px;color:var(--grau);margin-top:2px;overflow-wrap:anywhere}
+.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;font-weight:700;
+  padding:5px 9px;border-radius:7px;background:rgba(168,39,28,.13);
+  color:var(--rot);white-space:nowrap;font-variant-numeric:tabular-nums}
+.code.leer{background:transparent;border:1px dashed var(--linie);color:var(--grau);font-weight:400}
+
+.feld{display:flex;flex-direction:column;gap:6px}
+input[type=text],input[type=tel],select{background:var(--papier);border:1.5px solid var(--linie);
+  border-radius:11px;padding:14px;font-size:17px;width:100%}
+input[type=file]{font-size:14px}
+.reihe{display:flex;gap:9px;align-items:stretch}
+.reihe input{flex:1;min-width:0}
+
+.hinweis{font-size:13.5px;line-height:1.55;padding:12px 14px;border-radius:10px;
+  border-left:3px solid var(--gelb);background:rgba(185,134,26,.12)}
+.hinweis.rot{border-left-color:var(--rot);background:rgba(168,39,28,.11)}
+.hinweis.gut{border-left-color:var(--gruen);background:rgba(47,125,67,.12)}
+
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;
+  display:flex;background:var(--karte);border-top:1px solid var(--linie);z-index:20;
+  padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;padding:11px 4px 13px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:11px;color:var(--grau);position:relative}
+nav button.on{color:var(--rot);font-weight:700}
+nav button.on::before{content:"";position:absolute;top:0;left:22%;right:22%;height:3px;
+  background:var(--rot);border-radius:0 0 3px 3px}
+nav svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+.zaehler{font-size:11px;background:var(--rot);color:#fff;border-radius:20px;padding:0 6px;
+  position:absolute;top:5px;right:calc(50% - 24px);min-width:17px;line-height:17px;text-align:center}
+
+.leerstelle{text-align:center;color:var(--grau);font-size:14px;padding:34px 16px;line-height:1.6}
+.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:var(--kopfbg);
+  color:#f2f0ee;padding:13px 20px;border-radius:11px;font-size:14.5px;font-weight:600;
+  box-shadow:var(--schatten);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s;
+  max-width:88%;text-align:center}
+.toast.an{opacity:1}
+</style>
+
+<div class="app">
+  <header class="kopf">
+    <span class="wm">FINADMIN<i>.</i></span>
+    <span class="sp"></span>
+    <span class="pill warn" id="p-katalog">kein Katalog</span>
+  </header>
+
+  <main>
+    <section class="view on" id="v-scan">
+      <div>
+        <h1>Artikel scannen</h1>
+        <p class="unter">Barcode in den Rahmen halten. Die App sagt dir, in welches Fach der Artikel gehört.</p>
+      </div>
+
+      <div class="buehne">
+        <div class="aus" id="kam-aus">Kamera ist aus.<br>Unten auf Kamera starten tippen.</div>
+        <video id="video" playsinline muted style="display:none"></video>
+        <div class="rahmen" id="rahmen" style="display:none"></div>
+      </div>
+
+      <button class="b" id="b-kamera">Kamera starten</button>
+
+      <div class="karte flach">
+        <div class="feld">
+          <span class="lab">Ohne Kamera: Nummer eintippen oder Handscanner benutzen</span>
+          <form class="reihe" id="f-manuell">
+            <input type="tel" id="i-ean" inputmode="numeric" placeholder="7640407172102" autocomplete="off">
+            <button class="b klein" type="submit">Suchen</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="ergebnis"></div>
+    </section>
+
+    <section class="view" id="v-katalog">
+      <div>
+        <h1>Katalog</h1>
+        <p class="unter">Der Produktexport aus Shopify. Bleibt auf diesem Gerät und wird nirgendwohin geschickt.</p>
+      </div>
+
+      <div class="karte">
+        <h2>Produktexport laden</h2>
+        <p class="unter">In Shopify unter Produkte auf Exportieren tippen, alle Produkte als CSV. Diese Datei hier auswählen.</p>
+        <input type="file" id="i-csv" accept=".csv,text/csv">
+        <div id="katalog-stand"></div>
+      </div>
+
+      <div class="karte" id="karte-eans" style="display:none">
+        <h2>Angelernte Barcodes</h2>
+        <div id="ean-stand"></div>
+        <button class="b geist" id="b-export">Als CSV fuer Shopify sichern</button>
+        <p class="unter">Die Datei enthaelt Handle, Titel, Groesse und Barcode. In Shopify unter Produkte importieren, dann sind die Barcodes auch dort hinterlegt.</p>
+      </div>
+
+      <div class="karte" id="karte-suche" style="display:none">
+        <h2>Im Katalog suchen</h2>
+        <input type="text" id="i-suche" placeholder="Name, Grösse oder Nummer" autocomplete="off">
+        <div class="liste" id="suchtreffer"></div>
+      </div>
+    </section>
+
+    <section class="view" id="v-plaetze">
+      <div>
+        <h1>Lagerplätze</h1>
+        <p class="unter">Welcher Artikel liegt in welchem Fach.</p>
+      </div>
+      <div class="karte">
+        <h2>Belegte Fächer</h2>
+        <div class="liste" id="platz-liste"></div>
+      </div>
+      <div class="karte">
+        <h2>Das Fach-Schema</h2>
+        <div id="schema"></div>
+      </div>
+    </section>
+
+    <section class="view" id="v-klaer">
+      <div>
+        <h1>Klärliste</h1>
+        <p class="unter">Barcodes, die im Katalog nicht gefunden wurden. Nicht stehenbleiben, später klären.</p>
+      </div>
+      <div class="karte">
+        <div class="liste" id="klaer-liste"></div>
+      </div>
+      <div class="karte">
+        <h2>Heute gescannt</h2>
+        <div class="liste" id="log-liste"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav>
+    <button class="on" data-v="scan">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>
+      Scannen
+    </button>
+    <button data-v="katalog">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Katalog
+    </button>
+    <button data-v="plaetze">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18"/></svg>
+      Plätze
+    </button>
+    <button data-v="klaer">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+      Klären
+      <span class="zaehler" id="z-klaer" style="display:none">0</span>
+    </button>
+  </nav>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script>
+"use strict";
+
+/* Finadmin — Lagerplatz-Scanner fuer Finelli.
+   Laeuft komplett auf dem Geraet, kein Netzwerkzugriff. */
+
+const LS = {
+  katalog: "finadmin.katalog.v1",
+  plaetze: "finadmin.plaetze.v1",
+  klaer:   "finadmin.klaer.v1",
+  log:     "finadmin.log.v1",
+  eans:    "finadmin.eans.v1"
+};
+
+const REGALE = [
+  {id:"ZG1", name:"Zwischengestell 1", zone:"Renner", faecher:[
+    {c:"ZG1-F1",t:"Front, Spalte 1",ebenen:4},{c:"ZG1-F2",t:"Front, Spalte 2",ebenen:4},{c:"ZG1-F3",t:"Front, Spalte 3",ebenen:4},
+    {c:"ZG1-A1",t:"Seite A",ebenen:4},{c:"ZG1-A2",t:"Seite A",ebenen:4},{c:"ZG1-A3",t:"Seite A",ebenen:4},
+    {c:"ZG1-A4",t:"Seite A",ebenen:4},{c:"ZG1-A5",t:"Seite A",ebenen:4},{c:"ZG1-A6",t:"Seite A",ebenen:4},
+    {c:"ZG1-B1",t:"Seite B",ebenen:4},{c:"ZG1-B2",t:"Seite B",ebenen:4},{c:"ZG1-B3",t:"Seite B",ebenen:4},
+    {c:"ZG1-B4",t:"Seite B",ebenen:4},{c:"ZG1-B5",t:"Seite B",ebenen:4},{c:"ZG1-B6",t:"Seite B",ebenen:4}
+  ]},
+  {id:"ZG2", name:"Zwischengestell 2", zone:"Standard", faecher:[
+    {c:"ZG2-F1",t:"Front, 6 Ebenen",ebenen:6},{c:"ZG2-F2",t:"Front, 6 Ebenen",ebenen:6},{c:"ZG2-F3",t:"Front, 6 Ebenen",ebenen:6},
+    {c:"ZG2-A1",t:"Seite A, T-Shirts",ebenen:4},{c:"ZG2-A2",t:"Seite A, T-Shirts",ebenen:4},{c:"ZG2-A3",t:"Seite A, T-Shirts",ebenen:4},
+    {c:"ZG2-A4",t:"Seite A, T-Shirts",ebenen:4},{c:"ZG2-A5",t:"Seite A, T-Shirts",ebenen:4},{c:"ZG2-A6",t:"Seite A, T-Shirts",ebenen:4},
+    {c:"ZG2-B1",t:"Seite B, Hosen",ebenen:4},{c:"ZG2-B2",t:"Seite B, Hosen",ebenen:4},{c:"ZG2-B3",t:"Seite B, Hosen",ebenen:4},
+    {c:"ZG2-B4",t:"Seite B, Hosen",ebenen:4},{c:"ZG2-B5",t:"Seite B, Hosen",ebenen:4},{c:"ZG2-B6",t:"Seite B, Hosen",ebenen:4}
+  ]},
+  {id:"RW1", name:"Regalwand 1", zone:"Standard und Saison", faecher:[
+    {c:"RW1-1a",t:"Regal 1",ebenen:4},{c:"RW1-1b",t:"Regal 1",ebenen:4},{c:"RW1-1c",t:"Regal 1",ebenen:4},
+    {c:"RW1-2a",t:"Regal 2",ebenen:4},{c:"RW1-2b",t:"Regal 2",ebenen:4},{c:"RW1-2c",t:"Regal 2",ebenen:4},
+    {c:"RW1-3a",t:"Regal 3, Saison",ebenen:4},{c:"RW1-3b",t:"Regal 3, Saison",ebenen:4},{c:"RW1-3c",t:"Regal 3, Saison",ebenen:4},
+    {c:"RW1-4a",t:"Regal 4, Saison",ebenen:4},{c:"RW1-4b",t:"Regal 4, Saison",ebenen:4},{c:"RW1-4c",t:"Regal 4, Saison",ebenen:4}
+  ]},
+  {id:"RW2", name:"Regalwand 2", zone:"Abverkauf und Saison", faecher:[
+    {c:"RW2-1a",t:"Regal 1, Abverkauf",ebenen:4},{c:"RW2-1b",t:"Regal 1, Abverkauf",ebenen:4},{c:"RW2-1c",t:"Regal 1, Abverkauf",ebenen:4},
+    {c:"RW2-2a",t:"Regal 2",ebenen:4},{c:"RW2-2b",t:"Regal 2",ebenen:4},{c:"RW2-2c",t:"Regal 2",ebenen:4}
+  ]}
+];
+const ALLE_FAECHER = REGALE.reduce((a,r) => a.concat(r.faecher.map(f => Object.assign({}, f, {regal:r.name, zone:r.zone}))), []);
+const fachInfo = c => ALLE_FAECHER.find(f => f.c === c);
+
+const G_FARBE = {XS:"var(--xs)",S:"var(--s)",M:"var(--m)",L:"var(--l)",XL:"var(--xl)",XXL:"var(--xxl)"};
+const EBENEN_4 = [
+  {nr:1, hoehe:"oben, ca. 165 cm", gr:["XS","S"],   hosen:["28","30"]},
+  {nr:2, hoehe:"ca. 120 cm",       gr:["M"],        hosen:["32"]},
+  {nr:3, hoehe:"ca. 80 cm",        gr:["L"],        hosen:["34"]},
+  {nr:4, hoehe:"unten, ca. 35 cm", gr:["XL","XXL"], hosen:["36","38"]}
+];
+const EBENEN_6 = [
+  {nr:1, hoehe:"oben",  gr:["XS"],  hosen:["28"]},
+  {nr:2, hoehe:"",      gr:["S"],   hosen:["30"]},
+  {nr:3, hoehe:"",      gr:["M"],   hosen:["32"]},
+  {nr:4, hoehe:"",      gr:["L"],   hosen:["34"]},
+  {nr:5, hoehe:"",      gr:["XL"],  hosen:["36"]},
+  {nr:6, hoehe:"unten", gr:["XXL"], hosen:["38"]}
+];
+
+function normGroesse(g){
+  if(!g) return "";
+  const t = String(g).trim().toUpperCase();
+  if(/^(ONE ?SIZE|OS|UNI|TU)$/.test(t)) return "ONE SIZE";
+  if(/^\d{2}$/.test(t)) return t;
+  const kurz = {"XSMALL":"XS","X-SMALL":"XS","SMALL":"S","MEDIUM":"M","LARGE":"L",
+                "XLARGE":"XL","X-LARGE":"XL","XXLARGE":"XXL","XX-LARGE":"XXL","2XL":"XXL","3XL":"XXL"};
+  return kurz[t] || t;
+}
+
+function ebeneFuer(groesse, anzahl){
+  const tab = anzahl === 6 ? EBENEN_6 : EBENEN_4;
+  const g = normGroesse(groesse);
+  if(!g || g === "ONE SIZE") return null;
+  for(const e of tab){
+    if(e.gr.indexOf(g) >= 0 || e.hosen.indexOf(g) >= 0) return e;
+  }
+  return null;
+}
+
+const PILOT = [
+  ["rockstar tee black","ZG1-A1"], ["rockstar tee white","ZG1-A2"],
+  ["ornament tee blue","ZG1-A3"],  ["ornament tee green","ZG1-A4"],
+  ["star shirt","ZG1-A5"],         ["star t shirt","ZG1-A5"],
+  ["zurich baby","ZG1-A6"],
+  ["baddie cap","ZG1-F1"], ["pant chain","ZG1-F1"], ["sunglasses","ZG1-F1"], ["duffle","ZG1-F1"],
+  ["camo cargo shorts","RW1-1a"],
+  ["denim pants brown tint","RW1-1b"],
+  ["denim pants black","RW1-1c"],
+  ["baggy sweatpants black","RW1-2a"]
+];
+
+const lade = (k, fallback) => {
+  try{ const r = localStorage.getItem(k); return r ? JSON.parse(r) : fallback; }
+  catch(e){ return fallback; }
+};
+const sichere = (k, v) => {
+  try{ localStorage.setItem(k, JSON.stringify(v)); return true; }
+  catch(e){ zeigeToast("Speicher voll. Der Katalog ist zu gross fuer dieses Geraet."); return false; }
+};
+
+let KATALOG = lade(LS.katalog, []);
+let PLAETZE = lade(LS.plaetze, null);
+let KLAER   = lade(LS.klaer, []);
+let LOG     = lade(LS.log, []);
+let EANS    = lade(LS.eans, {});   /* selbst angelernt: EAN -> Varianten-Kennung */
+
+if(!PLAETZE){
+  PLAETZE = {};
+  PILOT.forEach(p => { PLAETZE[p[0]] = p[1]; });
+  sichere(LS.plaetze, PLAETZE);
+}
+
+const $  = s => document.querySelector(s);
+const $$ = s => Array.prototype.slice.call(document.querySelectorAll(s));
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m]));
+const normal = s => String(s || "").toLowerCase().replace(/[^a-z0-9äöüéèà ]+/g," ").replace(/\s+/g," ").trim();
+
+let toastTimer;
+function zeigeToast(text){
+  const t = $("#toast");
+  t.textContent = text;
+  t.classList.add("an");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("an"), 2600);
+}
+
+function csvZerlegen(text){
+  const zeilen = [];
+  let feld = "", zeile = [], inAnf = false;
+  for(let i = 0; i < text.length; i++){
+    const z = text[i];
+    if(inAnf){
+      if(z === '"'){
+        if(text[i+1] === '"'){ feld += '"'; i++; }
+        else inAnf = false;
+      } else feld += z;
+    } else {
+      if(z === '"') inAnf = true;
+      else if(z === ","){ zeile.push(feld); feld = ""; }
+      else if(z === "\n"){ zeile.push(feld); zeilen.push(zeile); zeile = []; feld = ""; }
+      else if(z === "\r"){ /* uebergehen */ }
+      else feld += z;
+    }
+  }
+  if(feld.length || zeile.length){ zeile.push(feld); zeilen.push(zeile); }
+  return zeilen;
+}
+
+function katalogAusCsv(text){
+  const zeilen = csvZerlegen(text);
+  if(!zeilen.length) return {varianten:[], fehler:"Die Datei ist leer."};
+  const kopf = zeilen[0].map(h => h.trim());
+  const idx = name => {
+    for(let i = 0; i < kopf.length; i++){ if(kopf[i].toLowerCase() === name.toLowerCase()) return i; }
+    return -1;
+  };
+
+  const iTitel = idx("Title"), iHandle = idx("Handle"), iBarcode = idx("Variant Barcode");
+  const iSku = idx("Variant SKU"), iPreis = idx("Variant Price"), iBild = idx("Image Src");
+  const optNamen = [idx("Option1 Name"), idx("Option2 Name"), idx("Option3 Name")];
+  const optWerte = [idx("Option1 Value"), idx("Option2 Value"), idx("Option3 Value")];
+
+  if(iTitel < 0) return {varianten:[], fehler:"In der Datei fehlt die Spalte Title. Das ist kein Shopify-Produktexport."};
+
+  const varianten = [];
+  let letzterTitel = "", letzterHandle = "";
+  for(let r = 1; r < zeilen.length; r++){
+    const z = zeilen[r];
+    if(!z || z.length < 2) continue;
+    const titel = (z[iTitel] || "").trim() || letzterTitel;
+    if(titel) letzterTitel = titel;
+    const handle = (iHandle >= 0 ? (z[iHandle] || "").trim() : "") || letzterHandle;
+    if(handle) letzterHandle = handle;
+
+    /* Barcode darf fehlen. Solche Varianten werden per Scan angelernt. */
+    const ean = iBarcode >= 0 ? (z[iBarcode] || "").trim() : "";
+
+    let groesse = "", farbe = "";
+    for(let o = 0; o < 3; o++){
+      if(optNamen[o] < 0 || optWerte[o] < 0) continue;
+      const n = (z[optNamen[o]] || "").trim().toLowerCase();
+      const w = (z[optWerte[o]] || "").trim();
+      if(!w) continue;
+      if(/gr(ö|oe)sse|size/.test(n)) groesse = w;
+      else if(/farbe|colou?r/.test(n)) farbe = w;
+      else if(!groesse && /^(xxs|xs|s|m|l|xl|xxl|\d{2})$/i.test(w)) groesse = w;
+    }
+
+    const g = normGroesse(groesse);
+    if(!titel) continue;
+    varianten.push({
+      ean: ean,
+      titel: titel,
+      groesse: g,
+      farbe: farbe,
+      sku: iSku >= 0 ? (z[iSku] || "").trim() : "",
+      preis: iPreis >= 0 ? (z[iPreis] || "").trim() : "",
+      handle: handle,
+      vid: (handle || normal(titel)) + "|" + g + "|" + farbe
+    });
+  }
+  if(!varianten.length) return {varianten:[], fehler:"In der Datei stand kein einziger Artikel."};
+  return {varianten:varianten, fehler:null};
+}
+
+/* Variante zu einem gescannten Code finden: erst der Barcode aus Shopify,
+   dann die selbst angelernten Zuordnungen. */
+function findeVariante(code){
+  let v = KATALOG.filter(x => x.ean && x.ean === code)[0];
+  if(v) return v;
+  const vid = EANS[code];
+  if(!vid) return null;
+  return KATALOG.filter(x => x.vid === vid)[0] || null;
+}
+
+function lerneEan(code, vid){
+  EANS[code] = vid;
+  sichere(LS.eans, EANS);
+  KLAER = KLAER.filter(k => k.ean !== code);
+  sichere(LS.klaer, KLAER);
+  zeichneKlaer();
+  zeichneKatalogStand();
+}
+
+function exportEans(){
+  const zeilen = ["Handle,Title,Option1 Value,Variant SKU,Variant Barcode"];
+  Object.keys(EANS).forEach(code => {
+    const v = KATALOG.filter(x => x.vid === EANS[code])[0];
+    if(!v) return;
+    const q = s => '"' + String(s == null ? "" : s).replace(/"/g,'""') + '"';
+    zeilen.push([q(v.handle), q(v.titel), q(v.groesse), q(v.sku), q(code)].join(","));
+  });
+  if(zeilen.length < 2){ zeigeToast("Noch nichts angelernt."); return; }
+  const blob = new Blob([zeilen.join("\n")], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "finelli-eans.csv";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  zeigeToast((zeilen.length - 1) + " Zuordnungen exportiert");
+}
+
+function musterFuer(titel){
+  const t = normal(titel);
+  let m = null, laenge = -1;
+  for(const muster in PLAETZE){
+    if(t.indexOf(muster) >= 0 && muster.length > laenge){ m = muster; laenge = muster.length; }
+  }
+  return m;
+}
+function platzFuer(titel){
+  const m = musterFuer(titel);
+  return m ? PLAETZE[m] : null;
+}
+
+/* Barcode ist unbekannt: Artikel aus dem Katalog auswaehlen, dann ist er angelernt. */
+function zeigeAnlernen(ean, suchbegriff){
+  const box = $("#ergebnis");
+  const q = normal(suchbegriff || "");
+  let liste = [];
+  if(q.length >= 2){
+    liste = KATALOG.filter(v => normal(v.titel).indexOf(q) >= 0 || normal(v.sku).indexOf(q) >= 0).slice(0, 40);
+  } else {
+    /* ohne Suche: die Artikel zeigen, die schon ein Fach haben */
+    liste = KATALOG.filter(v => platzFuer(v.titel)).slice(0, 40);
+  }
+
+  box.innerHTML = '<div class="karte treffer" style="border-left-color:var(--gelb)">' +
+    '<span class="lab">Neuer Barcode</span>' +
+    '<div class="artikelname">Welcher Artikel ist das?</div>' +
+    '<div class="ean">' + esc(ean) + '</div>' +
+    '<p class="unter">Einmal auswaehlen. Ab dem naechsten Scan zeigt die App sofort das Fach.</p>' +
+    '<input type="text" id="i-lern" placeholder="Artikel suchen" autocomplete="off" value="' + esc(suchbegriff || "") + '">' +
+    '<div class="liste" id="lern-liste">' +
+      (liste.length ? liste.map(v => {
+        const fach = platzFuer(v.titel);
+        return '<div class="zeile"><div class="haupt">' +
+          '<div class="name">' + esc(v.titel) + '</div>' +
+          '<div class="sub">' + esc(v.groesse || "ohne Groesse") + (v.farbe ? " · " + esc(v.farbe) : "") + '</div>' +
+          '</div><span class="code' + (fach ? "" : " leer") + '">' + (fach || "kein Platz") + '</span>' +
+          '<button class="b klein" data-vid="' + esc(v.vid) + '">Das ist es</button></div>';
+      }).join("")
+      : '<div class="leerstelle">Nichts gefunden. Anderen Suchbegriff versuchen.</div>') +
+    '</div>' +
+    '<button class="b geist" id="b-klaer">Spaeter klaeren, weiter scannen</button></div>';
+
+  const feld = $("#i-lern");
+  feld.addEventListener("input", ev => {
+    const wert = ev.target.value;
+    zeigeAnlernen(ean, wert);
+    const neu = $("#i-lern");
+    neu.focus();
+    neu.setSelectionRange(wert.length, wert.length);
+  });
+
+  box.querySelectorAll("[data-vid]").forEach(b => {
+    b.addEventListener("click", () => {
+      lerneEan(ean, b.getAttribute("data-vid"));
+      if(navigator.vibrate) navigator.vibrate([30,40,30]);
+      zeigeToast("Barcode gespeichert");
+      zeigeErgebnis(ean);
+    });
+  });
+
+  $("#b-klaer").addEventListener("click", () => {
+    if(!KLAER.some(k => k.ean === ean)){
+      KLAER.unshift({ean:ean, zeit:new Date().toISOString()});
+      sichere(LS.klaer, KLAER);
+      zeichneKlaer();
+    }
+    zeigeToast("Auf der Klaerliste. Weiter geht es.");
+    box.innerHTML = "";
+  });
+}
+
+function protokolliere(v, fach){
+  LOG.unshift({ean:v.ean, titel:v.titel, groesse:v.groesse, fach:fach || "", zeit:new Date().toISOString()});
+  if(LOG.length > 200) LOG = LOG.slice(0, 200);
+  sichere(LS.log, LOG);
+  zeichneLog();
+}
+
+function zeigeErgebnis(ean){
+  const box = $("#ergebnis");
+  const v = findeVariante(ean);
+
+  if(!v){
+    if(!KATALOG.length){
+      box.innerHTML = '<div class="karte treffer" style="border-left-color:var(--gelb)">' +
+        '<span class="lab">Kein Katalog</span>' +
+        '<div class="artikelname">Zuerst den Shopify-Export laden</div>' +
+        '<div class="ean">' + esc(ean) + '</div>' +
+        '<p class="unter">Unter Katalog die CSV-Datei auswaehlen. Danach kannst du jedem Barcode einen Artikel zuweisen.</p></div>';
+      return;
+    }
+    zeigeAnlernen(ean);
+    return;
+  }
+
+  const fach = platzFuer(v.titel);
+  const info = fach ? fachInfo(fach) : null;
+  const anzahlEbenen = info ? info.ebenen : 4;
+  const ebene = ebeneFuer(v.groesse, anzahlEbenen);
+  const farbe = G_FARBE[v.groesse] || "var(--grau)";
+
+  protokolliere(v, fach);
+
+  let regalHtml = "";
+  if(info){
+    const tab = anzahlEbenen === 6 ? EBENEN_6 : EBENEN_4;
+    const istHose = /^\d{2}$/.test(v.groesse);
+    regalHtml = '<div class="regal">' + tab.map(e => {
+      const hier = ebene && e.nr === ebene.nr;
+      const beschriftung = istHose ? e.hosen.join(" · ") : e.gr.join(" + ");
+      const farben = (istHose ? [] : e.gr).map(g =>
+        '<span class="farbe" style="background:' + (G_FARBE[g] || "var(--grau)") + '"></span>').join("");
+      return '<div class="ebene' + (hier ? " hier" : "") + '">' +
+        '<span class="pos">Ebene ' + e.nr + '</span>' + farben +
+        '<span class="txt">' + esc(beschriftung) +
+        (e.hoehe ? ' <span style="color:var(--grau);font-size:12px">· ' + esc(e.hoehe) + '</span>' : "") +
+        '</span>' + (hier ? '<span class="hierlab">hier</span>' : "") + '</div>';
+    }).join("") + '</div>';
+  }
+
+  box.innerHTML = '<div class="karte treffer">' +
+    '<span class="lab">' + (fach ? "Gehoert in" : "Noch kein Platz vergeben") + '</span>' +
+    (fach ? '<div class="fachgross">' + esc(fach) + '</div>' +
+            '<div class="unter" style="margin-top:-6px">' + esc(info.regal) + ' · ' + esc(info.t) + ' · Zone ' + esc(info.zone) + '</div>' : "") +
+    '<div class="artikelname">' + esc(v.titel) + '</div>' +
+    '<div class="gzeile">' +
+      (v.groesse ? '<span class="gchip" style="background:' + farbe + '">' + esc(v.groesse) + '</span>' : "") +
+      (v.farbe ? '<span class="unter">' + esc(v.farbe) + '</span>' : "") +
+    '</div>' +
+    '<div class="ean">' + esc(v.ean) + (v.sku ? " · " + esc(v.sku) : "") + '</div>' +
+    regalHtml +
+    (!fach ? '<div class="hinweis">Fuer diesen Artikel ist noch kein Fach festgelegt. Unten auswaehlen, dann merkt sich die App es fuer alle Groessen dieses Artikels.</div>' : "") +
+    '<div class="feld"><span class="lab">' + (fach ? "Fach aendern" : "Fach festlegen") + '</span>' +
+    '<select id="s-fach"><option value="">Bitte waehlen</option>' +
+    REGALE.map(r => '<optgroup label="' + esc(r.name) + '">' +
+      r.faecher.map(f => '<option value="' + f.c + '"' + (f.c === fach ? " selected" : "") + '>' +
+        f.c + ' · ' + esc(f.t) + '</option>').join("") + '</optgroup>').join("") +
+    '</select></div></div>';
+
+  $("#s-fach").addEventListener("change", ev => {
+    const neu = ev.target.value;
+    if(!neu) return;
+    PLAETZE[musterFuer(v.titel) || normal(v.titel)] = neu;
+    sichere(LS.plaetze, PLAETZE);
+    zeichnePlaetze();
+    zeichneSchema();
+    zeigeToast("Gespeichert: " + neu);
+    zeigeErgebnis(v.ean);
+  });
+}
+
+let stream = null, laeuft = false, detector = null;
+
+async function kameraStarten(){
+  const knopf = $("#b-kamera");
+  if(laeuft){ kameraStoppen(); return; }
+
+  if(!("BarcodeDetector" in window)){
+    $("#kam-aus").innerHTML = "Dieser Browser hat keinen eingebauten Barcode-Leser.<br>Bitte Chrome auf Android benutzen, oder die Nummer unten eintippen.";
+    zeigeToast("Kein Barcode-Leser in diesem Browser");
+    return;
+  }
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    $("#kam-aus").innerHTML = "Diese Seite darf nicht auf die Kamera zugreifen.<br>Bitte die Seite direkt im Browser oeffnen.";
+    return;
+  }
+
+  try{
+    const formate = await window.BarcodeDetector.getSupportedFormats();
+    const wunsch = ["ean_13","ean_8","upc_a","upc_e","code_128"].filter(f => formate.indexOf(f) >= 0);
+    detector = new window.BarcodeDetector({formats: wunsch.length ? wunsch : formate});
+
+    stream = await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:{ideal:"environment"}, width:{ideal:1280}, height:{ideal:720}}
+    });
+    const video = $("#video");
+    video.srcObject = stream;
+    await video.play();
+    video.style.display = "block";
+    $("#rahmen").style.display = "block";
+    $("#kam-aus").style.display = "none";
+    knopf.textContent = "Kamera stoppen";
+    knopf.classList.add("geist");
+    laeuft = true;
+    suchen();
+  }catch(e){
+    const grund = (e && e.name === "NotAllowedError")
+      ? "Der Zugriff auf die Kamera wurde abgelehnt. In den Browser-Einstellungen fuer diese Seite erlauben."
+      : "Die Kamera konnte nicht gestartet werden. Bitte die Seite direkt im Browser oeffnen.";
+    $("#kam-aus").textContent = grund;
+    zeigeToast("Kamera nicht verfuegbar");
+  }
+}
+
+function kameraStoppen(){
+  laeuft = false;
+  if(stream){ stream.getTracks().forEach(t => t.stop()); stream = null; }
+  const video = $("#video");
+  video.style.display = "none";
+  video.srcObject = null;
+  $("#rahmen").style.display = "none";
+  $("#kam-aus").style.display = "block";
+  $("#kam-aus").textContent = "Kamera ist aus.";
+  const knopf = $("#b-kamera");
+  knopf.textContent = "Kamera starten";
+  knopf.classList.remove("geist");
+}
+
+let letzterCode = "", letzteZeit = 0;
+async function suchen(){
+  if(!laeuft) return;
+  const video = $("#video");
+  if(video.readyState === 4){
+    try{
+      const codes = await detector.detect(video);
+      if(codes && codes.length){
+        const wert = String(codes[0].rawValue || "").trim();
+        const jetzt = Date.now();
+        if(wert && (wert !== letzterCode || jetzt - letzteZeit > 2500)){
+          letzterCode = wert; letzteZeit = jetzt;
+          if(navigator.vibrate) navigator.vibrate(45);
+          zeigeErgebnis(wert);
+        }
+      }
+    }catch(e){ /* Frame ohne Treffer */ }
+  }
+  requestAnimationFrame(suchen);
+}
+
+function zeichneKatalogStand(){
+  const p = $("#p-katalog");
+  const box = $("#katalog-stand");
+  if(KATALOG.length){
+    const produkte = {};
+    KATALOG.forEach(v => { produkte[v.titel] = 1; });
+    const mitBarcode = KATALOG.filter(v => v.ean).length;
+    const gelernt = Object.keys(EANS).length;
+    p.textContent = (mitBarcode + gelernt) + " Codes";
+    p.className = "pill ok";
+    box.innerHTML = '<div class="hinweis gut"><b>' + KATALOG.length + ' Varianten</b> aus <b>' +
+      Object.keys(produkte).length + ' Artikeln</b> geladen.</div>' +
+      (mitBarcode === 0
+        ? '<div class="hinweis">Kein einziger Barcode aus Shopify dabei. Das ist in Ordnung: Beim ersten Scan waehlst du den Artikel einmal aus, danach kennt die App den Code.</div>'
+        : '<div class="hinweis">' + mitBarcode + ' Varianten haben einen Barcode aus Shopify, ' +
+          (KATALOG.length - mitBarcode) + ' noch nicht. Die lernst du beim Scannen an.</div>');
+    $("#karte-suche").style.display = "";
+    $("#karte-eans").style.display = gelernt ? "" : "none";
+    $("#ean-stand").innerHTML = '<div class="hinweis gut"><b>' + gelernt + '</b> Barcodes selbst zugeordnet.</div>';
+  } else {
+    p.textContent = "kein Katalog";
+    p.className = "pill warn";
+    box.innerHTML = '<div class="hinweis">Noch kein Katalog geladen. Ohne Katalog kann die App einen Barcode nicht zuordnen.</div>';
+    $("#karte-suche").style.display = "none";
+    $("#karte-eans").style.display = "none";
+  }
+}
+
+function zeichnePlaetze(){
+  const box = $("#platz-liste");
+  const eintraege = Object.keys(PLAETZE).map(k => [k, PLAETZE[k]]).sort((a,b) => a[1].localeCompare(b[1]));
+  if(!eintraege.length){ box.innerHTML = '<div class="leerstelle">Noch nichts zugeordnet.</div>'; return; }
+  box.innerHTML = eintraege.map(e => {
+    const info = fachInfo(e[1]);
+    return '<div class="zeile"><div class="haupt">' +
+      '<div class="name">' + esc(e[0]) + '</div>' +
+      '<div class="sub">' + (info ? esc(info.regal) + " · " + esc(info.t) : "unbekanntes Fach") + '</div>' +
+      '</div><span class="code">' + esc(e[1]) + '</span>' +
+      '<button class="b klein geist" data-loesch="' + esc(e[0]) + '">Weg</button></div>';
+  }).join("");
+  box.querySelectorAll("[data-loesch]").forEach(b => {
+    b.addEventListener("click", () => {
+      delete PLAETZE[b.getAttribute("data-loesch")];
+      sichere(LS.plaetze, PLAETZE);
+      zeichnePlaetze(); zeichneSchema();
+      zeigeToast("Zuordnung entfernt");
+    });
+  });
+}
+
+function zeichneSchema(){
+  const belegt = Object.keys(PLAETZE).map(k => PLAETZE[k]);
+  $("#schema").innerHTML = REGALE.map(r =>
+    '<div style="margin-bottom:14px"><div class="lab" style="margin-bottom:6px">' +
+    esc(r.name) + ' · ' + esc(r.zone) + '</div><div style="display:flex;flex-wrap:wrap;gap:5px">' +
+    r.faecher.map(f => '<span class="code' + (belegt.indexOf(f.c) >= 0 ? "" : " leer") + '">' + f.c + '</span>').join("") +
+    '</div></div>').join("") +
+    '<div class="hinweis">Kraeftig hinterlegte Faecher sind belegt. Die vier Ebenen in jedem Regal sind die Groessen: oben XS und S, dann M, dann L, unten XL und XXL. Die Front von Zwischengestell 2 hat sechs Ebenen, dort liegt jede Groesse einzeln.</div>';
+}
+
+function zeichneKlaer(){
+  const box = $("#klaer-liste");
+  const z = $("#z-klaer");
+  if(KLAER.length){ z.style.display = ""; z.textContent = KLAER.length; }
+  else z.style.display = "none";
+
+  if(!KLAER.length){ box.innerHTML = '<div class="leerstelle">Nichts offen. Alle gescannten Nummern waren im Katalog.</div>'; return; }
+  box.innerHTML = KLAER.map((k, i) =>
+    '<div class="zeile"><div class="haupt"><div class="name ean">' + esc(k.ean) + '</div>' +
+    '<div class="sub">' + new Date(k.zeit).toLocaleString("de-CH",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}) + '</div></div>' +
+    '<button class="b klein geist" data-weg="' + i + '">Erledigt</button></div>').join("");
+  box.querySelectorAll("[data-weg]").forEach(b => {
+    b.addEventListener("click", () => {
+      KLAER.splice(Number(b.getAttribute("data-weg")), 1);
+      sichere(LS.klaer, KLAER);
+      zeichneKlaer();
+    });
+  });
+}
+
+function zeichneLog(){
+  const box = $("#log-liste");
+  const heute = new Date().toDateString();
+  const vonHeute = LOG.filter(l => new Date(l.zeit).toDateString() === heute);
+  if(!vonHeute.length){ box.innerHTML = '<div class="leerstelle">Heute noch nichts gescannt.</div>'; return; }
+  box.innerHTML = vonHeute.slice(0, 40).map(l =>
+    '<div class="zeile"><div class="haupt"><div class="name">' + esc(l.titel) + '</div>' +
+    '<div class="sub">' + esc(l.groesse || "") + ' · ' +
+    new Date(l.zeit).toLocaleTimeString("de-CH",{hour:"2-digit",minute:"2-digit"}) + '</div></div>' +
+    (l.fach ? '<span class="code">' + esc(l.fach) + '</span>' : '<span class="code leer">offen</span>') +
+    '</div>').join("");
+}
+
+function zeichneSuche(begriff){
+  const box = $("#suchtreffer");
+  const q = normal(begriff);
+  if(q.length < 2){ box.innerHTML = '<div class="leerstelle">Mindestens zwei Zeichen eingeben.</div>'; return; }
+  const treffer = KATALOG.filter(v =>
+    normal(v.titel).indexOf(q) >= 0 || v.ean.indexOf(begriff.trim()) >= 0 || normal(v.sku).indexOf(q) >= 0
+  ).slice(0, 30);
+  if(!treffer.length){ box.innerHTML = '<div class="leerstelle">Nichts gefunden.</div>'; return; }
+  box.innerHTML = treffer.map(v => {
+    const fach = platzFuer(v.titel);
+    return '<div class="zeile"><div class="haupt"><div class="name">' + esc(v.titel) + '</div>' +
+      '<div class="sub ean">' + esc(v.groesse || "") + ' · ' + esc(v.ean) + '</div></div>' +
+      '<span class="code' + (fach ? "" : " leer") + '">' + (fach || "kein Platz") + '</span></div>';
+  }).join("");
+}
+
+$$("nav button").forEach(b => {
+  b.addEventListener("click", () => {
+    $$("nav button").forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    $$(".view").forEach(v => v.classList.remove("on"));
+    $("#v-" + b.getAttribute("data-v")).classList.add("on");
+    if(b.getAttribute("data-v") !== "scan" && laeuft) kameraStoppen();
+    window.scrollTo(0, 0);
+  });
+});
+
+$("#b-kamera").addEventListener("click", kameraStarten);
+
+$("#f-manuell").addEventListener("submit", ev => {
+  ev.preventDefault();
+  const wert = $("#i-ean").value.trim();
+  if(!wert) return;
+  zeigeErgebnis(wert);
+  $("#i-ean").value = "";
+  $("#i-ean").blur();
+});
+
+$("#i-csv").addEventListener("change", ev => {
+  const datei = ev.target.files && ev.target.files[0];
+  if(!datei) return;
+  const leser = new FileReader();
+  leser.onload = () => {
+    const ergebnis = katalogAusCsv(String(leser.result));
+    if(ergebnis.fehler){
+      $("#katalog-stand").innerHTML = '<div class="hinweis rot"><b>Geht nicht:</b> ' + esc(ergebnis.fehler) + '</div>';
+      return;
+    }
+    KATALOG = ergebnis.varianten;
+    if(sichere(LS.katalog, KATALOG)) zeigeToast(KATALOG.length + " Varianten geladen");
+    zeichneKatalogStand();
+  };
+  leser.onerror = () => {
+    $("#katalog-stand").innerHTML = '<div class="hinweis rot">Die Datei konnte nicht gelesen werden.</div>';
+  };
+  leser.readAsText(datei, "utf-8");
+});
+
+$("#i-suche").addEventListener("input", ev => zeichneSuche(ev.target.value));
+$("#b-export").addEventListener("click", exportEans);
+document.addEventListener("visibilitychange", () => { if(document.hidden && laeuft) kameraStoppen(); });
+
+zeichneKatalogStand();
+zeichnePlaetze();
+zeichneSchema();
+zeichneKlaer();
+zeichneLog();
+</script>
