@@ -7,8 +7,15 @@
 <!-- Startseite der 2 MDE-Demos. Rahmt die Entscheidung: Lager Embrach ODER Laden Zuerich. Uebungs-Modus. -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--ink:#17161a;--red:#a8271c;--mut:#8a8790;--line:#2b2930}
-body{background:#0e0d10;color:#f4f4f2;font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;padding:34px 20px 50px}
+:root{--ink:#17161a;--red:#a8271c;--mut:#8a8790;--line:#2b2930;
+  /* Tiefe/Shading (aus SEA-Zentrale uebernommen, Finelli-Rot) */
+  --glow-rot:0 12px 30px rgba(168,39,28,.34);
+  --schatten:0 18px 46px rgba(0,0,0,.46);
+  --schatten-weich:0 8px 22px rgba(0,0,0,.34);
+  --uebergang:.17s cubic-bezier(.4,0,.2,1)}
+body{background-color:#0e0d10;color:#f4f4f2;font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;padding:34px 20px 50px;
+  background-image:radial-gradient(1100px 560px at 8% -12%,rgba(168,39,28,.16),transparent 60%),radial-gradient(820px 480px at 104% -4%,rgba(168,39,28,.10),transparent 56%),radial-gradient(700px 700px at 90% 114%,rgba(168,39,28,.08),transparent 62%);
+  background-attachment:fixed;background-repeat:no-repeat}
 .serif{font-family:Georgia,"Times New Roman",serif}
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-left:3px;vertical-align:middle}
 .wrap{max-width:860px;margin:0 auto}
@@ -18,15 +25,16 @@ h1{font-size:26px;margin:22px 0 6px;font-family:Georgia,"Times New Roman",serif}
 .lead{color:#c8c5cd;font-size:15px;line-height:1.6;max-width:640px}
 .cards{display:grid;grid-template-columns:1fr;gap:16px;margin-top:26px}
 @media(min-width:720px){.cards{grid-template-columns:1fr 1fr}}
-.card{display:block;text-decoration:none;color:inherit;background:#1a191e;border:1px solid var(--line);border-radius:18px;padding:22px;transition:.15s}
-.card:hover{border-color:var(--red);transform:translateY(-2px)}
+.card{display:block;text-decoration:none;color:inherit;background:linear-gradient(180deg,rgba(38,34,44,.72),rgba(26,25,30,.82));-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--schatten-weich);transition:border-color var(--uebergang),transform .14s ease,box-shadow var(--uebergang)}
+.card:hover{border-color:var(--red);transform:translateY(-3px);box-shadow:var(--schatten),0 0 30px rgba(168,39,28,.20)}
 .tag{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut)}
 .card h2{font-size:20px;margin:8px 0 4px;font-family:Georgia,"Times New Roman",serif}
 .card p{color:#c8c5cd;font-size:13.5px;line-height:1.55}
 .card ul{list-style:none;margin:12px 0 0;padding:0}
 .card li{font-size:13px;color:#d9d6de;padding:4px 0 4px 20px;position:relative}
 .card li::before{content:"›";position:absolute;left:2px;color:var(--red);font-weight:700}
-.go{display:inline-flex;align-items:center;gap:7px;margin-top:16px;background:var(--red);color:#fff;font-weight:600;font-size:14px;padding:11px 16px;border-radius:11px}
+.go{display:inline-flex;align-items:center;gap:7px;margin-top:16px;background:var(--red);color:#fff;font-weight:600;font-size:14px;padding:11px 16px;border-radius:11px;box-shadow:var(--glow-rot);transition:filter var(--uebergang),transform .12s ease}
+.card:hover .go{filter:brightness(1.08);transform:translateY(-1px)}
 .foot{margin-top:30px;color:var(--mut);font-size:12.5px;line-height:1.6;border-top:1px solid var(--line);padding-top:18px}
 </style>
 </head>
