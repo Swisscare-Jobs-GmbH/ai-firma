@@ -1,164 +1,176 @@
-<title>SEA · Lager Zürich</title>
+<title>SEA · Lager</title>
 <style>
 :root{
-  --ink:#17161a; --papier:#f4f4f2; --karte:#ffffff; --linie:#e3e0dc;
-  --rot:#a8271c; --rot-hell:#c8503f; --kopfbg:#17161a;
-  --grau:#77747c; --grau-tief:#4b4951;
+  --ink:#17161a; --papier:#f4f4f2; --karte:#fff; --linie:#e3e0dc; --kopfbg:#17161a;
+  --rot:#a8271c; --rot-hell:#c8503f; --grau:#77747c;
   --gruen:#2f7d43; --gelb:#b9861a;
   --xs:#8b5cf6; --s:#22c55e; --m:#3b82f6; --l:#eab308; --xl:#ef4444; --xxl:#94a3b8;
-  --schatten:0 10px 30px rgba(28,18,14,.13),0 2px 6px rgba(28,18,14,.07);
-  --radius:14px;
+  --schatten:0 8px 24px rgba(28,18,14,.12),0 2px 5px rgba(28,18,14,.07);
 }
 @media (prefers-color-scheme: dark){
-  :root{
-    --ink:#f2f0ee; --papier:#121114; --karte:#1c1a1f; --linie:#2e2b32;
-    --rot:#e0574a; --rot-hell:#f07a6d; --kopfbg:#000000;
-    --grau:#9a969f; --grau-tief:#c4c0c8;
-    --gruen:#4ade80; --gelb:#e3b34a;
-    --schatten:0 10px 30px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.3);
-  }
+  :root{--ink:#f2f0ee;--papier:#121114;--karte:#1c1a1f;--linie:#2e2b32;--kopfbg:#000;
+        --rot:#e0574a;--rot-hell:#f07a6d;--grau:#9a969f;--gruen:#4ade80;--gelb:#e3b34a;
+        --schatten:0 8px 24px rgba(0,0,0,.5),0 2px 5px rgba(0,0,0,.3)}
 }
-:root[data-theme="dark"]{
-  --ink:#f2f0ee; --papier:#121114; --karte:#1c1a1f; --linie:#2e2b32;
-  --rot:#e0574a; --rot-hell:#f07a6d; --kopfbg:#000000;
-  --grau:#9a969f; --grau-tief:#c4c0c8;
-  --gruen:#4ade80; --gelb:#e3b34a;
-  --schatten:0 10px 30px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.3);
-}
-:root[data-theme="light"]{
-  --ink:#17161a; --papier:#f4f4f2; --karte:#ffffff; --linie:#e3e0dc;
-  --rot:#a8271c; --rot-hell:#c8503f; --kopfbg:#17161a;
-  --grau:#77747c; --grau-tief:#4b4951;
-  --gruen:#2f7d43; --gelb:#b9861a;
-  --schatten:0 10px 30px rgba(28,18,14,.13),0 2px 6px rgba(28,18,14,.07);
-}
+:root[data-theme="dark"]{--ink:#f2f0ee;--papier:#121114;--karte:#1c1a1f;--linie:#2e2b32;--kopfbg:#000;
+  --rot:#e0574a;--rot-hell:#f07a6d;--grau:#9a969f;--gruen:#4ade80;--gelb:#e3b34a;
+  --schatten:0 8px 24px rgba(0,0,0,.5),0 2px 5px rgba(0,0,0,.3)}
+:root[data-theme="light"]{--ink:#17161a;--papier:#f4f4f2;--karte:#fff;--linie:#e3e0dc;--kopfbg:#17161a;
+  --rot:#a8271c;--rot-hell:#c8503f;--grau:#77747c;--gruen:#2f7d43;--gelb:#b9861a;
+  --schatten:0 8px 24px rgba(28,18,14,.12),0 2px 5px rgba(28,18,14,.07)}
 
 *{box-sizing:border-box}
 body{margin:0;background:var(--papier);color:var(--ink);
-  font:16px/1.5 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font:16px/1.45 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--rot);outline-offset:2px}
 input,select{font:inherit;color:inherit}
 
-.app{display:flex;flex-direction:column;min-height:100dvh;max-width:560px;margin:0 auto;position:relative}
-
-.kopf{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--kopfbg);
-  color:#f2f0ee;flex:none;position:sticky;top:0;z-index:20}
-.wm{font-family:Georgia,"Times New Roman",serif;font-size:20px;font-weight:700;letter-spacing:.1em}
+.app{display:flex;flex-direction:column;height:100dvh;max-width:560px;margin:0 auto;overflow:hidden}
+.kopf{display:flex;align-items:center;gap:10px;padding:11px 15px;background:var(--kopfbg);
+  color:#f2f0ee;flex:none}
+.wm{font-family:Georgia,serif;font-size:19px;font-weight:700;letter-spacing:.1em}
 .wm i{color:var(--rot-hell);font-style:normal}
-.ort{font-size:11px;color:#9a969f;letter-spacing:.04em;white-space:nowrap;
-  padding-left:10px;border-left:1px solid #3a373f}
+.ort{font-size:11px;color:#9a969f;padding-left:10px;border-left:1px solid #3a373f;white-space:nowrap}
 .kopf .sp{flex:1}
-.b-scan{font-size:19px;min-height:64px;letter-spacing:.02em}
-@media(max-width:360px){.ort{display:none}}
 .pill{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid currentColor;white-space:nowrap}
-.pill.ok{color:#6ee7a0}
-.pill.warn{color:#f0b355}
+.pill.ok{color:#6ee7a0}.pill.warn{color:#f0b355}
 
-main{flex:1;padding:14px 16px 100px;display:flex;flex-direction:column;gap:14px}
-.view{display:none;flex-direction:column;gap:14px}
+main{flex:1;min-height:0;display:flex;flex-direction:column}
+.view{display:none;flex-direction:column;flex:1;min-height:0;padding:14px 15px 12px;gap:12px}
 .view.on{display:flex}
-h1{font-family:Georgia,"Times New Roman",serif;font-size:22px;margin:0;text-wrap:balance}
-.unter{color:var(--grau);font-size:13.5px;margin:0}
-.karte{background:var(--karte);border:1px solid var(--linie);border-radius:var(--radius);
-  padding:16px;box-shadow:var(--schatten);display:flex;flex-direction:column;gap:12px}
-.karte.flach{box-shadow:none}
-h2{font-size:15px;margin:0;font-weight:600}
-.lab{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--grau);font-weight:700}
+.roll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;
+  flex-direction:column;gap:11px}
+.fuss{flex:none;display:flex;flex-direction:column;gap:9px;padding-top:4px}
+h1{font-family:Georgia,serif;font-size:21px;margin:0}
+.kopfzeile{display:flex;align-items:baseline;gap:10px;flex:none}
+.kopfzeile .zahl{margin-left:auto;font-size:16px;font-weight:800;color:var(--grau);
+  font-variant-numeric:tabular-nums}
 
-.b{background:var(--rot);color:#fff;border-radius:12px;padding:15px 18px;font-size:16px;
-  font-weight:600;min-height:54px;display:flex;align-items:center;justify-content:center;gap:9px;
-  transition:transform .12s ease;width:100%;text-align:center}
+.karte{background:var(--karte);border:1px solid var(--linie);border-radius:13px;padding:14px;
+  box-shadow:var(--schatten);display:flex;flex-direction:column;gap:10px}
+.lab{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grau);font-weight:800}
+
+.b{background:var(--rot);color:#fff;border-radius:12px;padding:15px;font-size:17px;font-weight:700;
+  min-height:56px;display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
+  transition:transform .1s}
 .b:active{transform:scale(.98)}
+.b:disabled{opacity:.4}
 .b.geist{background:transparent;color:var(--ink);border:1.5px solid var(--linie)}
-.b.klein{min-height:44px;padding:10px 14px;font-size:14px;width:auto}
-@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+.b.dunkel{background:var(--ink);color:var(--papier)}
+.b.gruen{background:var(--gruen)}
+.b.klein{min-height:46px;font-size:15px;padding:10px 15px;width:auto}
+.b.riesig{min-height:78px;font-size:21px}
+.reihe{display:flex;gap:9px}
+.reihe .b{flex:1}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
-/* Kamera nur waehrend des Scannens, dann als Vollbild ueber allem. Sonst ist sie weg. */
-.buehne{position:fixed;inset:0;z-index:60;background:#000;display:none;
-  align-items:center;justify-content:center;overflow:hidden}
+.feldz{display:flex;flex-direction:column;gap:5px}
+input[type=text],input[type=tel],input[type=number],select{background:var(--papier);
+  border:1.5px solid var(--linie);border-radius:11px;padding:13px;font-size:17px;width:100%}
+input[type=number]{-moz-appearance:textfield}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+.buehne{position:fixed;inset:0;z-index:70;background:#000;display:none;align-items:center;
+  justify-content:center;overflow:hidden}
 .buehne.an{display:flex}
 .buehne video{width:100%;height:100%;object-fit:cover}
-.rahmen{position:absolute;left:8%;right:8%;top:34%;height:26%;
-  border:2px solid rgba(255,255,255,.9);border-radius:12px;
-  box-shadow:0 0 0 100vmax rgba(0,0,0,.55)}
+.rahmen{position:absolute;left:8%;right:8%;top:34%;height:26%;border:2px solid rgba(255,255,255,.9);
+  border-radius:12px;box-shadow:0 0 0 100vmax rgba(0,0,0,.55)}
 .rahmen::after{content:"";position:absolute;left:0;right:0;height:2px;background:var(--rot-hell);
   top:50%;box-shadow:0 0 14px var(--rot-hell);animation:sweep 2.4s ease-in-out infinite}
 @keyframes sweep{0%,100%{transform:translateY(-52px);opacity:.4}50%{transform:translateY(52px);opacity:1}}
-.buehne-hinweis{position:absolute;top:calc(34% - 46px);left:0;right:0;text-align:center;
-  color:#fff;font-size:15px;font-weight:600;text-shadow:0 1px 6px rgba(0,0,0,.8);padding:0 24px}
 .buehne-stopp{position:absolute;bottom:calc(34px + env(safe-area-inset-bottom));left:50%;
-  transform:translateX(-50%);background:rgba(255,255,255,.16);color:#fff;border:1.5px solid rgba(255,255,255,.5);
-  border-radius:30px;padding:14px 34px;font-size:16px;font-weight:600;backdrop-filter:blur(8px)}
-.stand{font-size:13.5px;color:var(--grau);text-align:center;line-height:1.5;min-height:20px}
+  transform:translateX(-50%);background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.5);
+  border-radius:30px;padding:14px 34px;font-size:16px;font-weight:700}
 
-.treffer{border-left:5px solid var(--rot)}
-.fachgross{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:46px;font-weight:800;
-  letter-spacing:.02em;line-height:1;font-variant-numeric:tabular-nums}
-.artikelname{font-family:Georgia,"Times New Roman",serif;font-size:19px;line-height:1.3;text-wrap:balance}
-.gzeile{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.gchip{display:inline-flex;align-items:center;gap:7px;font-size:22px;font-weight:800;
-  padding:6px 14px;border-radius:11px;color:#0b0a0c}
-.ean{font-size:13px;color:var(--grau);font-family:ui-monospace,Menlo,Consolas,monospace;
-  font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.titelz{font-family:Georgia,serif;font-size:20px;line-height:1.25}
+.fachgross{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:44px;font-weight:800;
+  line-height:1;font-variant-numeric:tabular-nums}
+.gr-zeile{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--linie)}
+.gr-zeile:last-child{border-bottom:none}
+.gr-punkt{width:15px;height:15px;border-radius:4px;flex:none}
+.gr-name{font-size:17px;font-weight:800;width:44px;flex:none}
+.gr-mengen{margin-left:auto;display:flex;gap:14px;align-items:flex-end}
+.gr-ort{display:flex;flex-direction:column;align-items:flex-end;min-width:64px}
+.gr-ort .k{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--grau);font-weight:800}
+.gr-ort .v{font-size:27px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.gr-zeile.hol{background:rgba(185,134,26,.17);border-radius:9px;padding:9px 8px;border-bottom:none;
+  box-shadow:inset 3px 0 0 var(--gelb)}
+.gr-zeile.hol .v{color:var(--gelb)}
+.gr-zeile.leer .v{color:var(--grau);opacity:.45}
+.warnpunkt{width:23px;height:23px;border-radius:50%;background:var(--gelb);color:#17161a;
+  font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:none}
 
-.karte-box{background:var(--papier);border:1.5px solid var(--linie);border-radius:10px;
-  padding:8px;overflow:hidden}
+.karte-box{background:var(--papier);border:1.5px solid var(--linie);border-radius:11px;padding:7px}
 .puls{animation:pulsieren 1.5s ease-in-out infinite}
 @keyframes pulsieren{0%,100%{opacity:.3}50%{opacity:1}}
-.regal{display:flex;flex-direction:column;gap:4px;border:1.5px solid var(--linie);
-  border-radius:10px;padding:8px;background:var(--papier)}
-.ebene{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:7px;
-  background:var(--karte);border:1px solid var(--linie);font-size:14px}
-.ebene.hier{border-color:var(--rot);border-width:2px;font-weight:700}
-.ebene .pos{font-size:11px;color:var(--grau);width:56px;flex:none}
-.ebene .farbe{width:15px;height:15px;border-radius:4px;flex:none}
-.ebene .txt{flex:1}
-.ebene .hierlab{color:var(--rot);font-weight:800;font-size:13px}
 
-.liste{display:flex;flex-direction:column}
-.zeile{display:flex;align-items:center;gap:11px;padding:13px 2px;border-bottom:1px solid var(--linie)}
+.zaehl{display:flex;align-items:center;gap:10px}
+.zaehl button{width:54px;height:54px;border-radius:13px;background:var(--papier);
+  border:1.5px solid var(--linie);font-size:27px;font-weight:700;display:flex;
+  align-items:center;justify-content:center;flex:none}
+.zaehl input{flex:1;text-align:center;font-size:31px;font-weight:800;padding:9px}
+
+.zeile{display:flex;align-items:center;gap:10px;padding:12px 2px;border-bottom:1px solid var(--linie)}
 .zeile:last-child{border-bottom:none}
 .zeile .haupt{flex:1;min-width:0}
-.zeile .name{font-size:14.5px;line-height:1.35;overflow-wrap:anywhere}
-.zeile .sub{font-size:12px;color:var(--grau);margin-top:2px;overflow-wrap:anywhere}
-.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;font-weight:700;
-  padding:5px 9px;border-radius:7px;background:rgba(168,39,28,.13);
-  color:var(--rot);white-space:nowrap;font-variant-numeric:tabular-nums}
+.zeile .name{font-size:15px;line-height:1.3;overflow-wrap:anywhere}
+.zeile .sub{font-size:12px;color:var(--grau);margin-top:2px}
+.code{font-family:ui-monospace,Menlo,monospace;font-size:14px;font-weight:800;padding:5px 9px;
+  border-radius:7px;background:rgba(168,39,28,.13);color:var(--rot);white-space:nowrap}
 .code.leer{background:transparent;border:1px dashed var(--linie);color:var(--grau);font-weight:400}
-
-.feld{display:flex;flex-direction:column;gap:6px}
-input[type=text],input[type=tel],select{background:var(--papier);border:1.5px solid var(--linie);
-  border-radius:11px;padding:14px;font-size:17px;width:100%}
-input[type=file]{font-size:14px}
-.reihe{display:flex;gap:9px;align-items:stretch}
-.reihe input{flex:1;min-width:0}
-
-.hinweis{font-size:13.5px;line-height:1.55;padding:12px 14px;border-radius:10px;
-  border-left:3px solid var(--gelb);background:rgba(185,134,26,.12)}
-.hinweis.rot{border-left-color:var(--rot);background:rgba(168,39,28,.11)}
-.hinweis.gut{border-left-color:var(--gruen);background:rgba(47,125,67,.12)}
-
-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;
-  display:flex;background:var(--karte);border-top:1px solid var(--linie);z-index:20;
-  padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1;padding:11px 4px 13px;display:flex;flex-direction:column;align-items:center;gap:4px;
-  font-size:11px;color:var(--grau);position:relative}
-nav button.on{color:var(--rot);font-weight:700}
-nav button.on::before{content:"";position:absolute;top:0;left:22%;right:22%;height:3px;
-  background:var(--rot);border-radius:0 0 3px 3px}
-nav svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;
+.iknopf{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  flex:none;color:var(--grau)}
+.iknopf svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9;
   stroke-linecap:round;stroke-linejoin:round}
-.zaehler{font-size:11px;background:var(--rot);color:#fff;border-radius:20px;padding:0 6px;
-  position:absolute;top:5px;right:calc(50% - 24px);min-width:17px;line-height:17px;text-align:center}
 
-.leerstelle{text-align:center;color:var(--grau);font-size:14px;padding:34px 16px;line-height:1.6}
-.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:var(--kopfbg);
-  color:#f2f0ee;padding:13px 20px;border-radius:11px;font-size:14.5px;font-weight:600;
-  box-shadow:var(--schatten);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s;
-  max-width:88%;text-align:center}
+.pos{display:flex;align-items:center;gap:10px;padding:12px 10px;border-radius:11px;
+  border:1.5px solid var(--linie);background:var(--karte)}
+.pos.fertig{opacity:.42}
+.pos.fertig .pname{text-decoration:line-through}
+.pos.embrach{border-color:var(--gelb);background:rgba(185,134,26,.14)}
+.pos .haken{width:32px;height:32px;border-radius:9px;border:2px solid var(--linie);flex:none;
+  display:flex;align-items:center;justify-content:center}
+.pos.fertig .haken{background:var(--gruen);border-color:var(--gruen);color:#fff}
+.pos .pname{font-size:15px;font-weight:600;line-height:1.25}
+.pos .pmeta{font-size:12px;color:var(--grau);margin-top:3px;display:flex;gap:8px;
+  flex-wrap:wrap;align-items:center}
+.pgr{font-size:20px;font-weight:800;width:44px;text-align:center;flex:none}
+.pmenge{font-size:23px;font-weight:800;flex:none;min-width:34px;text-align:right;
+  font-variant-numeric:tabular-nums}
+.balken{height:8px;background:var(--linie);border-radius:6px;overflow:hidden;flex:none}
+.balken i{display:block;height:100%;background:var(--gruen);transition:width .25s}
+
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{padding:12px 16px;border-radius:11px;border:1.5px solid var(--linie);background:var(--karte);
+  font-size:17px;font-weight:800;min-width:58px;text-align:center}
+.chip.an{background:var(--ink);color:var(--papier);border-color:var(--ink)}
+.chip.rich{flex:1;font-size:15px}
+
+.dlg{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.6);display:none;
+  align-items:flex-end;justify-content:center;padding:16px}
+.dlg.an{display:flex}
+.dlg-box{background:var(--karte);border-radius:16px;padding:20px;width:100%;max-width:420px;
+  display:flex;flex-direction:column;gap:14px}
+.dlg-titel{font-size:18px;font-weight:700}
+
+nav{flex:none;display:flex;background:var(--karte);border-top:1px solid var(--linie);
+  padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;padding:9px 2px 11px;display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-size:10.5px;color:var(--grau);position:relative}
+nav button.on{color:var(--rot);font-weight:800}
+nav button.on::before{content:"";position:absolute;top:0;left:20%;right:20%;height:3px;
+  background:var(--rot);border-radius:0 0 3px 3px}
+nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--kopfbg);
+  color:#f2f0ee;padding:13px 20px;border-radius:11px;font-size:15px;font-weight:700;
+  box-shadow:var(--schatten);z-index:90;opacity:0;pointer-events:none;transition:opacity .2s;max-width:88%}
 .toast.an{opacity:1}
+.leerstelle{text-align:center;color:var(--grau);font-size:14px;padding:30px 12px}
 </style>
 
 <div class="app">
@@ -166,109 +178,91 @@ nav svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;
     <span class="wm">SEA<i>.</i></span>
     <span class="ort">Zürich · Lagerraum 1</span>
     <span class="sp"></span>
-    <span class="pill warn" id="p-katalog">kein Katalog</span>
+    <span class="pill warn" id="p-katalog">0</span>
   </header>
 
   <main>
     <section class="view on" id="v-scan">
-      <div>
-        <h1>Artikel scannen</h1>
-        <p class="unter">Etikett vor die Kamera halten, dann Scannen drücken. Die Kamera geht nach dem Treffer sofort wieder zu.</p>
-      </div>
-
-      <button class="b b-scan" id="b-kamera">
-        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>
-        Scannen
-      </button>
-      <div class="stand" id="kam-aus"></div>
-
-      <div class="karte flach">
-        <div class="feld">
-          <span class="lab">Ohne Kamera: Nummer eintippen oder Handscanner benutzen</span>
+      <h1>Scannen</h1>
+      <div class="roll"></div>
+      <div class="fuss">
+        <div class="feldz">
+          <span class="lab">EAN-Code</span>
           <form class="reihe" id="f-manuell">
-            <input type="tel" id="i-ean" inputmode="numeric" placeholder="7640407172102" autocomplete="off">
-            <button class="b klein" type="submit">Suchen</button>
+            <input type="tel" id="i-ean" inputmode="numeric" autocomplete="off">
+            <button class="b klein" type="submit">OK</button>
           </form>
         </div>
+        <button class="b riesig" id="b-kamera">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>
+          Scannen
+        </button>
       </div>
+    </section>
 
-      <div id="ergebnis"></div>
+    <section class="view" id="v-artikel">
+      <div class="kopfzeile"><h1 id="a-titel">Artikel</h1></div>
+      <div class="roll" id="a-inhalt"></div>
+      <div class="fuss">
+        <div class="reihe">
+          <button class="b geist klein" id="b-menge">Menge</button>
+          <button class="b dunkel" id="b-zurueck">Scannen</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="v-eingang">
+      <div class="kopfzeile"><h1>Wareneingang</h1><span class="zahl" id="e-zahl"></span></div>
+      <div class="roll" id="e-inhalt"></div>
+      <div class="fuss" id="e-fuss"></div>
+    </section>
+
+    <section class="view" id="v-umlager">
+      <div class="kopfzeile"><h1>Umlagern</h1></div>
+      <div class="roll" id="u-inhalt"></div>
+      <div class="fuss" id="u-fuss"></div>
+    </section>
+
+    <section class="view" id="v-auftrag">
+      <div class="kopfzeile"><h1>Auftrag</h1><span class="zahl" id="t-zahl"></span></div>
+      <div class="balken" id="t-balken" style="display:none"><i style="width:0%"></i></div>
+      <div class="roll" id="t-inhalt"></div>
+      <div class="fuss" id="t-fuss"></div>
     </section>
 
     <section class="view" id="v-katalog">
-      <div>
-        <h1>Katalog</h1>
-        <p class="unter">Der Produktexport aus Shopify. Bleibt auf diesem Gerät und wird nirgendwohin geschickt.</p>
-      </div>
-
-      <div class="karte">
-        <h2>Produktexport laden</h2>
-        <p class="unter">In Shopify unter Produkte auf Exportieren tippen, alle Produkte als CSV. Diese Datei hier auswählen.</p>
-        <input type="file" id="i-csv" accept=".csv,text/csv">
-        <div id="katalog-stand"></div>
-      </div>
-
-      <div class="karte" id="karte-eans" style="display:none">
-        <h2>Angelernte Barcodes</h2>
-        <div id="ean-stand"></div>
-        <button class="b geist" id="b-export">Als CSV fuer Shopify sichern</button>
-        <p class="unter">Die Datei enthaelt Handle, Titel, Groesse und Barcode. In Shopify unter Produkte importieren, dann sind die Barcodes auch dort hinterlegt.</p>
-      </div>
-
-      <div class="karte" id="karte-suche" style="display:none">
-        <h2>Im Katalog suchen</h2>
-        <input type="text" id="i-suche" placeholder="Name, Grösse oder Nummer" autocomplete="off">
-        <div class="liste" id="suchtreffer"></div>
-      </div>
-    </section>
-
-    <section class="view" id="v-plaetze">
-      <div>
-        <h1>Lagerplätze</h1>
-        <p class="unter">Welcher Artikel liegt in welchem Fach.</p>
-      </div>
-      <div class="karte">
-        <h2>Belegte Fächer</h2>
-        <div class="liste" id="platz-liste"></div>
-      </div>
-      <div class="karte">
-        <h2>Das Fach-Schema</h2>
-        <div id="schema"></div>
-      </div>
-    </section>
-
-    <section class="view" id="v-klaer">
-      <div>
-        <h1>Klärliste</h1>
-        <p class="unter">Barcodes, die im Katalog nicht gefunden wurden. Nicht stehenbleiben, später klären.</p>
-      </div>
-      <div class="karte">
-        <div class="liste" id="klaer-liste"></div>
-      </div>
-      <div class="karte">
-        <h2>Heute gescannt</h2>
-        <div class="liste" id="log-liste"></div>
+      <div class="kopfzeile"><h1>Katalog</h1><span class="zahl" id="k-zahl"></span></div>
+      <div class="roll" id="k-inhalt"></div>
+      <div class="fuss">
+        <input type="file" id="i-csv" accept=".csv,text/csv" hidden>
+        <div class="reihe">
+          <button class="b geist klein" id="b-export">Export</button>
+          <button class="b dunkel" id="b-import">Import</button>
+        </div>
       </div>
     </section>
   </main>
 
   <nav>
     <button class="on" data-v="scan">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>
       Scannen
     </button>
+    <button data-v="eingang">
+      <svg viewBox="0 0 24 24"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg>
+      Eingang
+    </button>
+    <button data-v="umlager">
+      <svg viewBox="0 0 24 24"><path d="M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      Umlagern
+    </button>
+    <button data-v="auftrag">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Auftrag
+    </button>
     <button data-v="katalog">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
       Katalog
-    </button>
-    <button data-v="plaetze">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18"/></svg>
-      Plätze
-    </button>
-    <button data-v="klaer">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
-      Klären
-      <span class="zaehler" id="z-klaer" style="display:none">0</span>
     </button>
   </nav>
 
@@ -276,194 +270,200 @@ nav svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;
 
   <div class="buehne" id="buehne">
     <video id="video" playsinline muted></video>
-    <div class="rahmen" id="rahmen"></div>
-    <div class="buehne-hinweis">Etikett in den Rahmen halten</div>
+    <div class="rahmen"></div>
     <button class="buehne-stopp" id="b-stopp">Abbrechen</button>
+  </div>
+
+  <div class="dlg" id="dlg">
+    <div class="dlg-box">
+      <div class="dlg-titel" id="dlg-titel"></div>
+      <div id="dlg-inhalt"></div>
+      <div class="reihe">
+        <button class="b geist" id="dlg-nein">Abbrechen</button>
+        <button class="b" id="dlg-ja">Löschen</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
 "use strict";
 
-/* Finadmin — Lagerplatz-Scanner fuer Finelli.
-   Laeuft komplett auf dem Geraet, kein Netzwerkzugriff. */
+/* SEA Lager. Zwei Standorte: Zuerich (zh) und Embrach (emb).
+   Alles lokal auf dem Geraet, kein Netzwerkzugriff im Code. */
 
-const SCAN_SYMBOL = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" ' +
-  'stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2' +
-  'M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>';
-
-const LS = {
-  katalog: "finadmin.katalog.v1",
-  plaetze: "finadmin.plaetze.v1",
-  klaer:   "finadmin.klaer.v1",
-  log:     "finadmin.log.v1",
-  eans:    "finadmin.eans.v1"
+var LS = {
+  katalog:"sea.katalog.v2", plaetze:"sea.plaetze.v2", eans:"sea.eans.v2",
+  bestand:"sea.bestand.v2", log:"sea.log.v2", auftrag:"sea.auftrag.v2"
 };
 
-/* Standort. Aktuell nur einer, die Struktur laesst spaetere zu. */
-const STANDORT = {kurz:"Zuerich", raum:"Lagerraum 1", lang:"Zuerich, Lagerraum 1"};
+var ORTE = {zh:"Zürich", emb:"Embrach"};
+var GR_REIHE = ["XS","S","M","L","XL","XXL"];
+var G_FARBE = {XS:"var(--xs)",S:"var(--s)",M:"var(--m)",L:"var(--l)",XL:"var(--xl)",XXL:"var(--xxl)"};
 
-/* Faecher mit ihrer Lage im Raum (Koordinaten wie in der Lagerkarte der MDE-Demo). */
-const REGALE = [
-  {id:"ZG1", name:"Zwischengestell 1", zone:"Renner", faecher:[
-    {c:"ZG1-F1",t:"Front, Spalte 1",ebenen:4,x:111,y:107,w:17,h:14},
-    {c:"ZG1-F2",t:"Front, Spalte 2",ebenen:4,x:111,y:121,w:17,h:14},
-    {c:"ZG1-F3",t:"Front, Spalte 3",ebenen:4,x:111,y:135,w:17,h:14},
-    {c:"ZG1-A1",t:"Seite A",ebenen:4,x:130,y:107,w:27,h:15},
-    {c:"ZG1-A2",t:"Seite A",ebenen:4,x:157,y:107,w:27,h:15},
-    {c:"ZG1-A3",t:"Seite A",ebenen:4,x:184,y:107,w:27,h:15},
-    {c:"ZG1-A4",t:"Seite A",ebenen:4,x:211,y:107,w:27,h:15},
-    {c:"ZG1-A5",t:"Seite A",ebenen:4,x:238,y:107,w:27,h:15},
-    {c:"ZG1-A6",t:"Seite A",ebenen:4,x:265,y:107,w:27,h:15},
-    {c:"ZG1-B1",t:"Seite B",ebenen:4,x:130,y:136,w:27,h:15},
-    {c:"ZG1-B2",t:"Seite B",ebenen:4,x:157,y:136,w:27,h:15},
-    {c:"ZG1-B3",t:"Seite B",ebenen:4,x:184,y:136,w:27,h:15},
-    {c:"ZG1-B4",t:"Seite B",ebenen:4,x:211,y:136,w:27,h:15},
-    {c:"ZG1-B5",t:"Seite B",ebenen:4,x:238,y:136,w:27,h:15},
-    {c:"ZG1-B6",t:"Seite B",ebenen:4,x:265,y:136,w:27,h:15}
+var REGALE = [
+  {id:"ZG1", name:"Zwischengestell 1", faecher:[
+    {c:"ZG1-F1",ebenen:4,x:111,y:107,w:17,h:14},{c:"ZG1-F2",ebenen:4,x:111,y:121,w:17,h:14},
+    {c:"ZG1-F3",ebenen:4,x:111,y:135,w:17,h:14},
+    {c:"ZG1-A1",ebenen:4,x:130,y:107,w:27,h:15},{c:"ZG1-A2",ebenen:4,x:157,y:107,w:27,h:15},
+    {c:"ZG1-A3",ebenen:4,x:184,y:107,w:27,h:15},{c:"ZG1-A4",ebenen:4,x:211,y:107,w:27,h:15},
+    {c:"ZG1-A5",ebenen:4,x:238,y:107,w:27,h:15},{c:"ZG1-A6",ebenen:4,x:265,y:107,w:27,h:15},
+    {c:"ZG1-B1",ebenen:4,x:130,y:136,w:27,h:15},{c:"ZG1-B2",ebenen:4,x:157,y:136,w:27,h:15},
+    {c:"ZG1-B3",ebenen:4,x:184,y:136,w:27,h:15},{c:"ZG1-B4",ebenen:4,x:211,y:136,w:27,h:15},
+    {c:"ZG1-B5",ebenen:4,x:238,y:136,w:27,h:15},{c:"ZG1-B6",ebenen:4,x:265,y:136,w:27,h:15}
   ]},
-  {id:"ZG2", name:"Zwischengestell 2", zone:"Standard", faecher:[
-    {c:"ZG2-F1",t:"Front, 6 Ebenen",ebenen:6,x:111,y:199,w:17,h:14},
-    {c:"ZG2-F2",t:"Front, 6 Ebenen",ebenen:6,x:111,y:213,w:17,h:14},
-    {c:"ZG2-F3",t:"Front, 6 Ebenen",ebenen:6,x:111,y:227,w:17,h:14},
-    {c:"ZG2-A1",t:"Seite A, T-Shirts",ebenen:4,x:130,y:199,w:27,h:15},
-    {c:"ZG2-A2",t:"Seite A, T-Shirts",ebenen:4,x:157,y:199,w:27,h:15},
-    {c:"ZG2-A3",t:"Seite A, T-Shirts",ebenen:4,x:184,y:199,w:27,h:15},
-    {c:"ZG2-A4",t:"Seite A, T-Shirts",ebenen:4,x:211,y:199,w:27,h:15},
-    {c:"ZG2-A5",t:"Seite A, T-Shirts",ebenen:4,x:238,y:199,w:27,h:15},
-    {c:"ZG2-A6",t:"Seite A, T-Shirts",ebenen:4,x:265,y:199,w:27,h:15},
-    {c:"ZG2-B1",t:"Seite B, Hosen",ebenen:4,x:130,y:228,w:27,h:15},
-    {c:"ZG2-B2",t:"Seite B, Hosen",ebenen:4,x:157,y:228,w:27,h:15},
-    {c:"ZG2-B3",t:"Seite B, Hosen",ebenen:4,x:184,y:228,w:27,h:15},
-    {c:"ZG2-B4",t:"Seite B, Hosen",ebenen:4,x:211,y:228,w:27,h:15},
-    {c:"ZG2-B5",t:"Seite B, Hosen",ebenen:4,x:238,y:228,w:27,h:15},
-    {c:"ZG2-B6",t:"Seite B, Hosen",ebenen:4,x:265,y:228,w:27,h:15}
+  {id:"ZG2", name:"Zwischengestell 2", faecher:[
+    {c:"ZG2-F1",ebenen:6,x:111,y:199,w:17,h:14},{c:"ZG2-F2",ebenen:6,x:111,y:213,w:17,h:14},
+    {c:"ZG2-F3",ebenen:6,x:111,y:227,w:17,h:14},
+    {c:"ZG2-A1",ebenen:4,x:130,y:199,w:27,h:15},{c:"ZG2-A2",ebenen:4,x:157,y:199,w:27,h:15},
+    {c:"ZG2-A3",ebenen:4,x:184,y:199,w:27,h:15},{c:"ZG2-A4",ebenen:4,x:211,y:199,w:27,h:15},
+    {c:"ZG2-A5",ebenen:4,x:238,y:199,w:27,h:15},{c:"ZG2-A6",ebenen:4,x:265,y:199,w:27,h:15},
+    {c:"ZG2-B1",ebenen:4,x:130,y:228,w:27,h:15},{c:"ZG2-B2",ebenen:4,x:157,y:228,w:27,h:15},
+    {c:"ZG2-B3",ebenen:4,x:184,y:228,w:27,h:15},{c:"ZG2-B4",ebenen:4,x:211,y:228,w:27,h:15},
+    {c:"ZG2-B5",ebenen:4,x:238,y:228,w:27,h:15},{c:"ZG2-B6",ebenen:4,x:265,y:228,w:27,h:15}
   ]},
-  {id:"RW1", name:"Regalwand 1", zone:"Standard und Saison", faecher:[
-    {c:"RW1-1a",t:"Regal 1",ebenen:4,x:22,y:80,w:28,h:17},
-    {c:"RW1-1b",t:"Regal 1",ebenen:4,x:22,y:97,w:28,h:17},
-    {c:"RW1-1c",t:"Regal 1",ebenen:4,x:22,y:114,w:28,h:17},
-    {c:"RW1-2a",t:"Regal 2",ebenen:4,x:22,y:137,w:28,h:17},
-    {c:"RW1-2b",t:"Regal 2",ebenen:4,x:22,y:154,w:28,h:17},
-    {c:"RW1-2c",t:"Regal 2",ebenen:4,x:22,y:171,w:28,h:17},
-    {c:"RW1-3a",t:"Regal 3, Saison",ebenen:4,x:22,y:194,w:28,h:17},
-    {c:"RW1-3b",t:"Regal 3, Saison",ebenen:4,x:22,y:211,w:28,h:17},
-    {c:"RW1-3c",t:"Regal 3, Saison",ebenen:4,x:22,y:228,w:28,h:17},
-    {c:"RW1-4a",t:"Regal 4, Saison",ebenen:4,x:22,y:251,w:28,h:17},
-    {c:"RW1-4b",t:"Regal 4, Saison",ebenen:4,x:22,y:268,w:28,h:17},
-    {c:"RW1-4c",t:"Regal 4, Saison",ebenen:4,x:22,y:285,w:28,h:17}
+  {id:"RW1", name:"Regalwand 1", faecher:[
+    {c:"RW1-1a",ebenen:4,x:22,y:80,w:28,h:17},{c:"RW1-1b",ebenen:4,x:22,y:97,w:28,h:17},
+    {c:"RW1-1c",ebenen:4,x:22,y:114,w:28,h:17},{c:"RW1-2a",ebenen:4,x:22,y:137,w:28,h:17},
+    {c:"RW1-2b",ebenen:4,x:22,y:154,w:28,h:17},{c:"RW1-2c",ebenen:4,x:22,y:171,w:28,h:17},
+    {c:"RW1-3a",ebenen:4,x:22,y:194,w:28,h:17},{c:"RW1-3b",ebenen:4,x:22,y:211,w:28,h:17},
+    {c:"RW1-3c",ebenen:4,x:22,y:228,w:28,h:17},{c:"RW1-4a",ebenen:4,x:22,y:251,w:28,h:17},
+    {c:"RW1-4b",ebenen:4,x:22,y:268,w:28,h:17},{c:"RW1-4c",ebenen:4,x:22,y:285,w:28,h:17}
   ]},
-  {id:"RW2", name:"Regalwand 2", zone:"Abverkauf und Saison", faecher:[
-    {c:"RW2-1a",t:"Regal 1, Abverkauf",ebenen:4,x:74,y:316,w:34,h:20},
-    {c:"RW2-1b",t:"Regal 1, Abverkauf",ebenen:4,x:108,y:316,w:34,h:20},
-    {c:"RW2-1c",t:"Regal 1, Abverkauf",ebenen:4,x:142,y:316,w:34,h:20},
-    {c:"RW2-2a",t:"Regal 2",ebenen:4,x:180,y:316,w:34,h:20},
-    {c:"RW2-2b",t:"Regal 2",ebenen:4,x:214,y:316,w:34,h:20},
-    {c:"RW2-2c",t:"Regal 2",ebenen:4,x:248,y:316,w:34,h:20}
+  {id:"RW2", name:"Regalwand 2", faecher:[
+    {c:"RW2-1a",ebenen:4,x:74,y:316,w:34,h:20},{c:"RW2-1b",ebenen:4,x:108,y:316,w:34,h:20},
+    {c:"RW2-1c",ebenen:4,x:142,y:316,w:34,h:20},{c:"RW2-2a",ebenen:4,x:180,y:316,w:34,h:20},
+    {c:"RW2-2b",ebenen:4,x:214,y:316,w:34,h:20},{c:"RW2-2c",ebenen:4,x:248,y:316,w:34,h:20}
   ]}
 ];
-const ALLE_FAECHER = REGALE.reduce((a,r) => a.concat(r.faecher.map(f => Object.assign({}, f, {regal:r.name, zone:r.zone}))), []);
-const fachInfo = c => ALLE_FAECHER.find(f => f.c === c);
+var ALLE_FAECHER = REGALE.reduce(function(a, r){
+  return a.concat(r.faecher.map(function(f){
+    var o = {}; for(var k in f){ o[k] = f[k]; } o.regal = r.name; return o;
+  }));
+}, []);
+function fachInfo(c){ return ALLE_FAECHER.filter(function(f){ return f.c === c; })[0]; }
 
-const G_FARBE = {XS:"var(--xs)",S:"var(--s)",M:"var(--m)",L:"var(--l)",XL:"var(--xl)",XXL:"var(--xxl)"};
-const EBENEN_4 = [
-  {nr:1, hoehe:"oben, ca. 165 cm", gr:["XS","S"],   hosen:["28","30"]},
-  {nr:2, hoehe:"ca. 120 cm",       gr:["M"],        hosen:["32"]},
-  {nr:3, hoehe:"ca. 80 cm",        gr:["L"],        hosen:["34"]},
-  {nr:4, hoehe:"unten, ca. 35 cm", gr:["XL","XXL"], hosen:["36","38"]}
-];
-const EBENEN_6 = [
-  {nr:1, hoehe:"oben",  gr:["XS"],  hosen:["28"]},
-  {nr:2, hoehe:"",      gr:["S"],   hosen:["30"]},
-  {nr:3, hoehe:"",      gr:["M"],   hosen:["32"]},
-  {nr:4, hoehe:"",      gr:["L"],   hosen:["34"]},
-  {nr:5, hoehe:"",      gr:["XL"],  hosen:["36"]},
-  {nr:6, hoehe:"unten", gr:["XXL"], hosen:["38"]}
-];
+var EBENEN_4 = [{nr:1,gr:["XS","S"],hosen:["28","30"]},{nr:2,gr:["M"],hosen:["32"]},
+                {nr:3,gr:["L"],hosen:["34"]},{nr:4,gr:["XL","XXL"],hosen:["36","38"]}];
+var EBENEN_6 = [{nr:1,gr:["XS"],hosen:["28"]},{nr:2,gr:["S"],hosen:["30"]},{nr:3,gr:["M"],hosen:["32"]},
+                {nr:4,gr:["L"],hosen:["34"]},{nr:5,gr:["XL"],hosen:["36"]},{nr:6,gr:["XXL"],hosen:["38"]}];
 
 function normGroesse(g){
   if(!g) return "";
-  const t = String(g).trim().toUpperCase();
-  if(/^(ONE ?SIZE|OS|UNI|TU)$/.test(t)) return "ONE SIZE";
+  var t = String(g).trim().toUpperCase();
+  if(/^(ONE ?SIZE|OS|UNI|TU|DEFAULT TITLE)$/.test(t)) return "ONE SIZE";
   if(/^\d{2}$/.test(t)) return t;
-  const kurz = {"XSMALL":"XS","X-SMALL":"XS","SMALL":"S","MEDIUM":"M","LARGE":"L",
-                "XLARGE":"XL","X-LARGE":"XL","XXLARGE":"XXL","XX-LARGE":"XXL","2XL":"XXL","3XL":"XXL"};
+  var kurz = {XSMALL:"XS","X-SMALL":"XS",SMALL:"S",MEDIUM:"M",LARGE:"L",XLARGE:"XL",
+              "X-LARGE":"XL",XXLARGE:"XXL","XX-LARGE":"XXL","2XL":"XXL","3XL":"XXL"};
   return kurz[t] || t;
 }
-
 function ebeneFuer(groesse, anzahl){
-  const tab = anzahl === 6 ? EBENEN_6 : EBENEN_4;
-  const g = normGroesse(groesse);
+  var tab = anzahl === 6 ? EBENEN_6 : EBENEN_4;
+  var g = normGroesse(groesse);
   if(!g || g === "ONE SIZE") return null;
-  for(const e of tab){
-    if(e.gr.indexOf(g) >= 0 || e.hosen.indexOf(g) >= 0) return e;
+  for(var i = 0; i < tab.length; i++){
+    if(tab[i].gr.indexOf(g) >= 0 || tab[i].hosen.indexOf(g) >= 0) return tab[i];
   }
   return null;
 }
 
-const PILOT = [
-  ["rockstar tee black","ZG1-A1"], ["rockstar tee white","ZG1-A2"],
-  ["ornament tee blue","ZG1-A3"],  ["ornament tee green","ZG1-A4"],
-  ["star t shirt","ZG1-A5"],
-  ["zurich baby t shirt","ZG1-A6"],
-  ["baddie cap","ZG1-F1"], ["pant chain","ZG1-F1"], ["sunglasses","ZG1-F1"], ["duffle","ZG1-F1"],
-  ["camo cargo shorts","RW1-1a"],
-  ["denim pants brown tint","RW1-1b"],
-  ["denim pants black","RW1-1c"],
-  ["baggy sweatpants black","RW1-2a"]
+var PILOT = [
+  ["rockstar tee black","ZG1-A1"],["rockstar tee white","ZG1-A2"],
+  ["ornament tee blue","ZG1-A3"],["ornament tee green","ZG1-A4"],
+  ["star t shirt","ZG1-A5"],["zurich baby t shirt","ZG1-A6"],
+  ["baddie cap","ZG1-F1"],["pant chain","ZG1-F1"],["sunglasses","ZG1-F1"],["duffle","ZG1-F1"],
+  ["camo cargo shorts","RW1-1a"],["denim pants brown tint","RW1-1b"],
+  ["denim pants black","RW1-1c"],["baggy sweatpants black","RW1-2a"]
 ];
 
-const lade = (k, fallback) => {
-  try{ const r = localStorage.getItem(k); return r ? JSON.parse(r) : fallback; }
-  catch(e){ return fallback; }
-};
-const sichere = (k, v) => {
-  try{ localStorage.setItem(k, JSON.stringify(v)); return true; }
-  catch(e){ zeigeToast("Speicher voll. Der Katalog ist zu gross fuer dieses Geraet."); return false; }
+/* Aufnahme 22.07. Embrach ist leer. auf = im Laden aufgehaengt, sl = Store-Lager. */
+var START_BESTAND = {
+  "star t shirt": {
+    titel:"Star T-Shirt",
+    g:{XS:{zh:33,emb:0}, S:{zh:44,emb:0}, M:{zh:22,emb:0}, L:{zh:22,emb:0},
+       XL:{zh:22,emb:0}, XXL:{zh:0,emb:0}},
+    auf:{L:1}, sl:{L:1}
+  },
+  "zurich baby t shirt": {
+    titel:"I'm a Zurich Baby T-Shirt",
+    g:{XS:{zh:79,emb:0}, S:{zh:68,emb:0}, M:{zh:0,emb:0}, L:{zh:0,emb:0}, XL:{zh:0,emb:0}},
+    auf:{S:1, XS:2}, sl:{}
+  }
 };
 
-let KATALOG = lade(LS.katalog, []);
-let PLAETZE = lade(LS.plaetze, null);
-let KLAER   = lade(LS.klaer, []);
-let LOG     = lade(LS.log, []);
-let EANS    = lade(LS.eans, {});   /* selbst angelernt: EAN -> Varianten-Kennung */
+function lade(k, f){ try{ var r = localStorage.getItem(k); return r ? JSON.parse(r) : f; }catch(e){ return f; } }
+function sichere(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }
+  catch(e){ zeigeToast("Speicher voll"); return false; } }
 
-if(!PLAETZE){
-  PLAETZE = {};
-  PILOT.forEach(p => { PLAETZE[p[0]] = p[1]; });
-  sichere(LS.plaetze, PLAETZE);
+var KATALOG = lade(LS.katalog, []);
+var PLAETZE = lade(LS.plaetze, null);
+var EANS    = lade(LS.eans, {});
+var BESTAND = lade(LS.bestand, null);
+var LOG     = lade(LS.log, []);
+var AUFTRAG = lade(LS.auftrag, null);
+
+if(!PLAETZE){ PLAETZE = {}; PILOT.forEach(function(p){ PLAETZE[p[0]] = p[1]; }); sichere(LS.plaetze, PLAETZE); }
+if(!BESTAND){ BESTAND = JSON.parse(JSON.stringify(START_BESTAND)); sichere(LS.bestand, BESTAND); }
+
+function $(s){ return document.querySelector(s); }
+function $$(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(m){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m]; }); }
+function normal(s){ return String(s || "").toLowerCase()
+  .replace(/[^a-z0-9äöüéèà ]+/g, " ").replace(/\s+/g, " ").trim(); }
+
+var toastTimer;
+function zeigeToast(t){
+  var e = $("#toast"); e.textContent = t; e.classList.add("an");
+  clearTimeout(toastTimer); toastTimer = setTimeout(function(){ e.classList.remove("an"); }, 2400);
 }
 
-const $  = s => document.querySelector(s);
-const $$ = s => Array.prototype.slice.call(document.querySelectorAll(s));
-const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m]));
-const normal = s => String(s || "").toLowerCase().replace(/[^a-z0-9äöüéèà ]+/g," ").replace(/\s+/g," ").trim();
+function musterFuer(titel){
+  var t = normal(titel), m = null, l = -1;
+  for(var k in PLAETZE){ if(t.indexOf(k) >= 0 && k.length > l){ m = k; l = k.length; } }
+  return m;
+}
+function platzFuer(titel){ var m = musterFuer(titel); return m ? PLAETZE[m] : null; }
 
-let toastTimer;
-function zeigeToast(text){
-  const t = $("#toast");
-  t.textContent = text;
-  t.classList.add("an");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove("an"), 2600);
+function bestandFuer(titel){
+  var m = musterFuer(titel);
+  if(m && BESTAND[m]) return {schluessel:m, daten:BESTAND[m]};
+  var n = normal(titel);
+  if(BESTAND[n]) return {schluessel:n, daten:BESTAND[n]};
+  return null;
+}
+function bestandAnlegen(titel){
+  var m = musterFuer(titel) || normal(titel);
+  if(!BESTAND[m]) BESTAND[m] = {titel:titel, g:{}, auf:{}, sl:{}};
+  return {schluessel:m, daten:BESTAND[m]};
+}
+function menge(b, g, ort){
+  if(!b || !b.g || !b.g[g]) return 0;
+  return b.g[g][ort] || 0;
+}
+function buche(schluessel, g, ort, delta, grund){
+  var b = BESTAND[schluessel];
+  if(!b) return;
+  if(!b.g[g]) b.g[g] = {zh:0, emb:0};
+  b.g[g][ort] = Math.max(0, (b.g[g][ort] || 0) + delta);
+  LOG.unshift({t:b.titel, g:g, ort:ort, d:delta, grund:grund, zeit:new Date().toISOString()});
+  if(LOG.length > 300) LOG = LOG.slice(0, 300);
+  sichere(LS.bestand, BESTAND); sichere(LS.log, LOG);
 }
 
+/* CSV */
 function csvZerlegen(text){
-  const zeilen = [];
-  let feld = "", zeile = [], inAnf = false;
-  for(let i = 0; i < text.length; i++){
-    const z = text[i];
-    if(inAnf){
-      if(z === '"'){
-        if(text[i+1] === '"'){ feld += '"'; i++; }
-        else inAnf = false;
-      } else feld += z;
+  var zeilen = [], feld = "", zeile = [], anf = false;
+  for(var i = 0; i < text.length; i++){
+    var z = text[i];
+    if(anf){
+      if(z === '"'){ if(text[i+1] === '"'){ feld += '"'; i++; } else { anf = false; } }
+      else { feld += z; }
     } else {
-      if(z === '"') inAnf = true;
+      if(z === '"'){ anf = true; }
       else if(z === ","){ zeile.push(feld); feld = ""; }
       else if(z === "\n"){ zeile.push(feld); zeilen.push(zeile); zeile = []; feld = ""; }
-      else if(z === "\r"){ /* uebergehen */ }
-      else feld += z;
+      else if(z !== "\r"){ feld += z; }
     }
   }
   if(feld.length || zeile.length){ zeile.push(feld); zeilen.push(zeile); }
@@ -471,114 +471,75 @@ function csvZerlegen(text){
 }
 
 function katalogAusCsv(text){
-  const zeilen = csvZerlegen(text);
-  if(!zeilen.length) return {varianten:[], fehler:"Die Datei ist leer."};
-  const kopf = zeilen[0].map(h => h.trim());
-  const idx = name => {
-    for(let i = 0; i < kopf.length; i++){ if(kopf[i].toLowerCase() === name.toLowerCase()) return i; }
+  var zeilen = csvZerlegen(text);
+  if(!zeilen.length) return {varianten:[], fehler:"Datei leer"};
+  var kopf = zeilen[0].map(function(h){ return h.trim(); });
+  function idx(n){
+    for(var i = 0; i < kopf.length; i++){ if(kopf[i].toLowerCase() === n.toLowerCase()) return i; }
     return -1;
-  };
-
-  const iTitel = idx("Title"), iHandle = idx("Handle"), iBarcode = idx("Variant Barcode");
-  const iSku = idx("Variant SKU"), iPreis = idx("Variant Price"), iBild = idx("Image Src");
-  const optNamen = [idx("Option1 Name"), idx("Option2 Name"), idx("Option3 Name")];
-  const optWerte = [idx("Option1 Value"), idx("Option2 Value"), idx("Option3 Value")];
-
-  if(iTitel < 0) return {varianten:[], fehler:"In der Datei fehlt die Spalte Title. Das ist kein Shopify-Produktexport."};
-
-  const varianten = [];
-  let letzterTitel = "", letzterHandle = "";
-  for(let r = 1; r < zeilen.length; r++){
-    const z = zeilen[r];
-    if(!z || z.length < 2) continue;
-    const titel = (z[iTitel] || "").trim() || letzterTitel;
-    if(titel) letzterTitel = titel;
-    const handle = (iHandle >= 0 ? (z[iHandle] || "").trim() : "") || letzterHandle;
-    if(handle) letzterHandle = handle;
-
-    /* Barcode darf fehlen. Solche Varianten werden per Scan angelernt. */
-    const ean = iBarcode >= 0 ? (z[iBarcode] || "").trim() : "";
-
-    let groesse = "", farbe = "";
-    for(let o = 0; o < 3; o++){
-      if(optNamen[o] < 0 || optWerte[o] < 0) continue;
-      const n = (z[optNamen[o]] || "").trim().toLowerCase();
-      const w = (z[optWerte[o]] || "").trim();
-      if(!w) continue;
-      if(/gr(ö|oe)sse|size/.test(n)) groesse = w;
-      else if(/farbe|colou?r/.test(n)) farbe = w;
-      else if(!groesse && /^(xxs|xs|s|m|l|xl|xxl|\d{2})$/i.test(w)) groesse = w;
-    }
-
-    const g = normGroesse(groesse);
-    if(!titel) continue;
-    varianten.push({
-      ean: ean,
-      titel: titel,
-      groesse: g,
-      farbe: farbe,
-      sku: iSku >= 0 ? (z[iSku] || "").trim() : "",
-      preis: iPreis >= 0 ? (z[iPreis] || "").trim() : "",
-      handle: handle,
-      vid: (handle || normal(titel)) + "|" + g + "|" + farbe
-    });
   }
-  if(!varianten.length) return {varianten:[], fehler:"In der Datei stand kein einziger Artikel."};
-  return {varianten:varianten, fehler:null};
+  var iT = idx("Title"), iH = idx("Handle"), iB = idx("Variant Barcode"),
+      iS = idx("Variant SKU"), iP = idx("Variant Price");
+  var oN = [idx("Option1 Name"), idx("Option2 Name"), idx("Option3 Name")];
+  var oW = [idx("Option1 Value"), idx("Option2 Value"), idx("Option3 Value")];
+  if(iT < 0) return {varianten:[], fehler:"Spalte Title fehlt"};
+
+  var v = [], lt = "", lh = "";
+  for(var r = 1; r < zeilen.length; r++){
+    var z = zeilen[r];
+    if(!z || z.length < 2) continue;
+    var titel = (z[iT] || "").trim() || lt;
+    if(titel) lt = titel;
+    var handle = (iH >= 0 ? (z[iH] || "").trim() : "") || lh;
+    if(handle) lh = handle;
+    if(!titel) continue;
+    var ean = iB >= 0 ? (z[iB] || "").trim() : "";
+    var g = "", farbe = "";
+    for(var o = 0; o < 3; o++){
+      if(oN[o] < 0 || oW[o] < 0) continue;
+      var n = (z[oN[o]] || "").trim().toLowerCase(), w = (z[oW[o]] || "").trim();
+      if(!w) continue;
+      if(/gr(ö|oe)sse|size/.test(n)) g = w;
+      else if(/farbe|colou?r/.test(n)) farbe = w;
+      else if(!g && /^(xxs|xs|s|m|l|xl|xxl|\d{2})$/i.test(w)) g = w;
+    }
+    var gn = normGroesse(g);
+    v.push({ean:ean, titel:titel, groesse:gn, farbe:farbe,
+            sku:iS >= 0 ? (z[iS] || "").trim() : "",
+            preis:iP >= 0 ? (z[iP] || "").trim() : "",
+            handle:handle, vid:(handle || normal(titel)) + "|" + gn + "|" + farbe});
+  }
+  if(!v.length) return {varianten:[], fehler:"Keine Artikel"};
+  return {varianten:v, fehler:null};
 }
 
-/* Variante zu einem gescannten Code finden: erst der Barcode aus Shopify,
-   dann die selbst angelernten Zuordnungen. */
 function findeVariante(code){
-  let v = KATALOG.filter(x => x.ean && x.ean === code)[0];
+  var v = KATALOG.filter(function(x){ return x.ean && x.ean === code; })[0];
   if(v) return v;
-  const vid = EANS[code];
+  var vid = EANS[code];
   if(!vid) return null;
-  return KATALOG.filter(x => x.vid === vid)[0] || null;
+  return KATALOG.filter(function(x){ return x.vid === vid; })[0] || null;
 }
-
-function lerneEan(code, vid){
-  EANS[code] = vid;
-  sichere(LS.eans, EANS);
-  KLAER = KLAER.filter(k => k.ean !== code);
-  sichere(LS.klaer, KLAER);
-  zeichneKlaer();
-  zeichneKatalogStand();
-}
+function lerneEan(code, vid){ EANS[code] = vid; sichere(LS.eans, EANS); zeichneKopf(); }
 
 function exportEans(){
-  const zeilen = ["Handle,Title,Option1 Value,Variant SKU,Variant Barcode"];
-  Object.keys(EANS).forEach(code => {
-    const v = KATALOG.filter(x => x.vid === EANS[code])[0];
+  var z = ["Handle,Title,Option1 Value,Variant SKU,Variant Barcode"];
+  Object.keys(EANS).forEach(function(code){
+    var v = KATALOG.filter(function(x){ return x.vid === EANS[code]; })[0];
     if(!v) return;
-    const q = s => '"' + String(s == null ? "" : s).replace(/"/g,'""') + '"';
-    zeilen.push([q(v.handle), q(v.titel), q(v.groesse), q(v.sku), q(code)].join(","));
+    function q(s){ return '"' + String(s == null ? "" : s).replace(/"/g, '""') + '"'; }
+    z.push([q(v.handle), q(v.titel), q(v.groesse), q(v.sku), q(code)].join(","));
   });
-  if(zeilen.length < 2){ zeigeToast("Noch nichts angelernt."); return; }
-  const blob = new Blob([zeilen.join("\n")], {type:"text/csv;charset=utf-8"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "finelli-eans.csv";
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-  zeigeToast((zeilen.length - 1) + " Zuordnungen exportiert");
+  if(z.length < 2){ zeigeToast("Nichts angelernt"); return; }
+  var blob = new Blob([z.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "sea-eans.csv";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 800);
+  zeigeToast((z.length - 1) + " exportiert");
 }
 
-function musterFuer(titel){
-  const t = normal(titel);
-  let m = null, laenge = -1;
-  for(const muster in PLAETZE){
-    if(t.indexOf(muster) >= 0 && muster.length > laenge){ m = muster; laenge = muster.length; }
-  }
-  return m;
-}
-function platzFuer(titel){
-  const m = musterFuer(titel);
-  return m ? PLAETZE[m] : null;
-}
-
-/* ===== Lagerkarte: Raum 1 von oben, wie in der MDE-Demo ===== */
+/* Lagerkarte */
 function zonenFarbe(c){
   if(c.indexOf("ZG1-") === 0) return "#a8271c";
   if(c.indexOf("ZG2-") === 0) return "#9a9790";
@@ -587,58 +548,46 @@ function zonenFarbe(c){
   if(c.indexOf("RW2-1") === 0) return "#7b4b9e";
   return "#2f8f8f";
 }
-
 function lagerkarte(aktiv, groesse){
-  const belegt = {};
-  Object.keys(PLAETZE).forEach(k => { belegt[PLAETZE[k]] = 1; });
-  const leucht = groesse ? (G_FARBE[groesse] || "#17161a") : "#17161a";
-
-  /* Enger zugeschnitten als in der Demo, damit die Faecher am Handy gross genug bleiben. */
-  let s = '<svg viewBox="2 44 316 322" role="img" aria-label="Lager Raum 1 von oben" style="width:100%;height:auto;display:block">';
+  var belegt = {};
+  Object.keys(PLAETZE).forEach(function(k){ belegt[PLAETZE[k]] = 1; });
+  var leucht = groesse && G_FARBE[groesse] ? G_FARBE[groesse] : "#17161a";
+  var s = '<svg viewBox="2 44 316 322" style="width:100%;height:auto;display:block">';
   s += '<rect x="14" y="68" width="292" height="278" rx="8" fill="#faf9f7" stroke="#17161a" stroke-width="4"/>';
   s += '<rect x="42" y="63" width="52" height="10" fill="#faf9f7"/>';
   s += '<text x="68" y="58" text-anchor="middle" font-size="12" fill="#8a8891" font-weight="700">Eingang</text>';
   s += '<rect x="106" y="76" width="106" height="24" rx="4" fill="#17161a"/>';
   s += '<text x="159" y="92" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">Tisch</text>';
-  /* Regaltraeger */
   s += '<rect x="20" y="78" width="32" height="226" rx="4" fill="#eceae7"/>';
   s += '<rect x="110" y="106" width="184" height="46" rx="4" fill="#eceae7"/>';
   s += '<rect x="110" y="106" width="20" height="46" rx="4" fill="#e3e0dc"/>';
   s += '<rect x="110" y="198" width="184" height="46" rx="4" fill="#eceae7"/>';
   s += '<rect x="110" y="198" width="20" height="46" rx="4" fill="#e3e0dc"/>';
   s += '<rect x="72" y="314" width="212" height="24" rx="4" fill="#eceae7"/>';
-  /* Beschriftung */
   s += '<text x="10" y="190" text-anchor="middle" font-size="10.5" fill="#6b6971" font-weight="700" transform="rotate(-90 10 190)">Regalwand 1</text>';
   s += '<text x="224" y="167" text-anchor="middle" font-size="10.5" fill="#6b6971" font-weight="700">Zwischengestell 1</text>';
   s += '<text x="224" y="259" text-anchor="middle" font-size="10.5" fill="#6b6971" font-weight="700">Zwischengestell 2</text>';
   s += '<text x="178" y="357" text-anchor="middle" font-size="10.5" fill="#6b6971" font-weight="700">Regalwand 2</text>';
-  s += '<text x="119" y="161" text-anchor="middle" font-size="8" fill="#8a8891" font-weight="700">Front</text>';
-  s += '<text x="119" y="253" text-anchor="middle" font-size="8" fill="#8a8891" font-weight="700">Front</text>';
-
-  ALLE_FAECHER.forEach(f => {
-    if(f.x == null) return;
-    const ist = f.c === aktiv;
-    const an = belegt[f.c] === 1;
-    const rand = ist ? leucht : (an ? zonenFarbe(f.c) : "#cfcdc9");
-    const strich = ist ? 3 : (an ? 1.6 : 1);
-    s += '<rect x="' + (f.x + 1) + '" y="' + (f.y + 1) + '" width="' + (f.w - 2) + '" height="' + (f.h - 2) +
-         '" rx="2.5" fill="' + (ist ? leucht : "#fff") + '" stroke="' + rand + '" stroke-width="' + strich + '"' +
+  ALLE_FAECHER.forEach(function(f){
+    var ist = f.c === aktiv, an = belegt[f.c] === 1;
+    var rand = ist ? leucht : (an ? zonenFarbe(f.c) : "#cfcdc9");
+    s += '<rect x="' + (f.x + 1) + '" y="' + (f.y + 1) + '" width="' + (f.w - 2) +
+         '" height="' + (f.h - 2) + '" rx="2.5" fill="' + (ist ? leucht : "#fff") +
+         '" stroke="' + rand + '" stroke-width="' + (ist ? 3 : (an ? 1.6 : 1)) + '"' +
          (an || ist ? "" : ' stroke-dasharray="2 2"') + '/>';
-    s += '<text x="' + (f.x + f.w / 2) + '" y="' + (f.y + f.h / 2 + 3) + '" text-anchor="middle" font-size="' +
-         (ist ? 9 : 8.5) + '" font-weight="' + (an || ist ? 800 : 400) + '" fill="' +
-         (ist ? "#fff" : (an ? "#3a383f" : "#b3b0ac")) + '">' + f.c.split("-")[1] + '</text>';
+    s += '<text x="' + (f.x + f.w / 2) + '" y="' + (f.y + f.h / 2 + 3) +
+         '" text-anchor="middle" font-size="' + (ist ? 9 : 8.5) + '" font-weight="' +
+         (an || ist ? 800 : 400) + '" fill="' + (ist ? "#fff" : (an ? "#3a383f" : "#b3b0ac")) +
+         '">' + f.c.split("-")[1] + '</text>';
   });
-
-  /* Der gesuchte Platz bekommt einen Ring und darueber den vollen Code, gross und lesbar. */
   if(aktiv){
-    const f = fachInfo(aktiv);
-    if(f && f.x != null){
-      const mx = f.x + f.w / 2, my = f.y + f.h / 2;
+    var f2 = fachInfo(aktiv);
+    if(f2){
+      var mx = f2.x + f2.w / 2, my = f2.y + f2.h / 2;
       s += '<circle class="puls" cx="' + mx + '" cy="' + my + '" r="17" fill="none" stroke="' +
            leucht + '" stroke-width="3"/>';
-      const oben = my > 150;
-      const ly = oben ? my - 26 : my + 32;
-      const lx = Math.max(46, Math.min(274, mx));
+      var ly = my > 150 ? my - 26 : my + 32;
+      var lx = Math.max(46, Math.min(274, mx));
       s += '<rect x="' + (lx - 42) + '" y="' + (ly - 14) + '" width="84" height="20" rx="10" fill="#17161a"/>';
       s += '<text x="' + lx + '" y="' + ly + '" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">' +
            esc(aktiv) + '</text>';
@@ -648,382 +597,576 @@ function lagerkarte(aktiv, groesse){
   return '<div class="karte-box">' + s + '</div>';
 }
 
-/* Barcode ist unbekannt: Artikel aus dem Katalog auswaehlen, dann ist er angelernt. */
-function zeigeAnlernen(ean, suchbegriff){
-  const box = $("#ergebnis");
-  const q = normal(suchbegriff || "");
-  let liste = [];
-  if(q.length >= 2){
-    liste = KATALOG.filter(v => normal(v.titel).indexOf(q) >= 0 || normal(v.sku).indexOf(q) >= 0).slice(0, 40);
-  } else {
-    /* ohne Suche: die Artikel zeigen, die schon ein Fach haben */
-    liste = KATALOG.filter(v => platzFuer(v.titel)).slice(0, 40);
+/* Ansicht */
+function zeige(name){
+  $$("nav button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-v") === name); });
+  $$(".view").forEach(function(v){ v.classList.remove("on"); });
+  var el = $("#v-" + name);
+  if(el) el.classList.add("on");
+  if(name !== "scan" && laeuft) kameraStoppen();
+  if(name === "eingang") zeichneEingang();
+  if(name === "umlager") zeichneUmlager();
+  if(name === "auftrag") zeichneAuftrag();
+  if(name === "katalog") zeichneKatalog();
+}
+
+/* Artikel */
+var aktuell = null;
+
+function zeigeArtikel(code){
+  var v = findeVariante(code);
+  if(!v){ zeigeAnlernen(code); return; }
+  aktuell = v;
+  var fach = platzFuer(v.titel);
+  var b = bestandFuer(v.titel);
+  var d = b ? b.daten : null;
+  $("#a-titel").textContent = v.titel;
+
+  var groessen = d && d.g ? Object.keys(d.g) : [];
+  groessen.sort(function(a, c){
+    var ia = GR_REIHE.indexOf(a), ic = GR_REIHE.indexOf(c);
+    return (ia < 0 ? 99 : ia) - (ic < 0 ? 99 : ic);
+  });
+  if(!groessen.length && v.groesse) groessen = [v.groesse];
+
+  var h = "";
+  if(fach) h += '<div class="karte"><div class="fachgross">' + esc(fach) + '</div></div>';
+
+  if(groessen.length){
+    h += '<div class="karte">';
+    groessen.forEach(function(g){
+      var zh = menge(d, g, "zh"), emb = menge(d, g, "emb");
+      var holen = zh === 0 && emb > 0;
+      var leer = zh === 0 && emb === 0;
+      h += '<div class="gr-zeile' + (holen ? " hol" : (leer ? " leer" : "")) + '">';
+      h += '<span class="gr-punkt" style="background:' + (G_FARBE[g] || "var(--grau)") + '"></span>';
+      h += '<span class="gr-name">' + esc(g) + '</span>';
+      if(holen) h += '<span class="warnpunkt">!</span>';
+      h += '<span class="gr-mengen">' +
+           '<span class="gr-ort"><span class="k">Zürich</span><span class="v">' + zh + '</span></span>' +
+           '<span class="gr-ort"><span class="k">Embrach</span><span class="v">' + emb + '</span></span>' +
+           '</span></div>';
+    });
+    h += '</div>';
   }
 
-  box.innerHTML = '<div class="karte treffer" style="border-left-color:var(--gelb)">' +
-    '<span class="lab">Neuer Barcode</span>' +
-    '<div class="artikelname">Welcher Artikel ist das?</div>' +
-    '<div class="ean">' + esc(ean) + '</div>' +
-    '<p class="unter">Einmal auswaehlen. Ab dem naechsten Scan zeigt die App sofort das Fach.</p>' +
-    '<input type="text" id="i-lern" placeholder="Artikel suchen" autocomplete="off" value="' + esc(suchbegriff || "") + '">' +
-    '<div class="liste" id="lern-liste">' +
-      (liste.length ? liste.map(v => {
-        const fach = platzFuer(v.titel);
-        return '<div class="zeile"><div class="haupt">' +
-          '<div class="name">' + esc(v.titel) + '</div>' +
-          '<div class="sub">' + esc(v.groesse || "ohne Groesse") + (v.farbe ? " · " + esc(v.farbe) : "") + '</div>' +
-          '</div><span class="code' + (fach ? "" : " leer") + '">' + (fach || "kein Platz") + '</span>' +
-          '<button class="b klein" data-vid="' + esc(v.vid) + '">Das ist es</button></div>';
-      }).join("")
-      : '<div class="leerstelle">Nichts gefunden. Anderen Suchbegriff versuchen.</div>') +
-    '</div>' +
-    '<button class="b geist" id="b-klaer">Spaeter klaeren, weiter scannen</button></div>';
+  if(d && ((d.auf && Object.keys(d.auf).length) || (d.sl && Object.keys(d.sl).length))){
+    h += '<div class="karte"><span class="lab">Store</span>';
+    [["auf","Aufgehängt"], ["sl","Lager"]].forEach(function(paar){
+      var m = d[paar[0]] || {};
+      var teile = Object.keys(m).map(function(g){ return m[g] + "× " + g; });
+      if(teile.length){
+        h += '<div class="gr-zeile"><span class="gr-name" style="width:auto">' + paar[1] + '</span>' +
+             '<span class="gr-mengen"><span class="gr-ort"><span class="v" style="font-size:19px">' +
+             esc(teile.join("  ")) + '</span></span></span></div>';
+      }
+    });
+    h += '</div>';
+  }
 
-  const feld = $("#i-lern");
-  feld.addEventListener("input", ev => {
-    const wert = ev.target.value;
-    zeigeAnlernen(ean, wert);
-    const neu = $("#i-lern");
-    neu.focus();
-    neu.setSelectionRange(wert.length, wert.length);
+  if(fach) h += lagerkarte(fach, v.groesse);
+  $("#a-inhalt").innerHTML = h;
+  $("#a-inhalt").scrollTop = 0;
+  zeige("artikel");
+}
+
+function zeigeAnlernen(ean, suche){
+  var q = normal(suche || "");
+  var liste = q.length >= 2
+    ? KATALOG.filter(function(v){ return normal(v.titel).indexOf(q) >= 0; }).slice(0, 40)
+    : KATALOG.filter(function(v){ return platzFuer(v.titel); }).slice(0, 40);
+
+  $("#a-titel").textContent = ean;
+  var h = '<div class="karte"><input type="text" id="i-lern" autocomplete="off" value="' + esc(suche || "") + '"></div>';
+  h += '<div class="karte">';
+  h += liste.length ? liste.map(function(v){
+    var f = platzFuer(v.titel);
+    return '<div class="zeile"><div class="haupt"><div class="name">' + esc(v.titel) + '</div>' +
+      '<div class="sub">' + esc(v.groesse || "") + '</div></div>' +
+      '<span class="code' + (f ? "" : " leer") + '">' + (f || "—") + '</span>' +
+      '<button class="b klein" data-vid="' + esc(v.vid) + '">OK</button></div>';
+  }).join("") : '<div class="leerstelle">—</div>';
+  h += '</div>';
+  $("#a-inhalt").innerHTML = h;
+  zeige("artikel");
+
+  $("#i-lern").addEventListener("input", function(e){
+    var w = e.target.value;
+    zeigeAnlernen(ean, w);
+    var n = $("#i-lern");
+    n.focus();
+    n.setSelectionRange(w.length, w.length);
   });
-
-  box.querySelectorAll("[data-vid]").forEach(b => {
-    b.addEventListener("click", () => {
+  $("#a-inhalt").querySelectorAll("[data-vid]").forEach(function(b){
+    b.addEventListener("click", function(){
       lerneEan(ean, b.getAttribute("data-vid"));
       if(navigator.vibrate) navigator.vibrate([30,40,30]);
-      zeigeToast("Barcode gespeichert");
-      zeigeErgebnis(ean);
+      zeigeArtikel(ean);
+    });
+  });
+}
+
+function mengeDialog(){
+  if(!aktuell) return;
+  var b = bestandFuer(aktuell.titel) || bestandAnlegen(aktuell.titel);
+  var d = b.daten;
+  var groessen = Object.keys(d.g);
+  if(!groessen.length) groessen = GR_REIHE.slice();
+  groessen.sort(function(a, c){
+    var ia = GR_REIHE.indexOf(a), ic = GR_REIHE.indexOf(c);
+    return (ia < 0 ? 99 : ia) - (ic < 0 ? 99 : ic);
+  });
+
+  var h = '<div style="max-height:46vh;overflow-y:auto">';
+  groessen.forEach(function(g){
+    h += '<div class="gr-zeile"><span class="gr-name">' + esc(g) + '</span>' +
+      '<span class="gr-mengen">' +
+      '<span class="gr-ort"><span class="k">Zürich</span>' +
+      '<input type="number" inputmode="numeric" data-g="' + esc(g) + '" data-o="zh" value="' +
+      menge(d, g, "zh") + '" style="width:80px;font-size:20px;font-weight:800;text-align:right;padding:8px"></span>' +
+      '<span class="gr-ort"><span class="k">Embrach</span>' +
+      '<input type="number" inputmode="numeric" data-g="' + esc(g) + '" data-o="emb" value="' +
+      menge(d, g, "emb") + '" style="width:80px;font-size:20px;font-weight:800;text-align:right;padding:8px"></span>' +
+      '</span></div>';
+  });
+  h += '</div>';
+  dialog(aktuell.titel, h, "Speichern", function(){
+    $("#dlg-inhalt").querySelectorAll("input[data-g]").forEach(function(i){
+      var g = i.getAttribute("data-g"), o = i.getAttribute("data-o");
+      var w = Math.max(0, parseInt(i.value, 10) || 0);
+      if(!d.g[g]) d.g[g] = {zh:0, emb:0};
+      d.g[g][o] = w;
+    });
+    sichere(LS.bestand, BESTAND);
+    zeigeToast("Gespeichert");
+    zeigeArtikel(aktuell.ean);
+  });
+}
+
+/* Wareneingang */
+var eingang = null;
+function eingangGesamt(d){ var s = 0; for(var g in d.mengen){ s += d.mengen[g] || 0; } return s; }
+
+function zeichneEingang(){
+  var i = $("#e-inhalt"), f = $("#e-fuss");
+  if(!eingang){
+    $("#e-zahl").textContent = "";
+    i.innerHTML = "";
+    f.innerHTML = '<button class="b riesig" id="be-scan">Scannen</button>';
+    $("#be-scan").addEventListener("click", function(){ kameraStarten("eingang"); });
+    return;
+  }
+  var d = eingang;
+  $("#e-zahl").textContent = eingangGesamt(d);
+
+  if(d.schritt === 1){
+    i.innerHTML = '<div class="karte"><div class="titelz">' + esc(d.titel) + '</div>' +
+      (d.fach ? '<div class="fachgross" style="font-size:30px">' + esc(d.fach) + '</div>' : "") + '</div>' +
+      '<div class="karte">' + GR_REIHE.map(function(g){
+        return '<div class="gr-zeile"><span class="gr-punkt" style="background:' + G_FARBE[g] + '"></span>' +
+          '<span class="gr-name">' + g + '</span>' +
+          '<span class="zaehl" style="margin-left:auto"><button data-m="' + g + '">−</button>' +
+          '<input type="number" inputmode="numeric" data-e="' + g + '" value="' + (d.mengen[g] || 0) +
+          '" style="width:80px"><button data-p="' + g + '">+</button></span></div>';
+      }).join("") + '</div>';
+    f.innerHTML = '<div class="reihe"><button class="b geist klein" id="be-ab">Abbrechen</button>' +
+      '<button class="b" id="be-weiter"' + (eingangGesamt(d) ? "" : " disabled") + '>Weiter</button></div>';
+
+    i.querySelectorAll("[data-p]").forEach(function(b){
+      b.addEventListener("click", function(){
+        var g = b.getAttribute("data-p");
+        d.mengen[g] = (d.mengen[g] || 0) + 1;
+        zeichneEingang();
+      });
+    });
+    i.querySelectorAll("[data-m]").forEach(function(b){
+      b.addEventListener("click", function(){
+        var g = b.getAttribute("data-m");
+        d.mengen[g] = Math.max(0, (d.mengen[g] || 0) - 1);
+        zeichneEingang();
+      });
+    });
+    i.querySelectorAll("[data-e]").forEach(function(x){
+      x.addEventListener("change", function(){
+        d.mengen[x.getAttribute("data-e")] = Math.max(0, parseInt(x.value, 10) || 0);
+        zeichneEingang();
+      });
+    });
+    $("#be-ab").addEventListener("click", function(){ eingang = null; zeichneEingang(); });
+    $("#be-weiter").addEventListener("click", function(){
+      GR_REIHE.forEach(function(g){ if(d.mengen[g] && d.zh[g] == null) d.zh[g] = d.mengen[g]; });
+      d.schritt = 2;
+      zeichneEingang();
+    });
+    return;
+  }
+
+  i.innerHTML = '<div class="karte"><div class="titelz">' + esc(d.titel) + '</div></div>' +
+    '<div class="karte">' + GR_REIHE.filter(function(g){ return d.mengen[g]; }).map(function(g){
+      var zh = d.zh[g] == null ? d.mengen[g] : d.zh[g];
+      return '<div class="gr-zeile"><span class="gr-punkt" style="background:' + G_FARBE[g] + '"></span>' +
+        '<span class="gr-name">' + g + '</span>' +
+        '<span class="gr-mengen">' +
+        '<span class="gr-ort"><span class="k">Zürich</span>' +
+        '<input type="number" inputmode="numeric" data-z="' + g + '" value="' + zh +
+        '" style="width:80px;font-size:24px;font-weight:800;text-align:right;padding:6px"></span>' +
+        '<span class="gr-ort"><span class="k">Embrach</span><span class="v">' + (d.mengen[g] - zh) + '</span></span>' +
+        '</span></div>';
+    }).join("") + '</div>';
+  f.innerHTML = '<div class="reihe"><button class="b geist klein" id="be-zur">Zurück</button>' +
+    '<button class="b gruen" id="be-buch">Einbuchen</button></div>';
+
+  i.querySelectorAll("[data-z]").forEach(function(x){
+    x.addEventListener("input", function(){
+      var g = x.getAttribute("data-z");
+      d.zh[g] = Math.min(d.mengen[g], Math.max(0, parseInt(x.value, 10) || 0));
+      zeichneEingang();
+    });
+  });
+  $("#be-zur").addEventListener("click", function(){ d.schritt = 1; zeichneEingang(); });
+  $("#be-buch").addEventListener("click", function(){
+    var b = bestandFuer(d.titel) || bestandAnlegen(d.titel);
+    var n = eingangGesamt(d);
+    GR_REIHE.forEach(function(g){
+      if(!d.mengen[g]) return;
+      var zh = d.zh[g] == null ? d.mengen[g] : d.zh[g];
+      if(zh) buche(b.schluessel, g, "zh", zh, "Eingang");
+      if(d.mengen[g] - zh) buche(b.schluessel, g, "emb", d.mengen[g] - zh, "Eingang");
+    });
+    zeigeToast(n + " eingebucht");
+    eingang = null;
+    zeichneEingang();
+  });
+}
+
+function eingangStart(code){
+  var v = findeVariante(code);
+  if(!v){ zeigeAnlernen(code); return; }
+  eingang = {titel:v.titel, fach:platzFuer(v.titel), schritt:1, mengen:{}, zh:{}};
+  zeige("eingang");
+  zeichneEingang();
+}
+
+/* Umlagerung */
+var umlager = {titel:null, schluessel:null, g:null, n:1, richtung:"emb_zh"};
+
+function zeichneUmlager(){
+  var i = $("#u-inhalt"), f = $("#u-fuss");
+  var artikel = Object.keys(BESTAND);
+  if(!artikel.length){
+    i.innerHTML = '<div class="leerstelle">—</div>';
+    f.innerHTML = "";
+    return;
+  }
+  if(!umlager.schluessel || artikel.indexOf(umlager.schluessel) < 0){
+    umlager.schluessel = artikel[0];
+    umlager.titel = BESTAND[artikel[0]].titel;
+  }
+  var d = BESTAND[umlager.schluessel];
+  var groessen = Object.keys(d.g);
+  groessen.sort(function(a, c){
+    var ia = GR_REIHE.indexOf(a), ic = GR_REIHE.indexOf(c);
+    return (ia < 0 ? 99 : ia) - (ic < 0 ? 99 : ic);
+  });
+  if(groessen.length && (!umlager.g || groessen.indexOf(umlager.g) < 0)) umlager.g = groessen[0];
+
+  var von = umlager.richtung === "emb_zh" ? "emb" : "zh";
+  var nach = von === "emb" ? "zh" : "emb";
+  var vorrat = umlager.g ? menge(d, umlager.g, von) : 0;
+  if(umlager.n > vorrat) umlager.n = vorrat;
+  if(umlager.n < 1 && vorrat > 0) umlager.n = 1;
+
+  var h = '<div class="karte"><select id="u-art">' + artikel.map(function(k){
+    return '<option value="' + esc(k) + '"' + (k === umlager.schluessel ? " selected" : "") + '>' +
+      esc(BESTAND[k].titel) + '</option>';
+  }).join("") + '</select></div>';
+
+  h += '<div class="karte"><div class="chips">' + ["emb_zh","zh_emb"].map(function(r){
+    return '<button class="chip rich' + (umlager.richtung === r ? " an" : "") + '" data-r="' + r + '">' +
+      (r === "emb_zh" ? "Embrach → Zürich" : "Zürich → Embrach") + '</button>';
+  }).join("") + '</div></div>';
+
+  h += '<div class="karte"><div class="chips">' + groessen.map(function(g){
+    return '<button class="chip' + (umlager.g === g ? " an" : "") + '" data-g="' + esc(g) + '">' +
+      esc(g) + '</button>';
+  }).join("") + '</div>' +
+    '<div class="gr-zeile"><span class="gr-mengen" style="margin-left:0;width:100%;justify-content:space-around">' +
+    '<span class="gr-ort"><span class="k">' + ORTE[von] + '</span><span class="v">' + vorrat + '</span></span>' +
+    '<span class="gr-ort"><span class="k">' + ORTE[nach] + '</span><span class="v">' +
+    (umlager.g ? menge(d, umlager.g, nach) : 0) + '</span></span></span></div></div>';
+
+  h += '<div class="karte"><div class="zaehl"><button id="u-minus">−</button>' +
+    '<input type="number" inputmode="numeric" id="u-n" value="' + umlager.n + '">' +
+    '<button id="u-plus">+</button></div></div>';
+  i.innerHTML = h;
+  f.innerHTML = '<button class="b riesig" id="u-los"' +
+    (vorrat > 0 && umlager.n > 0 ? "" : " disabled") + '>Umlagern</button>';
+
+  $("#u-art").addEventListener("change", function(e){
+    umlager.schluessel = e.target.value;
+    umlager.titel = BESTAND[umlager.schluessel].titel;
+    umlager.g = null;
+    zeichneUmlager();
+  });
+  i.querySelectorAll("[data-r]").forEach(function(b){
+    b.addEventListener("click", function(){ umlager.richtung = b.getAttribute("data-r"); zeichneUmlager(); });
+  });
+  i.querySelectorAll("[data-g]").forEach(function(b){
+    b.addEventListener("click", function(){ umlager.g = b.getAttribute("data-g"); zeichneUmlager(); });
+  });
+  $("#u-plus").addEventListener("click", function(){ if(umlager.n < vorrat){ umlager.n++; zeichneUmlager(); } });
+  $("#u-minus").addEventListener("click", function(){ if(umlager.n > 1){ umlager.n--; zeichneUmlager(); } });
+  $("#u-n").addEventListener("change", function(e){
+    umlager.n = Math.min(vorrat, Math.max(1, parseInt(e.target.value, 10) || 1));
+    zeichneUmlager();
+  });
+  $("#u-los").addEventListener("click", function(){
+    dialog(umlager.n + "× " + umlager.g,
+      '<div class="titelz">' + esc(umlager.titel) + '</div>' +
+      '<div class="fachgross" style="font-size:22px">' + ORTE[von] + " → " + ORTE[nach] + '</div>',
+      "Umlagern", function(){
+        buche(umlager.schluessel, umlager.g, von, -umlager.n, "Umlagerung");
+        buche(umlager.schluessel, umlager.g, nach, umlager.n, "Umlagerung");
+        zeigeToast(umlager.n + "× " + umlager.g + " → " + ORTE[nach]);
+        umlager.n = 1;
+        zeichneUmlager();
+      });
+  });
+}
+
+/* Auftrag */
+function zeichneAuftrag(){
+  var i = $("#t-inhalt"), f = $("#t-fuss"), bal = $("#t-balken");
+  if(!AUFTRAG){
+    $("#t-zahl").textContent = "";
+    bal.style.display = "none";
+    i.innerHTML = "";
+    f.innerHTML = '<button class="b riesig" id="ta-neu">Auftrag laden</button>';
+    $("#ta-neu").addEventListener("click", auftragAusBestand);
+    return;
+  }
+  var fertig = AUFTRAG.pos.filter(function(p){ return p.ok; }).length;
+  $("#t-zahl").textContent = fertig + "/" + AUFTRAG.pos.length;
+  bal.style.display = "";
+  bal.querySelector("i").style.width = Math.round(fertig * 100 / AUFTRAG.pos.length) + "%";
+
+  i.innerHTML = AUFTRAG.pos.map(function(p, n){
+    var b = BESTAND[p.k];
+    var zh = b ? menge(b, p.g, "zh") : 0;
+    var emb = b ? menge(b, p.g, "emb") : 0;
+    var holen = zh < p.n && emb > 0;
+    return '<div class="pos' + (p.ok ? " fertig" : "") + (holen && !p.ok ? " embrach" : "") +
+      '" data-n="' + n + '">' +
+      '<span class="haken">' + (p.ok ? '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M4 12l6 6L20 6"/></svg>' : "") + '</span>' +
+      '<span class="pgr" style="color:' + (G_FARBE[p.g] || "var(--ink)") + '">' + esc(p.g) + '</span>' +
+      '<span class="haupt"><span class="pname">' + esc(p.t) + '</span>' +
+      '<span class="pmeta"><span class="code">' + esc(p.f || "—") + '</span>' +
+      (holen ? '<span class="warnpunkt">!</span>' : "") +
+      '<span>ZH ' + zh + '</span><span>EMB ' + emb + '</span></span></span>' +
+      '<span class="pmenge">' + p.n + '</span></div>';
+  }).join("");
+
+  i.querySelectorAll("[data-n]").forEach(function(el){
+    el.addEventListener("click", function(){
+      var n = parseInt(el.getAttribute("data-n"), 10);
+      AUFTRAG.pos[n].ok = !AUFTRAG.pos[n].ok;
+      sichere(LS.auftrag, AUFTRAG);
+      zeichneAuftrag();
     });
   });
 
-  $("#b-klaer").addEventListener("click", () => {
-    if(!KLAER.some(k => k.ean === ean)){
-      KLAER.unshift({ean:ean, zeit:new Date().toISOString()});
-      sichere(LS.klaer, KLAER);
-      zeichneKlaer();
-    }
-    zeigeToast("Auf der Klaerliste. Weiter geht es.");
-    box.innerHTML = "";
+  var alle = fertig === AUFTRAG.pos.length;
+  f.innerHTML = '<div class="reihe"><button class="b geist klein" id="ta-weg">Verwerfen</button>' +
+    '<button class="b' + (alle ? " gruen" : "") + '" id="ta-fertig"' + (alle ? "" : " disabled") + '>Fertig</button></div>';
+  $("#ta-weg").addEventListener("click", function(){
+    dialog("Auftrag verwerfen", "", "Verwerfen", function(){
+      AUFTRAG = null; sichere(LS.auftrag, AUFTRAG); zeichneAuftrag();
+    });
+  });
+  $("#ta-fertig").addEventListener("click", function(){
+    AUFTRAG.pos.forEach(function(p){
+      if(!BESTAND[p.k]) return;
+      var zh = menge(BESTAND[p.k], p.g, "zh");
+      var abZh = Math.min(zh, p.n);
+      if(abZh) buche(p.k, p.g, "zh", -abZh, "Auftrag");
+      if(p.n - abZh) buche(p.k, p.g, "emb", -(p.n - abZh), "Auftrag");
+    });
+    zeigeToast("Gebucht");
+    AUFTRAG = null;
+    sichere(LS.auftrag, AUFTRAG);
+    zeichneAuftrag();
   });
 }
 
-function protokolliere(v, fach){
-  LOG.unshift({ean:v.ean, titel:v.titel, groesse:v.groesse, fach:fach || "", zeit:new Date().toISOString()});
-  if(LOG.length > 200) LOG = LOG.slice(0, 200);
-  sichere(LS.log, LOG);
-  zeichneLog();
+function auftragAusBestand(){
+  var pos = [];
+  Object.keys(BESTAND).forEach(function(k){
+    var b = BESTAND[k];
+    Object.keys(b.g).forEach(function(g){
+      if(pos.length < 6 && (b.g[g].zh > 0 || b.g[g].emb > 0)){
+        pos.push({k:k, t:b.titel, g:g, n:1 + (pos.length % 2), f:platzFuer(b.titel), ok:false});
+      }
+    });
+  });
+  if(!pos.length){ zeigeToast("Kein Bestand"); return; }
+  AUFTRAG = {nr:"A-" + new Date().toISOString().slice(0, 10), pos:pos};
+  sichere(LS.auftrag, AUFTRAG);
+  zeichneAuftrag();
 }
 
-function zeigeErgebnis(ean){
-  const box = $("#ergebnis");
-  const v = findeVariante(ean);
+/* Katalog */
+function zeichneKatalog(){
+  var i = $("#k-inhalt");
+  $("#k-zahl").textContent = KATALOG.length + " / " + Object.keys(EANS).length;
+  var eintraege = Object.keys(PLAETZE).map(function(k){ return [k, PLAETZE[k]]; })
+    .sort(function(a, b){ return a[1].localeCompare(b[1]); });
 
-  if(!v){
-    if(!KATALOG.length){
-      box.innerHTML = '<div class="karte treffer" style="border-left-color:var(--gelb)">' +
-        '<span class="lab">Kein Katalog</span>' +
-        '<div class="artikelname">Zuerst den Shopify-Export laden</div>' +
-        '<div class="ean">' + esc(ean) + '</div>' +
-        '<p class="unter">Unter Katalog die CSV-Datei auswaehlen. Danach kannst du jedem Barcode einen Artikel zuweisen.</p></div>';
-      return;
-    }
-    zeigeAnlernen(ean);
-    return;
-  }
+  var h = '<div class="karte">' + (eintraege.length ? eintraege.map(function(e){
+    return '<div class="zeile"><div class="haupt"><div class="name">' + esc(e[0]) + '</div></div>' +
+      '<span class="code">' + esc(e[1]) + '</span>' +
+      '<button class="iknopf" data-weg="' + esc(e[0]) + '" aria-label="Löschen">' +
+      '<svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M10 11v6M14 11v6"/></svg>' +
+      '</button></div>';
+  }).join("") : '<div class="leerstelle">—</div>') + '</div>';
 
-  const fach = platzFuer(v.titel);
-  const info = fach ? fachInfo(fach) : null;
-  const anzahlEbenen = info ? info.ebenen : 4;
-  const ebene = ebeneFuer(v.groesse, anzahlEbenen);
-  const farbe = G_FARBE[v.groesse] || "var(--grau)";
+  h += '<div class="karte"><span class="lab">Ebenen</span>' + EBENEN_4.map(function(e){
+    return '<div class="gr-zeile"><span class="gr-name">' + e.nr + '</span>' +
+      '<span class="gr-mengen" style="gap:8px">' + e.gr.map(function(g){
+        return '<span class="gr-punkt" style="background:' + G_FARBE[g] + '"></span>' +
+               '<span style="font-weight:800;font-size:17px">' + g + '</span>';
+      }).join("") + '</span></div>';
+  }).join("") + '</div>';
+  i.innerHTML = h;
 
-  protokolliere(v, fach);
-
-  let regalHtml = "";
-  if(info){
-    const tab = anzahlEbenen === 6 ? EBENEN_6 : EBENEN_4;
-    const istHose = /^\d{2}$/.test(v.groesse);
-    regalHtml = '<div class="regal">' + tab.map(e => {
-      const hier = ebene && e.nr === ebene.nr;
-      const beschriftung = istHose ? e.hosen.join(" · ") : e.gr.join(" + ");
-      const farben = (istHose ? [] : e.gr).map(g =>
-        '<span class="farbe" style="background:' + (G_FARBE[g] || "var(--grau)") + '"></span>').join("");
-      return '<div class="ebene' + (hier ? " hier" : "") + '">' +
-        '<span class="pos">Ebene ' + e.nr + '</span>' + farben +
-        '<span class="txt">' + esc(beschriftung) +
-        (e.hoehe ? ' <span style="color:var(--grau);font-size:12px">· ' + esc(e.hoehe) + '</span>' : "") +
-        '</span>' + (hier ? '<span class="hierlab">hier</span>' : "") + '</div>';
-    }).join("") + '</div>';
-  }
-
-  box.innerHTML = '<div class="karte treffer">' +
-    '<span class="lab">' + (fach ? "Gehoert in" : "Noch kein Platz vergeben") + '</span>' +
-    (fach ? '<div class="fachgross">' + esc(fach) + '</div>' +
-            '<div class="unter" style="margin-top:-6px">' + esc(info.regal) + ' · ' + esc(info.t) + ' · Zone ' + esc(info.zone) + '</div>' : "") +
-    '<div class="artikelname">' + esc(v.titel) + '</div>' +
-    '<div class="gzeile">' +
-      (v.groesse ? '<span class="gchip" style="background:' + farbe + '">' + esc(v.groesse) + '</span>' : "") +
-      (v.farbe ? '<span class="unter">' + esc(v.farbe) + '</span>' : "") +
-    '</div>' +
-    '<div class="ean">' + esc(v.ean) + (v.sku ? " · " + esc(v.sku) : "") + '</div>' +
-    regalHtml +
-    (fach ? '<span class="lab">Wo im Raum</span>' + lagerkarte(fach, v.groesse) : "") +
-    (!fach ? '<div class="hinweis">Fuer diesen Artikel ist noch kein Fach festgelegt. Unten auswaehlen, dann merkt sich die App es fuer alle Groessen dieses Artikels.</div>' : "") +
-    '<div class="feld"><span class="lab">' + (fach ? "Fach aendern" : "Fach festlegen") + '</span>' +
-    '<select id="s-fach"><option value="">Bitte waehlen</option>' +
-    REGALE.map(r => '<optgroup label="' + esc(r.name) + '">' +
-      r.faecher.map(f => '<option value="' + f.c + '"' + (f.c === fach ? " selected" : "") + '>' +
-        f.c + ' · ' + esc(f.t) + '</option>').join("") + '</optgroup>').join("") +
-    '</select></div></div>';
-
-  $("#s-fach").addEventListener("change", ev => {
-    const neu = ev.target.value;
-    if(!neu) return;
-    PLAETZE[musterFuer(v.titel) || normal(v.titel)] = neu;
-    sichere(LS.plaetze, PLAETZE);
-    zeichnePlaetze();
-    zeichneSchema();
-    zeigeToast("Gespeichert: " + neu);
-    zeigeErgebnis(v.ean);
+  i.querySelectorAll("[data-weg]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var k = b.getAttribute("data-weg");
+      dialog(k, '<span class="code">' + esc(PLAETZE[k]) + '</span>', "Löschen", function(){
+        delete PLAETZE[k];
+        sichere(LS.plaetze, PLAETZE);
+        zeichneKatalog();
+      });
+    });
   });
 }
 
-/* ===== Scannen wie an einem Handscanner =====
-   Die Kamera laeuft NICHT dauernd. Ein Druck auf Scannen macht sie auf, beim ersten
-   erkannten Code geht sie sofort wieder zu. Ohne Treffer schliesst sie nach 12 Sekunden. */
-let stream = null, laeuft = false, detector = null, frist = 0;
-const SCAN_FRIST = 12000;
+/* Dialog */
+var dlgJa = null;
+function dialog(titel, inhalt, jaText, beiJa){
+  $("#dlg-titel").textContent = titel;
+  $("#dlg-inhalt").innerHTML = inhalt || "";
+  $("#dlg-ja").textContent = jaText || "Löschen";
+  dlgJa = beiJa;
+  $("#dlg").classList.add("an");
+}
+$("#dlg-nein").addEventListener("click", function(){ $("#dlg").classList.remove("an"); dlgJa = null; });
+$("#dlg-ja").addEventListener("click", function(){
+  var f = dlgJa;
+  $("#dlg").classList.remove("an");
+  dlgJa = null;
+  if(f) f();
+});
+$("#dlg").addEventListener("click", function(e){
+  if(e.target === $("#dlg")){ $("#dlg").classList.remove("an"); dlgJa = null; }
+});
 
-async function kameraStarten(){
-  const knopf = $("#b-kamera");
-  if(laeuft){ kameraStoppen("Abgebrochen."); return; }
+/* Kamera */
+var stream = null, laeuft = false, detector = null, frist = 0, scanZiel = "artikel";
+var SCAN_FRIST = 12000;
 
-  if(!("BarcodeDetector" in window)){
-    $("#kam-aus").innerHTML = "Dieser Browser hat keinen eingebauten Barcode-Leser.<br>Bitte Chrome auf Android benutzen, oder die Nummer unten eintippen.";
-    zeigeToast("Kein Barcode-Leser in diesem Browser");
-    return;
-  }
-  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    $("#kam-aus").innerHTML = "Diese Seite darf nicht auf die Kamera zugreifen.<br>Bitte die Seite direkt im Browser oeffnen.";
-    return;
-  }
-
+async function kameraStarten(ziel){
+  scanZiel = ziel || "artikel";
+  if(laeuft){ kameraStoppen(); return; }
+  if(!("BarcodeDetector" in window)){ zeigeToast("Kein Barcode-Leser"); return; }
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ zeigeToast("Keine Kamera"); return; }
   try{
-    const formate = await window.BarcodeDetector.getSupportedFormats();
-    const wunsch = ["ean_13","ean_8","upc_a","upc_e","code_128"].filter(f => formate.indexOf(f) >= 0);
+    var formate = await window.BarcodeDetector.getSupportedFormats();
+    var wunsch = ["ean_13","ean_8","upc_a","upc_e","code_128"].filter(function(f){
+      return formate.indexOf(f) >= 0;
+    });
     detector = new window.BarcodeDetector({formats: wunsch.length ? wunsch : formate});
-
     stream = await navigator.mediaDevices.getUserMedia({
       video:{facingMode:{ideal:"environment"}, width:{ideal:1280}, height:{ideal:720}}
     });
-    const video = $("#video");
+    var video = $("#video");
     video.srcObject = stream;
     await video.play();
     $("#buehne").classList.add("an");
-    $("#kam-aus").textContent = "";
     laeuft = true;
     clearTimeout(frist);
-    frist = setTimeout(() => kameraStoppen("Nichts erkannt. Noch einmal antippen."), SCAN_FRIST);
+    frist = setTimeout(function(){ kameraStoppen(); }, SCAN_FRIST);
     suchen();
   }catch(e){
-    const grund = (e && e.name === "NotAllowedError")
-      ? "Der Zugriff auf die Kamera wurde abgelehnt. In den Browser-Einstellungen fuer diese Seite erlauben."
-      : "Die Kamera konnte nicht gestartet werden. Bitte die Seite direkt im Browser oeffnen.";
-    $("#kam-aus").textContent = grund;
-    zeigeToast("Kamera nicht verfuegbar");
+    zeigeToast(e && e.name === "NotAllowedError" ? "Kamera nicht erlaubt" : "Kamera nicht bereit");
   }
 }
-
-function kameraStoppen(meldung){
+function kameraStoppen(){
   laeuft = false;
   clearTimeout(frist);
-  if(stream){ stream.getTracks().forEach(t => t.stop()); stream = null; }
-  const video = $("#video");
-  video.srcObject = null;
+  if(stream){ stream.getTracks().forEach(function(t){ t.stop(); }); stream = null; }
+  $("#video").srcObject = null;
   $("#buehne").classList.remove("an");
-  $("#kam-aus").textContent = meldung || "";
 }
-
 async function suchen(){
   if(!laeuft) return;
-  const video = $("#video");
+  var video = $("#video");
   if(video.readyState === 4){
     try{
-      const codes = await detector.detect(video);
+      var codes = await detector.detect(video);
       if(codes && codes.length){
-        const wert = String(codes[0].rawValue || "").trim();
+        var wert = String(codes[0].rawValue || "").trim();
         if(wert){
           if(navigator.vibrate) navigator.vibrate(45);
-          kameraStoppen("Erfasst: " + wert);
-          zeigeErgebnis(wert);
+          kameraStoppen();
+          if(scanZiel === "eingang") eingangStart(wert); else zeigeArtikel(wert);
           return;
         }
       }
-    }catch(e){ /* Frame ohne Treffer */ }
+    }catch(e){}
   }
   requestAnimationFrame(suchen);
 }
 
-function zeichneKatalogStand(){
-  const p = $("#p-katalog");
-  const box = $("#katalog-stand");
-  if(KATALOG.length){
-    const produkte = {};
-    KATALOG.forEach(v => { produkte[v.titel] = 1; });
-    const mitBarcode = KATALOG.filter(v => v.ean).length;
-    const gelernt = Object.keys(EANS).length;
-    p.textContent = (mitBarcode + gelernt) + " Codes";
-    p.className = "pill ok";
-    box.innerHTML = '<div class="hinweis gut"><b>' + KATALOG.length + ' Varianten</b> aus <b>' +
-      Object.keys(produkte).length + ' Artikeln</b> geladen.</div>' +
-      (mitBarcode === 0
-        ? '<div class="hinweis">Kein einziger Barcode aus Shopify dabei. Das ist in Ordnung: Beim ersten Scan waehlst du den Artikel einmal aus, danach kennt die App den Code.</div>'
-        : '<div class="hinweis">' + mitBarcode + ' Varianten haben einen Barcode aus Shopify, ' +
-          (KATALOG.length - mitBarcode) + ' noch nicht. Die lernst du beim Scannen an.</div>');
-    $("#karte-suche").style.display = "";
-    $("#karte-eans").style.display = gelernt ? "" : "none";
-    $("#ean-stand").innerHTML = '<div class="hinweis gut"><b>' + gelernt + '</b> Barcodes selbst zugeordnet.</div>';
-  } else {
-    p.textContent = "kein Katalog";
-    p.className = "pill warn";
-    box.innerHTML = '<div class="hinweis">Noch kein Katalog geladen. Ohne Katalog kann die App einen Barcode nicht zuordnen.</div>';
-    $("#karte-suche").style.display = "none";
-    $("#karte-eans").style.display = "none";
-  }
+function zeichneKopf(){
+  var p = $("#p-katalog");
+  p.textContent = String(KATALOG.length);
+  p.className = "pill " + (KATALOG.length ? "ok" : "warn");
 }
 
-function zeichnePlaetze(){
-  const box = $("#platz-liste");
-  const eintraege = Object.keys(PLAETZE).map(k => [k, PLAETZE[k]]).sort((a,b) => a[1].localeCompare(b[1]));
-  if(!eintraege.length){ box.innerHTML = '<div class="leerstelle">Noch nichts zugeordnet.</div>'; return; }
-  box.innerHTML = eintraege.map(e => {
-    const info = fachInfo(e[1]);
-    return '<div class="zeile"><div class="haupt">' +
-      '<div class="name">' + esc(e[0]) + '</div>' +
-      '<div class="sub">' + (info ? esc(info.regal) + " · " + esc(info.t) : "unbekanntes Fach") + '</div>' +
-      '</div><span class="code">' + esc(e[1]) + '</span>' +
-      '<button class="b klein geist" data-loesch="' + esc(e[0]) + '">Weg</button></div>';
-  }).join("");
-  box.querySelectorAll("[data-loesch]").forEach(b => {
-    b.addEventListener("click", () => {
-      delete PLAETZE[b.getAttribute("data-loesch")];
-      sichere(LS.plaetze, PLAETZE);
-      zeichnePlaetze(); zeichneSchema();
-      zeigeToast("Zuordnung entfernt");
-    });
-  });
-}
-
-function zeichneSchema(){
-  const belegt = Object.keys(PLAETZE).map(k => PLAETZE[k]);
-  $("#schema").innerHTML = REGALE.map(r =>
-    '<div style="margin-bottom:14px"><div class="lab" style="margin-bottom:6px">' +
-    esc(r.name) + ' · ' + esc(r.zone) + '</div><div style="display:flex;flex-wrap:wrap;gap:5px">' +
-    r.faecher.map(f => '<span class="code' + (belegt.indexOf(f.c) >= 0 ? "" : " leer") + '">' + f.c + '</span>').join("") +
-    '</div></div>').join("") +
-    '<div class="hinweis">Kraeftig hinterlegte Faecher sind belegt. Die vier Ebenen in jedem Regal sind die Groessen: oben XS und S, dann M, dann L, unten XL und XXL. Die Front von Zwischengestell 2 hat sechs Ebenen, dort liegt jede Groesse einzeln.</div>';
-}
-
-function zeichneKlaer(){
-  const box = $("#klaer-liste");
-  const z = $("#z-klaer");
-  if(KLAER.length){ z.style.display = ""; z.textContent = KLAER.length; }
-  else z.style.display = "none";
-
-  if(!KLAER.length){ box.innerHTML = '<div class="leerstelle">Nichts offen. Alle gescannten Nummern waren im Katalog.</div>'; return; }
-  box.innerHTML = KLAER.map((k, i) =>
-    '<div class="zeile"><div class="haupt"><div class="name ean">' + esc(k.ean) + '</div>' +
-    '<div class="sub">' + new Date(k.zeit).toLocaleString("de-CH",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}) + '</div></div>' +
-    '<button class="b klein geist" data-weg="' + i + '">Erledigt</button></div>').join("");
-  box.querySelectorAll("[data-weg]").forEach(b => {
-    b.addEventListener("click", () => {
-      KLAER.splice(Number(b.getAttribute("data-weg")), 1);
-      sichere(LS.klaer, KLAER);
-      zeichneKlaer();
-    });
-  });
-}
-
-function zeichneLog(){
-  const box = $("#log-liste");
-  const heute = new Date().toDateString();
-  const vonHeute = LOG.filter(l => new Date(l.zeit).toDateString() === heute);
-  if(!vonHeute.length){ box.innerHTML = '<div class="leerstelle">Heute noch nichts gescannt.</div>'; return; }
-  box.innerHTML = vonHeute.slice(0, 40).map(l =>
-    '<div class="zeile"><div class="haupt"><div class="name">' + esc(l.titel) + '</div>' +
-    '<div class="sub">' + esc(l.groesse || "") + ' · ' +
-    new Date(l.zeit).toLocaleTimeString("de-CH",{hour:"2-digit",minute:"2-digit"}) + '</div></div>' +
-    (l.fach ? '<span class="code">' + esc(l.fach) + '</span>' : '<span class="code leer">offen</span>') +
-    '</div>').join("");
-}
-
-function zeichneSuche(begriff){
-  const box = $("#suchtreffer");
-  const q = normal(begriff);
-  if(q.length < 2){ box.innerHTML = '<div class="leerstelle">Mindestens zwei Zeichen eingeben.</div>'; return; }
-  const treffer = KATALOG.filter(v =>
-    normal(v.titel).indexOf(q) >= 0 || v.ean.indexOf(begriff.trim()) >= 0 || normal(v.sku).indexOf(q) >= 0
-  ).slice(0, 30);
-  if(!treffer.length){ box.innerHTML = '<div class="leerstelle">Nichts gefunden.</div>'; return; }
-  box.innerHTML = treffer.map(v => {
-    const fach = platzFuer(v.titel);
-    return '<div class="zeile"><div class="haupt"><div class="name">' + esc(v.titel) + '</div>' +
-      '<div class="sub ean">' + esc(v.groesse || "") + ' · ' + esc(v.ean) + '</div></div>' +
-      '<span class="code' + (fach ? "" : " leer") + '">' + (fach || "kein Platz") + '</span></div>';
-  }).join("");
-}
-
-$$("nav button").forEach(b => {
-  b.addEventListener("click", () => {
-    $$("nav button").forEach(x => x.classList.remove("on"));
-    b.classList.add("on");
-    $$(".view").forEach(v => v.classList.remove("on"));
-    $("#v-" + b.getAttribute("data-v")).classList.add("on");
-    if(b.getAttribute("data-v") !== "scan" && laeuft) kameraStoppen();
-    window.scrollTo(0, 0);
-  });
+$$("nav button").forEach(function(b){
+  b.addEventListener("click", function(){ zeige(b.getAttribute("data-v")); });
 });
-
-$("#b-kamera").addEventListener("click", kameraStarten);
-$("#b-stopp").addEventListener("click", () => kameraStoppen(""));
-
-$("#f-manuell").addEventListener("submit", ev => {
-  ev.preventDefault();
-  const wert = $("#i-ean").value.trim();
-  if(!wert) return;
-  zeigeErgebnis(wert);
+$("#b-kamera").addEventListener("click", function(){ kameraStarten("artikel"); });
+$("#b-stopp").addEventListener("click", function(){ kameraStoppen(); });
+$("#b-zurueck").addEventListener("click", function(){ zeige("scan"); });
+$("#b-menge").addEventListener("click", mengeDialog);
+$("#b-export").addEventListener("click", exportEans);
+$("#b-import").addEventListener("click", function(){ $("#i-csv").click(); });
+$("#f-manuell").addEventListener("submit", function(e){
+  e.preventDefault();
+  var w = $("#i-ean").value.trim();
+  if(!w) return;
   $("#i-ean").value = "";
   $("#i-ean").blur();
+  zeigeArtikel(w);
 });
-
-$("#i-csv").addEventListener("change", ev => {
-  const datei = ev.target.files && ev.target.files[0];
+$("#i-csv").addEventListener("change", function(e){
+  var datei = e.target.files && e.target.files[0];
   if(!datei) return;
-  const leser = new FileReader();
-  leser.onload = () => {
-    const ergebnis = katalogAusCsv(String(leser.result));
-    if(ergebnis.fehler){
-      $("#katalog-stand").innerHTML = '<div class="hinweis rot"><b>Geht nicht:</b> ' + esc(ergebnis.fehler) + '</div>';
-      return;
-    }
-    KATALOG = ergebnis.varianten;
-    if(sichere(LS.katalog, KATALOG)) zeigeToast(KATALOG.length + " Varianten geladen");
-    zeichneKatalogStand();
-  };
-  leser.onerror = () => {
-    $("#katalog-stand").innerHTML = '<div class="hinweis rot">Die Datei konnte nicht gelesen werden.</div>';
+  var leser = new FileReader();
+  leser.onload = function(){
+    var erg = katalogAusCsv(String(leser.result));
+    if(erg.fehler){ zeigeToast(erg.fehler); return; }
+    KATALOG = erg.varianten;
+    sichere(LS.katalog, KATALOG);
+    zeichneKopf();
+    zeichneKatalog();
+    zeigeToast(KATALOG.length + " geladen");
   };
   leser.readAsText(datei, "utf-8");
 });
+document.addEventListener("visibilitychange", function(){ if(document.hidden && laeuft) kameraStoppen(); });
 
-$("#i-suche").addEventListener("input", ev => zeichneSuche(ev.target.value));
-$("#b-export").addEventListener("click", exportEans);
-document.addEventListener("visibilitychange", () => { if(document.hidden && laeuft) kameraStoppen(); });
-
-zeichneKatalogStand();
-zeichnePlaetze();
-zeichneSchema();
-zeichneKlaer();
-zeichneLog();
+zeichneKopf();
+zeichneKatalog();
 </script>

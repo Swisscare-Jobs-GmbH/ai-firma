@@ -23,3 +23,6 @@ __pycache__/
 .env
 
 ~$*.pptx
+
+kunden/finelli/finadmin/server/node_modules/
+kunden/finelli/finadmin/server/.wrangler/
