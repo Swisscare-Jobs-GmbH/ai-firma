@@ -283,9 +283,11 @@ const esc=s=>String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[
    Zwischengestell 1 steht am naechsten beim Eingang -> dort die Renner.
    Regalwand 2 ist die hintere Wand -> dort, was wenig laeuft.
    Was gar nicht mehr laeuft, liegt in Lager Raum 2/3 und ist hier bewusst nicht abgebildet. */
-/* Ein Fach-Eintrag = eine SPALTE (ein Artikel). Die 4 Faecher uebereinander sind die
-   Groessen-Ebenen, in jedem Regal gleich: oben XS+S · M · L · unten XL+XXL.
-   Die Groesse steht darum nie in der Adresse, sie wird ueber die Ebenen-Farbe gefunden. */
+/* Ein Fach-Eintrag = eine SPALTE (ein Artikel). Jedes Regal hat 3 Spalten, egal wo es steht.
+   Die 4 Faecher uebereinander sind die Groessen-Ebenen, ueberall gleich:
+   oben XS+S · M · L · unten XL+XXL. Die Groesse steht darum nie in der Adresse.
+   AUSNAHME: Die Front von Zwischengestell 2 (untere) hat 6 Ebenen statt 4 — dort liegt
+   jede Groesse einzeln (XS/S/M/L/XL/XXL). Die Front von Zwischengestell 1 hat 4. */
 const FAECHER=[
  /* Zwischengestell 1 — naechstes beim Eingang, Renner. Seite A zum Eingang, Seite B dahinter,
     Front = Stirnseite mit 6 kleinen Faechern fuer One-Size-Teile (keine Groessen noetig). */
@@ -480,8 +482,8 @@ function lagerkarte(hot){
  s+='<text x="224" y="258" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700">Zwischengestell 2</text>';
  s+='<text x="178" y="358" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700">Regalwand 2</text>';
  /* Front = Stirnseite zum Gang hin, darum links am Gestell · A und B sind die Laengsseiten */
- s+='<text x="119" y="160" text-anchor="middle" font-size="7" fill="#8a8891" font-weight="600">Front</text>';
- s+='<text x="119" y="252" text-anchor="middle" font-size="7" fill="#8a8891" font-weight="600">Front</text>';
+ s+='<text x="119" y="160" text-anchor="middle" font-size="6.5" fill="#8a8891" font-weight="600">Front · 4</text>';
+ s+='<text x="119" y="252" text-anchor="middle" font-size="6.5" fill="#a8271c" font-weight="700">Front · 6</text>';
  s+='<text x="299" y="118" font-size="7.5" fill="#8a8891" font-weight="700">A</text>';
  s+='<text x="299" y="147" font-size="7.5" fill="#8a8891" font-weight="700">B</text>';
  s+='<text x="299" y="210" font-size="7.5" fill="#8a8891" font-weight="700">A</text>';
@@ -499,7 +501,7 @@ function lagerkarte(hot){
    s+=`<circle class="puls" cx="${(c.x+c.w/2).toFixed(1)}" cy="${(c.y+c.h/2).toFixed(1)}" r="13" fill="none" stroke="${ring}" stroke-width="2.5"/>`;});
  s+='</svg>';
  const leg='<div class="mapleg"><span><i style="background:#a8271c"></i>Renner</span><span><i style="background:#9a9790"></i>Standard</span><span><i style="background:#2f8f8f"></i>Saison</span><span><i style="background:#7b4b9e"></i>Abverkauf</span></div>';
- const eb='<div class="mut" style="text-align:center;margin-top:8px;padding-top:8px;border-top:1px solid #e6e3df"><b>Jedes Feld = eine Spalte = ein Artikel.</b> Die 4 Fächer übereinander sind immer die gleichen Grössen-Ebenen:<br>oben <b>XS + S</b> · dann <b>M</b> · dann <b>L</b> · unten <b>XL + XXL</b>. Darum steht die Grösse nie in der Adresse.</div>';
+ const eb='<div class="mut" style="text-align:center;margin-top:8px;padding-top:8px;border-top:1px solid #e6e3df"><b>Jedes Feld = eine Spalte = ein Artikel, jedes Regal hat 3 Spalten.</b> Die 4 Fächer übereinander sind immer die gleichen Grössen-Ebenen:<br>oben <b>XS + S</b> · dann <b>M</b> · dann <b>L</b> · unten <b>XL + XXL</b>. Darum steht die Grösse nie in der Adresse.<br><span style="color:#a8271c">Ausnahme: die Front von Zwischengestell 2 hat 6 Ebenen, dort liegt jede Grösse einzeln.</span></div>';
  return `<div class="map">${s}${leg}<div class="mut" style="text-align:center;margin-top:6px">Lager Raum 1 von oben · Zwischengestell 1 liegt am naechsten beim Eingang, dort die Renner · A und B sind die beiden Seiten, F die Stirnseite für One-Size-Teile · nach hinten wird seltener gegriffen.</div>${eb}</div>`;
 }
 
