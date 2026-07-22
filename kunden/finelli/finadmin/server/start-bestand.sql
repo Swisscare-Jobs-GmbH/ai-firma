@@ -1,0 +1,12 @@
+UPDATE bestand SET fach='ZG1-A5' WHERE artikel='star t shirt';
+UPDATE bestand SET zh=33 WHERE artikel='star t shirt' AND groesse='XS';
+UPDATE bestand SET zh=44 WHERE artikel='star t shirt' AND groesse='S';
+UPDATE bestand SET zh=22 WHERE artikel='star t shirt' AND groesse='M';
+UPDATE bestand SET zh=22 WHERE artikel='star t shirt' AND groesse='L';
+UPDATE bestand SET zh=22 WHERE artikel='star t shirt' AND groesse='XL';
+UPDATE bestand SET zh=0  WHERE artikel='star t shirt' AND groesse='XXL';
+UPDATE bestand SET fach='ZG1-A6' WHERE artikel='i m a zurich baby t shirt';
+UPDATE bestand SET zh=79 WHERE artikel='i m a zurich baby t shirt' AND groesse='XS';
+UPDATE bestand SET zh=68 WHERE artikel='i m a zurich baby t shirt' AND groesse='S';
+UPDATE bestand SET zh=0  WHERE artikel='i m a zurich baby t shirt' AND groesse IN ('M','L','XL','XXL');
+SELECT titel, groesse, fach, zh, emb FROM bestand WHERE zh > 0 ORDER BY titel, groesse;

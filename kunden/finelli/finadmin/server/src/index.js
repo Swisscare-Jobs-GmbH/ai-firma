@@ -350,28 +350,38 @@ async function apiAbgleich(anfrage, env) {
 
   const frage = "query($nach: String) { productVariants(first: 250, after: $nach) { " +
     "pageInfo { hasNextPage endCursor } nodes { id sku barcode title product { title } } } }";
-  let nach = null, gezaehlt = 0;
-  for (let runde = 0; runde < 20; runde++) {
+  // Cloudflare deckelt die Zahl der Einzelaufrufe je Worker-Lauf. Die Schreibvorgaenge
+  // gehen darum gebuendelt raus, und der Lauf ist ueber ?nach= fortsetzbar.
+  const url = new URL(anfrage.url);
+  let nach = url.searchParams.get("nach") || null;
+  let gezaehlt = 0, weiter = null;
+
+  for (let runde = 0; runde < 4; runde++) {
     const erg = await shopifyGraphQL(env, frage, {nach: nach});
     const daten = erg && erg.data && erg.data.productVariants;
-    if (!daten) break;
+    if (!daten) return antwort({fehler: "Shopify antwortet nicht wie erwartet", roh: erg}, 502);
+
+    const stapel = [];
     for (const v of daten.nodes) {
       const artikel = normal(v.product ? v.product.title : "");
       const groesse = normGroesse(v.title);
       if (!artikel || !groesse) continue;
-      await env.DB.prepare(
+      stapel.push(env.DB.prepare(
         "INSERT INTO bestand (artikel, groesse, titel, variant_gid, sku, ean, zh, emb) " +
         "VALUES (?,?,?,?,?,?,0,0) ON CONFLICT(artikel, groesse) DO UPDATE SET " +
         "variant_gid = excluded.variant_gid, sku = excluded.sku, " +
         "ean = COALESCE(NULLIF(excluded.ean, ''), bestand.ean)"
       ).bind(artikel, groesse, v.product ? v.product.title : artikel,
-             v.id, v.sku || null, v.barcode || null).run();
-      gezaehlt++;
+             v.id, v.sku || null, v.barcode || null));
     }
-    if (!daten.pageInfo.hasNextPage) break;
+    if (stapel.length) await env.DB.batch(stapel);
+    gezaehlt += stapel.length;
+
+    if (!daten.pageInfo.hasNextPage) { weiter = null; break; }
     nach = daten.pageInfo.endCursor;
+    weiter = nach;
   }
-  return antwort({ok: true, varianten: gezaehlt});
+  return antwort({ok: true, varianten: gezaehlt, weiter: weiter});
 }
 
 function schluesselStimmt(anfrage, env) {

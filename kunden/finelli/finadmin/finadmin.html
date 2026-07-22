@@ -292,9 +292,13 @@ nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;
 /* SEA Lager. Zwei Standorte: Zuerich (zh) und Embrach (emb).
    Alles lokal auf dem Geraet, kein Netzwerkzugriff im Code. */
 
+var SERVER = "https://sea-lager.abdulm447.workers.dev";
+var APP_KEY = "sea-fb363a7bedda4ffe8d9925f078befca5";
+
 var LS = {
   katalog:"sea.katalog.v2", plaetze:"sea.plaetze.v2", eans:"sea.eans.v2",
-  bestand:"sea.bestand.v2", log:"sea.log.v2", auftrag:"sea.auftrag.v2"
+  bestand:"sea.bestand.v2", log:"sea.log.v2", auftrag:"sea.auftrag.v2",
+  warteschlange:"sea.warteschlange.v1"
 };
 
 var ORTE = {zh:"Zürich", emb:"Embrach"};
@@ -449,6 +453,86 @@ function buche(schluessel, g, ort, delta, grund){
   LOG.unshift({t:b.titel, g:g, ort:ort, d:delta, grund:grund, zeit:new Date().toISOString()});
   if(LOG.length > 300) LOG = LOG.slice(0, 300);
   sichere(LS.bestand, BESTAND); sichere(LS.log, LOG);
+  zumServer({artikel:schluessel, titel:b.titel, groesse:g, fach:b.fach || null,
+             ort:ort, delta:delta, grund:grund,
+             schluessel:"app:" + GERAET + ":" + Date.now() + ":" + Math.round(Math.random()*1e6)});
+}
+
+/* ---------- Server ----------
+   Der Server ist die Wahrheit. Faellt er aus, arbeitet die App lokal weiter und
+   schickt die Buchungen nach, sobald wieder Netz da ist. */
+var GERAET = lade("sea.geraet", null);
+if(!GERAET){ GERAET = "g" + Math.round(Math.random() * 1e9).toString(36); sichere("sea.geraet", GERAET); }
+var WARTE = lade(LS.warteschlange, []);
+var VERBUNDEN = null;
+
+function kopfZeilen(){
+  var k = {"Content-Type": "application/json"};
+  if(APP_KEY) k["X-Sea-Key"] = APP_KEY;
+  return k;
+}
+
+function zumServer(buchung){
+  WARTE.push(buchung);
+  sichere(LS.warteschlange, WARTE);
+  sendeWarteschlange();
+}
+
+function sendeWarteschlange(){
+  if(!WARTE.length) return Promise.resolve();
+  var naechste = WARTE[0];
+  return fetch(SERVER + "/api/buchung", {
+    method:"POST", headers:kopfZeilen(), body:JSON.stringify(naechste)
+  }).then(function(r){
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    WARTE.shift();
+    sichere(LS.warteschlange, WARTE);
+    VERBUNDEN = true;
+    zeichneKopf();
+    if(WARTE.length) return sendeWarteschlange();
+  }).catch(function(){
+    VERBUNDEN = false;
+    zeichneKopf();
+  });
+}
+
+function vomServer(){
+  return fetch(SERVER + "/api/bestand", {headers:kopfZeilen()}).then(function(r){
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  }).then(function(d){
+    var neu = {};
+    (d.zeilen || []).forEach(function(z){
+      if(!neu[z.artikel]) neu[z.artikel] = {titel:z.titel, fach:z.fach || null, g:{}, auf:{}, sl:{}};
+      if(z.fach && !neu[z.artikel].fach) neu[z.artikel].fach = z.fach;
+      neu[z.artikel].g[z.groesse] = {zh:z.zh || 0, emb:z.emb || 0};
+      if(z.ean) EANS[z.ean] = z.artikel + "|" + z.groesse + "|";
+    });
+    // Nur Artikel mit Bestand oder Fach uebernehmen, sonst waeren es 1354 leere Zeilen.
+    var gefiltert = {};
+    Object.keys(neu).forEach(function(k){
+      var a = neu[k], hat = false;
+      Object.keys(a.g).forEach(function(g){ if(a.g[g].zh || a.g[g].emb) hat = true; });
+      if(hat || a.fach) gefiltert[k] = a;
+    });
+    Object.keys(gefiltert).forEach(function(k){
+      if(BESTAND[k]){ gefiltert[k].auf = BESTAND[k].auf || {}; gefiltert[k].sl = BESTAND[k].sl || {}; }
+    });
+    BESTAND = gefiltert;
+    Object.keys(BESTAND).forEach(function(k){
+      if(BESTAND[k].fach) PLAETZE[k] = BESTAND[k].fach;
+    });
+    sichere(LS.bestand, BESTAND);
+    sichere(LS.plaetze, PLAETZE);
+    sichere(LS.eans, EANS);
+    VERBUNDEN = true;
+    zeichneKopf();
+    return true;
+  }).catch(function(){
+    VERBUNDEN = false;
+    zeichneKopf();
+    return false;
+  });
 }
 
 /* CSV */
@@ -1129,8 +1213,22 @@ async function suchen(){
 
 function zeichneKopf(){
   var p = $("#p-katalog");
-  p.textContent = String(KATALOG.length);
-  p.className = "pill " + (KATALOG.length ? "ok" : "warn");
+  if(VERBUNDEN === false){
+    p.textContent = WARTE.length ? "offline " + WARTE.length : "offline";
+    p.className = "pill warn";
+  } else if(VERBUNDEN === true){
+    var n = 0;
+    Object.keys(BESTAND).forEach(function(k){
+      Object.keys(BESTAND[k].g).forEach(function(g){
+        n += (BESTAND[k].g[g].zh || 0) + (BESTAND[k].g[g].emb || 0);
+      });
+    });
+    p.textContent = n + " Stk";
+    p.className = "pill ok";
+  } else {
+    p.textContent = String(KATALOG.length);
+    p.className = "pill " + (KATALOG.length ? "ok" : "warn");
+  }
 }
 
 $$("nav button").forEach(function(b){
@@ -1169,4 +1267,11 @@ document.addEventListener("visibilitychange", function(){ if(document.hidden && 
 
 zeichneKopf();
 zeichneKatalog();
+
+/* Beim Start und bei jeder Rueckkehr in die App den Stand vom Server holen. */
+vomServer().then(function(){ zeichneKatalog(); });
+sendeWarteschlange();
+document.addEventListener("visibilitychange", function(){
+  if(!document.hidden){ sendeWarteschlange(); vomServer(); }
+});
 </script>
