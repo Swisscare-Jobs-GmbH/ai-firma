@@ -3,7 +3,7 @@
 > Automatisch aus zentrale/data/kunden.json erzeugt, bei jeder Aenderung in SEA.
 > Nicht von Hand bearbeiten. Kuratierte Registry bleibt kunden/UEBERSICHT.md.
 
-Stand: 2026-07-21 | Anzahl: 7
+Stand: 2026-07-22 | Anzahl: 7
 
 | Name | Branche | Status | Aktualisiert |
 |---|---|---|---|
