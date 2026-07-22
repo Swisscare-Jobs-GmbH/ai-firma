@@ -1,4 +1,4 @@
-<title>Finadmin</title>
+<title>SEA · Lager Zürich</title>
 <style>
 :root{
   --ink:#17161a; --papier:#f4f4f2; --karte:#ffffff; --linie:#e3e0dc;
@@ -45,9 +45,13 @@ input,select{font:inherit;color:inherit}
 
 .kopf{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--kopfbg);
   color:#f2f0ee;flex:none;position:sticky;top:0;z-index:20}
-.wm{font-family:Georgia,"Times New Roman",serif;font-size:19px;font-weight:700;letter-spacing:.06em}
+.wm{font-family:Georgia,"Times New Roman",serif;font-size:20px;font-weight:700;letter-spacing:.1em}
 .wm i{color:var(--rot-hell);font-style:normal}
+.ort{font-size:11px;color:#9a969f;letter-spacing:.04em;white-space:nowrap;
+  padding-left:10px;border-left:1px solid #3a373f}
 .kopf .sp{flex:1}
+.b-scan{font-size:19px;min-height:64px;letter-spacing:.02em}
+@media(max-width:360px){.ort{display:none}}
 .pill{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid currentColor;white-space:nowrap}
 .pill.ok{color:#6ee7a0}
 .pill.warn{color:#f0b355}
@@ -91,6 +95,10 @@ h2{font-size:15px;margin:0;font-weight:600}
 .ean{font-size:13px;color:var(--grau);font-family:ui-monospace,Menlo,Consolas,monospace;
   font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 
+.karte-box{background:var(--papier);border:1.5px solid var(--linie);border-radius:10px;
+  padding:8px;overflow:hidden}
+.puls{animation:pulsieren 1.5s ease-in-out infinite}
+@keyframes pulsieren{0%,100%{opacity:.3}50%{opacity:1}}
 .regal{display:flex;flex-direction:column;gap:4px;border:1.5px solid var(--linie);
   border-radius:10px;padding:8px;background:var(--papier)}
 .ebene{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:7px;
@@ -147,7 +155,8 @@ nav svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;
 
 <div class="app">
   <header class="kopf">
-    <span class="wm">FINADMIN<i>.</i></span>
+    <span class="wm">SEA<i>.</i></span>
+    <span class="ort">Zürich · Lagerraum 1</span>
     <span class="sp"></span>
     <span class="pill warn" id="p-katalog">kein Katalog</span>
   </header>
@@ -156,16 +165,19 @@ nav svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;
     <section class="view on" id="v-scan">
       <div>
         <h1>Artikel scannen</h1>
-        <p class="unter">Barcode in den Rahmen halten. Die App sagt dir, in welches Fach der Artikel gehört.</p>
+        <p class="unter">Etikett vor die Kamera halten, dann Scannen drücken. Die Kamera geht nach dem Treffer sofort wieder zu.</p>
       </div>
 
-      <div class="buehne">
-        <div class="aus" id="kam-aus">Kamera ist aus.<br>Unten auf Kamera starten tippen.</div>
+      <div class="buehne" id="buehne">
+        <div class="aus" id="kam-aus">Bereit.<br>Etikett vor die Kamera halten und Scannen druecken.</div>
         <video id="video" playsinline muted style="display:none"></video>
         <div class="rahmen" id="rahmen" style="display:none"></div>
       </div>
 
-      <button class="b" id="b-kamera">Kamera starten</button>
+      <button class="b b-scan" id="b-kamera">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>
+        Scannen
+      </button>
 
       <div class="karte flach">
         <div class="feld">
@@ -266,6 +278,10 @@ nav svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;
 /* Finadmin — Lagerplatz-Scanner fuer Finelli.
    Laeuft komplett auf dem Geraet, kein Netzwerkzugriff. */
 
+const SCAN_SYMBOL = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" ' +
+  'stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2' +
+  'M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>';
+
 const LS = {
   katalog: "finadmin.katalog.v1",
   plaetze: "finadmin.plaetze.v1",
@@ -274,30 +290,66 @@ const LS = {
   eans:    "finadmin.eans.v1"
 };
 
+/* Standort. Aktuell nur einer, die Struktur laesst spaetere zu. */
+const STANDORT = {kurz:"Zuerich", raum:"Lagerraum 1", lang:"Zuerich, Lagerraum 1"};
+
+/* Faecher mit ihrer Lage im Raum (Koordinaten wie in der Lagerkarte der MDE-Demo). */
 const REGALE = [
   {id:"ZG1", name:"Zwischengestell 1", zone:"Renner", faecher:[
-    {c:"ZG1-F1",t:"Front, Spalte 1",ebenen:4},{c:"ZG1-F2",t:"Front, Spalte 2",ebenen:4},{c:"ZG1-F3",t:"Front, Spalte 3",ebenen:4},
-    {c:"ZG1-A1",t:"Seite A",ebenen:4},{c:"ZG1-A2",t:"Seite A",ebenen:4},{c:"ZG1-A3",t:"Seite A",ebenen:4},
-    {c:"ZG1-A4",t:"Seite A",ebenen:4},{c:"ZG1-A5",t:"Seite A",ebenen:4},{c:"ZG1-A6",t:"Seite A",ebenen:4},
-    {c:"ZG1-B1",t:"Seite B",ebenen:4},{c:"ZG1-B2",t:"Seite B",ebenen:4},{c:"ZG1-B3",t:"Seite B",ebenen:4},
-    {c:"ZG1-B4",t:"Seite B",ebenen:4},{c:"ZG1-B5",t:"Seite B",ebenen:4},{c:"ZG1-B6",t:"Seite B",ebenen:4}
+    {c:"ZG1-F1",t:"Front, Spalte 1",ebenen:4,x:111,y:107,w:17,h:14},
+    {c:"ZG1-F2",t:"Front, Spalte 2",ebenen:4,x:111,y:121,w:17,h:14},
+    {c:"ZG1-F3",t:"Front, Spalte 3",ebenen:4,x:111,y:135,w:17,h:14},
+    {c:"ZG1-A1",t:"Seite A",ebenen:4,x:130,y:107,w:27,h:15},
+    {c:"ZG1-A2",t:"Seite A",ebenen:4,x:157,y:107,w:27,h:15},
+    {c:"ZG1-A3",t:"Seite A",ebenen:4,x:184,y:107,w:27,h:15},
+    {c:"ZG1-A4",t:"Seite A",ebenen:4,x:211,y:107,w:27,h:15},
+    {c:"ZG1-A5",t:"Seite A",ebenen:4,x:238,y:107,w:27,h:15},
+    {c:"ZG1-A6",t:"Seite A",ebenen:4,x:265,y:107,w:27,h:15},
+    {c:"ZG1-B1",t:"Seite B",ebenen:4,x:130,y:136,w:27,h:15},
+    {c:"ZG1-B2",t:"Seite B",ebenen:4,x:157,y:136,w:27,h:15},
+    {c:"ZG1-B3",t:"Seite B",ebenen:4,x:184,y:136,w:27,h:15},
+    {c:"ZG1-B4",t:"Seite B",ebenen:4,x:211,y:136,w:27,h:15},
+    {c:"ZG1-B5",t:"Seite B",ebenen:4,x:238,y:136,w:27,h:15},
+    {c:"ZG1-B6",t:"Seite B",ebenen:4,x:265,y:136,w:27,h:15}
   ]},
   {id:"ZG2", name:"Zwischengestell 2", zone:"Standard", faecher:[
-    {c:"ZG2-F1",t:"Front, 6 Ebenen",ebenen:6},{c:"ZG2-F2",t:"Front, 6 Ebenen",ebenen:6},{c:"ZG2-F3",t:"Front, 6 Ebenen",ebenen:6},
-    {c:"ZG2-A1",t:"Seite A, T-Shirts",ebenen:4},{c:"ZG2-A2",t:"Seite A, T-Shirts",ebenen:4},{c:"ZG2-A3",t:"Seite A, T-Shirts",ebenen:4},
-    {c:"ZG2-A4",t:"Seite A, T-Shirts",ebenen:4},{c:"ZG2-A5",t:"Seite A, T-Shirts",ebenen:4},{c:"ZG2-A6",t:"Seite A, T-Shirts",ebenen:4},
-    {c:"ZG2-B1",t:"Seite B, Hosen",ebenen:4},{c:"ZG2-B2",t:"Seite B, Hosen",ebenen:4},{c:"ZG2-B3",t:"Seite B, Hosen",ebenen:4},
-    {c:"ZG2-B4",t:"Seite B, Hosen",ebenen:4},{c:"ZG2-B5",t:"Seite B, Hosen",ebenen:4},{c:"ZG2-B6",t:"Seite B, Hosen",ebenen:4}
+    {c:"ZG2-F1",t:"Front, 6 Ebenen",ebenen:6,x:111,y:199,w:17,h:14},
+    {c:"ZG2-F2",t:"Front, 6 Ebenen",ebenen:6,x:111,y:213,w:17,h:14},
+    {c:"ZG2-F3",t:"Front, 6 Ebenen",ebenen:6,x:111,y:227,w:17,h:14},
+    {c:"ZG2-A1",t:"Seite A, T-Shirts",ebenen:4,x:130,y:199,w:27,h:15},
+    {c:"ZG2-A2",t:"Seite A, T-Shirts",ebenen:4,x:157,y:199,w:27,h:15},
+    {c:"ZG2-A3",t:"Seite A, T-Shirts",ebenen:4,x:184,y:199,w:27,h:15},
+    {c:"ZG2-A4",t:"Seite A, T-Shirts",ebenen:4,x:211,y:199,w:27,h:15},
+    {c:"ZG2-A5",t:"Seite A, T-Shirts",ebenen:4,x:238,y:199,w:27,h:15},
+    {c:"ZG2-A6",t:"Seite A, T-Shirts",ebenen:4,x:265,y:199,w:27,h:15},
+    {c:"ZG2-B1",t:"Seite B, Hosen",ebenen:4,x:130,y:228,w:27,h:15},
+    {c:"ZG2-B2",t:"Seite B, Hosen",ebenen:4,x:157,y:228,w:27,h:15},
+    {c:"ZG2-B3",t:"Seite B, Hosen",ebenen:4,x:184,y:228,w:27,h:15},
+    {c:"ZG2-B4",t:"Seite B, Hosen",ebenen:4,x:211,y:228,w:27,h:15},
+    {c:"ZG2-B5",t:"Seite B, Hosen",ebenen:4,x:238,y:228,w:27,h:15},
+    {c:"ZG2-B6",t:"Seite B, Hosen",ebenen:4,x:265,y:228,w:27,h:15}
   ]},
   {id:"RW1", name:"Regalwand 1", zone:"Standard und Saison", faecher:[
-    {c:"RW1-1a",t:"Regal 1",ebenen:4},{c:"RW1-1b",t:"Regal 1",ebenen:4},{c:"RW1-1c",t:"Regal 1",ebenen:4},
-    {c:"RW1-2a",t:"Regal 2",ebenen:4},{c:"RW1-2b",t:"Regal 2",ebenen:4},{c:"RW1-2c",t:"Regal 2",ebenen:4},
-    {c:"RW1-3a",t:"Regal 3, Saison",ebenen:4},{c:"RW1-3b",t:"Regal 3, Saison",ebenen:4},{c:"RW1-3c",t:"Regal 3, Saison",ebenen:4},
-    {c:"RW1-4a",t:"Regal 4, Saison",ebenen:4},{c:"RW1-4b",t:"Regal 4, Saison",ebenen:4},{c:"RW1-4c",t:"Regal 4, Saison",ebenen:4}
+    {c:"RW1-1a",t:"Regal 1",ebenen:4,x:22,y:80,w:28,h:17},
+    {c:"RW1-1b",t:"Regal 1",ebenen:4,x:22,y:97,w:28,h:17},
+    {c:"RW1-1c",t:"Regal 1",ebenen:4,x:22,y:114,w:28,h:17},
+    {c:"RW1-2a",t:"Regal 2",ebenen:4,x:22,y:137,w:28,h:17},
+    {c:"RW1-2b",t:"Regal 2",ebenen:4,x:22,y:154,w:28,h:17},
+    {c:"RW1-2c",t:"Regal 2",ebenen:4,x:22,y:171,w:28,h:17},
+    {c:"RW1-3a",t:"Regal 3, Saison",ebenen:4,x:22,y:194,w:28,h:17},
+    {c:"RW1-3b",t:"Regal 3, Saison",ebenen:4,x:22,y:211,w:28,h:17},
+    {c:"RW1-3c",t:"Regal 3, Saison",ebenen:4,x:22,y:228,w:28,h:17},
+    {c:"RW1-4a",t:"Regal 4, Saison",ebenen:4,x:22,y:251,w:28,h:17},
+    {c:"RW1-4b",t:"Regal 4, Saison",ebenen:4,x:22,y:268,w:28,h:17},
+    {c:"RW1-4c",t:"Regal 4, Saison",ebenen:4,x:22,y:285,w:28,h:17}
   ]},
   {id:"RW2", name:"Regalwand 2", zone:"Abverkauf und Saison", faecher:[
-    {c:"RW2-1a",t:"Regal 1, Abverkauf",ebenen:4},{c:"RW2-1b",t:"Regal 1, Abverkauf",ebenen:4},{c:"RW2-1c",t:"Regal 1, Abverkauf",ebenen:4},
-    {c:"RW2-2a",t:"Regal 2",ebenen:4},{c:"RW2-2b",t:"Regal 2",ebenen:4},{c:"RW2-2c",t:"Regal 2",ebenen:4}
+    {c:"RW2-1a",t:"Regal 1, Abverkauf",ebenen:4,x:74,y:316,w:34,h:20},
+    {c:"RW2-1b",t:"Regal 1, Abverkauf",ebenen:4,x:108,y:316,w:34,h:20},
+    {c:"RW2-1c",t:"Regal 1, Abverkauf",ebenen:4,x:142,y:316,w:34,h:20},
+    {c:"RW2-2a",t:"Regal 2",ebenen:4,x:180,y:316,w:34,h:20},
+    {c:"RW2-2b",t:"Regal 2",ebenen:4,x:214,y:316,w:34,h:20},
+    {c:"RW2-2c",t:"Regal 2",ebenen:4,x:248,y:316,w:34,h:20}
   ]}
 ];
 const ALLE_FAECHER = REGALE.reduce((a,r) => a.concat(r.faecher.map(f => Object.assign({}, f, {regal:r.name, zone:r.zone}))), []);
@@ -516,6 +568,67 @@ function platzFuer(titel){
   return m ? PLAETZE[m] : null;
 }
 
+/* ===== Lagerkarte: Raum 1 von oben, wie in der MDE-Demo ===== */
+function zonenFarbe(c){
+  if(c.indexOf("ZG1-") === 0) return "#a8271c";
+  if(c.indexOf("ZG2-") === 0) return "#9a9790";
+  if(c.indexOf("RW1-3") === 0 || c.indexOf("RW1-4") === 0) return "#2f8f8f";
+  if(c.indexOf("RW1-") === 0) return "#9a9790";
+  if(c.indexOf("RW2-1") === 0) return "#7b4b9e";
+  return "#2f8f8f";
+}
+
+function lagerkarte(aktiv, groesse){
+  const belegt = {};
+  Object.keys(PLAETZE).forEach(k => { belegt[PLAETZE[k]] = 1; });
+  const leucht = groesse ? (G_FARBE[groesse] || "#17161a") : "#17161a";
+
+  let s = '<svg viewBox="0 0 320 372" role="img" aria-label="Lager Raum 1 von oben" style="width:100%;height:auto;display:block">';
+  s += '<rect x="14" y="68" width="292" height="278" rx="8" fill="#faf9f7" stroke="#17161a" stroke-width="4"/>';
+  s += '<rect x="42" y="63" width="52" height="10" fill="#faf9f7"/>';
+  s += '<text x="68" y="56" text-anchor="middle" font-size="11" fill="#8a8891" font-weight="600">Eingang</text>';
+  s += '<rect x="106" y="76" width="106" height="24" rx="4" fill="#17161a"/>';
+  s += '<text x="159" y="92" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">Tisch</text>';
+  /* Regaltraeger */
+  s += '<rect x="20" y="78" width="32" height="226" rx="4" fill="#eceae7"/>';
+  s += '<rect x="110" y="106" width="184" height="46" rx="4" fill="#eceae7"/>';
+  s += '<rect x="110" y="106" width="20" height="46" rx="4" fill="#e3e0dc"/>';
+  s += '<rect x="110" y="198" width="184" height="46" rx="4" fill="#eceae7"/>';
+  s += '<rect x="110" y="198" width="20" height="46" rx="4" fill="#e3e0dc"/>';
+  s += '<rect x="72" y="314" width="212" height="24" rx="4" fill="#eceae7"/>';
+  /* Beschriftung */
+  s += '<text x="8" y="190" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700" transform="rotate(-90 8 190)">Regalwand 1</text>';
+  s += '<text x="224" y="166" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700">Zwischengestell 1</text>';
+  s += '<text x="224" y="258" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700">Zwischengestell 2</text>';
+  s += '<text x="178" y="358" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700">Regalwand 2</text>';
+  s += '<text x="119" y="160" text-anchor="middle" font-size="6.5" fill="#8a8891" font-weight="600">Front</text>';
+  s += '<text x="119" y="252" text-anchor="middle" font-size="6.5" fill="#8a8891" font-weight="600">Front</text>';
+
+  ALLE_FAECHER.forEach(f => {
+    if(f.x == null) return;
+    const ist = f.c === aktiv;
+    const an = belegt[f.c] === 1;
+    const rand = ist ? leucht : (an ? zonenFarbe(f.c) : "#cfcdc9");
+    const strich = ist ? 2.6 : (an ? 1.6 : 1);
+    s += '<rect x="' + (f.x + 1) + '" y="' + (f.y + 1) + '" width="' + (f.w - 2) + '" height="' + (f.h - 2) +
+         '" rx="2.5" fill="' + (ist ? leucht : "#fff") + '" stroke="' + rand + '" stroke-width="' + strich + '"' +
+         (an || ist ? "" : ' stroke-dasharray="2 2"') + '/>';
+    s += '<text x="' + (f.x + f.w / 2) + '" y="' + (f.y + f.h / 2 + 2.6) + '" text-anchor="middle" font-size="7" font-weight="' +
+         (an || ist ? 700 : 400) + '" fill="' + (ist ? "#fff" : (an ? "#4b4951" : "#b3b0ac")) + '">' +
+         f.c.split("-")[1] + '</text>';
+  });
+
+  if(aktiv){
+    const f = fachInfo(aktiv);
+    if(f && f.x != null){
+      s += '<circle class="puls" cx="' + (f.x + f.w / 2) + '" cy="' + (f.y + f.h / 2) +
+           '" r="15" fill="none" stroke="' + leucht + '" stroke-width="2.5"/>';
+    }
+  }
+  s += '</svg>';
+  return '<div class="karte-box">' + s + '</div>';
+}
+
 /* Barcode ist unbekannt: Artikel aus dem Katalog auswaehlen, dann ist er angelernt. */
 function zeigeAnlernen(ean, suchbegriff){
   const box = $("#ergebnis");
@@ -636,6 +749,7 @@ function zeigeErgebnis(ean){
     '</div>' +
     '<div class="ean">' + esc(v.ean) + (v.sku ? " · " + esc(v.sku) : "") + '</div>' +
     regalHtml +
+    (fach ? '<span class="lab">Wo im Raum</span>' + lagerkarte(fach, v.groesse) : "") +
     (!fach ? '<div class="hinweis">Fuer diesen Artikel ist noch kein Fach festgelegt. Unten auswaehlen, dann merkt sich die App es fuer alle Groessen dieses Artikels.</div>' : "") +
     '<div class="feld"><span class="lab">' + (fach ? "Fach aendern" : "Fach festlegen") + '</span>' +
     '<select id="s-fach"><option value="">Bitte waehlen</option>' +
@@ -656,11 +770,15 @@ function zeigeErgebnis(ean){
   });
 }
 
-let stream = null, laeuft = false, detector = null;
+/* ===== Scannen wie an einem Handscanner =====
+   Die Kamera laeuft NICHT dauernd. Ein Druck auf Scannen macht sie auf, beim ersten
+   erkannten Code geht sie sofort wieder zu. Ohne Treffer schliesst sie nach 12 Sekunden. */
+let stream = null, laeuft = false, detector = null, frist = 0;
+const SCAN_FRIST = 12000;
 
 async function kameraStarten(){
   const knopf = $("#b-kamera");
-  if(laeuft){ kameraStoppen(); return; }
+  if(laeuft){ kameraStoppen("Abgebrochen."); return; }
 
   if(!("BarcodeDetector" in window)){
     $("#kam-aus").innerHTML = "Dieser Browser hat keinen eingebauten Barcode-Leser.<br>Bitte Chrome auf Android benutzen, oder die Nummer unten eintippen.";
@@ -686,9 +804,11 @@ async function kameraStarten(){
     video.style.display = "block";
     $("#rahmen").style.display = "block";
     $("#kam-aus").style.display = "none";
-    knopf.textContent = "Kamera stoppen";
+    knopf.innerHTML = "Abbrechen";
     knopf.classList.add("geist");
     laeuft = true;
+    clearTimeout(frist);
+    frist = setTimeout(() => kameraStoppen("Nichts erkannt. Noch einmal antippen."), SCAN_FRIST);
     suchen();
   }catch(e){
     const grund = (e && e.name === "NotAllowedError")
@@ -699,21 +819,22 @@ async function kameraStarten(){
   }
 }
 
-function kameraStoppen(){
+function kameraStoppen(meldung){
   laeuft = false;
+  clearTimeout(frist);
   if(stream){ stream.getTracks().forEach(t => t.stop()); stream = null; }
   const video = $("#video");
   video.style.display = "none";
   video.srcObject = null;
   $("#rahmen").style.display = "none";
-  $("#kam-aus").style.display = "block";
-  $("#kam-aus").textContent = "Kamera ist aus.";
+  const aus = $("#kam-aus");
+  aus.style.display = "block";
+  aus.innerHTML = meldung ? esc(meldung) : "Bereit.<br>Etikett vor die Kamera halten und Scannen druecken.";
   const knopf = $("#b-kamera");
-  knopf.textContent = "Kamera starten";
+  knopf.innerHTML = SCAN_SYMBOL + "Scannen";
   knopf.classList.remove("geist");
 }
 
-let letzterCode = "", letzteZeit = 0;
 async function suchen(){
   if(!laeuft) return;
   const video = $("#video");
@@ -722,11 +843,11 @@ async function suchen(){
       const codes = await detector.detect(video);
       if(codes && codes.length){
         const wert = String(codes[0].rawValue || "").trim();
-        const jetzt = Date.now();
-        if(wert && (wert !== letzterCode || jetzt - letzteZeit > 2500)){
-          letzterCode = wert; letzteZeit = jetzt;
+        if(wert){
           if(navigator.vibrate) navigator.vibrate(45);
+          kameraStoppen("Erfasst: " + wert);
           zeigeErgebnis(wert);
+          return;
         }
       }
     }catch(e){ /* Frame ohne Treffer */ }

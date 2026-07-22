@@ -1,4 +1,4 @@
-package ch.finelli.finadmin;
+package ch.sea.lager;
 
 import android.Manifest;
 import android.app.Activity;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Finadmin, Lagerplatz-Scanner Finelli.
+ * SEA Lager, Standort Zuerich Lagerraum 1.
  *
  * Die Oberflaeche liegt als Asset in der App. Sie wird NICHT ueber file:// geladen,
  * sondern unter https://appassets.androidplatform.net/ ausgeliefert und dabei aus den

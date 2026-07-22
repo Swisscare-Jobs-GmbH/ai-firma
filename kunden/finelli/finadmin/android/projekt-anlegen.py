@@ -8,7 +8,7 @@ import zlib
 
 SP = os.path.dirname(os.path.abspath(__file__))
 PRJ = os.path.join(SP, "apk")
-PAKET = "ch.finelli.finadmin"
+PAKET = "ch.sea.lager"
 PFAD_JAVA = os.path.join(PRJ, "src", *PAKET.split("."))
 
 for ordner in [PRJ, PFAD_JAVA,
@@ -71,7 +71,7 @@ open(os.path.join(PRJ, "AndroidManifest.xml"), "w", encoding="utf-8").write(mani
 open(os.path.join(PRJ, "res", "values", "strings.xml"), "w", encoding="utf-8").write(
 '''<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Finadmin</string>
+    <string name="app_name">SEA</string>
 </resources>
 ''')
 
@@ -157,7 +157,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Finadmin, Lagerplatz-Scanner Finelli.
+ * SEA Lager, Standort Zuerich Lagerraum 1.
  *
  * Die Oberflaeche liegt als Asset in der App. Sie wird NICHT ueber file:// geladen,
  * sondern unter https://appassets.androidplatform.net/ ausgeliefert und dabei aus den
