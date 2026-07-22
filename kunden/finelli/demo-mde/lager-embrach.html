@@ -219,32 +219,35 @@ const LEGEND=['XS','S','M','L','XL','XXL'];
    Feld v = {d7,d30,d90} echte Verkaufsmengen. Bestandszahlen q bleiben Beispielwerte
    (Shopify-Bestand gilt nur zu ~50% als verlaesslich, darum nicht als Wahrheit gesetzt). */
 const CAT=[
- {id:'CAMO-SHORT',name:'FINELLI Camo Cargo Shorts',kat:'Shorts',sizes:['S','M','L','XL'],abc:'A',online:55,typ:'nos',v:{d7:11,d30:28,d90:54},
-  fach:{front:'A1',reserve:'R1',ug:'U1',embrach:'ZG1-A1'}, q:{front:[5,8,6,3],reserve:[3,5,4,2],ug:[4,6,5,3],embrach:[9,14,11,6]}},
- {id:'ZUR-BABY',name:"I'm a Zurich Baby T-Shirt",kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',v:{d7:7,d30:7,d90:7},
-  fach:{front:'A2',reserve:'R2',ug:'U2',embrach:'ZG1-A2'}, q:{front:[4,6,4,2],reserve:[3,4,3,2],ug:[5,7,5,3],embrach:[8,12,9,5]}},
- {id:'BADDIE-CAP',name:'FINELLI Swiss Baddie Cap',kat:'Caps',sizes:['One Size'],abc:'A',online:45,typ:'nos',v:{d7:6,d30:30,d90:30},
-  fach:{front:'A3',reserve:'R3',ug:'U3',embrach:'ZG1-F1'}, q:{front:[6],reserve:[5],ug:[8],embrach:[18]}},
- {id:'STAR-TEE',name:'Star T-Shirt',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',v:{d7:3,d30:16,d90:44},
-  fach:{front:'A4',reserve:'R4',ug:'U4',embrach:'ZG1-A3'}, q:{front:[3,7,5,2],reserve:[2,4,3,1],ug:[4,6,4,2],embrach:[7,13,10,5]}},
+ /* --- PILOT 22.07: nur Seite A + Front 1 von Zwischengestell 1, plus RW1-1a/1b/1c/2a --- */
+ {id:'ROCKSTAR-B',name:'Rockstar Tee Black',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',v:{d7:1,d30:1,d90:1},
+  fach:{front:'A1',reserve:'R1',ug:'U1',embrach:'ZG1-A1'}, q:{front:[3,5,4,2],reserve:[2,3,2,1],ug:[3,5,4,2],embrach:[6,10,8,4]}},
+ {id:'ROCKSTAR-W',name:'Rockstar Tee White',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',v:{d7:1,d30:1,d90:1},
+  fach:{front:'A2',reserve:'R2',ug:'U2',embrach:'ZG1-A2'}, q:{front:[3,5,4,2],reserve:[2,3,2,1],ug:[3,5,4,2],embrach:[6,10,8,4]}},
+ {id:'ORNAMENT-BL',name:'Ornament Tee Blue',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',v:{d7:0,d30:0,d90:0},
+  fach:{front:'A3',reserve:'R3',ug:'U3',embrach:'ZG1-A3'}, q:{front:[2,4,3,2],reserve:[2,3,2,1],ug:[3,4,3,2],embrach:[5,9,7,4]}},
+ {id:'ORNAMENT-GR',name:'Ornament Tee Green',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',v:{d7:0,d30:0,d90:0},
+  fach:{front:'A4',reserve:'R4',ug:'U4',embrach:'ZG1-A4'}, q:{front:[2,4,3,2],reserve:[2,3,2,1],ug:[3,4,3,2],embrach:[5,9,7,4]}},
+ {id:'STAR-TEE',name:'Star Shirt',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',v:{d7:3,d30:16,d90:44},
+  fach:{front:'A5',reserve:'R5',ug:'U5',embrach:'ZG1-A5'}, q:{front:[3,7,5,2],reserve:[2,4,3,1],ug:[4,6,4,2],embrach:[7,13,10,5]}},
+ {id:'ZUR-BABY',name:"I'm a Zurich Baby Tee",kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',v:{d7:7,d30:7,d90:7},
+  fach:{front:'A6',reserve:'R6',ug:'U6',embrach:'ZG1-A6'}, q:{front:[4,6,4,2],reserve:[3,4,3,2],ug:[5,7,5,3],embrach:[8,12,9,5]}},
+ {id:'BADDIE-CAP',name:'FINELLI Swiss Baddie Cap',kat:'Accessoires',sizes:['One Size'],abc:'A',online:45,typ:'nos',v:{d7:6,d30:30,d90:30},
+  fach:{front:'A7',reserve:'R7',ug:'U7',embrach:'ZG1-F1'}, q:{front:[6],reserve:[5],ug:[8],embrach:[18]}},
  {id:'PANT-CHAIN',name:'FINELLI Pant Chain',kat:'Accessoires',sizes:['One Size'],abc:'A',online:60,typ:'nos',v:{d7:3,d30:6,d90:15},
-  fach:{front:'A5',reserve:'R5',ug:'U5',embrach:'ZG1-F2'}, q:{front:[4],reserve:[3],ug:[5],embrach:[12]}},
- {id:'COTI-TEE',name:'Children Of The Internet T-Shirt',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'B',online:50,typ:'nos',v:{d7:2,d30:6,d90:17},
-  fach:{front:'A6',reserve:'R6',ug:'U6',embrach:'ZG2-A1'}, q:{front:[2,4,3,1],reserve:[1,3,2,1],ug:[3,4,3,2],embrach:[5,9,7,3]}},
- {id:'DIST-TEE',name:'FINELLI Distorted Logo Cream T-Shirt',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'nos',v:{d7:2,d30:9,d90:12},
-  fach:{front:'A7',reserve:'R7',ug:'U7',embrach:'ZG2-A2'}, q:{front:[2,4,3,2],reserve:[1,2,2,1],ug:[2,4,3,2],embrach:[4,8,6,3]}},
- {id:'CARP-SHORT',name:'FINELLI Denim Carpenter Shorts',kat:'Shorts',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'nos',v:{d7:2,d30:5,d90:11},
-  fach:{front:'A8',reserve:'R8',ug:'U8',embrach:'ZG2-B1'}, q:{front:[2,3,3,1],reserve:[1,2,2,1],ug:[2,3,2,1],embrach:[4,7,6,3]}},
- {id:'WINDBR',name:'Nylon Windbreaker',kat:'Jacken',sizes:['S','M','L','XL'],abc:'B',online:50,typ:'nos',v:{d7:2,d30:2,d90:2},
-  fach:{front:'A9',reserve:'R9',ug:'U9',embrach:'ZG1-A4'}, q:{front:[1,2,2,1],reserve:[1,1,1,1],ug:[2,3,2,1],embrach:[3,5,4,2]}},
- {id:'WILDWEST',name:'Wild West Zipper Hoodie Brown',kat:'Hoodies',sizes:['S','M','L','XL'],abc:'B',online:55,typ:'saison',geplant:'01.10.',v:{d7:0,d30:3,d90:31},
-  fach:{front:'—',reserve:'—',ug:'U10',embrach:'RW1-3a'}, q:{front:[0,0,0,0],reserve:[0,0,0,0],ug:[3,5,4,2],embrach:[7,11,9,5]}},
+  fach:{front:'A8',reserve:'R8',ug:'U8',embrach:'ZG1-F1'}, q:{front:[4],reserve:[3],ug:[5],embrach:[12]}},
+ {id:'SUNGLASS',name:'FINELLI Amber Brown Sunglasses',kat:'Accessoires',sizes:['One Size'],abc:'B',online:50,typ:'nos',v:{d7:1,d30:3,d90:3},
+  fach:{front:'A9',reserve:'R9',ug:'U9',embrach:'ZG1-F1'}, q:{front:[3],reserve:[2],ug:[3],embrach:[8]}},
+ {id:'DUFFLE',name:'FINELLI Leather Duffle Bag',kat:'Accessoires',sizes:['One Size'],abc:'B',online:55,typ:'nos',v:{d7:1,d30:3,d90:3},
+  fach:{front:'—',reserve:'—',ug:'U10',embrach:'ZG1-F1'}, q:{front:[0],reserve:[2],ug:[2],embrach:[6]}},
+ {id:'CAMO-SHORT',name:'FINELLI Camo Cargo Shorts',kat:'Shorts',sizes:['S','M','L','XL'],abc:'A',online:55,typ:'nos',v:{d7:11,d30:28,d90:54},
+  fach:{front:'A10',reserve:'R10',ug:'U11',embrach:'RW1-1a'}, q:{front:[5,8,6,3],reserve:[3,5,4,2],ug:[4,6,5,3],embrach:[9,14,11,6]}},
+ {id:'DENIM-BROWN',name:'FINELLI Denim Pants Brown Tint',kat:'Hosen',sizes:['30','32','34','36'],abc:'A',online:45,typ:'nos',v:{d7:1,d30:2,d90:17},
+  fach:{front:'A11',reserve:'R11',ug:'U12',embrach:'RW1-1b'}, q:{front:[2,4,3,1],reserve:[1,3,2,1],ug:[2,4,3,2],embrach:[5,9,7,3]}},
+ {id:'DENIM-BLACK',name:'FINELLI Denim Pants black',kat:'Hosen',sizes:['30','32','34','36'],abc:'A',online:45,typ:'nos',v:{d7:0,d30:2,d90:6},
+  fach:{front:'A12',reserve:'R12',ug:'U13',embrach:'RW1-1c'}, q:{front:[2,4,3,1],reserve:[1,3,2,1],ug:[2,4,3,2],embrach:[6,11,8,4]}},
  {id:'BAGGY-SWP',name:'Baggy Sweatpants Black',kat:'Hosen',sizes:['S','M','L','XL'],abc:'B',online:50,typ:'saison',geplant:'01.10.',v:{d7:0,d30:1,d90:27},
-  fach:{front:'—',reserve:'—',ug:'U11',embrach:'RW1-3b'}, q:{front:[0,0,0,0],reserve:[0,0,0,0],ug:[2,4,3,2],embrach:[6,10,8,4]}},
- {id:'OAF-BABY',name:"FINELLI I'm a OAF Baby Openair Frauenfeld 2026",kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'D',online:70,typ:'event',v:{d7:3,d30:42,d90:42},
-  fach:{front:'A10',reserve:'—',ug:'—',embrach:'RW2-1a'}, q:{front:[3,5,4,2],reserve:[0,0,0,0],ug:[0,0,0,0],embrach:[11,18,14,8]}},
- {id:'OAF-LINEUP',name:'FINELLI Lineup Print Black Openair Frauenfeld 2026',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'D',online:70,typ:'event',v:{d7:1,d30:30,d90:30},
-  fach:{front:'A11',reserve:'—',ug:'—',embrach:'RW2-1b'}, q:{front:[2,4,3,2],reserve:[0,0,0,0],ug:[0,0,0,0],embrach:[9,15,12,6]}}
+  fach:{front:'—',reserve:'—',ug:'U14',embrach:'RW1-2a'}, q:{front:[0,0,0,0],reserve:[0,0,0,0],ug:[2,4,3,2],embrach:[6,10,8,4]}}
 ];
 const getC=id=>CAT.find(c=>c.id===id);
 const si=(c,s)=>c.sizes.indexOf(s);
@@ -255,16 +258,16 @@ const melde=c=>({A:15,B:12,C:8,D:6}[c.abc]||10);
 
 /* ===== Wareneingang-Warteschlange (was reinkommt) ===== */
 const EINGANG=[
- {id:'CAMO-SHORT',size:'M'},{id:'ZUR-BABY',size:'M'},{id:'STAR-TEE',size:'L'},
- {id:'CARP-SHORT',size:'M'},{id:'BADDIE-CAP',size:'One Size'}
+ {id:'ROCKSTAR-B',size:'M'},{id:'ZUR-BABY',size:'M'},{id:'STAR-TEE',size:'L'},
+ {id:'ORNAMENT-BL',size:'M'},{id:'BADDIE-CAP',size:'One Size'}
 ];
 
 /* ===== Pack-Auftraege (Online-Bestellungen, A-Modelle aus der 7-Tage-Auswertung) ===== */
 const PA_TPL=[
- {ziel:'Zürich',pos:[['CAMO-SHORT','L',1],['ZUR-BABY','M',1]]},
+ {ziel:'Zürich',pos:[['ROCKSTAR-B','L',1],['ZUR-BABY','M',1]]},
  {ziel:'Basel',pos:[['CAMO-SHORT','M',1]]},
  {ziel:'Winterthur',pos:[['STAR-TEE','M',1],['BADDIE-CAP','One Size',1]]},
- {ziel:'Bern',pos:[['ZUR-BABY','S',2]]}
+ {ziel:'Bern',pos:[['ORNAMENT-GR','S',2]]}
 ];
 const paNr=i=>'PA-'+YMD+'-'+(i+1);
 const packAnz=3+DOY%2;
@@ -493,10 +496,13 @@ function lagerkarte(hot){
  s+='<path d="M84 186 l-5 -9 l10 0 z" fill="#c9a24a"/><path d="M84 292 l-5 -9 l10 0 z" fill="#c9a24a"/>';
  s+='<text x="66" y="164" text-anchor="middle" font-size="7.5" fill="#c9a24a" font-weight="700">seltener</text>';
  /* Faecher */
+ /* Pilot: nur Faecher mit zugewiesenem Artikel sind voll gezeichnet, der Rest blass gestrichelt */
+ const belegt=new Set(CAT.map(c=>c.fach.embrach));
  FAECHER.forEach(c=>{const isHot=c.code in hotMap;const hsz=isHot?hotMap[c.code]:null;const glow=hsz?szf(hsz):'#17161a';
-   const cx=c.x+c.w/2,cy=c.y+c.h/2;const kurz=c.code.split('-')[1];
-   s+=`<rect x="${(c.x+1).toFixed(1)}" y="${(c.y+1).toFixed(1)}" width="${(c.w-2).toFixed(1)}" height="${(c.h-2).toFixed(1)}" rx="2.5" fill="${isHot?glow:'#fff'}" stroke="${isHot?glow:zoneCol[c.zone]}" stroke-width="${isHot?2.4:1.5}"/>`;
-   s+=`<text x="${cx.toFixed(1)}" y="${(cy+2.6).toFixed(1)}" text-anchor="middle" font-size="7" font-weight="700" fill="${isHot?'#fff':'#4b4951'}">${kurz}</text>`;});
+   const cx=c.x+c.w/2,cy=c.y+c.h/2;const kurz=c.code.split('-')[1];const an=belegt.has(c.code);
+   const rand=isHot?glow:(an?zoneCol[c.zone]:'#cfcdc9');
+   s+=`<rect x="${(c.x+1).toFixed(1)}" y="${(c.y+1).toFixed(1)}" width="${(c.w-2).toFixed(1)}" height="${(c.h-2).toFixed(1)}" rx="2.5" fill="${isHot?glow:'#fff'}" stroke="${rand}" stroke-width="${isHot?2.4:(an?1.6:1)}"${an||isHot?'':' stroke-dasharray="2 2"'}/>`;
+   s+=`<text x="${cx.toFixed(1)}" y="${(cy+2.6).toFixed(1)}" text-anchor="middle" font-size="7" font-weight="${an?700:400}" fill="${isHot?'#fff':(an?'#4b4951':'#b3b0ac')}">${kurz}</text>`;});
  FAECHER.filter(c=>c.code in hotMap).forEach(c=>{const hsz=hotMap[c.code];const ring=hsz?szf(hsz):'#17161a';
    s+=`<circle class="puls" cx="${(c.x+c.w/2).toFixed(1)}" cy="${(c.y+c.h/2).toFixed(1)}" r="13" fill="none" stroke="${ring}" stroke-width="2.5"/>`;});
  s+='</svg>';
