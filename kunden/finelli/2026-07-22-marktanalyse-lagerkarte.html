@@ -65,12 +65,14 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .seite .f{flex:1}
 .sl{font-size:10px;color:var(--grau);font-weight:700;width:104px;flex:none;display:flex;align-items:center}
 .ginhalt{display:flex;gap:12px;align-items:stretch}
-.frontblock{width:172px;flex:none}
+.frontblock{width:126px;flex:none}
 .sl2{font-size:10px;color:var(--grau);font-weight:700;margin-bottom:4px}
-.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
-.fgrid .f{padding:5px 3px}
+.fgrid{display:flex;flex-direction:column;gap:4px}
+.fgrid .f{padding:5px 4px}
 .fgrid .f small{font-size:9px}
 .seitenblock{flex:1;display:flex;flex-direction:column;gap:6px;justify-content:center}
+.seite .f{padding:5px 3px}
+.seite .f small{font-size:9px}
 .ebenen{display:flex;flex-direction:column;gap:4px;max-width:520px;margin:10px 0}
 .eb{display:flex;align-items:center;gap:10px;background:var(--karte);border:1px solid var(--rand);border-radius:8px;padding:8px 12px}
 .eb .h{font-size:11px;color:var(--grau);width:104px;flex:none}
@@ -219,6 +221,10 @@ Der T-Shirt-Anteil sinkt von 47 % (30 Tage) auf 26 % (7 Tage). Genau dieser Rüc
 </div>
 
 <div class="hinweis">
+<b>Die beiden Front-Regale haben 6 Ebenen statt 4.</b> Dort passt jede Grösse einzeln: XS, S, M, L, XL, XXL untereinander, ohne Paare. Diese drei Spalten je Gestell sind deshalb der beste Platz für Artikel mit vollem Grössenraster. Eine Spalte kann alternativ sechs verschiedene One-Size-Teile aufnehmen, eines je Ebene, dann ist Cap, Pant Chain, Brille und Tasche alles auf einen Griff beisammen.
+</div>
+
+<div class="hinweis">
 <b>Hosengrössen (30, 32, 34) laufen getrennt.</b> Sie passen nicht in dasselbe Ebenen-Raster. Empfehlung: Hosen bekommen in Regal 2 der Regalwand 1 eine eigene Spalte je Modell, die Ebenen sind dort 30 / 32 / 34 / Rest. Am Fachrand steht die Zahl gross statt eines Farbpunkts.
 </div>
 
@@ -235,7 +241,7 @@ Der T-Shirt-Anteil sinkt von 47 % (30 Tage) auf 26 % (7 Tage). Genau dieser Rüc
 
 <h2>5. Lagerkarte, Draufsicht</h2>
 <div class="hinweis">
-<b>Grundriss nach der Vor-Ort-Skizze vom 22.07.</b> Eingang oben links, Tisch direkt daneben, Regalwand 1 an der linken Wand, zwei freistehende Zwischengestelle in der Mitte, Regalwand 2 an der hinteren Wand. Die Fachzahl je Regal ist geschätzt und wird beim Beschriften auf die echte Zahl gesetzt.
+<b>Grundriss nach der Vor-Ort-Skizze vom 22.07.</b> Eingang oben links, Tisch direkt daneben, Regalwand 1 an der linken Wand, zwei freistehende Zwischengestelle in der Mitte, Regalwand 2 an der hinteren Wand. <b>Jedes Regal hat 3 Spalten</b>, egal wo es steht. Jede Zelle in dieser Karte ist eine Spalte und damit ein Artikel. Die Grössen liegen übereinander und sind von oben nicht sichtbar.
 </div>
 <div class="karte-raum">
 <div class="raum">
@@ -265,24 +271,29 @@ Der T-Shirt-Anteil sinkt von 47 % (30 Tage) auf 26 % (7 Tage). Genau dieser Rüc
         <div class="gt">Zwischengestell 1 · am nächsten beim Eingang · <b style="color:var(--p)">Renner, gemischt erlaubt</b></div>
         <div class="ginhalt">
           <div class="frontblock">
-            <div class="sl2">Front · zum Gang · One Size</div>
+            <div class="sl2">Front · zum Gang · 3 Spalten</div>
             <div class="fgrid">
-              <div class="f rP"><b>F1</b><small>Swiss Baddie Cap</small></div>
-              <div class="f rP"><b>F2</b><small>Pant Chain</small></div>
+              <div class="f rP"><b>F1</b><small>One-Size-Teile: Cap, Pant Chain, Brille, Duffle Bag</small></div>
+              <div class="f rP"><b>F2</b><small>frei</small></div>
               <div class="f rP"><b>F3</b><small>frei</small></div>
-              <div class="f rP"><b>F4</b><small>frei</small></div>
-              <div class="f rP"><b>F5</b><small>frei</small></div>
-              <div class="f rP"><b>F6</b><small>frei</small></div>
             </div>
           </div>
           <div class="seitenblock">
-            <div class="seite"><span class="sl">Seite A</span>
-              <div class="f rP"><b>A1</b><small>Camo Cargo Shorts · 11 in 7 T.</small></div>
-              <div class="f rP"><b>A2</b><small>Zurich Baby Tee · 7 in 7 T.</small></div>
+            <div class="seite"><span class="sl">Seite A<br>2 Regale</span>
+              <div class="f rP"><b>A1</b><small>Camo Cargo Shorts · 11</small></div>
+              <div class="f rP"><b>A2</b><small>Zurich Baby Tee · 7</small></div>
+              <div class="f rP"><b>A3</b><small>Star T-Shirt · 3</small></div>
+              <div class="f rP"><b>A4</b><small>Nylon Windbreaker · 2</small></div>
+              <div class="f rP"><b>A5</b><small>Rap City Shirt · 2</small></div>
+              <div class="f rP"><b>A6</b><small>Sweatshorts Black · 1</small></div>
             </div>
-            <div class="seite"><span class="sl">Seite B</span>
-              <div class="f rP"><b>B1</b><small>Star T-Shirt · 3 in 7 T.</small></div>
-              <div class="f rP"><b>B2</b><small>Nylon Windbreaker · 2 in 7 T.</small></div>
+            <div class="seite"><span class="sl">Seite B<br>2 Regale</span>
+              <div class="f rP"><b>B1</b><small>Diamond Heart Hoodie</small></div>
+              <div class="f rP"><b>B2</b><small>Full Zip Knit Jumper</small></div>
+              <div class="f rP"><b>B3</b><small>Denim Pants Brown Tint</small></div>
+              <div class="f rP"><b>B4</b><small>Diamond Baggy Sweatpants</small></div>
+              <div class="f rP"><b>B5</b><small>frei</small></div>
+              <div class="f rP"><b>B6</b><small>frei</small></div>
             </div>
           </div>
         </div>
@@ -291,24 +302,29 @@ Der T-Shirt-Anteil sinkt von 47 % (30 Tage) auf 26 % (7 Tage). Genau dieser Rüc
         <div class="gt">Zwischengestell 2 · zweite Reihe · <b style="color:var(--s)">Standard, nach Warengruppe</b></div>
         <div class="ginhalt">
           <div class="frontblock">
-            <div class="sl2">Front · zum Gang · One Size</div>
+            <div class="sl2">Front · zum Gang · 3 Spalten</div>
             <div class="fgrid">
-              <div class="f rS"><b>F1</b><small>Sonnenbrillen</small></div>
-              <div class="f rS"><b>F2</b><small>Beanies</small></div>
-              <div class="f rS"><b>F3</b><small>Socken</small></div>
-              <div class="f rS"><b>F4</b><small>Taschen</small></div>
-              <div class="f rS"><b>F5</b><small>frei</small></div>
-              <div class="f rS"><b>F6</b><small>frei</small></div>
+              <div class="f rS"><b>F1</b><small>Accessoires: Socken, Gürtel</small></div>
+              <div class="f rS"><b>F2</b><small>Beanies und Caps</small></div>
+              <div class="f rS"><b>F3</b><small>Taschen</small></div>
             </div>
           </div>
           <div class="seitenblock">
-            <div class="seite"><span class="sl">Seite A · T-Shirts</span>
+            <div class="seite"><span class="sl">Seite A<br>nur T-Shirts</span>
               <div class="f rS"><b>A1</b><small>Children Of The Internet</small></div>
               <div class="f rS"><b>A2</b><small>Distorted Logo Cream</small></div>
+              <div class="f rS"><b>A3</b><small>F-Horse Tee Black</small></div>
+              <div class="f rS"><b>A4</b><small>Reach for the Stars</small></div>
+              <div class="f rS"><b>A5</b><small>Tee</small></div>
+              <div class="f rS"><b>A6</b><small>Tee</small></div>
             </div>
-            <div class="seite"><span class="sl">Seite B · Hosen und Shorts</span>
+            <div class="seite"><span class="sl">Seite B<br>Hosen und Shorts</span>
               <div class="f rS"><b>B1</b><small>Denim Carpenter Shorts</small></div>
-              <div class="f rS"><b>B2</b><small>frei für Hosen</small></div>
+              <div class="f rS"><b>B2</b><small>Logo Jeans Shorts</small></div>
+              <div class="f rS"><b>B3</b><small>Nylon Cargo Shorts</small></div>
+              <div class="f rS"><b>B4</b><small>Faux Leather Carpenter</small></div>
+              <div class="f rS"><b>B5</b><small>Hose</small></div>
+              <div class="f rS"><b>B6</b><small>Hose</small></div>
             </div>
           </div>
         </div>
@@ -346,18 +362,18 @@ Der T-Shirt-Anteil sinkt von 47 % (30 Tage) auf 26 % (7 Tage). Genau dieser Rüc
 <table>
 <thead><tr><th>Regal</th><th>Aufbau</th><th>Zone</th><th>Was dort liegt</th><th class="num">Plätze</th></tr></thead>
 <tbody>
-<tr><td><b>Zwischengestell 1</b><br>Seiten A und B</td><td>2 Seiten à 2 Regale à 4 Fächer</td><td><span class="zone zP">&nbsp;</span> Renner</td><td>Alles mit Verkauf in den letzten 7 Tagen. Gemischt erlaubt, hier zählt nur der kurze Weg</td><td class="num">4</td></tr>
-<tr><td><b>Zwischengestell 1</b><br>Front, links zum Gang</td><td>1 Regal à 6 Fächer</td><td><span class="zone zP">&nbsp;</span> Renner</td><td>One-Size-Teile ohne Grössen: Caps, Pant Chain. Die 6 kleinen Fächer sind genau dafür da</td><td class="num">6</td></tr>
-<tr><td><b>Zwischengestell 2</b><br>Seiten A und B</td><td>2 Seiten à 2 Regale à 4 Fächer</td><td><span class="zone zS">&nbsp;</span> Standard</td><td>Nach Warengruppe: Seite A alle T-Shirts, Seite B alle Hosen und Shorts</td><td class="num">4</td></tr>
-<tr><td><b>Zwischengestell 2</b><br>Front, links zum Gang</td><td>1 Regal à 6 Fächer</td><td><span class="zone zS">&nbsp;</span> Standard</td><td>Accessoires: Sonnenbrillen, Beanies, Socken, Taschen</td><td class="num">6</td></tr>
+<tr><td><b>Zwischengestell 1</b><br>Seiten A und B</td><td>2 Seiten à 2 Regale à 3 Spalten</td><td><span class="zone zP">&nbsp;</span> Renner</td><td>Alles mit Verkauf in den letzten 7 Tagen. Gemischt erlaubt, hier zählt nur der kurze Weg</td><td class="num">12</td></tr>
+<tr><td><b>Zwischengestell 1</b><br>Front, links zum Gang</td><td>1 Regal à 3 Spalten, 6 Ebenen</td><td><span class="zone zP">&nbsp;</span> Renner</td><td>Eine Spalte nimmt sechs verschiedene One-Size-Teile, eine je Ebene. Die anderen zwei Spalten fassen Artikel mit vollem Grössenraster XS bis XXL</td><td class="num">3</td></tr>
+<tr><td><b>Zwischengestell 2</b><br>Seiten A und B</td><td>2 Seiten à 2 Regale à 3 Spalten</td><td><span class="zone zS">&nbsp;</span> Standard</td><td>Nach Warengruppe: Seite A ausschliesslich T-Shirts, Seite B ausschliesslich Hosen und Shorts</td><td class="num">12</td></tr>
+<tr><td><b>Zwischengestell 2</b><br>Front, links zum Gang</td><td>1 Regal à 3 Spalten, 6 Ebenen</td><td><span class="zone zS">&nbsp;</span> Standard</td><td>Accessoires: Socken und Gürtel, Beanies und Caps, Taschen</td><td class="num">3</td></tr>
 <tr><td><b>Regalwand 1</b><br>Regal 1 und 2</td><td>je 3 Spalten à 4 Fächer</td><td><span class="zone zS">&nbsp;</span> Standard</td><td>Warengruppen-Blöcke: Regal 1 nur T-Shirts, Regal 2 nur Hosen und Shorts</td><td class="num">6</td></tr>
 <tr><td><b>Regalwand 1</b><br>Regal 3 und 4</td><td>je 3 Spalten à 4 Fächer</td><td><span class="zone zW">&nbsp;</span> Saison</td><td>Regal 3 Hoodies und Sweatpants, Regal 4 Jacken. Tauschen im Oktober mit Zwischengestell 1</td><td class="num">6</td></tr>
 <tr><td><b>Regalwand 2</b><br>hintere Wand</td><td>2 Regale, 6 Fächer</td><td><span class="zone zE">&nbsp;</span> Abverkauf</td><td>Regal 1 das Frauenfeld-Merch, Regal 2 Saison-Überlauf und Restgrössen</td><td class="num">6</td></tr>
 </tbody>
 </table>
 
-<div class="warnung">
-<b>Kapazität: Raum 1 fasst 26 Artikel mit Grössen und 12 Kleinteile.</b> Bei rund 60 geführten Modellen passt damit weniger als die Hälfte hier hinein. Das ist kein Fehler in der Planung, sondern die Vorgabe: In Raum 1 gehört nur, was aktuell läuft. Alles ohne Verkauf in den letzten 30 Tagen geht in Lager Raum 2 und 3. Wenn mehr Platz nötig wird, lassen sich in breiten Böden zwei Artikel nebeneinander stellen, dann heissen die Plätze zum Beispiel 1a-links und 1a-rechts und die Kapazität verdoppelt sich auf 52.
+<div class="ok">
+<b>Kapazität: Raum 1 fasst 48 Artikel.</b> Jedes Regal hat 3 Spalten, jede Spalte ist ein Artikel mit allen seinen Grössen. Bei rund 60 geführten Modellen passt damit fast das ganze aktive Sortiment hier hinein. Die 154 Artikel, die in den letzten 30 Tagen überhaupt einen Verkauf hatten, passen nicht alle, aber darunter sind viele von Hand eingetippte Kassen-Bezeichnungen, die keine echten Modelle sind. Was nach der Bereinigung übrig bleibt und keinen Verkauf in 30 Tagen hat, geht nach Lager Raum 2 und 3.
 </div>
 
 <div class="hinweis">

@@ -226,7 +226,7 @@ const CAT=[
  {id:'BADDIE-CAP',name:'FINELLI Swiss Baddie Cap',kat:'Caps',sizes:['One Size'],abc:'A',online:45,typ:'nos',v:{d7:6,d30:30,d90:30},
   fach:{front:'A3',reserve:'R3',ug:'U3',embrach:'ZG1-F1'}, q:{front:[6],reserve:[5],ug:[8],embrach:[18]}},
  {id:'STAR-TEE',name:'Star T-Shirt',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',v:{d7:3,d30:16,d90:44},
-  fach:{front:'A4',reserve:'R4',ug:'U4',embrach:'ZG1-B1'}, q:{front:[3,7,5,2],reserve:[2,4,3,1],ug:[4,6,4,2],embrach:[7,13,10,5]}},
+  fach:{front:'A4',reserve:'R4',ug:'U4',embrach:'ZG1-A3'}, q:{front:[3,7,5,2],reserve:[2,4,3,1],ug:[4,6,4,2],embrach:[7,13,10,5]}},
  {id:'PANT-CHAIN',name:'FINELLI Pant Chain',kat:'Accessoires',sizes:['One Size'],abc:'A',online:60,typ:'nos',v:{d7:3,d30:6,d90:15},
   fach:{front:'A5',reserve:'R5',ug:'U5',embrach:'ZG1-F2'}, q:{front:[4],reserve:[3],ug:[5],embrach:[12]}},
  {id:'COTI-TEE',name:'Children Of The Internet T-Shirt',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'B',online:50,typ:'nos',v:{d7:2,d30:6,d90:17},
@@ -236,7 +236,7 @@ const CAT=[
  {id:'CARP-SHORT',name:'FINELLI Denim Carpenter Shorts',kat:'Shorts',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'nos',v:{d7:2,d30:5,d90:11},
   fach:{front:'A8',reserve:'R8',ug:'U8',embrach:'ZG2-B1'}, q:{front:[2,3,3,1],reserve:[1,2,2,1],ug:[2,3,2,1],embrach:[4,7,6,3]}},
  {id:'WINDBR',name:'Nylon Windbreaker',kat:'Jacken',sizes:['S','M','L','XL'],abc:'B',online:50,typ:'nos',v:{d7:2,d30:2,d90:2},
-  fach:{front:'A9',reserve:'R9',ug:'U9',embrach:'ZG1-B2'}, q:{front:[1,2,2,1],reserve:[1,1,1,1],ug:[2,3,2,1],embrach:[3,5,4,2]}},
+  fach:{front:'A9',reserve:'R9',ug:'U9',embrach:'ZG1-A4'}, q:{front:[1,2,2,1],reserve:[1,1,1,1],ug:[2,3,2,1],embrach:[3,5,4,2]}},
  {id:'WILDWEST',name:'Wild West Zipper Hoodie Brown',kat:'Hoodies',sizes:['S','M','L','XL'],abc:'B',online:55,typ:'saison',geplant:'01.10.',v:{d7:0,d30:3,d90:31},
   fach:{front:'—',reserve:'—',ug:'U10',embrach:'RW1-3a'}, q:{front:[0,0,0,0],reserve:[0,0,0,0],ug:[3,5,4,2],embrach:[7,11,9,5]}},
  {id:'BAGGY-SWP',name:'Baggy Sweatpants Black',kat:'Hosen',sizes:['S','M','L','XL'],abc:'B',online:50,typ:'saison',geplant:'01.10.',v:{d7:0,d30:1,d90:27},
@@ -289,23 +289,24 @@ const esc=s=>String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[
 const FAECHER=[
  /* Zwischengestell 1 — naechstes beim Eingang, Renner. Seite A zum Eingang, Seite B dahinter,
     Front = Stirnseite mit 6 kleinen Faechern fuer One-Size-Teile (keine Groessen noetig). */
- /* Front = Stirnseite, zeigt zum Gang hin (links). Danach die beiden Laengsseiten A und B. */
- {code:'ZG1-F1',zone:'P',x:112,y:108,w:19,h:13},{code:'ZG1-F2',zone:'P',x:131,y:108,w:19,h:13},
- {code:'ZG1-F3',zone:'P',x:112,y:121,w:19,h:13},{code:'ZG1-F4',zone:'P',x:131,y:121,w:19,h:13},
- {code:'ZG1-F5',zone:'P',x:112,y:134,w:19,h:13},{code:'ZG1-F6',zone:'P',x:131,y:134,w:19,h:13},
- {code:'ZG1-A1',zone:'P',x:154,y:108,w:70,h:19},{code:'ZG1-A2',zone:'P',x:224,y:108,w:70,h:19},
- {code:'ZG1-B1',zone:'P',x:154,y:131,w:70,h:19},{code:'ZG1-B2',zone:'P',x:224,y:131,w:70,h:19},
+ /* Front = Stirnseite zum Gang hin (links), 1 Regal zu 3 Spalten.
+    Seite A = obere Laengsseite, Seite B = untere, je 2 Regale zu 3 Spalten = 6 Spalten. */
+ {code:'ZG1-F1',zone:'P',x:111,y:107,w:17,h:14},{code:'ZG1-F2',zone:'P',x:111,y:121,w:17,h:14},{code:'ZG1-F3',zone:'P',x:111,y:135,w:17,h:14},
+ {code:'ZG1-A1',zone:'P',x:130,y:107,w:27,h:15},{code:'ZG1-A2',zone:'P',x:157,y:107,w:27,h:15},{code:'ZG1-A3',zone:'P',x:184,y:107,w:27,h:15},
+ {code:'ZG1-A4',zone:'P',x:211,y:107,w:27,h:15},{code:'ZG1-A5',zone:'P',x:238,y:107,w:27,h:15},{code:'ZG1-A6',zone:'P',x:265,y:107,w:27,h:15},
+ {code:'ZG1-B1',zone:'P',x:130,y:136,w:27,h:15},{code:'ZG1-B2',zone:'P',x:157,y:136,w:27,h:15},{code:'ZG1-B3',zone:'P',x:184,y:136,w:27,h:15},
+ {code:'ZG1-B4',zone:'P',x:211,y:136,w:27,h:15},{code:'ZG1-B5',zone:'P',x:238,y:136,w:27,h:15},{code:'ZG1-B6',zone:'P',x:265,y:136,w:27,h:15},
  /* Regalwand 1 — 4 Regale zu je 3 Spalten, oben nah am Eingang. Warengruppen-Bloecke. */
  {code:'RW1-1a',zone:'S',x:22,y:80,w:28,h:17},{code:'RW1-1b',zone:'S',x:22,y:97,w:28,h:17},{code:'RW1-1c',zone:'S',x:22,y:114,w:28,h:17},
  {code:'RW1-2a',zone:'S',x:22,y:137,w:28,h:17},{code:'RW1-2b',zone:'S',x:22,y:154,w:28,h:17},{code:'RW1-2c',zone:'S',x:22,y:171,w:28,h:17},
  {code:'RW1-3a',zone:'W',x:22,y:194,w:28,h:17},{code:'RW1-3b',zone:'W',x:22,y:211,w:28,h:17},{code:'RW1-3c',zone:'W',x:22,y:228,w:28,h:17},
  {code:'RW1-4a',zone:'W',x:22,y:251,w:28,h:17},{code:'RW1-4b',zone:'W',x:22,y:268,w:28,h:17},{code:'RW1-4c',zone:'W',x:22,y:285,w:28,h:17},
  /* Zwischengestell 2 — Standard, nach Warengruppe sortiert. */
- {code:'ZG2-F1',zone:'S',x:112,y:200,w:19,h:13},{code:'ZG2-F2',zone:'S',x:131,y:200,w:19,h:13},
- {code:'ZG2-F3',zone:'S',x:112,y:213,w:19,h:13},{code:'ZG2-F4',zone:'S',x:131,y:213,w:19,h:13},
- {code:'ZG2-F5',zone:'S',x:112,y:226,w:19,h:13},{code:'ZG2-F6',zone:'S',x:131,y:226,w:19,h:13},
- {code:'ZG2-A1',zone:'S',x:154,y:200,w:70,h:19},{code:'ZG2-A2',zone:'S',x:224,y:200,w:70,h:19},
- {code:'ZG2-B1',zone:'S',x:154,y:223,w:70,h:19},{code:'ZG2-B2',zone:'S',x:224,y:223,w:70,h:19},
+ {code:'ZG2-F1',zone:'S',x:111,y:199,w:17,h:14},{code:'ZG2-F2',zone:'S',x:111,y:213,w:17,h:14},{code:'ZG2-F3',zone:'S',x:111,y:227,w:17,h:14},
+ {code:'ZG2-A1',zone:'S',x:130,y:199,w:27,h:15},{code:'ZG2-A2',zone:'S',x:157,y:199,w:27,h:15},{code:'ZG2-A3',zone:'S',x:184,y:199,w:27,h:15},
+ {code:'ZG2-A4',zone:'S',x:211,y:199,w:27,h:15},{code:'ZG2-A5',zone:'S',x:238,y:199,w:27,h:15},{code:'ZG2-A6',zone:'S',x:265,y:199,w:27,h:15},
+ {code:'ZG2-B1',zone:'S',x:130,y:228,w:27,h:15},{code:'ZG2-B2',zone:'S',x:157,y:228,w:27,h:15},{code:'ZG2-B3',zone:'S',x:184,y:228,w:27,h:15},
+ {code:'ZG2-B4',zone:'S',x:211,y:228,w:27,h:15},{code:'ZG2-B5',zone:'S',x:238,y:228,w:27,h:15},{code:'ZG2-B6',zone:'S',x:265,y:228,w:27,h:15},
  /* Regalwand 2 — hintere Wand, 2 Regale zu je 3 Spalten. */
  {code:'RW2-1a',zone:'E',x:74,y:316,w:34,h:20},{code:'RW2-1b',zone:'E',x:108,y:316,w:34,h:20},{code:'RW2-1c',zone:'E',x:142,y:316,w:34,h:20},
  {code:'RW2-2a',zone:'W',x:180,y:316,w:34,h:20},{code:'RW2-2b',zone:'W',x:214,y:316,w:34,h:20},{code:'RW2-2c',zone:'W',x:248,y:316,w:34,h:20}
@@ -468,19 +469,23 @@ function lagerkarte(hot){
  s+='<text x="159" y="92" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">Tisch · Packen</text>';
  /* Regal-Traeger (graue Balken hinter den Faechern) */
  s+='<rect x="20" y="78" width="32" height="226" rx="4" fill="#eceae7"/>';
- s+='<rect x="110" y="106" width="42" height="43" rx="4" fill="#e3e0dc"/>';
- s+='<rect x="152" y="106" width="144" height="46" rx="4" fill="#eceae7"/>';
- s+='<rect x="110" y="198" width="42" height="43" rx="4" fill="#e3e0dc"/>';
- s+='<rect x="152" y="198" width="144" height="46" rx="4" fill="#eceae7"/>';
+ s+='<rect x="110" y="106" width="184" height="46" rx="4" fill="#eceae7"/>';
+ s+='<rect x="110" y="106" width="20" height="46" rx="4" fill="#e3e0dc"/>';
+ s+='<rect x="110" y="198" width="184" height="46" rx="4" fill="#eceae7"/>';
+ s+='<rect x="110" y="198" width="20" height="46" rx="4" fill="#e3e0dc"/>';
  s+='<rect x="72" y="314" width="212" height="24" rx="4" fill="#eceae7"/>';
  /* Regal-Namen */
  s+='<text x="8" y="190" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700" transform="rotate(-90 8 190)">Regalwand 1</text>';
  s+='<text x="224" y="166" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700">Zwischengestell 1</text>';
  s+='<text x="224" y="258" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700">Zwischengestell 2</text>';
  s+='<text x="178" y="358" text-anchor="middle" font-size="9" fill="#6b6971" font-weight="700">Regalwand 2</text>';
- /* Front = Stirnseite zum Gang hin, darum links am Gestell */
- s+='<text x="131" y="160" text-anchor="middle" font-size="7" fill="#8a8891" font-weight="600">Front</text>';
- s+='<text x="131" y="252" text-anchor="middle" font-size="7" fill="#8a8891" font-weight="600">Front</text>';
+ /* Front = Stirnseite zum Gang hin, darum links am Gestell · A und B sind die Laengsseiten */
+ s+='<text x="119" y="160" text-anchor="middle" font-size="7" fill="#8a8891" font-weight="600">Front</text>';
+ s+='<text x="119" y="252" text-anchor="middle" font-size="7" fill="#8a8891" font-weight="600">Front</text>';
+ s+='<text x="299" y="118" font-size="7.5" fill="#8a8891" font-weight="700">A</text>';
+ s+='<text x="299" y="147" font-size="7.5" fill="#8a8891" font-weight="700">B</text>';
+ s+='<text x="299" y="210" font-size="7.5" fill="#8a8891" font-weight="700">A</text>';
+ s+='<text x="299" y="239" font-size="7.5" fill="#8a8891" font-weight="700">B</text>';
  /* Laufweg im Gang: was vorne liegt wird oft gegriffen, nach hinten immer seltener */
  s+='<path d="M84 114 L84 300" fill="none" stroke="#c9a24a" stroke-width="2.2" stroke-dasharray="6 6"/>';
  s+='<path d="M84 186 l-5 -9 l10 0 z" fill="#c9a24a"/><path d="M84 292 l-5 -9 l10 0 z" fill="#c9a24a"/>';
