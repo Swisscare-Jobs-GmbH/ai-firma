@@ -2,7 +2,7 @@
 
 > Die eine Liste aller Kunden. **Quelle fuer den `kunden-anker-inject`-Hook** — die Tabelle unten
 > wird pro Chat oben eingeblendet. Ampel: 🟢 laeuft/bezahlt · 🟡 in Anbahnung/offen · 🔴 blockiert.
-> Stand 2026-07-20. Pfad-Karte pro Rechner: `brain/_cross-ref/WORKSPACE-AIWORKS.md`.
+> Stand 2026-07-22. Pfad-Karte pro Rechner: `brain/_cross-ref/WORKSPACE-AIWORKS.md`.
 
 | Kunde | Repo | Ports (Backend/Frontend) | Stack | Deal-Stand | seit |
 |---|---|---|---|---|---|
@@ -14,6 +14,8 @@
 
 - **SwissCare** → [swisscare/README.md](swisscare/README.md) — internes Produkt, Daten-Wand beachten.
 - **Finelli** → [finelli/README.md](finelli/README.md) — Deal 2'500 + 1'000/Mt, KI-Etappe in Arbeit.
+  22.07.: Lager-Rundgang vor Ort, Marktanalyse aus dem Bestellexport + 2D-Lagerkarte, MDE-Demo auf
+  echte Artikel umgestellt. Offen: SA-Entscheid T4 (Endkundendaten in der Git-Historie).
 - **GzF** → [gzf/README.md](gzf/README.md) — Schmerz-Gespraech ausstehend, Inhaber Farhad Akbarzada.
 
 ## Konvention

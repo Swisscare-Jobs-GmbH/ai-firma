@@ -10,6 +10,13 @@ brain/users/*/avatar.md
 # Vorlage MUSS in die Historie (sonst kein Muster fuer neue Rechner) — vom Muster oben ausnehmen
 !.claude/VORLAGE-settings.local.json
 
+# --- Kunden-Rohexporte (enthalten Endkunden-Daten: Name, Mail, Adresse, Telefon) ---
+# Nie in die Historie. Auswertungen ja, Rohdaten nein. Siehe
+# brain/lessons/system/2026-07-22-endkundendaten-in-kunden-exporten.md
+kunden/**/*.csv
+kunden/**/orders_export*
+kunden/**/customers_export*
+
 # --- Muell / Build-Artefakte ---
 node_modules/
 __pycache__/

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finelli — Marktanalyse + Lagerkarte (22.07.2026)</title>
+<style>
+:root{
+  --bg:#0f1115; --karte:#171a21; --rand:#252a34; --text:#e8eaf0; --grau:#8b93a5;
+  --p:#e0426a; --s:#3d8bfd; --w:#f0a020; --l:#6b7280; --e:#9b59d0;
+  --xs:#8b5cf6; --gs:#22c55e; --gm:#3b82f6; --gl:#eab308; --gxl:#ef4444; --gxxl:#94a3b8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 18px 70px}
+h1{font-size:26px;margin:0 0 4px}
+h2{font-size:19px;margin:38px 0 12px;padding-bottom:7px;border-bottom:1px solid var(--rand)}
+h3{font-size:15px;margin:22px 0 8px;color:var(--grau);text-transform:uppercase;letter-spacing:.05em}
+.sub{color:var(--grau);margin:0 0 22px;font-size:14px}
+.karten{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;margin:18px 0}
+.k{background:var(--karte);border:1px solid var(--rand);border-radius:10px;padding:14px}
+.k .zahl{font-size:27px;font-weight:700;line-height:1.1}
+.k .lab{color:var(--grau);font-size:12.5px;margin-top:3px}
+.k.warn{border-color:var(--p)}
+.k.gut{border-color:var(--gs)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:10px 0}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--rand)}
+th{color:var(--grau);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto}
+.chart{background:var(--karte);border:1px solid var(--rand);border-radius:10px;padding:16px;margin:12px 0}
+.balken{display:flex;align-items:flex-end;gap:3px;height:200px;padding-top:8px}
+.bal{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:0}
+.bal .b{width:100%;background:var(--s);border-radius:3px 3px 0 0;min-height:2px}
+.bal.event .b{background:var(--e)}
+.bal.prog .b{background:repeating-linear-gradient(45deg,var(--gs),var(--gs) 4px,transparent 4px,transparent 8px);border:1px dashed var(--gs)}
+.bal .t{font-size:9.5px;color:var(--grau);margin-top:5px;white-space:nowrap;transform:rotate(-90deg);transform-origin:center;height:38px}
+.bal .v{font-size:10px;color:var(--grau);margin-bottom:3px}
+.stapel{display:flex;height:30px;border-radius:5px;overflow:hidden;margin:5px 0 3px}
+.stapel div{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#0b0d11}
+.leg{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--grau);margin-top:8px}
+.leg span{display:flex;align-items:center;gap:5px}
+.dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+.zone{display:inline-block;width:20px;height:20px;border-radius:4px;font-size:11px;font-weight:700;text-align:center;line-height:20px;color:#0b0d11}
+.zP{background:var(--p);color:#fff}.zS{background:var(--s);color:#fff}.zW{background:var(--w)}.zL{background:var(--l);color:#fff}.zE{background:var(--e);color:#fff}
+.karte-raum{background:var(--karte);border:1px solid var(--rand);border-radius:10px;padding:18px;overflow-x:auto}
+.grundriss{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:52px;gap:5px;min-width:760px}
+.r{border-radius:6px;padding:6px 8px;font-size:11.5px;line-height:1.3;border:1px solid rgba(255,255,255,.14);display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.r b{font-size:12.5px;display:block}
+.r small{color:rgba(255,255,255,.72);font-size:10.5px}
+.rP{background:rgba(224,66,106,.32);border-color:var(--p)}
+.rS{background:rgba(61,139,253,.26);border-color:var(--s)}
+.rW{background:rgba(240,160,32,.26);border-color:var(--w)}
+.rL{background:rgba(107,114,128,.28);border-color:var(--l)}
+.rE{background:rgba(155,89,208,.26);border-color:var(--e)}
+.rPack{background:rgba(34,197,94,.3);border-color:var(--gs)}
+.rWeg{background:transparent;border:1px dashed var(--rand);color:var(--grau)}
+.hinweis{background:rgba(240,160,32,.1);border-left:3px solid var(--w);padding:11px 14px;border-radius:0 7px 7px 0;margin:14px 0;font-size:14px}
+.warnung{background:rgba(224,66,106,.12);border-left:3px solid var(--p);padding:11px 14px;border-radius:0 7px 7px 0;margin:14px 0;font-size:14px}
+.ok{background:rgba(34,197,94,.1);border-left:3px solid var(--gs);padding:11px 14px;border-radius:0 7px 7px 0;margin:14px 0;font-size:14px}
+.tag{display:inline-block;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:600;background:var(--rand);color:var(--grau)}
+.tag.up{background:rgba(34,197,94,.2);color:#4ade80}
+.tag.down{background:rgba(224,66,106,.2);color:#f87171}
+.tag.tot{background:rgba(155,89,208,.2);color:#c084fc}
+.fuss{margin-top:44px;padding-top:16px;border-top:1px solid var(--rand);color:var(--grau);font-size:12.5px}
+@media(max-width:700px){.bal .t{display:none}.grundriss{min-width:620px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Finelli — Marktanalyse und Lagerordnung</h1>
+<p class="sub">Datenstand 22.07.2026 · Quelle: Shopify-Export <code>orders_export_1.csv</code>, 2'111 Bestellungen, 3'316 Positionen, Zeitraum 02.01.2026 bis 22.07.2026 · ausgewertet wurden ausschliesslich Artikel, Mengen und Daten, keine Kundendaten</p>
+
+<div class="karten">
+  <div class="k"><div class="zahl">97</div><div class="lab">Stück letzte 7 Tage</div></div>
+  <div class="k"><div class="zahl">545</div><div class="lab">Stück letzte 30 Tage</div></div>
+  <div class="k"><div class="zahl">1'284</div><div class="lab">Stück letzte 90 Tage</div></div>
+  <div class="k warn"><div class="zahl">44 %</div><div class="lab">der 30-Tage-Menge war Frauenfeld-Merch</div></div>
+  <div class="k gut"><div class="zahl">45 %</div><div class="lab">der Stück gehen über den Laden (POS)</div></div>
+</div>
+
+<div class="warnung">
+<b>Das Wichtigste zuerst:</b> Der Frauenfeld-Effekt ist bereits vorbei. In den letzten 30 Tagen waren 238 von 545 Stück Openair-Merch (44 %). In den letzten 7 Tagen sind es noch 5 von 97 Stück (5 %). Das Merch darf deshalb <b>nicht</b> nach vorne ins Lager, es gehört in die Abverkaufs-Zone.
+</div>
+
+<h2>1. Verlauf und Prognose</h2>
+<div class="chart">
+  <div class="balken" id="wochen"></div>
+  <div class="leg">
+    <span><i class="dot" style="background:var(--s)"></i> Normalwoche</span>
+    <span><i class="dot" style="background:var(--e)"></i> Frauenfeld-Woche</span>
+    <span><i class="dot" style="background:var(--gs)"></i> Prognose</span>
+    <span>Stück pro Woche, Montag als Wochenstart</span>
+  </div>
+</div>
+
+<div class="hinweis">
+<b>Was die Kurve sagt:</b> Die Woche ab 06.07. brachte 283 Stück bei 194 Bestellungen, das ist der Bestellrekord des Jahres und rund 2,6-mal eine Normalwoche. Bereits die Folgewoche fiel auf 96 Stück zurück. Bemerkenswert: die mengenmässig stärkste Woche des Jahres war der 02.03. mit 242 Stück ganz ohne Event. Frauenfeld hat also vor allem <b>viele kleine Bestellungen</b> gebracht, nicht die grösste Menge.
+</div>
+
+<h3>Prognose der nächsten 4 Wochen</h3>
+<p>Basis ist die Rate der letzten 7 Tage, gewichtet mit 30 und 90 Tagen, Event-Artikel laufen aus. Erwartet werden <b>90 bis 120 Stück pro Woche</b>, also zurück auf Normalniveau. Ein zweiter Schub kommt erfahrungsgemäss erst mit der Herbst- und Winterware.</p>
+
+<div class="warnung">
+<b>Gegen die Zahl im Kopf:</b> Aus dem Gespräch kam "3'000 bis 5'000 Orders pro Monat". Der Export zeigt 2'111 Bestellungen in rund 6,7 Monaten, das sind etwa <b>315 pro Monat</b> oder 10 pro Tag. Selbst die Rekordwoche lag bei 194. Falls es weitere Exportdateien gibt, bitte nachliefern. Andernfalls ist die Lagerplanung auf 10 bis 15 Bestellungen pro Tag auszulegen, nicht auf 100.
+</div>
+
+<h2>2. Was läuft gerade wirklich</h2>
+
+<h3>Kategorien im Zeitvergleich (Anteil an der Menge)</h3>
+<div class="chart" id="kats"></div>
+<div class="hinweis">
+Der T-Shirt-Anteil sinkt von 47 % (30 Tage) auf 26 % (7 Tage). Genau dieser Rückgang ist der auslaufende Frauenfeld-Effekt, das Merch waren fast alles T-Shirts. Gleichzeitig steigt der Anteil von Hosen, Jacken und Caps wieder. Das Sortiment normalisiert sich.
+</div>
+
+<h3>Die echten Renner (ohne Event-Merch)</h3>
+<div class="scroll">
+<table>
+<thead><tr><th>Artikel</th><th>Kategorie</th><th class="num">7 T.</th><th class="num">30 T.</th><th class="num">90 T.</th><th class="num">Trend</th><th>Zone</th></tr></thead>
+<tbody>
+<tr><td><b>FINELLI Camo Cargo Shorts</b></td><td>Cargo/Hose</td><td class="num">11</td><td class="num">28</td><td class="num">54</td><td class="num"><span class="tag up">+68 %</span></td><td><span class="zone zP">P</span></td></tr>
+<tr><td><b>I'm a Zurich Baby T-Shirt</b></td><td>T-Shirt</td><td class="num">7</td><td class="num">7</td><td class="num">7</td><td class="num"><span class="tag up">neu</span></td><td><span class="zone zP">P</span></td></tr>
+<tr><td><b>Swiss Baddie Cap</b></td><td>Cap</td><td class="num">6</td><td class="num">30</td><td class="num">30</td><td class="num"><span class="tag">stabil</span></td><td><span class="zone zP">P</span></td></tr>
+<tr><td><b>Star T-Shirt</b></td><td>T-Shirt</td><td class="num">3</td><td class="num">16</td><td class="num">44</td><td class="num"><span class="tag down">−20 %</span></td><td><span class="zone zP">P</span></td></tr>
+<tr><td><b>FINELLI Pant Chain</b></td><td>Accessoire</td><td class="num">3</td><td class="num">6</td><td class="num">15</td><td class="num"><span class="tag up">+114 %</span></td><td><span class="zone zP">P</span></td></tr>
+<tr><td>Children Of The Internet T-Shirt</td><td>T-Shirt</td><td class="num">2</td><td class="num">6</td><td class="num">17</td><td class="num"><span class="tag up">+43 %</span></td><td><span class="zone zP">P</span></td></tr>
+<tr><td>FINELLI Distorted Logo Cream T-Shirt</td><td>T-Shirt</td><td class="num">2</td><td class="num">9</td><td class="num">12</td><td class="num"><span class="tag">stabil</span></td><td><span class="zone zP">P</span></td></tr>
+<tr><td>FINELLI Denim Carpenter Shorts</td><td>Jeans</td><td class="num">2</td><td class="num">5</td><td class="num">11</td><td class="num"><span class="tag up">+71 %</span></td><td><span class="zone zP">P</span></td></tr>
+<tr><td>Nylon Windbreaker</td><td>Jacke</td><td class="num">2</td><td class="num">2</td><td class="num">2</td><td class="num"><span class="tag up">neu</span></td><td><span class="zone zP">P</span></td></tr>
+<tr><td>Wild West Zipper Hoodie (3 Farben)</td><td>Hoodie</td><td class="num">0</td><td class="num">8</td><td class="num">75</td><td class="num"><span class="tag down">Saison</span></td><td><span class="zone zW">W</span></td></tr>
+<tr><td>Baggy Sweatpants (3 Farben)</td><td>Cargo/Hose</td><td class="num">0</td><td class="num">2</td><td class="num">69</td><td class="num"><span class="tag down">Saison</span></td><td><span class="zone zW">W</span></td></tr>
+<tr><td>FINELLI Denim Pants (Brown / Light Grey)</td><td>Jeans</td><td class="num">1</td><td class="num">2</td><td class="num">33</td><td class="num"><span class="tag down">Saison</span></td><td><span class="zone zW">W</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="ok">
+<b>Der klare Nummer-eins-Artikel ist die Camo Cargo Shorts.</b> 11 Stück in 7 Tagen, 28 in 30, 54 in 90, und als einziger grosser Artikel mit steigender Rate. Sie gehört auf den besten Platz direkt am Packtisch, zusammen mit dem Zurich Baby T-Shirt (aus dem Stand 7 Stück in einer Woche) und der Swiss Baddie Cap.
+</div>
+
+<h3>Event-Merch: 9 Artikel, die Platz blockieren</h3>
+<div class="scroll">
+<table>
+<thead><tr><th>Artikel</th><th class="num">30 Tage</th><th class="num">7 Tage</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Design Contest Winner Openair Frauenfeld</td><td class="num">60</td><td class="num">0</td><td><span class="tag tot">tot</span></td></tr>
+<tr><td>I'm a OAF Baby (T-Shirt)</td><td class="num">42</td><td class="num">3</td><td><span class="tag tot">läuft aus</span></td></tr>
+<tr><td>Lineup Print Black</td><td class="num">30</td><td class="num">1</td><td><span class="tag tot">läuft aus</span></td></tr>
+<tr><td>Swiss Map Timetable</td><td class="num">28</td><td class="num">0</td><td><span class="tag tot">tot</span></td></tr>
+<tr><td>Lineup Print White</td><td class="num">21</td><td class="num">0</td><td><span class="tag tot">tot</span></td></tr>
+<tr><td>I Love OAF 2026</td><td class="num">19</td><td class="num">0</td><td><span class="tag tot">tot</span></td></tr>
+<tr><td>I'm a OAF Baby (Hoodie)</td><td class="num">17</td><td class="num">1</td><td><span class="tag tot">läuft aus</span></td></tr>
+<tr><td>People I met Openair Frauenfeld</td><td class="num">13</td><td class="num">0</td><td><span class="tag tot">tot</span></td></tr>
+<tr><td>Grand Hotel Openair Frauenfeld</td><td class="num">8</td><td class="num">0</td><td><span class="tag tot">tot</span></td></tr>
+</tbody>
+</table>
+</div>
+<p>Zusammen 238 Stück und rund CHF 11'600 Umsatz in 30 Tagen, davon in den letzten 7 Tagen noch 5 Stück. Diese Ware ist jahresgebunden ("2026") und verliert ab jetzt weiter an Wert. Empfehlung: in die Abverkaufszone, im Laden sichtbar platzieren, nicht nachproduzieren.</p>
+
+<h2>3. Grössen: die Greifhöhen-Reihenfolge</h2>
+<div class="chart">
+  <div class="stapel">
+    <div style="flex:264;background:var(--gm)">M 264</div>
+    <div style="flex:188;background:var(--gl)">L 188</div>
+    <div style="flex:175;background:var(--gs)">S 175</div>
+    <div style="flex:87;background:var(--xs)">XS 87</div>
+    <div style="flex:82;background:var(--gxl)">XL 82</div>
+    <div style="flex:28;background:var(--gxxl)">XXL</div>
+  </div>
+  <div class="leg"><span>Stück je Grösse, letzte 90 Tage. Hosengrössen (30/32/34) separat: 32 ist mit 33 Stück die häufigste.</span></div>
+</div>
+<div class="ok">
+<b>Daraus folgt die Regalhöhe:</b> M und L auf Greifhöhe (etwa 90 bis 150 cm), S direkt daneben, XS und XL eine Ebene darüber oder darunter, XXL ganz oben. Das deckt sich mit der Vermutung aus der Layout-Spec, ist jetzt aber mit echten Zahlen belegt. Farblegende bleibt: XS violett, S grün, M blau, L gelb, XL rot, XXL grau.
+</div>
+
+<h2>4. Kanäle: der Laden ist fast so gross wie der Shop</h2>
+<div class="chart">
+  <div class="stapel">
+    <div style="flex:633;background:var(--s)">Online 633</div>
+    <div style="flex:571;background:var(--w)">Laden POS 571</div>
+    <div style="flex:75;background:var(--l);color:#fff">Entwurf 75</div>
+  </div>
+  <div class="leg"><span>Stück letzte 90 Tage nach Verkaufskanal</span></div>
+</div>
+<p>45 % der Stück gehen über die Ladenkasse. Für die Lagerordnung heisst das: der Nachschub in den Laden ist genauso wichtig wie die Packstation. Beide Zonen brauchen die gleichen Artikel griffbereit, und das ist genau die Zone P.</p>
+
+<h2>5. Lagerkarte, Draufsicht</h2>
+<div class="hinweis">
+<b>Grundriss ist ein Vorschlag auf Basis der Fotos vom 22.07.</b> Die echten Masse, die Anzahl Regale und die Anzahl Böden werden beim Rundgang eingetragen. Die Zonenlogik darunter gilt unabhängig vom genauen Grundriss.
+</div>
+<div class="karte-raum">
+<div class="grundriss">
+  <div class="r rPack" style="grid-column:1/4;grid-row:1/3"><b>Packstation</b><small>Tisch, Etikettendrucker, Kartons, Versandbeutel · Ausgang</small></div>
+  <div class="r rP" style="grid-column:4/7;grid-row:1"><b>P1 · Renner</b><small>Camo Cargo Shorts</small></div>
+  <div class="r rP" style="grid-column:7/10;grid-row:1"><b>P2 · Renner</b><small>Zurich Baby Tee, Caps</small></div>
+  <div class="r rE" style="grid-column:10/13;grid-row:1"><b>E · Abverkauf</b><small>Frauenfeld-Merch 2026</small></div>
+  <div class="r rWeg" style="grid-column:4/13;grid-row:2">Hauptgang · Laufweg Packstation zu Regalen</div>
+  <div class="r rP" style="grid-column:4/7;grid-row:3"><b>P3 · Renner</b><small>Star Tee, Distorted Logo, Pant Chain</small></div>
+  <div class="r rS" style="grid-column:7/10;grid-row:3"><b>S1 · Standard</b><small>Denim, Carpenter Shorts</small></div>
+  <div class="r rS" style="grid-column:10/13;grid-row:3"><b>S2 · Standard</b><small>Tees, Sweatshorts</small></div>
+  <div class="r rS" style="grid-column:1/4;grid-row:3"><b>S3 · Laden-Nachschub</b><small>gleiche Artikel wie P, für Zürich</small></div>
+  <div class="r rWeg" style="grid-column:1/13;grid-row:4">Querweg</div>
+  <div class="r rW" style="grid-column:1/5;grid-row:5"><b>W1 · Saison</b><small>Wild West Zipper Hoodies</small></div>
+  <div class="r rW" style="grid-column:5/9;grid-row:5"><b>W2 · Saison</b><small>Baggy Sweatpants, Denim Pants</small></div>
+  <div class="r rW" style="grid-column:9/13;grid-row:5"><b>W3 · Saison</b><small>Jacken, Leder, Winter</small></div>
+  <div class="r rL" style="grid-column:1/7;grid-row:6"><b>L1 · Langsamdreher</b><small>Nebenraum: alte Kollektionen, Einzelstücke</small></div>
+  <div class="r rL" style="grid-column:7/13;grid-row:6"><b>L2 · Langsamdreher</b><small>Nebenraum: teure Einzelteile, Restgrössen</small></div>
+</div>
+<div class="leg" style="margin-top:14px">
+  <span><i class="dot" style="background:var(--gs)"></i> Packstation</span>
+  <span><i class="dot" style="background:var(--p)"></i> P — Renner, kürzester Weg</span>
+  <span><i class="dot" style="background:var(--s)"></i> S — Standard</span>
+  <span><i class="dot" style="background:var(--w)"></i> W — Saison</span>
+  <span><i class="dot" style="background:var(--e)"></i> E — Event-Abverkauf</span>
+  <span><i class="dot" style="background:var(--l)"></i> L — Langsamdreher</span>
+</div>
+</div>
+
+<h3>Die Regel dahinter</h3>
+<table>
+<thead><tr><th>Zone</th><th>Was dort liegt</th><th>Warum dort</th><th>Anzahl Artikel</th></tr></thead>
+<tbody>
+<tr><td><span class="zone zP">P</span></td><td>Artikel mit Verkauf in den letzten 7 Tagen und steigender oder stabiler Rate</td><td>Kürzester Laufweg vom Packtisch. Diese Artikel machen den Grossteil der täglichen Griffe aus</td><td class="num">9 bis 12</td></tr>
+<tr><td><span class="zone zS">S</span></td><td>Artikel mit Verkauf in den letzten 30 Tagen</td><td>Zweite Reihe, noch ohne Umweg erreichbar</td><td class="num">rund 40</td></tr>
+<tr><td><span class="zone zW">W</span></td><td>Hoodies, Sweatpants, Jacken, Denim Pants</td><td>Verkaufen sich Oktober bis März stark, jetzt fast nicht. Kommen im Herbst nach vorne</td><td class="num">rund 25</td></tr>
+<tr><td><span class="zone zE">E</span></td><td>Frauenfeld-Merch 2026</td><td>Abverkauf, verliert mit jedem Monat Wert. Sichtbar, aber nicht auf dem besten Platz</td><td class="num">9</td></tr>
+<tr><td><span class="zone zL">L</span></td><td>Kein Verkauf in 30 Tagen</td><td>Nebenräume. Weiter Weg ist hier egal, es wird selten gegriffen</td><td class="num">Rest</td></tr>
+</tbody>
+</table>
+
+<div class="hinweis">
+<b>Saison-Regel, damit die Karte nicht einfriert:</b> Die Zonen P und W tauschen zweimal im Jahr die Plätze. Anfang Oktober ziehen Hoodies, Sweatpants und Jacken nach vorne, die Shorts und leichten Tees nach hinten. Anfang April zurück. Das sind zwei Umräum-Termine im Jahr, je etwa ein halber Tag.
+</div>
+
+<h2>6. Was diese Analyse nicht kann</h2>
+<ul>
+<li><b>Lagerbestand ist nicht enthalten.</b> Ausgewertet sind Verkäufe, nicht was im Regal liegt. Der Shopify-Bestand gilt laut eigener Aussage nur zu rund 50 % als verlässlich, deshalb ist er hier bewusst nicht als Grundlage verwendet worden.</li>
+<li><b>Keine Vorjahresdaten.</b> Der Export beginnt am 02.01.2026. Die Saison-Aussage stützt sich auf den Verlauf Januar bis Juli innerhalb dieses Jahres, nicht auf einen Vorjahresvergleich.</li>
+<li><b>508 verschiedene Artikelnamen</b> stecken im Export, aber nur 154 hatten in 30 Tagen einen Verkauf. Ein Teil der Namen sind offensichtlich von Hand an der Kasse eingetippte Bezeichnungen wie "Rockstar shirt black M" oder "Eventshirt size m". Diese Positionen lassen sich keinem sauberen Artikel zuordnen und verfälschen jede Auswertung. Das ist ein eigener Befund und gehört vor der Inventur bereinigt.</li>
+<li><b>Frauenfeld-Datum nicht extern verifiziert.</b> Die Zuordnung stützt sich auf die Artikelnamen und den Bestellgipfel am 06.07.2026.</li>
+</ul>
+
+<p class="fuss">
+Erstellt 22.07.2026 · Datenquelle Shopify-Export, ausgewertet ohne Kundendaten · Grundriss und Zonen sind Vorschläge zur Abstimmung mit dem Inhaber · Zahlen ohne Beleg sind als solche markiert
+</p>
+
+</div>
+
+<script>
+const wochen = [
+ ["29.12",46],["05.01",106],["12.01",197],["19.01",59],["26.01",116],
+ ["02.02",190],["09.02",151],["16.02",46],["23.02",124],["02.03",242],
+ ["09.03",156],["16.03",80],["23.03",120],["30.03",157],["06.04",148],
+ ["13.04",84],["20.04",104],["27.04",130],["04.05",73],["11.05",80],
+ ["18.05",79],["25.05",43],["01.06",102],["08.06",119],["15.06",47],
+ ["22.06",69],["29.06",67],["06.07",283],["13.07",96],["20.07",30]
+];
+const prognose = [["27.07",105],["03.08",110],["10.08",100],["17.08",115]];
+const maxW = 300;
+const cont = document.getElementById("wochen");
+wochen.forEach(([t,v],i)=>{
+  const d = document.createElement("div");
+  d.className = "bal" + (t==="06.07" ? " event" : "");
+  d.innerHTML = '<div class="v">'+(v>=100||t==="06.07"?v:"")+'</div><div class="b" style="height:'+Math.round(v/maxW*160)+'px"></div><div class="t">'+t+'</div>';
+  cont.appendChild(d);
+});
+prognose.forEach(([t,v])=>{
+  const d = document.createElement("div");
+  d.className = "bal prog";
+  d.innerHTML = '<div class="v">'+v+'</div><div class="b" style="height:'+Math.round(v/maxW*160)+'px"></div><div class="t">'+t+'</div>';
+  cont.appendChild(d);
+});
+
+const katDaten = {
+  "7 Tage":  {"T-Shirt":25,"Sonstiges":23,"Cargo/Hose":14,"Jacke":8,"Cap":7,"Jeans":6,"Hoodie":6,"Shorts":4},
+  "30 Tage": {"T-Shirt":255,"Sonstiges":106,"Cargo/Hose":52,"Cap":34,"Hoodie":32,"Jeans":26,"Jacke":14,"Shorts":12},
+  "90 Tage": {"T-Shirt":410,"Sonstiges":236,"Cargo/Hose":198,"Jeans":142,"Hoodie":118,"Shorts":54,"Jacke":43,"Cap":39}
+};
+const farben = {"T-Shirt":"#3b82f6","Sonstiges":"#94a3b8","Cargo/Hose":"#22c55e","Jeans":"#8b5cf6",
+                "Hoodie":"#eab308","Jacke":"#ef4444","Cap":"#06b6d4","Shorts":"#f97316"};
+const kc = document.getElementById("kats");
+Object.entries(katDaten).forEach(([label,werte])=>{
+  const total = Object.values(werte).reduce((a,b)=>a+b,0);
+  let html = '<div style="font-size:13px;color:var(--grau);margin:12px 0 2px">'+label+' — '+total+' Stück</div><div class="stapel">';
+  Object.entries(werte).forEach(([k,v])=>{
+    const pct = v/total*100;
+    html += '<div style="flex:'+v+';background:'+farben[k]+'">'+(pct>7?k:"")+'</div>';
+  });
+  kc.innerHTML += html + '</div>';
+});
+let legHtml = '<div class="leg">';
+Object.entries(farben).forEach(([k,c])=>{ legHtml += '<span><i class="dot" style="background:'+c+'"></i>'+k+'</span>'; });
+kc.innerHTML += legHtml + '</div>';
+</script>
+</body>
+</html>

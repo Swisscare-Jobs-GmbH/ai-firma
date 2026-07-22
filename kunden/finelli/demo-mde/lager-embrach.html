@@ -214,30 +214,39 @@ const szf=s=>SZF[s]||'#5b5860';
 const LEGEND=['XS','S','M','L','XL','XXL'];
 
 /* ===== Katalog (Modelle) — Faecher: Front A* / Reserve R* / UG U* / Embrach-Zone ===== */
-/* Embrach-Zonen: P=Packzone (Top/A), S=Standard, W=Saison/Winter, L=Langsamdreher/D */
+/* Embrach-Zonen: P=Packzone (Top/A), S=Standard, W=Saison/Winter, L=Langsamdreher/D, E=Event-Abverkauf */
+/* Artikel + Zonen aus der Verkaufs-Analyse 22.07.2026 (Shopify-Export, 7/30/90 Tage).
+   Feld v = {d7,d30,d90} echte Verkaufsmengen. Bestandszahlen q bleiben Beispielwerte
+   (Shopify-Bestand gilt nur zu ~50% als verlaesslich, darum nicht als Wahrheit gesetzt). */
 const CAT=[
- {id:'HOOD-01',name:'Hoodie Classic',kat:'Hoodies',sizes:['S','M','L','XL'],abc:'A',online:55,typ:'nos',
-  fach:{front:'A1',reserve:'R1',ug:'U1',embrach:'P1'}, q:{front:[6,0,5,3],reserve:[3,4,3,2],ug:[5,6,4,3],embrach:[10,3,8,6]}},
- {id:'TEE-02',name:'Tee Box-Logo',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',
-  fach:{front:'A2',reserve:'R2',ug:'U2',embrach:'P2'}, q:{front:[9,7,6,4],reserve:[5,5,4,3],ug:[8,7,6,4],embrach:[16,14,11,8]}},
- {id:'TEE-05',name:'Heavy Tee',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:85,typ:'nos',
-  fach:{front:'A3',reserve:'R3',ug:'U3',embrach:'P3'}, q:{front:[1,1,0,0],reserve:[0,1,0,0],ug:[2,2,1,1],embrach:[9,11,8,6]}},
- {id:'COACH-01',name:'Jacke Coach',kat:'Jacken',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',
-  fach:{front:'A4',reserve:'R4',ug:'U4',embrach:'P4'}, q:{front:[4,5,3,2],reserve:[2,3,2,1],ug:[3,4,3,2],embrach:[6,8,5,5]}},
- {id:'CARGO-01',name:'Cargo Pant',kat:'Hosen',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'nos',
-  fach:{front:'A5',reserve:'R5',ug:'U5',embrach:'S1'}, q:{front:[4,4,5,4],reserve:[3,3,3,2],ug:[4,4,5,3],embrach:[7,8,9,6]}},
- {id:'LS-01',name:'Longsleeve Script',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'nos',
-  fach:{front:'A6',reserve:'R6',ug:'U6',embrach:'S2'}, q:{front:[7,6,6,5],reserve:[4,4,3,3],ug:[6,5,5,4],embrach:[10,9,8,7]}},
- {id:'CAP-01',name:'Cap Sport',kat:'Caps',sizes:['One Size'],abc:'B',online:40,typ:'nos',
-  fach:{front:'A7',reserve:'R7',ug:'U7',embrach:'S3'}, q:{front:[3],reserve:[4],ug:[6],embrach:[15]}},
- {id:'BEAN-01',name:'Beanie Logo',kat:'Caps',sizes:['One Size'],abc:'C',online:35,typ:'nos',
-  fach:{front:'A8',reserve:'R8',ug:'U8',embrach:'S4'}, q:{front:[2],reserve:[2],ug:[3],embrach:[6]}},
- {id:'SOCK-01',name:'Socken 2er-Pack',kat:'Accessoires',sizes:['39-42','43-46'],abc:'C',online:30,typ:'nos',
-  fach:{front:'A9',reserve:'R9',ug:'U9',embrach:'S5'}, q:{front:[14,11],reserve:[8,6],ug:[10,8],embrach:[25,22]}},
- {id:'JACK-01',name:'Winterjacke Alpin',kat:'Jacken',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'saison',geplant:'01.09.',
-  fach:{front:'—',reserve:'—',ug:'U10',embrach:'W1'}, q:{front:[0,0,0,0],reserve:[0,0,0,0],ug:[3,4,4,2],embrach:[8,10,9,5]}},
- {id:'JEAN-07',name:'Jeans Slim (Vorjahr)',kat:'Hosen',sizes:['S','M','L','XL'],abc:'D',online:20,typ:'nos',
-  fach:{front:'A10',reserve:'R10',ug:'U11',embrach:'L1'}, q:{front:[1,0,1,0],reserve:[0,1,0,0],ug:[1,0,0,1],embrach:[2,1,2,1]}}
+ {id:'CAMO-SHORT',name:'FINELLI Camo Cargo Shorts',kat:'Shorts',sizes:['S','M','L','XL'],abc:'A',online:55,typ:'nos',v:{d7:11,d30:28,d90:54},
+  fach:{front:'A1',reserve:'R1',ug:'U1',embrach:'P1'}, q:{front:[5,8,6,3],reserve:[3,5,4,2],ug:[4,6,5,3],embrach:[9,14,11,6]}},
+ {id:'ZUR-BABY',name:"I'm a Zurich Baby T-Shirt",kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',v:{d7:7,d30:7,d90:7},
+  fach:{front:'A2',reserve:'R2',ug:'U2',embrach:'P2'}, q:{front:[4,6,4,2],reserve:[3,4,3,2],ug:[5,7,5,3],embrach:[8,12,9,5]}},
+ {id:'BADDIE-CAP',name:'FINELLI Swiss Baddie Cap',kat:'Caps',sizes:['One Size'],abc:'A',online:45,typ:'nos',v:{d7:6,d30:30,d90:30},
+  fach:{front:'A3',reserve:'R3',ug:'U3',embrach:'P3'}, q:{front:[6],reserve:[5],ug:[8],embrach:[18]}},
+ {id:'STAR-TEE',name:'Star T-Shirt',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'A',online:50,typ:'nos',v:{d7:3,d30:16,d90:44},
+  fach:{front:'A4',reserve:'R4',ug:'U4',embrach:'P4'}, q:{front:[3,7,5,2],reserve:[2,4,3,1],ug:[4,6,4,2],embrach:[7,13,10,5]}},
+ {id:'PANT-CHAIN',name:'FINELLI Pant Chain',kat:'Accessoires',sizes:['One Size'],abc:'A',online:60,typ:'nos',v:{d7:3,d30:6,d90:15},
+  fach:{front:'A5',reserve:'R5',ug:'U5',embrach:'P5'}, q:{front:[4],reserve:[3],ug:[5],embrach:[12]}},
+ {id:'COTI-TEE',name:'Children Of The Internet T-Shirt',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'B',online:50,typ:'nos',v:{d7:2,d30:6,d90:17},
+  fach:{front:'A6',reserve:'R6',ug:'U6',embrach:'S1'}, q:{front:[2,4,3,1],reserve:[1,3,2,1],ug:[3,4,3,2],embrach:[5,9,7,3]}},
+ {id:'DIST-TEE',name:'FINELLI Distorted Logo Cream T-Shirt',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'nos',v:{d7:2,d30:9,d90:12},
+  fach:{front:'A7',reserve:'R7',ug:'U7',embrach:'S2'}, q:{front:[2,4,3,2],reserve:[1,2,2,1],ug:[2,4,3,2],embrach:[4,8,6,3]}},
+ {id:'CARP-SHORT',name:'FINELLI Denim Carpenter Shorts',kat:'Shorts',sizes:['S','M','L','XL'],abc:'B',online:45,typ:'nos',v:{d7:2,d30:5,d90:11},
+  fach:{front:'A8',reserve:'R8',ug:'U8',embrach:'S3'}, q:{front:[2,3,3,1],reserve:[1,2,2,1],ug:[2,3,2,1],embrach:[4,7,6,3]}},
+ {id:'WINDBR',name:'Nylon Windbreaker',kat:'Jacken',sizes:['S','M','L','XL'],abc:'B',online:50,typ:'nos',v:{d7:2,d30:2,d90:2},
+  fach:{front:'A9',reserve:'R9',ug:'U9',embrach:'S4'}, q:{front:[1,2,2,1],reserve:[1,1,1,1],ug:[2,3,2,1],embrach:[3,5,4,2]}},
+ {id:'WILDWEST',name:'Wild West Zipper Hoodie Brown',kat:'Hoodies',sizes:['S','M','L','XL'],abc:'B',online:55,typ:'saison',geplant:'01.10.',v:{d7:0,d30:3,d90:31},
+  fach:{front:'—',reserve:'—',ug:'U10',embrach:'W1'}, q:{front:[0,0,0,0],reserve:[0,0,0,0],ug:[3,5,4,2],embrach:[7,11,9,5]}},
+ {id:'BAGGY-SWP',name:'Baggy Sweatpants Black',kat:'Hosen',sizes:['S','M','L','XL'],abc:'B',online:50,typ:'saison',geplant:'01.10.',v:{d7:0,d30:1,d90:27},
+  fach:{front:'—',reserve:'—',ug:'U11',embrach:'W2'}, q:{front:[0,0,0,0],reserve:[0,0,0,0],ug:[2,4,3,2],embrach:[6,10,8,4]}},
+ {id:'OAF-BABY',name:"FINELLI I'm a OAF Baby Openair Frauenfeld 2026",kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'D',online:70,typ:'event',v:{d7:3,d30:42,d90:42},
+  fach:{front:'A10',reserve:'—',ug:'—',embrach:'E1'}, q:{front:[3,5,4,2],reserve:[0,0,0,0],ug:[0,0,0,0],embrach:[11,18,14,8]}},
+ {id:'OAF-LINEUP',name:'FINELLI Lineup Print Black Openair Frauenfeld 2026',kat:'T-Shirts',sizes:['S','M','L','XL'],abc:'D',online:70,typ:'event',v:{d7:1,d30:30,d90:30},
+  fach:{front:'A11',reserve:'—',ug:'—',embrach:'E2'}, q:{front:[2,4,3,2],reserve:[0,0,0,0],ug:[0,0,0,0],embrach:[9,15,12,6]}},
+ {id:'JEAN-ALT',name:'Logo Jeans Shorts (Vorsaison)',kat:'Hosen',sizes:['S','M','L','XL'],abc:'D',online:20,typ:'nos',v:{d7:0,d30:0,d90:12},
+  fach:{front:'—',reserve:'—',ug:'U12',embrach:'L1'}, q:{front:[0,0,0,0],reserve:[0,0,0,0],ug:[1,2,1,1],embrach:[3,4,3,2]}}
 ];
 const getC=id=>CAT.find(c=>c.id===id);
 const si=(c,s)=>c.sizes.indexOf(s);
@@ -248,16 +257,16 @@ const melde=c=>({A:15,B:12,C:8,D:6}[c.abc]||10);
 
 /* ===== Wareneingang-Warteschlange (was reinkommt) ===== */
 const EINGANG=[
- {id:'TEE-05',size:'M'},{id:'HOOD-01',size:'M'},{id:'COACH-01',size:'L'},
- {id:'CARGO-01',size:'M'},{id:'SOCK-01',size:'39-42'}
+ {id:'CAMO-SHORT',size:'M'},{id:'ZUR-BABY',size:'M'},{id:'STAR-TEE',size:'L'},
+ {id:'CARP-SHORT',size:'M'},{id:'BADDIE-CAP',size:'One Size'}
 ];
 
-/* ===== Pack-Auftraege (Online-Bestellungen, A-Modelle) ===== */
+/* ===== Pack-Auftraege (Online-Bestellungen, A-Modelle aus der 7-Tage-Auswertung) ===== */
 const PA_TPL=[
- {ziel:'Zürich',pos:[['HOOD-01','L',1],['TEE-02','M',1]]},
- {ziel:'Basel',pos:[['TEE-05','M',1]]},
- {ziel:'Winterthur',pos:[['COACH-01','M',1],['SOCK-01','39-42',1]]},
- {ziel:'Bern',pos:[['TEE-02','S',2]]}
+ {ziel:'Zürich',pos:[['CAMO-SHORT','L',1],['ZUR-BABY','M',1]]},
+ {ziel:'Basel',pos:[['CAMO-SHORT','M',1]]},
+ {ziel:'Winterthur',pos:[['STAR-TEE','M',1],['BADDIE-CAP','One Size',1]]},
+ {ziel:'Bern',pos:[['ZUR-BABY','S',2]]}
 ];
 const paNr=i=>'PA-'+YMD+'-'+(i+1);
 const packAnz=3+DOY%2;
@@ -271,7 +280,7 @@ try{if(localStorage.finLagerQ){S.queue=JSON.parse(localStorage.finLagerQ);S.offl
 /* ===== Helfer ===== */
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
-function zoneName(f){const z=f[0];return z==='P'?'Packzone':z==='W'?'Saison':z==='L'?'Langsamdreher':z==='S'?'Standard':'';}
+function zoneName(f){const z=f[0];return z==='P'?'Packzone':z==='W'?'Saison':z==='L'?'Langsamdreher':z==='S'?'Standard':z==='E'?'Abverkauf':'';}
 function toast(t){const el=$('toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2600);}
 function openModal(h){$('mcard').innerHTML=h;$('ov').classList.add('on');}
 function closeModal(){$('ov').classList.remove('on');}
@@ -413,8 +422,9 @@ function lagerkarte(hot){
  hot=hot||[];
  /* hot akzeptiert 'P3' ODER {code:'P3',size:'M'} -> Fuellung leuchtet in Groessen-Farbe beim Greifen */
  const hotMap={};hot.forEach(h=>{if(typeof h==='string')hotMap[h]=null;else if(h&&h.code)hotMap[h.code]=h.size||null;});
- const order=[];[['P',6],['S',6],['W',4],['L',4]].forEach(([p,n])=>{for(let i=1;i<=n;i++)order.push(p+i);});
- const zoneCol={P:'#a8271c',S:'#9a9790',W:'#2f8f8f',L:'#7a5a3a'};/* Zonen-Rahmen geschaerft: Packzone/Standard/Saison/Langsamdreher */
+ /* Laufreihenfolge ab Packplatz: Renner zuerst, Abverkauf und Langsamdreher zuletzt */
+ const order=[];[['P',6],['S',6],['W',4],['E',2],['L',2]].forEach(([p,n])=>{for(let i=1;i<=n;i++)order.push(p+i);});
+ const zoneCol={P:'#a8271c',S:'#9a9790',W:'#2f8f8f',L:'#7a5a3a',E:'#7b4b9e'};/* Zonen-Rahmen geschaerft: Packzone/Standard/Saison/Langsamdreher */
  /* Regal-Balken an den Waenden, in Laufreihenfolge (Runde ab Packplatz) */
  const segs=[
   {x:46,y:256,w:80,h:30,n:2,vert:false,rev:true},   // unten-links
@@ -439,7 +449,7 @@ function lagerkarte(hot){
    s+=`<text x="${c.cx.toFixed(1)}" y="${(c.cy+3.2).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="${isHot?'#fff':'#4b4951'}">${c.code}</text>`;});
  cells.filter(c=>c.code in hotMap).forEach(c=>{const hsz=hotMap[c.code];const ring=hsz?szf(hsz):'#17161a';s+=`<circle class="puls" cx="${c.cx.toFixed(1)}" cy="${c.cy.toFixed(1)}" r="13" fill="none" stroke="${ring}" stroke-width="2.5"/>`;});
  s+='</svg>';
- const leg='<div class="mapleg"><span><i style="background:#a8271c"></i>Packzone</span><span><i style="background:#9a9790"></i>Standard</span><span><i style="background:#2f8f8f"></i>Saison</span><span><i style="background:#7a5a3a"></i>Langsamdreher</span></div>';
+ const leg='<div class="mapleg"><span><i style="background:#a8271c"></i>Packzone</span><span><i style="background:#9a9790"></i>Standard</span><span><i style="background:#2f8f8f"></i>Saison</span><span><i style="background:#7a5a3a"></i>Langsamdreher</span><span><i style="background:#7b4b9e"></i>Abverkauf</span></div>';
  return `<div class="map">${s}${leg}<div class="mut" style="text-align:center;margin-top:6px">Rahmen = Zone · Füllung leuchtet in Grössen-Farbe beim Greifen · Pfeil = Laufrunde.</div></div>`;
 }
 

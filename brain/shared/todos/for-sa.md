@@ -108,3 +108,26 @@ Was: AB schlaegt vor, die harte Regel "Bestehendes NIE ersetzen" zu kippen: eige
 Was tust du: Entscheid A (offener Voll-Anbieter, CLAUDE.md + Angebot + Architektur anpassen), B (beim Aufsetzen bleiben) oder C (Hybrid: Shopify jetzt, eigener Shop als offene Ausbau-Stufe ab Premium). 1 Antwort genuegt, Umsetzung ist vorbereitet.
 Warum jetzt: Termin 22.07 — Deck, Angebot V6 und Phase-1-Architektur haengen alle an diesem Entscheid. Zeit: 10 Min Entscheid.
 <!-- T:3 END -->
+
+<!--
+T: 4
+date: 2026-07-22
+auftraggeber: Session-2026-07-22 (Fund beim /brain-sync-Vorflug)
+wichtigkeit: 1
+sterne: 5
+leverage: high
+thema: [governance, datenschutz]
+kunde: finelli
+skill_used: [brain-sync]
+knowledge_ref: brain/lessons/system/2026-07-22-endkundendaten-in-kunden-exporten.md
+status: active
+deadline: -
+bucket: now
+bucket_reason: "Personendaten liegen in der gepushten Git-Historie; jeder Tag verlaengert die Exposition"
+context_summary: "Ein Shopify-Bestellexport des Kunden (kunden/finelli/orders_export_1.csv, 2,4 MB, 3'316 Zeilen, rund 2'100 Bestellungen) wurde am 22.07. vom automatischen SEA-Sync (Commit 07f3983) mitgenommen und nach origin/master gepusht. Die Datei enthaelt in 79 Spalten unter anderem Email, Billing Name, Billing Address1, Billing Zip, Billing City, Shipping Phone und Phone von rund 2'100 Endkunden von Finelli. Sofortmassnahmen sind erledigt und im selben Commit wie dieser Eintrag: .gitignore deckt jetzt kunden/**/*.csv, orders_export* und customers_export* ab, die Datei ist per git rm --cached aus dem Index genommen und liegt nur noch lokal auf der Platte. Damit ist die weitere Verbreitung gestoppt, ABER die Datei bleibt in allen bereits gepushten Commits lesbar. Die Bereinigung der Historie erfordert einen Force-Push und ist damit ausdruecklich SA-Entscheid, kein Agenten-Handeln (Repo-Regel: kein Force, nur SA merged). Zu klaeren ist zusaetzlich, ob das Repo Swisscare-Jobs-GmbH/ai-firma privat ist (gh CLI war auf dem AB-Rechner nicht installiert, konnte darum nicht geprueft werden) und ob eine Meldepflicht nach revDSG greift."
+-->
+## 🔴 2026-07-22 — T4: Endkundendaten in der Git-Historie (Finelli-Bestellexport)
+Was: Ein Bestellexport mit Name, Mailadresse, Wohnadresse und Telefonnummer von rund 2'100 Endkunden wurde vom Auto-Sync nach origin/master gepusht (Commit 07f3983, 22.07.). Untracken und Ignore-Muster sind erledigt, die Historie ist unveraendert.
+Was tust du: (1) Pruefen, ob `Swisscare-Jobs-GmbH/ai-firma` privat ist. (2) Entscheiden, ob die Historie bereinigt wird (git filter-repo oder BFG plus Force-Push, danach muessen alle Rechner neu klonen) oder ob das Repo als privat akzeptiert wird. (3) Falls das Repo oeffentlich war: mit dem Kunden klaeren, ob eine Meldung nach revDSG noetig ist.
+Warum jetzt: Solange die Commits stehen, sind die Daten fuer jeden lesbar, der Zugriff aufs Repo hat. Zeit: 5 Min Pruefung, 30 Min Bereinigung falls beschlossen.
+<!-- T:4 END -->

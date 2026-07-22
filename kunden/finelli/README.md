@@ -24,7 +24,25 @@ Verkaufs-MVP `C:\dev\finelli-cockpit` (SA-Rechner, Ports 8012/5173) · Produktio
   dem Ja auf SA-Entscheid ([Gate-0-Ausnahme E5](../../brain/decisions/E5-finelli-ki-mitarbeiter-prototyp-vor-ja.md))
   als **Demo fuer Termin 22.07**. Echtbetrieb (Shopify + Live-Research) bleibt hinter Gate E5.
 
+**Stand (22.07.2026) — Lager-Rundgang vor Ort + erste Datenauswertung:**
+- 🟢 **Marktanalyse aus dem echten Bestellexport** (`2026-07-22-marktanalyse-lagerkarte.html`,
+  Doppelklick): 7/30/90-Tage-Fenster, Wochenverlauf mit Prognose, Kategorien, Groessen, Kanaele,
+  plus **2D-Lagerkarte in Draufsicht** mit den Zonen Renner/Standard/Saison/Abverkauf/Langsamdreher.
+- 🔴 **Der Event-Effekt ist bereits vorbei:** Das Festival-Merch machte im 30-Tage-Fenster 44 % der
+  Stueckzahl aus, im 7-Tage-Fenster noch 5 %. Es gehoert in den Abverkauf, nicht nach vorne.
+  Lehre verallgemeinert: `brain/lessons/kunde/2026-07-22-lagerordnung-aus-verkaufsraten-statt-bestand.md`.
+- 🟢 **MDE-Demo `demo-mde/lager-embrach.html` auf die echten Artikel umgestellt** (Mock-Katalog raus,
+  14 reale Artikel mit ihren 7/30/90-Tage-Mengen rein), neue Zone **E = Abverkauf** in Karte und
+  Legende. Klick-bewiesen: Karte oeffnet fehlerfrei, Konsole leer, Klick auf den Top-Artikel laesst
+  das Fach direkt am Packplatz aufleuchten.
+- 🔍 **Zwei Zahlen-Widersprueche offen:** Im Gespraech fiel eine Monats-Bestellmenge, die der Export
+  um rund Faktor 10 unterbietet · der Export enthaelt 508 verschiedene Artikelnamen bei rund 60
+  gepflegten Modellen (Kassen-Freitext). Beides vor der Inventur klaeren.
+- 🔴 **Datenschutz:** Der Rohexport wurde vom Auto-Sync mitgepusht und ist jetzt untrackt +
+  ignoriert. Historie unveraendert → SA-Entscheid **T4** in `brain/shared/todos/for-sa.md`.
+
 **Dateien hier:** firma-profil · schmerz-landkarte · deal-strategie · wert-ranking · ausbau-plan ·
+**marktanalyse-lagerkarte (22.07, Auswertung des Bestellexports + Lager-Zonen)** ·
 feinplan · logistik-research · offene-fragen · antworten-sa · antworten-runde2 ·
 branchen-recherche-markt-schmerzen (19.07) · **bauplan-ki-mitarbeiter (21.07)** ·
 angebots-panel-2026-07-19 · klick-beweis-2026-07-19 ·
