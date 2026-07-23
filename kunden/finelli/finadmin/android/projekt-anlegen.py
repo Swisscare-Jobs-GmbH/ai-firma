@@ -39,6 +39,8 @@ manifest = '''<?xml version="1.0" encoding="utf-8"?>
     android:versionCode="1"
     android:versionName="1.0">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
@@ -214,6 +216,12 @@ public class MainActivity extends Activity {
 
         web.setWebChromeClient(new WebChromeClient() {
             @Override
+            public boolean onConsoleMessage(android.webkit.ConsoleMessage m) {
+                android.util.Log.i("SEALAGER", m.message() + "  (" + m.sourceId() + ":" + m.lineNumber() + ")");
+                return true;
+            }
+
+            @Override
             public void onPermissionRequest(final PermissionRequest anfrage) {
                 runOnUiThread(new Runnable() {
                     public void run() {
@@ -271,7 +279,7 @@ public class MainActivity extends Activity {
             int punkt = name.lastIndexOf('.');
             String endung = punkt >= 0 ? name.substring(punkt + 1).toLowerCase() : "";
             String typ = TYPEN.containsKey(endung) ? TYPEN.get(endung) : "application/octet-stream";
-            WebResourceResponse antwort = new WebResourceResponse(typ, "utf-8", strom);
+            WebResourceResponse antwort = new WebResourceResponse(typ, "utf-8", 200, "OK", new HashMap<String, String>(), strom);
             Map<String, String> kopf = new HashMap<String, String>();
             kopf.put("Cache-Control", "no-store");
             antwort.setResponseHeaders(kopf);

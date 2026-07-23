@@ -288,6 +288,8 @@ nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;
 
 <script>
 "use strict";
+window.onerror = function(m, q, z){ console.log("JS-FEHLER: " + m + " @" + q + ":" + z); };
+window.addEventListener("unhandledrejection", function(e){ console.log("PROMISE-FEHLER: " + e.reason); });
 
 /* SEA Lager. Zwei Standorte: Zuerich (zh) und Embrach (emb).
    Alles lokal auf dem Geraet, kein Netzwerkzugriff im Code. */
@@ -465,6 +467,7 @@ var GERAET = lade("sea.geraet", null);
 if(!GERAET){ GERAET = "g" + Math.round(Math.random() * 1e9).toString(36); sichere("sea.geraet", GERAET); }
 var WARTE = lade(LS.warteschlange, []);
 var VERBUNDEN = null;
+var LETZTER_FEHLER = "";
 
 function kopfZeilen(){
   var k = {"Content-Type": "application/json"};
@@ -490,7 +493,9 @@ function sendeWarteschlange(){
     VERBUNDEN = true;
     zeichneKopf();
     if(WARTE.length) return sendeWarteschlange();
-  }).catch(function(){
+  }).catch(function(e){
+    console.log("sendeWarteschlange FEHLER: " + (e && e.message ? e.message : e));
+    LETZTER_FEHLER = String(e && e.message ? e.message : e);
     VERBUNDEN = false;
     zeichneKopf();
   });
@@ -528,7 +533,9 @@ function vomServer(){
     VERBUNDEN = true;
     zeichneKopf();
     return true;
-  }).catch(function(){
+  }).catch(function(e){
+    console.log("vomServer FEHLER: " + (e && e.message ? e.message : e));
+    LETZTER_FEHLER = String(e && e.message ? e.message : e);
     VERBUNDEN = false;
     zeichneKopf();
     return false;
@@ -1265,6 +1272,7 @@ $("#i-csv").addEventListener("change", function(e){
 });
 document.addEventListener("visibilitychange", function(){ if(document.hidden && laeuft) kameraStoppen(); });
 
+console.log("SEA start, Server=" + SERVER + ", KeyLaenge=" + (APP_KEY ? APP_KEY.length : 0));
 zeichneKopf();
 zeichneKatalog();
 
