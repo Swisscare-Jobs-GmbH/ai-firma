@@ -29,6 +29,7 @@ export default {
       if (pfad === "/webhooks/refunds") return await webhookRetoure(anfrage, env);
       if (pfad === "/api/bestand")      return await apiBestand(anfrage, env);
       if (pfad === "/api/buchung")      return await apiBuchung(anfrage, env);
+      if (pfad === "/api/ean")          return await apiEan(anfrage, env);
       if (pfad === "/api/abgleich")     return await apiAbgleich(anfrage, env);
       return antwort({fehler: "unbekannter Pfad"}, 404);
     } catch (e) {
@@ -382,6 +383,22 @@ async function apiAbgleich(anfrage, env) {
     weiter = nach;
   }
   return antwort({ok: true, varianten: gezaehlt, weiter: weiter});
+}
+
+/* Ein Geraet hat einen Barcode angelernt. Ab jetzt kennen ihn alle Geraete. */
+async function apiEan(anfrage, env) {
+  if (!schluesselStimmt(anfrage, env)) return antwort({fehler: "Kein Zugriff"}, 401);
+  const b = await anfrage.json();
+  const ean = String(b.ean || "").trim();
+  const artikel = normal(b.artikel || b.titel || "");
+  const groesse = normGroesse(b.groesse || "");
+  if (!ean || !artikel || !groesse) return antwort({fehler: "ean, artikel oder groesse fehlt"}, 400);
+
+  await env.DB.prepare("UPDATE bestand SET ean = ? WHERE artikel = ? AND groesse = ?")
+    .bind(ean, artikel, groesse).run();
+  const z = await env.DB.prepare("SELECT titel, groesse, fach, zh, emb FROM bestand WHERE ean = ?")
+    .bind(ean).first();
+  return antwort({ok: true, zeile: z || null});
 }
 
 function schluesselStimmt(anfrage, env) {

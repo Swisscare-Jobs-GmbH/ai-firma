@@ -506,13 +506,19 @@ function vomServer(){
     if(!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }).then(function(d){
-    var neu = {};
+    var neu = {}, kat = [];
     (d.zeilen || []).forEach(function(z){
       if(!neu[z.artikel]) neu[z.artikel] = {titel:z.titel, fach:z.fach || null, g:{}, auf:{}, sl:{}};
       if(z.fach && !neu[z.artikel].fach) neu[z.artikel].fach = z.fach;
       neu[z.artikel].g[z.groesse] = {zh:z.zh || 0, emb:z.emb || 0};
-      if(z.ean) EANS[z.ean] = z.artikel + "|" + z.groesse + "|";
+      var vid = z.artikel + "|" + z.groesse + "|";
+      kat.push({ean:z.ean || "", titel:z.titel, groesse:z.groesse, farbe:"", sku:"",
+                preis:"", handle:z.artikel, vid:vid});
+      if(z.ean) EANS[z.ean] = vid;
     });
+    // Der Server ist die Quelle des Katalogs, nicht mehr die CSV.
+    KATALOG = kat;
+    sichere(LS.katalog, KATALOG);
     // Nur Artikel mit Bestand oder Fach uebernehmen, sonst waeren es 1354 leere Zeilen.
     var gefiltert = {};
     Object.keys(neu).forEach(function(k){
@@ -611,7 +617,16 @@ function findeVariante(code){
   if(!vid) return null;
   return KATALOG.filter(function(x){ return x.vid === vid; })[0] || null;
 }
-function lerneEan(code, vid){ EANS[code] = vid; sichere(LS.eans, EANS); zeichneKopf(); }
+function lerneEan(code, vid){
+  EANS[code] = vid;
+  sichere(LS.eans, EANS);
+  zeichneKopf();
+  var teile = String(vid).split("|");
+  fetch(SERVER + "/api/ean", {
+    method:"POST", headers:kopfZeilen(),
+    body:JSON.stringify({ean:code, artikel:teile[0], groesse:teile[1]})
+  }).catch(function(e){ console.log("lerneEan FEHLER: " + (e && e.message ? e.message : e)); });
+}
 
 function exportEans(){
   var z = ["Handle,Title,Option1 Value,Variant SKU,Variant Barcode"];
@@ -765,7 +780,10 @@ function zeigeAnlernen(ean, suche){
   var q = normal(suche || "");
   var liste = q.length >= 2
     ? KATALOG.filter(function(v){ return normal(v.titel).indexOf(q) >= 0; }).slice(0, 40)
-    : KATALOG.filter(function(v){ return platzFuer(v.titel); }).slice(0, 40);
+    : KATALOG.filter(function(v){
+        var b = bestandFuer(v.titel);
+        return platzFuer(v.titel) || (b && menge(b.daten, v.groesse, "zh") + menge(b.daten, v.groesse, "emb") > 0);
+      }).slice(0, 40);
 
   $("#a-titel").textContent = ean;
   var h = '<div class="karte"><input type="text" id="i-lern" autocomplete="off" value="' + esc(suche || "") + '"></div>';
