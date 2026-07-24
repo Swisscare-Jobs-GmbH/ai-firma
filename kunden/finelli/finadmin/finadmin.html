@@ -38,11 +38,11 @@ input,select{font:inherit;color:inherit}
 .pill.ok{color:#6ee7a0}.pill.warn{color:#f0b355}
 
 main{flex:1;min-height:0;display:flex;flex-direction:column}
-.view{display:none;flex-direction:column;flex:1;min-height:0;padding:14px 15px 12px;gap:12px}
+.view{display:none;flex-direction:column;flex:1;min-height:0}
 .view.on{display:flex}
 .roll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;
-  flex-direction:column;gap:11px}
-.fuss{flex:none;display:flex;flex-direction:column;gap:9px;padding-top:4px}
+  flex-direction:column;gap:11px;padding:14px 15px}
+.fuss{flex:none;display:flex;flex-direction:column;gap:9px;padding:8px 15px calc(10px + env(safe-area-inset-bottom))}
 h1{font-family:Georgia,serif;font-size:21px;margin:0}
 .kopfzeile{display:flex;align-items:baseline;gap:10px;flex:none}
 .kopfzeile .zahl{margin-left:auto;font-size:16px;font-weight:800;color:var(--grau);
@@ -171,6 +171,125 @@ nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;
   box-shadow:var(--schatten);z-index:90;opacity:0;pointer-events:none;transition:opacity .2s;max-width:88%}
 .toast.an{opacity:1}
 .leerstelle{text-align:center;color:var(--grau);font-size:14px;padding:30px 12px}
+
+/* Ort-Tab: Mehrfachauswahl + anwaehlbare Karte */
+.owahl{display:flex;align-items:center;gap:11px;padding:13px 6px;border-bottom:1px solid var(--linie)}
+.owahl:last-child{border-bottom:none}
+.owahl .haupt{flex:1;min-width:0}
+.owahl .ohaken{width:27px;height:27px;border-radius:8px;border:2px solid var(--linie);flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:#fff}
+.owahl.an{background:rgba(47,125,67,.12);border-radius:9px}
+.owahl.an .ohaken{background:var(--gruen);border-color:var(--gruen)}
+.owahl.an .ohaken::after{content:"\2713"}
+.owahl .code{margin-left:auto}
+.karte-box g[data-fach]{cursor:pointer}
+.zielz{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:26px;font-weight:800;
+  line-height:1;font-variant-numeric:tabular-nums}
+.o-namen{font-size:14px;color:var(--grau);line-height:1.4;overflow-wrap:anywhere}
+
+/* Produktbilder */
+.thumb{width:50px;height:50px;border-radius:10px;object-fit:cover;flex:none;
+  border:1px solid var(--linie);background:var(--papier)}
+.thumb-leer{width:50px;height:50px;border-radius:10px;flex:none;border:1px solid var(--linie);
+  background:var(--papier);display:flex;align-items:center;justify-content:center}
+.thumb-leer svg{width:22px;height:22px;stroke:var(--grau);fill:none;stroke-width:1.6}
+.bild-gross{width:100%;max-height:44vh;object-fit:contain;display:block;background:#fff;border-radius:12px}
+.bild-karte{padding:6px;background:#fff}
+
+/* ---- Funktions-Farben (idiotensicher: jede Funktion eine Farbe) ---- */
+:root{
+  --f-info:#2563eb; --f-eingang:#1f9d4d; --f-umlager:#e0611c; --f-bestell:#7c3aed;
+  --f-katalog:#5b6675; --akz:var(--f-info);
+}
+@media (prefers-color-scheme: dark){
+  :root{--f-info:#4f83f7; --f-eingang:#34c56d; --f-umlager:#f5852f; --f-bestell:#a06bf0;
+        --f-katalog:#8590a0}
+}
+:root[data-theme="dark"]{--f-info:#4f83f7; --f-eingang:#34c56d; --f-umlager:#f5852f;
+  --f-bestell:#a06bf0; --f-katalog:#8590a0}
+:root[data-theme="light"]{--f-info:#2563eb; --f-eingang:#1f9d4d; --f-umlager:#e0611c;
+  --f-bestell:#7c3aed; --f-katalog:#5b6675}
+
+.b.akz{background:var(--akz);color:#fff}
+.b.akz.geist{background:transparent;color:var(--ink);border:2px solid var(--akz)}
+
+/* Kopfbalken je Funktion, farbig */
+.kopfbar{display:flex;align-items:center;gap:12px;padding:13px 15px;background:var(--akz);
+  color:#fff;flex:none}
+.kopfbar h1{font-family:Georgia,serif;font-size:20px;margin:0;color:#fff}
+.kopfbar .zahl{margin-left:auto;font-size:14px;font-weight:800;color:rgba(255,255,255,.85);
+  font-variant-numeric:tabular-nums}
+.heimknopf{width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.18);flex:none;
+  display:flex;align-items:center;justify-content:center}
+.heimknopf svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.4;stroke-linecap:round;
+  stroke-linejoin:round}
+
+/* Start-Kacheln */
+#v-heim{padding:16px 15px 20px}
+.heim{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.kachel{border-radius:18px;padding:18px 16px;min-height:132px;display:flex;flex-direction:column;
+  justify-content:space-between;color:#fff;box-shadow:var(--schatten);position:relative;overflow:hidden}
+.kachel:active{transform:scale(.98)}
+.kachel svg{width:34px;height:34px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;
+  stroke-linejoin:round;opacity:.95}
+.kachel .kt{font-size:19px;font-weight:800;line-height:1.15}
+.kachel .ku{font-size:12.5px;opacity:.9;margin-top:2px;font-weight:600}
+.kachel .badge{position:absolute;top:13px;right:14px;background:#fff;color:#17161a;font-size:13px;
+  font-weight:900;min-width:24px;height:24px;border-radius:12px;padding:0 7px;display:flex;
+  align-items:center;justify-content:center}
+.k-info{background:var(--f-info)}.k-eingang{background:var(--f-eingang)}
+.k-umlager{background:var(--f-umlager)}.k-bestell{background:var(--f-bestell)}
+.k-katalog{background:var(--f-katalog);grid-column:1 / -1;min-height:76px;flex-direction:row;
+  align-items:center;gap:14px}
+.k-katalog .kt{font-size:17px}
+
+/* Produktbild klein neben Text + Lightbox */
+.a-kopf{display:flex;gap:13px;align-items:flex-start}
+.a-bild{width:96px;height:96px;border-radius:12px;object-fit:cover;flex:none;border:1px solid var(--linie);
+  background:#fff;cursor:zoom-in}
+.a-bild-leer{width:96px;height:96px;border-radius:12px;flex:none;border:1px solid var(--linie);
+  background:var(--papier);display:flex;align-items:center;justify-content:center}
+.a-bild-leer svg{width:32px;height:32px;stroke:var(--grau);fill:none;stroke-width:1.5}
+.a-kopf .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+.a-gr{display:flex;align-items:center;gap:8px;font-size:14px}
+.a-gr .g{font-weight:800;min-width:38px}
+.a-gr .m{color:var(--grau);font-variant-numeric:tabular-nums}
+.a-gr.hol{color:var(--gelb);font-weight:700}
+.lightbox{position:fixed;inset:0;z-index:85;background:rgba(0,0,0,.92);display:none;
+  align-items:center;justify-content:center;padding:16px}
+.lightbox.an{display:flex}
+.lightbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
+
+/* Segmented control (Umlagern: Standort / Lagerplatz) */
+.seg{display:flex;gap:0;background:var(--papier);border:1.5px solid var(--linie);border-radius:12px;
+  padding:4px;flex:none}
+.seg button{flex:1;padding:11px 6px;border-radius:9px;font-size:15px;font-weight:800;color:var(--grau)}
+.seg button.an{background:var(--akz);color:#fff}
+
+/* Wareneingang gross */
+.gross-menge{display:flex;align-items:center;justify-content:center;gap:16px;padding:8px 0}
+.gross-menge button{width:66px;height:66px;border-radius:16px;background:var(--papier);
+  border:1.5px solid var(--linie);font-size:34px;font-weight:700;flex:none;
+  display:flex;align-items:center;justify-content:center}
+.gross-menge input{width:120px;text-align:center;font-size:46px;font-weight:800;padding:6px;
+  font-variant-numeric:tabular-nums;background:transparent;border:none}
+
+/* Bestellungen */
+.best{display:flex;align-items:center;gap:12px;padding:14px 12px;border-radius:13px;
+  border:1.5px solid var(--linie);background:var(--karte);margin-bottom:10px;box-shadow:var(--schatten)}
+.best .nr{font-weight:800;font-size:16px}
+.best .meta{font-size:12.5px;color:var(--grau);margin-top:2px;display:flex;gap:9px;flex-wrap:wrap}
+.best .stk{margin-left:auto;font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;flex:none}
+.best-zustand{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  padding:3px 8px;border-radius:20px;flex:none}
+.zu-offen{background:rgba(224,97,28,.16);color:var(--f-umlager)}
+.zu-lauf{background:rgba(37,99,235,.16);color:var(--f-info)}
+.zu-fertig{background:rgba(31,157,77,.18);color:var(--f-eingang)}
+.zu-versendet{background:rgba(124,58,237,.16);color:var(--f-bestell)}
+.timer{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:40px;font-weight:800;
+  text-align:center;font-variant-numeric:tabular-nums;padding:6px 0}
+.pos-emb{border-color:var(--gelb);background:rgba(185,134,26,.12)}
+.pos .pbild{width:44px;height:44px;border-radius:9px;object-fit:cover;flex:none;border:1px solid var(--linie);background:#fff}
 </style>
 
 <div class="app">
@@ -182,56 +301,101 @@ nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;
   </header>
 
   <main>
-    <section class="view on" id="v-scan">
-      <h1>Scannen</h1>
-      <div class="roll"></div>
+    <section class="view on" id="v-heim">
+      <div class="heim">
+        <button class="kachel k-info" data-v="info">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <div><div class="kt">Produkt-Info</div><div class="ku">Scannen oder suchen</div></div>
+        </button>
+        <button class="kachel k-eingang" data-v="eingang">
+          <svg viewBox="0 0 24 24"><path d="M21 8v13H3V8M1 3h22v5H1zM12 11v6M9 14l3 3 3-3"/></svg>
+          <div><div class="kt">Wareneingang</div><div class="ku">Ware einbuchen</div></div>
+        </button>
+        <button class="kachel k-umlager" data-v="umlager">
+          <svg viewBox="0 0 24 24"><path d="M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          <div><div class="kt">Umlagern</div><div class="ku">Standort &amp; Lagerplatz</div></div>
+        </button>
+        <button class="kachel k-bestell" data-v="bestell">
+          <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span class="badge" id="heim-best" style="display:none">0</span>
+          <div><div class="kt">Bestellungen</div><div class="ku">Picken &amp; packen</div></div>
+        </button>
+        <button class="kachel k-katalog" data-v="katalog">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <div class="kt">Katalog</div>
+        </button>
+      </div>
+    </section>
+
+    <section class="view f-info" id="v-info">
+      <div class="kopfbar"><button class="heimknopf" data-heim aria-label="Start">
+        <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></button>
+        <h1>Produkt-Info</h1></div>
+      <div class="roll" id="if-inhalt"></div>
       <div class="fuss">
         <div class="feldz">
           <span class="lab">EAN-Code</span>
           <form class="reihe" id="f-manuell">
             <input type="tel" id="i-ean" inputmode="numeric" autocomplete="off">
-            <button class="b klein" type="submit">OK</button>
+            <button class="b klein akz" type="submit">OK</button>
           </form>
         </div>
-        <button class="b riesig" id="b-kamera">
+        <button class="b riesig akz" id="b-kamera">
           <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>
           Scannen
         </button>
       </div>
     </section>
 
-    <section class="view" id="v-artikel">
-      <div class="kopfzeile"><h1 id="a-titel">Artikel</h1></div>
+    <section class="view f-info" id="v-artikel">
+      <div class="kopfbar"><button class="heimknopf" data-heim aria-label="Start">
+        <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></button>
+        <h1 id="a-titel">Artikel</h1></div>
       <div class="roll" id="a-inhalt"></div>
       <div class="fuss">
         <div class="reihe">
-          <button class="b geist klein" id="b-menge">Menge</button>
-          <button class="b dunkel" id="b-zurueck">Scannen</button>
+          <button class="b geist klein" id="b-menge">Menge korrigieren</button>
+          <button class="b akz" id="b-zurueck">Weiter</button>
         </div>
       </div>
     </section>
 
-    <section class="view" id="v-eingang">
-      <div class="kopfzeile"><h1>Wareneingang</h1><span class="zahl" id="e-zahl"></span></div>
+    <section class="view f-eingang" id="v-eingang">
+      <div class="kopfbar"><button class="heimknopf" data-heim aria-label="Start">
+        <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></button>
+        <h1>Wareneingang</h1></div>
       <div class="roll" id="e-inhalt"></div>
       <div class="fuss" id="e-fuss"></div>
     </section>
 
-    <section class="view" id="v-umlager">
-      <div class="kopfzeile"><h1>Umlagern</h1></div>
-      <div class="roll" id="u-inhalt"></div>
-      <div class="fuss" id="u-fuss"></div>
+    <section class="view f-umlager" id="v-umlager">
+      <div class="kopfbar"><button class="heimknopf" data-heim aria-label="Start">
+        <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></button>
+        <h1>Umlagern</h1></div>
+      <div style="padding:12px 15px 4px;flex:none">
+        <div class="seg"><button data-um="standort" class="an">Standort</button>
+          <button data-um="ort">Lagerplatz</button></div>
+      </div>
+      <div class="um-teil" id="um-standort" style="flex:1;flex-direction:column;min-height:0;display:flex">
+        <div class="roll" id="u-inhalt"></div><div class="fuss" id="u-fuss"></div>
+      </div>
+      <div class="um-teil" id="um-ort" style="flex:1;flex-direction:column;min-height:0;display:none">
+        <div class="roll" id="o-inhalt"></div><div class="fuss" id="o-fuss"></div>
+      </div>
     </section>
 
-    <section class="view" id="v-auftrag">
-      <div class="kopfzeile"><h1>Auftrag</h1><span class="zahl" id="t-zahl"></span></div>
-      <div class="balken" id="t-balken" style="display:none"><i style="width:0%"></i></div>
-      <div class="roll" id="t-inhalt"></div>
-      <div class="fuss" id="t-fuss"></div>
+    <section class="view f-bestell" id="v-bestell">
+      <div class="kopfbar"><button class="heimknopf" id="best-zur" aria-label="Zurück">
+        <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></button>
+        <h1 id="best-titel">Bestellungen</h1><span class="zahl" id="best-zahl"></span></div>
+      <div class="roll" id="best-inhalt"></div>
+      <div class="fuss" id="best-fuss"></div>
     </section>
 
-    <section class="view" id="v-katalog">
-      <div class="kopfzeile"><h1>Katalog</h1><span class="zahl" id="k-zahl"></span></div>
+    <section class="view f-katalog" id="v-katalog">
+      <div class="kopfbar"><button class="heimknopf" data-heim aria-label="Start">
+        <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></button>
+        <h1>Katalog</h1><span class="zahl" id="k-zahl"></span></div>
       <div class="roll" id="k-inhalt"></div>
       <div class="fuss">
         <input type="file" id="i-csv" accept=".csv,text/csv" hidden>
@@ -243,30 +407,9 @@ nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.9;
     </section>
   </main>
 
-  <nav>
-    <button class="on" data-v="scan">
-      <svg viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>
-      Scannen
-    </button>
-    <button data-v="eingang">
-      <svg viewBox="0 0 24 24"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg>
-      Eingang
-    </button>
-    <button data-v="umlager">
-      <svg viewBox="0 0 24 24"><path d="M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-      Umlagern
-    </button>
-    <button data-v="auftrag">
-      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-      Auftrag
-    </button>
-    <button data-v="katalog">
-      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      Katalog
-    </button>
-  </nav>
-
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="lightbox" id="lightbox"><img id="lightbox-img" src="" alt=""></div>
 
   <div class="buehne" id="buehne">
     <video id="video" playsinline muted></video>
@@ -300,7 +443,8 @@ var APP_KEY = "sea-fb363a7bedda4ffe8d9925f078befca5";
 var LS = {
   katalog:"sea.katalog.v2", plaetze:"sea.plaetze.v2", eans:"sea.eans.v2",
   bestand:"sea.bestand.v2", log:"sea.log.v2", auftrag:"sea.auftrag.v2",
-  warteschlange:"sea.warteschlange.v1"
+  warteschlange:"sea.warteschlange.v1", fachwarte:"sea.fachwarte.v1", bilder:"sea.bilder.v1",
+  eanwarte:"sea.eanwarte.v1"
 };
 
 var ORTE = {zh:"Zürich", emb:"Embrach"};
@@ -404,6 +548,7 @@ function sichere(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return 
 var KATALOG = lade(LS.katalog, []);
 var PLAETZE = lade(LS.plaetze, null);
 var EANS    = lade(LS.eans, {});
+var BILDER  = lade(LS.bilder, {});
 var BESTAND = lade(LS.bestand, null);
 var LOG     = lade(LS.log, []);
 var AUFTRAG = lade(LS.auftrag, null);
@@ -417,6 +562,33 @@ function esc(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(m
   return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m]; }); }
 function normal(s){ return String(s || "").toLowerCase()
   .replace(/[^a-z0-9äöüéèà ]+/g, " ").replace(/\s+/g, " ").trim(); }
+
+/* Produktbild zu einem Titel finden. BILDER kommt vom Server (pro Artikel eine URL). */
+function bildFuer(titel){
+  if(!titel) return "";
+  var n = normal(titel);
+  if(BILDER[n]) return BILDER[n];
+  for(var k in BILDER){ if(n.indexOf(k) >= 0 || k.indexOf(n) >= 0) return BILDER[k]; }
+  return "";
+}
+function bildUrl(url, breite){
+  if(!url) return "";
+  return url + (url.indexOf("?") >= 0 ? "&" : "?") + "width=" + breite;
+}
+var LEER_SVG = '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/>' +
+  '<circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>';
+/* Bricht ein Bild, wird es durch einen grauen Platzhalter ersetzt. */
+function seaBildFehler(img){
+  var s = document.createElement("span");
+  s.className = img.className.indexOf("bild-gross") >= 0 ? "thumb-leer bild-gross" : "thumb-leer";
+  s.innerHTML = LEER_SVG;
+  if(img.parentNode) img.parentNode.replaceChild(s, img);
+}
+function thumbTag(url){
+  var u = bildUrl(url, 120);
+  return u ? '<img class="thumb" src="' + esc(u) + '" loading="lazy" alt="" onerror="seaBildFehler(this)">'
+    : '<span class="thumb-leer">' + LEER_SVG + '</span>';
+}
 
 var toastTimer;
 function zeigeToast(t){
@@ -466,6 +638,8 @@ function buche(schluessel, g, ort, delta, grund){
 var GERAET = lade("sea.geraet", null);
 if(!GERAET){ GERAET = "g" + Math.round(Math.random() * 1e9).toString(36); sichere("sea.geraet", GERAET); }
 var WARTE = lade(LS.warteschlange, []);
+var FACHWARTE = lade(LS.fachwarte, []);
+var EANWARTE = lade(LS.eanwarte, []);
 var VERBUNDEN = null;
 var LETZTER_FEHLER = "";
 
@@ -501,6 +675,68 @@ function sendeWarteschlange(){
   });
 }
 
+/* Platz-Aenderungen gehen ueber eine eigene Warteschlange raus, damit sie auch
+   nach kurzem Offline nicht verloren gehen. Je Artikel zaehlt nur der letzte Stand. */
+function fachZumServer(eintrag){
+  FACHWARTE = FACHWARTE.filter(function(x){ return x.artikel !== eintrag.artikel; });
+  FACHWARTE.push(eintrag);
+  sichere(LS.fachwarte, FACHWARTE);
+  sendeFachWarte();
+}
+
+var fachInFlight = false;
+function sendeFachWarte(){
+  if(fachInFlight || !FACHWARTE.length) return Promise.resolve();
+  fachInFlight = true;
+  var naechste = FACHWARTE[0];
+  return fetch(SERVER + "/api/fach", {
+    method:"POST", headers:kopfZeilen(), body:JSON.stringify(naechste)
+  }).then(function(r){
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    FACHWARTE.shift();
+    sichere(LS.fachwarte, FACHWARTE);
+    VERBUNDEN = true;
+    zeichneKopf();
+    fachInFlight = false;
+    if(FACHWARTE.length) return sendeFachWarte();
+  }).catch(function(e){
+    console.log("sendeFachWarte FEHLER: " + (e && e.message ? e.message : e));
+    LETZTER_FEHLER = String(e && e.message ? e.message : e);
+    VERBUNDEN = false;
+    fachInFlight = false;
+    zeichneKopf();
+  });
+}
+
+/* Angelernte EAN-Codes gehen ueber eine eigene Warteschlange raus, mit Wiederholung
+   bei Fehler. So landet jeder Code sicher auf dem Server und damit auf allen Geraeten. */
+function eanZumServer(eintrag){
+  EANWARTE = EANWARTE.filter(function(x){ return x.ean !== eintrag.ean; });
+  EANWARTE.push(eintrag);
+  sichere(LS.eanwarte, EANWARTE);
+  sendeEanWarte();
+}
+
+var eanInFlight = false;
+function sendeEanWarte(){
+  if(eanInFlight || !EANWARTE.length) return Promise.resolve();
+  eanInFlight = true;
+  var naechste = EANWARTE[0];
+  return fetch(SERVER + "/api/ean", {
+    method:"POST", headers:kopfZeilen(), body:JSON.stringify(naechste)
+  }).then(function(r){
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    EANWARTE.shift();
+    sichere(LS.eanwarte, EANWARTE);
+    VERBUNDEN = true;
+    eanInFlight = false;
+    if(EANWARTE.length) return sendeEanWarte();
+  }).catch(function(e){
+    console.log("sendeEanWarte FEHLER: " + (e && e.message ? e.message : e));
+    eanInFlight = false;
+  });
+}
+
 function vomServer(){
   return fetch(SERVER + "/api/bestand", {headers:kopfZeilen()}).then(function(r){
     if(!r.ok) throw new Error("HTTP " + r.status);
@@ -510,11 +746,11 @@ function vomServer(){
     (d.zeilen || []).forEach(function(z){
       if(!neu[z.artikel]) neu[z.artikel] = {titel:z.titel, fach:z.fach || null, g:{}, auf:{}, sl:{}};
       if(z.fach && !neu[z.artikel].fach) neu[z.artikel].fach = z.fach;
+      if(z.bild){ neu[z.artikel].bild = z.bild; BILDER[z.artikel] = z.bild; }
       neu[z.artikel].g[z.groesse] = {zh:z.zh || 0, emb:z.emb || 0};
       var vid = z.artikel + "|" + z.groesse + "|";
       kat.push({ean:z.ean || "", titel:z.titel, groesse:z.groesse, farbe:"", sku:"",
-                preis:"", handle:z.artikel, vid:vid});
-      if(z.ean) EANS[z.ean] = vid;
+                preis:"", handle:z.artikel, vid:vid, bild:z.bild || ""});
     });
     // Der Server ist die Quelle des Katalogs, nicht mehr die CSV.
     KATALOG = kat;
@@ -533,9 +769,18 @@ function vomServer(){
     Object.keys(BESTAND).forEach(function(k){
       if(BESTAND[k].fach) PLAETZE[k] = BESTAND[k].fach;
     });
+    // Der Server ist die Wahrheit fuer EANs: lokal genau uebernehmen, was er liefert.
+    // So gibt es kein Hin-und-Her, wenn zwei Geraete denselben Artikel anlernen.
+    // Noch nicht hochgeladene (in der Warteschlange steckende) Codes bleiben erhalten.
+    EANS = {};
+    (d.zeilen || []).forEach(function(z){
+      if(z.ean) EANS[z.ean] = z.artikel + "|" + z.groesse + "|";
+    });
+    EANWARTE.forEach(function(e){ EANS[e.ean] = e.artikel + "|" + e.groesse + "|"; });
     sichere(LS.bestand, BESTAND);
     sichere(LS.plaetze, PLAETZE);
     sichere(LS.eans, EANS);
+    sichere(LS.bilder, BILDER);
     VERBUNDEN = true;
     zeichneKopf();
     return true;
@@ -622,10 +867,7 @@ function lerneEan(code, vid){
   sichere(LS.eans, EANS);
   zeichneKopf();
   var teile = String(vid).split("|");
-  fetch(SERVER + "/api/ean", {
-    method:"POST", headers:kopfZeilen(),
-    body:JSON.stringify({ean:code, artikel:teile[0], groesse:teile[1]})
-  }).catch(function(e){ console.log("lerneEan FEHLER: " + (e && e.message ? e.message : e)); });
+  eanZumServer({ean:code, artikel:teile[0], groesse:teile[1]});
 }
 
 function exportEans(){
@@ -704,16 +946,30 @@ function lagerkarte(aktiv, groesse){
 }
 
 /* Ansicht */
+var AKZ = {info:"--f-info", artikel:"--f-info", eingang:"--f-eingang", umlager:"--f-umlager",
+           bestell:"--f-bestell", katalog:"--f-katalog"};
 function zeige(name){
-  $$("nav button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-v") === name); });
   $$(".view").forEach(function(v){ v.classList.remove("on"); });
   var el = $("#v-" + name);
   if(el) el.classList.add("on");
-  if(name !== "scan" && laeuft) kameraStoppen();
-  if(name === "eingang") zeichneEingang();
-  if(name === "umlager") zeichneUmlager();
-  if(name === "auftrag") zeichneAuftrag();
-  if(name === "katalog") zeichneKatalog();
+  $(".app").style.setProperty("--akz", "var(" + (AKZ[name] || "--f-info") + ")");
+  if(laeuft) kameraStoppen();
+  if(name === "info") zeichneInfo();
+  else if(name === "eingang") zeichneEingang();
+  else if(name === "umlager") zeichneUmlager2();
+  else if(name === "bestell") zeichneBestell();
+  else if(name === "katalog") zeichneKatalog();
+}
+
+/* Umlagern buendelt zwei Funktionen: Standort (Zuerich<->Embrach) und Lagerplatz (Fach). */
+var umModus = "standort";
+function zeichneUmlager2(){
+  $("#um-standort").style.display = umModus === "standort" ? "flex" : "none";
+  $("#um-ort").style.display = umModus === "ort" ? "flex" : "none";
+  $$("#v-umlager .seg button").forEach(function(b){
+    b.classList.toggle("an", b.getAttribute("data-um") === umModus);
+  });
+  if(umModus === "standort") zeichneUmlager(); else zeichneOrt();
 }
 
 /* Artikel */
@@ -722,6 +978,13 @@ var aktuell = null;
 function zeigeArtikel(code){
   var v = findeVariante(code);
   if(!v){ zeigeAnlernen(code); return; }
+  zeigeArtikelV(v);
+}
+function zeigeArtikelTitel(titel){
+  var v = KATALOG.filter(function(x){ return normal(x.titel) === normal(titel); })[0];
+  if(v) zeigeArtikelV(v); else zeigeToast("Nicht gefunden");
+}
+function zeigeArtikelV(v){
   aktuell = v;
   var fach = platzFuer(v.titel);
   var b = bestandFuer(v.titel);
@@ -735,26 +998,27 @@ function zeigeArtikel(code){
   });
   if(!groessen.length && v.groesse) groessen = [v.groesse];
 
-  var h = "";
-  if(fach) h += '<div class="karte"><div class="fachgross">' + esc(fach) + '</div></div>';
-
+  var burl = v.bild || bildFuer(v.titel);
+  // Ein Bild pro Piece, klein links; die Groessen + Mengen stehen als Text rechts.
+  var h = '<div class="karte"><div class="a-kopf">';
+  h += burl
+    ? '<img class="a-bild" src="' + esc(bildUrl(burl, 400)) + '" alt="" ' +
+      'data-gross="' + esc(bildUrl(burl, 1200)) + '" onerror="seaBildFehler(this)">'
+    : '<span class="a-bild-leer">' + LEER_SVG + '</span>';
+  h += '<div class="info">';
   if(groessen.length){
-    h += '<div class="karte">';
     groessen.forEach(function(g){
       var zh = menge(d, g, "zh"), emb = menge(d, g, "emb");
       var holen = zh === 0 && emb > 0;
-      var leer = zh === 0 && emb === 0;
-      h += '<div class="gr-zeile' + (holen ? " hol" : (leer ? " leer" : "")) + '">';
-      h += '<span class="gr-punkt" style="background:' + (G_FARBE[g] || "var(--grau)") + '"></span>';
-      h += '<span class="gr-name">' + esc(g) + '</span>';
-      if(holen) h += '<span class="warnpunkt">!</span>';
-      h += '<span class="gr-mengen">' +
-           '<span class="gr-ort"><span class="k">Zürich</span><span class="v">' + zh + '</span></span>' +
-           '<span class="gr-ort"><span class="k">Embrach</span><span class="v">' + emb + '</span></span>' +
-           '</span></div>';
+      h += '<div class="a-gr' + (holen ? " hol" : "") + '"><span class="g">' + esc(g) + '</span>' +
+           '<span class="m">Zürich ' + zh + ' · Embrach ' + emb + (holen ? " → holen" : "") + '</span></div>';
     });
-    h += '</div>';
+  } else {
+    h += '<div class="a-gr"><span class="m">kein Bestand hinterlegt</span></div>';
   }
+  h += '</div></div></div>';
+
+  if(fach) h += '<div class="karte"><span class="lab">Lagerplatz</span><div class="fachgross">' + esc(fach) + '</div></div>';
 
   if(d && ((d.auf && Object.keys(d.auf).length) || (d.sl && Object.keys(d.sl).length))){
     h += '<div class="karte"><span class="lab">Store</span>';
@@ -773,7 +1037,61 @@ function zeigeArtikel(code){
   if(fach) h += lagerkarte(fach, v.groesse);
   $("#a-inhalt").innerHTML = h;
   $("#a-inhalt").scrollTop = 0;
+  var ab = $("#a-inhalt .a-bild");
+  if(ab) ab.addEventListener("click", function(){ oeffneLightbox(ab.getAttribute("data-gross")); });
   zeige("artikel");
+}
+
+/* Produkt-Info: Suche nach Name (dedupliziert je Titel) + Sprung in die Artikelansicht. */
+function katalogNachTitel(){
+  var m = {}, out = [];
+  KATALOG.forEach(function(v){ var n = normal(v.titel); if(n && !m[n]){ m[n] = 1; out.push(v); } });
+  return out;
+}
+function grImText(titel){
+  var b = bestandFuer(titel);
+  if(!b) return "kein Bestand";
+  var d = b.daten, gs = Object.keys(d.g);
+  gs.sort(function(a, c){ var ia = GR_REIHE.indexOf(a), ic = GR_REIHE.indexOf(c);
+    return (ia < 0 ? 99 : ia) - (ic < 0 ? 99 : ic); });
+  var teile = gs.filter(function(g){ return menge(d, g, "zh") + menge(d, g, "emb") > 0; })
+    .map(function(g){ return g + " " + (menge(d, g, "zh") + menge(d, g, "emb")); });
+  return teile.length ? teile.join(" · ") : "kein Bestand";
+}
+var infoSuche = "";
+function zeichneInfo(){
+  var i = $("#if-inhalt");
+  var q = normal(infoSuche);
+  var h = '<div class="karte"><input type="text" id="if-suche" placeholder="Artikel nach Name suchen" ' +
+    'autocomplete="off" value="' + esc(infoSuche) + '"></div>';
+  if(q.length >= 2){
+    var liste = katalogNachTitel().filter(function(v){ return normal(v.titel).indexOf(q) >= 0; }).slice(0, 50);
+    h += '<div class="karte">' + (liste.length ? liste.map(function(v){
+      var f = platzFuer(v.titel);
+      return '<div class="zeile" data-titel="' + esc(v.titel) + '">' + thumbTag(v.bild || bildFuer(v.titel)) +
+        '<div class="haupt"><div class="name">' + esc(v.titel) + '</div>' +
+        '<div class="sub">' + esc(grImText(v.titel)) + '</div></div>' +
+        '<span class="code' + (f ? "" : " leer") + '">' + (f || "—") + '</span></div>';
+    }).join("") : '<div class="leerstelle">Nichts gefunden</div>') + '</div>';
+  } else {
+    h += '<div class="leerstelle">Artikel scannen (Knopf unten) oder oben nach Name suchen.</div>';
+  }
+  i.innerHTML = h;
+  var s = $("#if-suche");
+  s.addEventListener("input", function(e){
+    infoSuche = e.target.value; zeichneInfo();
+    var n = $("#if-suche"); n.focus(); n.setSelectionRange(infoSuche.length, infoSuche.length);
+  });
+  i.querySelectorAll("[data-titel]").forEach(function(el){
+    el.addEventListener("click", function(){ zeigeArtikelTitel(el.getAttribute("data-titel")); });
+  });
+}
+
+/* Bild-Lightbox */
+function oeffneLightbox(url){
+  if(!url) return;
+  $("#lightbox-img").src = url;
+  $("#lightbox").classList.add("an");
 }
 
 function zeigeAnlernen(ean, suche){
@@ -790,7 +1108,8 @@ function zeigeAnlernen(ean, suche){
   h += '<div class="karte">';
   h += liste.length ? liste.map(function(v){
     var f = platzFuer(v.titel);
-    return '<div class="zeile"><div class="haupt"><div class="name">' + esc(v.titel) + '</div>' +
+    return '<div class="zeile">' + thumbTag(v.bild || bildFuer(v.titel)) +
+      '<div class="haupt"><div class="name">' + esc(v.titel) + '</div>' +
       '<div class="sub">' + esc(v.groesse || "") + '</div></div>' +
       '<span class="code' + (f ? "" : " leer") + '">' + (f || "—") + '</span>' +
       '<button class="b klein" data-vid="' + esc(v.vid) + '">OK</button></div>';
@@ -853,96 +1172,54 @@ function mengeDialog(){
 }
 
 /* Wareneingang */
-var eingang = null;
-function eingangGesamt(d){ var s = 0; for(var g in d.mengen){ s += d.mengen[g] || 0; } return s; }
+/* Wareneingang: Artikel scannen, dann eingeben wie viele Stueck gekommen sind.
+   Wird direkt in Zuerich eingebucht (Verkaufslager). Umlagern nach Embrach separat. */
+var eingang = null;  // {titel, groesse, fach, bild, n}
 
 function zeichneEingang(){
   var i = $("#e-inhalt"), f = $("#e-fuss");
   if(!eingang){
-    $("#e-zahl").textContent = "";
-    i.innerHTML = "";
-    f.innerHTML = '<button class="b riesig" id="be-scan">Scannen</button>';
+    i.innerHTML = '<div class="leerstelle">Artikel scannen. Dann eingeben, wie viele Stück ' +
+      'gekommen sind. Sie werden in Zürich eingebucht.</div>';
+    f.innerHTML = '<button class="b riesig akz" id="be-scan">Scannen</button>' +
+      '<form class="reihe" id="be-form"><input type="tel" id="be-ean" inputmode="numeric" ' +
+      'placeholder="oder EAN eingeben" autocomplete="off"><button class="b klein akz" type="submit">OK</button></form>';
     $("#be-scan").addEventListener("click", function(){ kameraStarten("eingang"); });
+    $("#be-form").addEventListener("submit", function(e){
+      e.preventDefault();
+      var w = $("#be-ean").value.trim();
+      if(w){ $("#be-ean").value = ""; $("#be-ean").blur(); eingangStart(w); }
+    });
     return;
   }
   var d = eingang;
-  $("#e-zahl").textContent = eingangGesamt(d);
+  var burl = d.bild || bildFuer(d.titel);
+  i.innerHTML = '<div class="karte"><div class="a-kopf">' +
+    (burl ? '<img class="a-bild" src="' + esc(bildUrl(burl, 400)) + '" alt="" onerror="seaBildFehler(this)">'
+          : '<span class="a-bild-leer">' + LEER_SVG + '</span>') +
+    '<div class="info"><div class="titelz">' + esc(d.titel) + '</div>' +
+    '<div class="a-gr"><span class="g">' + esc(d.groesse || "—") + '</span><span class="m">Grösse</span></div>' +
+    (d.fach ? '<div class="a-gr"><span class="g">' + esc(d.fach) + '</span><span class="m">Lagerplatz</span></div>' : "") +
+    '</div></div></div>' +
+    '<div class="karte"><span class="lab">Wie viele gekommen?</span>' +
+    '<div class="gross-menge"><button id="e-minus">−</button>' +
+    '<input type="number" inputmode="numeric" id="e-n" value="' + d.n + '"><button id="e-plus">+</button></div></div>';
+  f.innerHTML = '<div class="reihe"><button class="b geist klein" id="e-ab">Abbrechen</button>' +
+    '<button class="b akz" id="e-buch">' + d.n + ' einbuchen</button></div>';
 
-  if(d.schritt === 1){
-    i.innerHTML = '<div class="karte"><div class="titelz">' + esc(d.titel) + '</div>' +
-      (d.fach ? '<div class="fachgross" style="font-size:30px">' + esc(d.fach) + '</div>' : "") + '</div>' +
-      '<div class="karte">' + GR_REIHE.map(function(g){
-        return '<div class="gr-zeile"><span class="gr-punkt" style="background:' + G_FARBE[g] + '"></span>' +
-          '<span class="gr-name">' + g + '</span>' +
-          '<span class="zaehl" style="margin-left:auto"><button data-m="' + g + '">−</button>' +
-          '<input type="number" inputmode="numeric" data-e="' + g + '" value="' + (d.mengen[g] || 0) +
-          '" style="width:80px"><button data-p="' + g + '">+</button></span></div>';
-      }).join("") + '</div>';
-    f.innerHTML = '<div class="reihe"><button class="b geist klein" id="be-ab">Abbrechen</button>' +
-      '<button class="b" id="be-weiter"' + (eingangGesamt(d) ? "" : " disabled") + '>Weiter</button></div>';
-
-    i.querySelectorAll("[data-p]").forEach(function(b){
-      b.addEventListener("click", function(){
-        var g = b.getAttribute("data-p");
-        d.mengen[g] = (d.mengen[g] || 0) + 1;
-        zeichneEingang();
-      });
-    });
-    i.querySelectorAll("[data-m]").forEach(function(b){
-      b.addEventListener("click", function(){
-        var g = b.getAttribute("data-m");
-        d.mengen[g] = Math.max(0, (d.mengen[g] || 0) - 1);
-        zeichneEingang();
-      });
-    });
-    i.querySelectorAll("[data-e]").forEach(function(x){
-      x.addEventListener("change", function(){
-        d.mengen[x.getAttribute("data-e")] = Math.max(0, parseInt(x.value, 10) || 0);
-        zeichneEingang();
-      });
-    });
-    $("#be-ab").addEventListener("click", function(){ eingang = null; zeichneEingang(); });
-    $("#be-weiter").addEventListener("click", function(){
-      GR_REIHE.forEach(function(g){ if(d.mengen[g] && d.zh[g] == null) d.zh[g] = d.mengen[g]; });
-      d.schritt = 2;
-      zeichneEingang();
-    });
-    return;
-  }
-
-  i.innerHTML = '<div class="karte"><div class="titelz">' + esc(d.titel) + '</div></div>' +
-    '<div class="karte">' + GR_REIHE.filter(function(g){ return d.mengen[g]; }).map(function(g){
-      var zh = d.zh[g] == null ? d.mengen[g] : d.zh[g];
-      return '<div class="gr-zeile"><span class="gr-punkt" style="background:' + G_FARBE[g] + '"></span>' +
-        '<span class="gr-name">' + g + '</span>' +
-        '<span class="gr-mengen">' +
-        '<span class="gr-ort"><span class="k">Zürich</span>' +
-        '<input type="number" inputmode="numeric" data-z="' + g + '" value="' + zh +
-        '" style="width:80px;font-size:24px;font-weight:800;text-align:right;padding:6px"></span>' +
-        '<span class="gr-ort"><span class="k">Embrach</span><span class="v">' + (d.mengen[g] - zh) + '</span></span>' +
-        '</span></div>';
-    }).join("") + '</div>';
-  f.innerHTML = '<div class="reihe"><button class="b geist klein" id="be-zur">Zurück</button>' +
-    '<button class="b gruen" id="be-buch">Einbuchen</button></div>';
-
-  i.querySelectorAll("[data-z]").forEach(function(x){
-    x.addEventListener("input", function(){
-      var g = x.getAttribute("data-z");
-      d.zh[g] = Math.min(d.mengen[g], Math.max(0, parseInt(x.value, 10) || 0));
-      zeichneEingang();
-    });
+  function frisch(){ $("#e-n").value = d.n; $("#e-buch").textContent = d.n + " einbuchen"; }
+  $("#e-plus").addEventListener("click", function(){ d.n++; frisch(); });
+  $("#e-minus").addEventListener("click", function(){ if(d.n > 1){ d.n--; frisch(); } });
+  $("#e-n").addEventListener("input", function(e){
+    d.n = Math.max(1, parseInt(e.target.value, 10) || 1);
+    $("#e-buch").textContent = d.n + " einbuchen";
   });
-  $("#be-zur").addEventListener("click", function(){ d.schritt = 1; zeichneEingang(); });
-  $("#be-buch").addEventListener("click", function(){
+  $("#e-ab").addEventListener("click", function(){ eingang = null; zeichneEingang(); });
+  $("#e-buch").addEventListener("click", function(){
     var b = bestandFuer(d.titel) || bestandAnlegen(d.titel);
-    var n = eingangGesamt(d);
-    GR_REIHE.forEach(function(g){
-      if(!d.mengen[g]) return;
-      var zh = d.zh[g] == null ? d.mengen[g] : d.zh[g];
-      if(zh) buche(b.schluessel, g, "zh", zh, "Eingang");
-      if(d.mengen[g] - zh) buche(b.schluessel, g, "emb", d.mengen[g] - zh, "Eingang");
-    });
-    zeigeToast(n + " eingebucht");
+    var g = d.groesse || (aktuell && aktuell.groesse) || "ONE SIZE";
+    buche(b.schluessel, g, "zh", d.n, "Eingang");
+    zeigeToast(d.n + "× " + g + " eingebucht");
     eingang = null;
     zeichneEingang();
   });
@@ -951,7 +1228,7 @@ function zeichneEingang(){
 function eingangStart(code){
   var v = findeVariante(code);
   if(!v){ zeigeAnlernen(code); return; }
-  eingang = {titel:v.titel, fach:platzFuer(v.titel), schritt:1, mengen:{}, zh:{}};
+  eingang = {titel:v.titel, groesse:v.groesse || "", fach:platzFuer(v.titel), bild:v.bild, n:1};
   zeige("eingang");
   zeichneEingang();
 }
@@ -1159,6 +1436,421 @@ function zeichneKatalog(){
   });
 }
 
+/* Ort — Lagerplatz eines oder mehrerer Artikel aendern.
+   Nur hier ist die Karte anwaehlbar; im Scan bleibt sie reine Anzeige.
+   Platz gilt pro Artikel, die Groessen verteilen sich im Fach auf die Ebenen. */
+var ortWahl = {};        // key -> true, mehrere Artikel gleichzeitig
+var ortSuche = "";
+var ortModus = "liste";  // "liste" oder "karte"
+var ortZiel = null;      // im Karten-Modus angetipptes Zielfach
+
+function bestandSumme(k){
+  var b = BESTAND[k];
+  if(!b || !b.g) return 0;
+  var s = 0; Object.keys(b.g).forEach(function(g){ s += (b.g[g].zh || 0) + (b.g[g].emb || 0); });
+  return s;
+}
+function ortTitel(key){ return (BESTAND[key] && BESTAND[key].titel) || key; }
+
+function ortEinheiten(){
+  var map = {};
+  // Echte Artikel vom Server zuerst. Ihr Platz kommt aus dem passenden Muster.
+  Object.keys(BESTAND).forEach(function(k){
+    var t = BESTAND[k].titel || k;
+    map[k] = {key:k, titel:t, fach:PLAETZE[k] || platzFuer(t) || null, stk:bestandSumme(k),
+              bild:BESTAND[k].bild || bildFuer(t)};
+  });
+  // Welche Muster deckt schon ein echter Artikel ab? Jedes Muster, das als Text im
+  // Titel steckt (nicht nur das laengste), damit auch kurze Pilot-Muster wegfallen.
+  var abgedeckt = {};
+  Object.keys(BESTAND).forEach(function(k){
+    var t = normal(BESTAND[k].titel || k);
+    Object.keys(PLAETZE).forEach(function(p){
+      if(p !== k && t.indexOf(p) >= 0) abgedeckt[p] = true;
+    });
+  });
+  // Uebrige Muster (z.B. Zubehoer ohne Bestand) einzeln zeigen, damit man sie platzieren kann.
+  Object.keys(PLAETZE).forEach(function(k){
+    if(map[k] || abgedeckt[k]) return;
+    map[k] = {key:k, titel:ortTitel(k), fach:PLAETZE[k], stk:bestandSumme(k),
+              bild:bildFuer(ortTitel(k))};
+  });
+  return map;
+}
+
+function ortListe(){
+  var alle = ortEinheiten(), liste;
+  if(normal(ortSuche).length >= 2){
+    var q = normal(ortSuche), treffer = {};
+    Object.keys(alle).forEach(function(k){
+      if(normal(alle[k].titel).indexOf(q) >= 0 || k.indexOf(q) >= 0) treffer[k] = alle[k];
+    });
+    KATALOG.forEach(function(v){
+      if(normal(v.titel).indexOf(q) < 0) return;
+      var key = musterFuer(v.titel) || normal(v.titel);
+      if(!treffer[key]) treffer[key] = {key:key, titel:v.titel,
+        fach:PLAETZE[key] || platzFuer(v.titel) || null, stk:bestandSumme(key),
+        bild:v.bild || bildFuer(v.titel)};
+    });
+    liste = Object.keys(treffer).map(function(k){ return treffer[k]; });
+  } else {
+    liste = Object.keys(alle).map(function(k){ return alle[k]; });
+  }
+  liste.sort(function(a, b){ return (a.titel || "").localeCompare(b.titel || ""); });
+  return liste.slice(0, 80);
+}
+
+function zeichneOrt(){
+  if(ortModus === "karte"){ ortKarteAnsicht(); return; }
+  var i = $("#o-inhalt"), f = $("#o-fuss");
+  var liste = ortListe();
+  var gewaehlt = Object.keys(ortWahl).length;
+
+  var h = '<div class="karte"><input type="text" id="o-suche" placeholder="Artikel suchen" ' +
+    'autocomplete="off" value="' + esc(ortSuche) + '"></div><div class="karte">';
+  h += liste.length ? liste.map(function(e){
+    return '<div class="owahl' + (ortWahl[e.key] ? " an" : "") + '" data-key="' + esc(e.key) + '">' +
+      '<span class="ohaken"></span>' + thumbTag(e.bild) +
+      '<span class="haupt"><span class="name">' + esc(e.titel) + '</span>' +
+      '<span class="sub">' + (e.stk ? e.stk + " Stk" : "kein Bestand") + '</span></span>' +
+      '<span class="code' + (e.fach ? "" : " leer") + '">' + esc(e.fach || "—") + '</span></div>';
+  }).join("") : '<div class="leerstelle">Nichts gefunden</div>';
+  h += '</div>';
+  i.innerHTML = h;
+
+  f.innerHTML = '<button class="b riesig" id="o-weiter"' + (gewaehlt ? "" : " disabled") + '>' +
+    (gewaehlt ? gewaehlt + " Artikel · Platz wählen" : "Artikel wählen") + '</button>';
+
+  $("#o-suche").addEventListener("input", function(e){
+    ortSuche = e.target.value;
+    zeichneOrt();
+    var n = $("#o-suche"); n.focus(); n.setSelectionRange(ortSuche.length, ortSuche.length);
+  });
+  i.querySelectorAll(".owahl").forEach(function(el){
+    el.addEventListener("click", function(){
+      var k = el.getAttribute("data-key");
+      if(ortWahl[k]) delete ortWahl[k]; else ortWahl[k] = true;
+      el.classList.toggle("an", !!ortWahl[k]);
+      var g = Object.keys(ortWahl).length, btn = $("#o-weiter");
+      btn.disabled = !g;
+      btn.textContent = g ? (g + " Artikel · Platz wählen") : "Artikel wählen";
+    });
+  });
+  $("#o-weiter").addEventListener("click", function(){
+    if(!Object.keys(ortWahl).length) return;
+    ortModus = "karte"; ortZiel = null; zeichneOrt();
+  });
+}
+
+function ortKarteAnsicht(){
+  var i = $("#o-inhalt"), f = $("#o-fuss");
+  var keys = Object.keys(ortWahl);
+  if(!keys.length){ ortModus = "liste"; zeichneOrt(); return; }
+  var namen = keys.map(ortTitel).join(" · ");
+
+  var h = '<div class="karte"><span class="lab">Diese Artikel</span>' +
+    '<div class="o-namen">' + esc(namen) + '</div></div>';
+  h += ortKarteSvg(ortZiel);
+  i.innerHTML = h;
+
+  var setzText = ortZiel ? ("Nach " + esc(ortZiel) + " setzen") : "Fach auf der Karte tippen";
+  f.innerHTML =
+    '<button class="b riesig gruen" id="o-setzen"' + (ortZiel ? "" : " disabled") + '>' + setzText + '</button>' +
+    '<div class="reihe"><button class="b geist klein" id="o-zurueck">Zurück</button>' +
+    '<button class="b geist klein" id="o-entfernen">Platz entfernen</button></div>';
+
+  var box = i.querySelector(".karte-box");
+  if(box) box.addEventListener("click", function(e){
+    var g = e.target && e.target.closest ? e.target.closest("[data-fach]") : null;
+    if(g){ ortZiel = g.getAttribute("data-fach"); ortKarteAnsicht(); }
+  });
+  $("#o-setzen").addEventListener("click", function(){
+    if(!ortZiel) return;
+    dialog(keys.length + " Artikel → " + ortZiel,
+      '<div class="zielz">' + esc(ortZiel) + '</div><div class="o-namen">' + esc(namen) + '</div>',
+      "Setzen", function(){
+        ortSetzeFach(keys, ortZiel);
+        zeigeToast(keys.length + " → " + ortZiel);
+        ortWahl = {}; ortModus = "liste"; ortZiel = null; ortSuche = "";
+        zeichneOrt();
+      });
+  });
+  $("#o-zurueck").addEventListener("click", function(){ ortModus = "liste"; ortZiel = null; zeichneOrt(); });
+  $("#o-entfernen").addEventListener("click", function(){
+    dialog("Platz entfernen",
+      '<div class="o-namen">' + keys.length + ' Artikel verlieren ihren Platz:<br>' + esc(namen) + '</div>',
+      "Entfernen", function(){
+        ortSetzeFach(keys, null);
+        zeigeToast("Platz entfernt");
+        ortWahl = {}; ortModus = "liste"; ortZiel = null;
+        zeichneOrt();
+      });
+  });
+}
+
+function ortSetzeFach(keys, fach){
+  keys.forEach(function(key){
+    if(fach) PLAETZE[key] = fach; else delete PLAETZE[key];
+    if(BESTAND[key]) BESTAND[key].fach = fach || null;
+    fachZumServer({artikel:key, titel:ortTitel(key), fach:fach || null});
+  });
+  sichere(LS.plaetze, PLAETZE);
+  sichere(LS.bestand, BESTAND);
+  zeichneKopf();
+}
+
+/* Anwaehlbare Karte: gleiche Geometrie wie die Anzeige-Karte, aber jedes Fach
+   ist eine Gruppe mit data-fach. Belegte Faecher sind eingefaerbt, das Ziel rot. */
+function ortKarteSvg(ziel){
+  var belegt = {};
+  Object.keys(PLAETZE).forEach(function(k){ belegt[PLAETZE[k]] = (belegt[PLAETZE[k]] || 0) + 1; });
+  var s = '<svg viewBox="2 44 316 322" style="width:100%;height:auto;display:block">';
+  s += '<rect x="14" y="68" width="292" height="278" rx="8" fill="#faf9f7" stroke="#17161a" stroke-width="4"/>';
+  s += '<rect x="42" y="63" width="52" height="10" fill="#faf9f7"/>';
+  s += '<text x="68" y="58" text-anchor="middle" font-size="12" fill="#8a8891" font-weight="700">Eingang</text>';
+  s += '<rect x="106" y="76" width="106" height="24" rx="4" fill="#17161a"/>';
+  s += '<text x="159" y="92" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">Tisch</text>';
+  s += '<rect x="20" y="78" width="32" height="226" rx="4" fill="#eceae7"/>';
+  s += '<rect x="110" y="106" width="184" height="46" rx="4" fill="#eceae7"/>';
+  s += '<rect x="110" y="106" width="20" height="46" rx="4" fill="#e3e0dc"/>';
+  s += '<rect x="110" y="198" width="184" height="46" rx="4" fill="#eceae7"/>';
+  s += '<rect x="110" y="198" width="20" height="46" rx="4" fill="#e3e0dc"/>';
+  s += '<rect x="72" y="314" width="212" height="24" rx="4" fill="#eceae7"/>';
+  s += '<text x="10" y="190" text-anchor="middle" font-size="10.5" fill="#6b6971" font-weight="700" transform="rotate(-90 10 190)">Regalwand 1</text>';
+  s += '<text x="224" y="167" text-anchor="middle" font-size="10.5" fill="#6b6971" font-weight="700">Zwischengestell 1</text>';
+  s += '<text x="224" y="259" text-anchor="middle" font-size="10.5" fill="#6b6971" font-weight="700">Zwischengestell 2</text>';
+  s += '<text x="178" y="357" text-anchor="middle" font-size="10.5" fill="#6b6971" font-weight="700">Regalwand 2</text>';
+  ALLE_FAECHER.forEach(function(f){
+    var ist = f.c === ziel, an = (belegt[f.c] || 0) > 0;
+    var fuell = ist ? "#a8271c" : (an ? "#f3e2df" : "#fff");
+    var rand = ist ? "#a8271c" : (an ? zonenFarbe(f.c) : "#cfcdc9");
+    s += '<g data-fach="' + f.c + '">';
+    s += '<rect x="' + (f.x + 1) + '" y="' + (f.y + 1) + '" width="' + (f.w - 2) +
+         '" height="' + (f.h - 2) + '" rx="2.5" fill="' + fuell +
+         '" stroke="' + rand + '" stroke-width="' + (ist ? 3 : (an ? 1.6 : 1)) + '"' +
+         (an || ist ? "" : ' stroke-dasharray="2 2"') + '/>';
+    s += '<text x="' + (f.x + f.w / 2) + '" y="' + (f.y + f.h / 2 + 3) +
+         '" text-anchor="middle" font-size="8.5" font-weight="' + (an || ist ? 800 : 400) +
+         '" fill="' + (ist ? "#fff" : (an ? "#3a383f" : "#b3b0ac")) +
+         '">' + f.c.split("-")[1] + '</text>';
+    s += '</g>';
+  });
+  s += '</svg>';
+  return '<div class="karte-box">' + s + '</div>';
+}
+
+/* ---- Bestellungen (Kommissionierung aus Shopify) ----
+   Immer ansehbar, nie gesperrt. Zustaende: offen -> lauf (Timer) -> fertig -> versendet. */
+var BESTELL = [];
+var bestOffen = null;
+var bestZustand = lade("sea.bestellzustand.v1", {});   // id -> {zustand,start,ende,dauer,picked}
+var bestUhrTimer = null;
+var HAKEN = '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" ' +
+  'stroke-width="3.5" stroke-linecap="round"><path d="M4 12l6 6L20 6"/></svg>';
+
+function fmtDauer(ms){
+  var s = Math.max(0, Math.floor(ms / 1000)), m = Math.floor(s / 60);
+  s = s % 60;
+  return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+}
+function zuKlasse(z){ return z === "lauf" ? "zu-lauf" : z === "fertig" ? "zu-fertig" :
+  z === "versendet" ? "zu-versendet" : "zu-offen"; }
+function zuText(z){ return z === "lauf" ? "läuft" : z === "fertig" ? "gepackt" :
+  z === "versendet" ? "versendet" : "offen"; }
+function bestZ(id){ return bestZustand[id] || {zustand:"offen"}; }
+function speicherZustand(){ sichere("sea.bestellzustand.v1", bestZustand); }
+
+function ladeBestellungen(){
+  var laden = $("#best-laden");
+  if(laden) laden.textContent = "Lädt…";
+  return fetch(SERVER + "/api/bestellungen", {headers:kopfZeilen()}).then(function(r){
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  }).then(function(d){
+    BESTELL = d.bestellungen || [];
+    VERBUNDEN = true; zeichneKopf();
+    aktualisiereBadge();
+    if($("#v-bestell").classList.contains("on")) zeichneBestell();
+    return true;
+  }).catch(function(e){
+    console.log("ladeBestellungen FEHLER: " + (e && e.message ? e.message : e));
+    if($("#v-bestell").classList.contains("on")) zeichneBestell();
+    return false;
+  });
+}
+function aktualisiereBadge(){
+  var offen = BESTELL.filter(function(o){ return bestZ(o.id).zustand !== "versendet"; }).length;
+  var b = $("#heim-best");
+  if(b){ b.textContent = offen; b.style.display = offen ? "flex" : "none"; }
+}
+
+function zeichneBestell(){
+  stopUhr();
+  if(bestOffen){ bestellDetail(); return; }
+  var i = $("#best-inhalt"), f = $("#best-fuss");
+  $("#best-titel").textContent = "Bestellungen";
+  $("#best-zahl").textContent = BESTELL.length ? BESTELL.length + " offen" : "";
+  i.innerHTML = BESTELL.length ? BESTELL.map(function(o){
+    var z = bestZ(o.id).zustand;
+    var stk = o.positionen.reduce(function(s, p){ return s + p.menge; }, 0);
+    var hol = o.positionen.some(function(p){ return p.holen; });
+    return '<div class="best" data-id="' + esc(o.id) + '">' +
+      '<div class="haupt"><div class="nr">' + esc(o.name) + '</div>' +
+      '<div class="meta"><span>' + stk + ' Stück</span>' +
+      (hol ? '<span style="color:var(--gelb)">Embrach nötig</span>' : "") +
+      '<span class="best-zustand ' + zuKlasse(z) + '">' + zuText(z) + '</span></div></div>' +
+      '<span class="stk">' + o.positionen.length + '</span></div>';
+  }).join("") : '<div class="leerstelle">Keine offenen Bestellungen geladen.<br>Auf Aktualisieren tippen.</div>';
+  f.innerHTML = '<button class="b riesig akz" id="best-laden">Aktualisieren</button>';
+  i.querySelectorAll("[data-id]").forEach(function(el){
+    el.addEventListener("click", function(){ bestOeffnenId(el.getAttribute("data-id")); });
+  });
+  $("#best-laden").addEventListener("click", ladeBestellungen);
+}
+function bestOeffnenId(id){
+  bestOffen = BESTELL.filter(function(o){ return String(o.id) === String(id); })[0] || null;
+  zeichneBestell();
+}
+
+function bestellDetail(){
+  var o = bestOffen, i = $("#best-inhalt"), f = $("#best-fuss");
+  var zs = bestZ(o.id), z = zs.zustand;
+  $("#best-titel").textContent = o.name;
+  $("#best-zahl").textContent = "";
+  var h = "";
+  if(z === "lauf" && zs.start){
+    h += '<div class="karte"><div class="timer" id="best-uhr">' + fmtDauer(Date.now() - zs.start) + '</div>' +
+      '<div style="text-align:center;color:var(--grau);font-size:12px">läuft</div></div>';
+  } else if((z === "fertig" || z === "versendet") && zs.dauer){
+    h += '<div class="karte"><div class="timer">' + fmtDauer(zs.dauer) + '</div>' +
+      '<div style="text-align:center;color:var(--grau);font-size:12px">Packzeit</div></div>';
+  }
+  var picked = zs.picked || {};
+  h += '<div class="karte">' + o.positionen.map(function(p, n){
+    var burl = p.bild || bildFuer(p.titel);
+    return '<div class="pos' + (p.holen ? " pos-emb" : "") + (picked[n] ? " fertig" : "") + '" data-pos="' + n + '">' +
+      '<span class="haken">' + (picked[n] ? HAKEN : "") + '</span>' +
+      (burl ? '<img class="pbild" src="' + esc(bildUrl(burl, 120)) + '" data-gross="' +
+        esc(bildUrl(burl, 1200)) + '" onerror="seaBildFehler(this)">' : "") +
+      '<span class="haupt"><span class="pname">' + esc(p.titel) + '</span>' +
+      '<span class="pmeta"><span class="pgr">' + esc(p.groesse) + '</span>' +
+      '<span class="code">' + esc(p.fach || "—") + '</span>' +
+      (p.holen ? '<span class="warnpunkt">!</span><span style="color:var(--gelb)">aus Embrach</span>'
+               : '<span>ZH ' + p.zh + '</span>') +
+      '</span></span><span class="pmenge">' + p.menge + '</span></div>';
+  }).join("") + '</div>';
+  var faecher = o.positionen.map(function(p){ return p.fach; }).filter(Boolean);
+  if(faecher.length) h += bestellKarte(faecher);
+  i.innerHTML = h;
+
+  if(z === "offen"){
+    f.innerHTML = '<button class="b riesig akz" id="best-start">Bestellung starten</button>';
+    $("#best-start").addEventListener("click", bestStart);
+  } else if(z === "lauf"){
+    f.innerHTML = '<button class="b riesig gruen" id="best-fertig">Bestellung fertig</button>' +
+      '<button class="b geist klein" id="best-ab">Abbrechen (Timer verwerfen)</button>';
+    $("#best-fertig").addEventListener("click", bestFertig);
+    $("#best-ab").addEventListener("click", function(){
+      delete bestZustand[bestOffen.id]; speicherZustand(); stopUhr(); zeichneBestell();
+    });
+  } else if(z === "fertig"){
+    f.innerHTML = '<button class="b riesig akz" id="best-send">In Shopify als versendet</button>';
+    $("#best-send").addEventListener("click", bestVersenden);
+  } else {
+    f.innerHTML = '<div class="leerstelle">In Shopify als versendet markiert.</div>';
+  }
+
+  i.querySelectorAll("[data-pos]").forEach(function(el){
+    el.addEventListener("click", function(){ bestPick(parseInt(el.getAttribute("data-pos"), 10)); });
+  });
+  i.querySelectorAll(".pos .pbild").forEach(function(im){
+    im.addEventListener("click", function(e){ e.stopPropagation(); oeffneLightbox(im.getAttribute("data-gross")); });
+  });
+  if(z === "lauf" && zs.start) starteUhr(zs.start);
+}
+
+function bestStart(){
+  bestZustand[bestOffen.id] = {zustand:"lauf", start:Date.now(), picked:{}};
+  speicherZustand();
+  zeichneBestell();
+}
+function bestPick(n){
+  var zs = bestZustand[bestOffen.id]; if(!zs) return;
+  zs.picked = zs.picked || {};
+  zs.picked[n] = !zs.picked[n];
+  speicherZustand();
+  bestellDetail();
+}
+function bestFertig(){
+  var zs = bestZustand[bestOffen.id]; if(!zs) return;
+  zs.ende = Date.now();
+  zs.dauer = zs.ende - (zs.start || zs.ende);
+  zs.zustand = "fertig";
+  speicherZustand();
+  stopUhr();
+  fetch(SERVER + "/api/kommission", {method:"POST", headers:kopfZeilen(), body:JSON.stringify({
+    order:String(bestOffen.id), name:bestOffen.name, start:zs.start, ende:zs.ende,
+    dauer:zs.dauer, positionen:bestOffen.positionen.length,
+    stueck:bestOffen.positionen.reduce(function(s, p){ return s + p.menge; }, 0)
+  })}).catch(function(e){ console.log("kommission FEHLER: " + (e && e.message ? e.message : e)); });
+  zeigeToast("Fertig in " + fmtDauer(zs.dauer));
+  zeichneBestell();
+}
+function bestVersenden(){
+  var o = bestOffen;
+  dialog("In Shopify versenden",
+    '<div class="o-namen">' + esc(o.name) + ' wird in Shopify als versendet markiert.</div>',
+    "Versenden", function(){
+      fetch(SERVER + "/api/fulfill", {method:"POST", headers:kopfZeilen(), body:JSON.stringify({order:String(o.id)})})
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if(d.ok){
+            (bestZustand[o.id] = bestZustand[o.id] || {}).zustand = "versendet";
+            speicherZustand(); aktualisiereBadge();
+            zeigeToast("In Shopify versendet");
+          } else {
+            zeigeToast(d.fehler === "scope" ? "Shopify-Berechtigung fehlt" : "Versand fehlgeschlagen");
+          }
+          zeichneBestell();
+        })
+        .catch(function(e){ console.log("fulfill FEHLER: " + (e && e.message ? e.message : e)); zeigeToast("Kein Netz"); });
+    });
+}
+
+function starteUhr(start){
+  stopUhr();
+  bestUhrTimer = setInterval(function(){
+    var el = $("#best-uhr"); if(!el){ stopUhr(); return; }
+    el.textContent = fmtDauer(Date.now() - start);
+  }, 1000);
+}
+function stopUhr(){ if(bestUhrTimer){ clearInterval(bestUhrTimer); bestUhrTimer = null; } }
+
+/* Karte mit allen Faechern einer Bestellung markiert (Zuerich, Lagerraum 1). */
+function bestellKarte(faecher){
+  var set = {}; faecher.forEach(function(c){ set[c] = 1; });
+  var s = '<svg viewBox="2 44 316 322" style="width:100%;height:auto;display:block">';
+  s += '<rect x="14" y="68" width="292" height="278" rx="8" fill="#faf9f7" stroke="#17161a" stroke-width="4"/>';
+  s += '<rect x="106" y="76" width="106" height="24" rx="4" fill="#17161a"/>';
+  s += '<text x="159" y="92" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">Tisch</text>';
+  s += '<rect x="20" y="78" width="32" height="226" rx="4" fill="#eceae7"/>';
+  s += '<rect x="110" y="106" width="184" height="46" rx="4" fill="#eceae7"/>';
+  s += '<rect x="110" y="198" width="184" height="46" rx="4" fill="#eceae7"/>';
+  s += '<rect x="72" y="314" width="212" height="24" rx="4" fill="#eceae7"/>';
+  ALLE_FAECHER.forEach(function(f){
+    var ist = set[f.c] === 1;
+    s += '<rect x="' + (f.x + 1) + '" y="' + (f.y + 1) + '" width="' + (f.w - 2) +
+         '" height="' + (f.h - 2) + '" rx="2.5" fill="' + (ist ? "#a8271c" : "#fff") +
+         '" stroke="' + (ist ? "#a8271c" : "#cfcdc9") + '" stroke-width="' + (ist ? 2.5 : 1) + '"' +
+         (ist ? "" : ' stroke-dasharray="2 2"') + '/>';
+    s += '<text x="' + (f.x + f.w / 2) + '" y="' + (f.y + f.h / 2 + 3) +
+         '" text-anchor="middle" font-size="8.5" font-weight="' + (ist ? 800 : 400) +
+         '" fill="' + (ist ? "#fff" : "#b3b0ac") + '">' + f.c.split("-")[1] + '</text>';
+  });
+  s += '</svg>';
+  return '<div class="karte-box">' + s + '</div>';
+}
+
 /* Dialog */
 var dlgJa = null;
 function dialog(titel, inhalt, jaText, beiJa){
@@ -1256,12 +1948,22 @@ function zeichneKopf(){
   }
 }
 
-$$("nav button").forEach(function(b){
+$$(".kachel[data-v]").forEach(function(b){
   b.addEventListener("click", function(){ zeige(b.getAttribute("data-v")); });
 });
+$$("[data-heim]").forEach(function(b){
+  b.addEventListener("click", function(){ zeige("heim"); });
+});
+$$("#v-umlager .seg button").forEach(function(b){
+  b.addEventListener("click", function(){ umModus = b.getAttribute("data-um"); zeichneUmlager2(); });
+});
+$("#best-zur").addEventListener("click", function(){
+  if(bestOffen){ bestOffen = null; zeichneBestell(); } else { zeige("heim"); }
+});
+$("#lightbox").addEventListener("click", function(){ this.classList.remove("an"); $("#lightbox-img").src = ""; });
 $("#b-kamera").addEventListener("click", function(){ kameraStarten("artikel"); });
 $("#b-stopp").addEventListener("click", function(){ kameraStoppen(); });
-$("#b-zurueck").addEventListener("click", function(){ zeige("scan"); });
+$("#b-zurueck").addEventListener("click", function(){ zeige("info"); });
 $("#b-menge").addEventListener("click", mengeDialog);
 $("#b-export").addEventListener("click", exportEans);
 $("#b-import").addEventListener("click", function(){ $("#i-csv").click(); });
@@ -1295,9 +1997,22 @@ zeichneKopf();
 zeichneKatalog();
 
 /* Beim Start und bei jeder Rueckkehr in die App den Stand vom Server holen. */
-vomServer().then(function(){ zeichneKatalog(); });
+// Erst offene Buchungen und Platz-Aenderungen hochschicken, dann den Stand
+// zurueckholen. Sonst koennte ein Neuladen eine frische Platz-Aenderung ueberschreiben.
 sendeWarteschlange();
+sendeEanWarte();
+sendeFachWarte().then(function(){ return vomServer(); }).then(function(){
+  zeichneKatalog();
+  if($("#v-umlager").classList.contains("on")) zeichneUmlager2();
+  ladeBestellungen();
+});
 document.addEventListener("visibilitychange", function(){
-  if(!document.hidden){ sendeWarteschlange(); vomServer(); }
+  if(document.hidden) return;
+  sendeWarteschlange();
+  sendeEanWarte();
+  sendeFachWarte().then(function(){ return vomServer(); }).then(function(){
+    if($("#v-umlager").classList.contains("on")) zeichneUmlager2();
+    if($("#v-bestell").classList.contains("on") && !bestOffen) ladeBestellungen();
+  });
 });
 </script>

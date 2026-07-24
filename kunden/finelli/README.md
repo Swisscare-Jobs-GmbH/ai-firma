@@ -41,7 +41,22 @@ Verkaufs-MVP `C:\dev\finelli-cockpit` (SA-Rechner, Ports 8012/5173) · Produktio
 - 🔴 **Datenschutz:** Der Rohexport wurde vom Auto-Sync mitgepusht und ist jetzt untrackt +
   ignoriert. Historie unveraendert → SA-Entscheid **T4** in `brain/shared/todos/for-sa.md`.
 
+**Stand (24.07.2026) — SEA-Lager-App gebaut und produktiv-nah:**
+- 🟢 **Standalone-Handy-App "SEA"** (`finadmin/`, voller Aufbau in `finadmin/README.md`): eine
+  HTML-Datei als Android-APK (WebView) + Cloudflare-Worker/D1-Backend, mit Shopify verbunden
+  (`finelli-gmbh.myshopify.com`). Kachel-Menue (farb-orientiert): Produkt-Info (scannen/suchen),
+  Wareneingang, Umlagern (Standort zh↔emb + Lagerplatz), Bestellungen (picken/packen mit Timer),
+  Katalog. Produktbilder ueberall. Zwei interne Standorte (Zuerich/Embrach) auf einem Shopify-Standort.
+- 🟢 **Auf zwei Handys installiert und klick-bewiesen** (Samsung S24 Ultra + TCL). EAN-Codes,
+  Buchungen und Lagerplaetze syncen ueber den Server (Warteschlangen mit Retry) — man scannt nie
+  denselben Artikel doppelt. Entwurf-Produkte aus Shopify erscheinen sofort (Produkt-Webhooks).
+- 🔍 **Offen:** "Versenden in Shopify" braucht Scope `write_fulfillments` — der Shop muss den
+  Installations-Link EINMAL neu oeffnen. Bis dahin laeuft alles andere.
+- Lehren verallgemeinert: `brain/lessons/bau/2026-07-24-standalone-android-app-ohne-gradle-cloudflare-backend.md`
+  · `brain/lessons/system/2026-07-24-geraeteuebergreifender-sync-server-wahrheit.md`.
+
 **Dateien hier:** firma-profil · schmerz-landkarte · deal-strategie · wert-ranking · ausbau-plan ·
+**finadmin/ (SEA-Lager-App: APK + Cloudflare-Backend, 22.-24.07 — Quelle der Wahrheit `finadmin/README.md`)** ·
 **marktanalyse-lagerkarte (22.07, Auswertung des Bestellexports + Lager-Zonen)** ·
 feinplan · logistik-research · offene-fragen · antworten-sa · antworten-runde2 ·
 branchen-recherche-markt-schmerzen (19.07) · **bauplan-ki-mitarbeiter (21.07)** ·

@@ -1,0 +1,4 @@
+# Build-Arbeitsordner (wird von build.py neu erzeugt) — nicht versionieren
+apk/
+# apksigner-v4-Signatur, wird beim Build neu erzeugt
+*.idsig

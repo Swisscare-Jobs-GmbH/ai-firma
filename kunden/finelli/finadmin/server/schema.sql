@@ -12,6 +12,7 @@ CREATE TABLE bestand (
   variant_gid TEXT,
   sku         TEXT,
   ean         TEXT,
+  bild        TEXT,
   PRIMARY KEY (artikel, groesse)
 );
 CREATE INDEX idx_bestand_variant ON bestand (variant_gid);
@@ -30,3 +31,17 @@ CREATE TABLE bewegung (
   erstellt   TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE UNIQUE INDEX idx_bewegung_schluessel ON bewegung (schluessel) WHERE schluessel IS NOT NULL;
+
+-- Packzeiten je Bestellung, damit die Prozesse spaeter mit KI ausgewertet werden koennen.
+DROP TABLE IF EXISTS kommission;
+CREATE TABLE kommission (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  order_id   TEXT,
+  name       TEXT,
+  start      INTEGER,
+  ende       INTEGER,
+  dauer      INTEGER,
+  positionen INTEGER,
+  stueck     INTEGER,
+  erstellt   TEXT NOT NULL DEFAULT (datetime('now'))
+);

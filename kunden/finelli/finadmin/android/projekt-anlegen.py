@@ -7,6 +7,7 @@ import struct
 import zlib
 
 SP = os.path.dirname(os.path.abspath(__file__))
+FINADMIN = os.path.dirname(SP)                 # finadmin.html liegt eine Ebene hoeher
 PRJ = os.path.join(SP, "apk")
 PAKET = "ch.sea.lager"
 PFAD_JAVA = os.path.join(PRJ, "src", *PAKET.split("."))
@@ -20,7 +21,7 @@ for ordner in [PRJ, PFAD_JAVA,
     os.makedirs(ordner, exist_ok=True)
 
 # ---------- 1. Die Weboberflaeche als Asset ----------
-roh = open(os.path.join(SP, "finadmin.html"), "r", encoding="utf-8").read()
+roh = open(os.path.join(FINADMIN, "finadmin.html"), "r", encoding="utf-8").read()
 schnitt = roh.index("</style>") + len("</style>")
 seite = ('<!doctype html>\n<html lang="de">\n<head>\n<meta charset="utf-8">\n'
          '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'
