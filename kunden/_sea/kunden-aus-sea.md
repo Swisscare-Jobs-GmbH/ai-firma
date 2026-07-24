@@ -3,7 +3,7 @@
 > Automatisch aus zentrale/data/kunden.json erzeugt, bei jeder Aenderung in SEA.
 > Nicht von Hand bearbeiten. Kuratierte Registry bleibt kunden/UEBERSICHT.md.
 
-Stand: 2026-07-24 | Anzahl: 8
+Stand: 2026-07-24 | Anzahl: 9
 
 | Name | Branche | Status | Aktualisiert |
 |---|---|---|---|
@@ -15,6 +15,7 @@ Stand: 2026-07-24 | Anzahl: 8
 | Saif | Anwaltskanzlei | Noch nicht angefangen | 2026-07-21 |
 | Salman | Schönheitschirurg | Noch nicht angefangen | 2026-07-21 |
 | Jessica Osmanoska | Spitex | Noch nicht angefangen | 2026-07-24 |
+| Ahmed Moschee | Website | Noch nicht angefangen | 2026-07-24 |
 
 ## Notizen
 
@@ -41,3 +42,6 @@ Connections zu anderen kunden
 
 ### Jessica Osmanoska
 Braucht Website, verifiziert mit Cookies etc.
+
+### Ahmed Moschee
+Braucht website für kunden und reach
